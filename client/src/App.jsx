@@ -1,15 +1,16 @@
 // external imports
 import { useEffect, useState } from 'react'
-import { Routes } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 // internal imports
 import './css/style.css'
-import { authContext } from './Services/Context'
+import { authContext, statusContext } from './Services/Context'
 import authService from './Services/authService'
 
 // component imports
 import Header from './Reusables/Header'
 import Footer from './Reusables/Footer'
+import Test from './Reusables/Test'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -29,14 +30,19 @@ function App() {
     setIsAdmin(adminCheck)
   }, [])
 
+  // sets a status message to update the user on site actions
+  const [ status, setStatus ] = useState("")
+
   return (
     <>
       <authContext.Provider value={ { isAdmin, setIsAdmin } }>
+      <statusContext.Provider value={ { status, setStatus } }>
         <Header />
         <Routes>
-
+          <Route path="/" element={ <Test /> } />
         </Routes>
         <Footer />
+      </statusContext.Provider>
       </authContext.Provider>
     </>
   )

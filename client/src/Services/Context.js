@@ -6,3 +6,6 @@ import { createContext } from 'react'
 
 // authContext = [ isAdmin, setIsAdmin ] : bool
 export const authContext = createContext([])
+
+// statusContext = [ status, setStatus ] : string, notifies the user of actions
+export const statusContext = createContext([])
