@@ -3,3 +3,33 @@
 header {
     background-color: #c4de9b;
 }
+
+.flag-box {
+    width: 3rem;
+    height: 3rem;
+    margin: 0.5rem;
+}
+
+.flag {
+    fill-opacity: 1;
+    stroke-width: 1.75;
+    stroke-linecap: "round";
+    stroke-linejoin: "round";
+    stroke-dasharray: "none";
+    stroke-opacity: 1;
+}
+
+.flag-red {
+    fill: var(--bs-danger);
+    stroke: var(--bs-danger);
+}
+
+.flag-yellow {
+    fill: var(--bs-warning);
+    stroke: var(--bs-warning);
+}
+
+.flag-grey {
+    fill: var(--bs-secondary);
+    stroke: var(--bs-secondary);
+}

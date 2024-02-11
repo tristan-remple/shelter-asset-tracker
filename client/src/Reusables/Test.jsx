@@ -7,6 +7,7 @@ import { statusContext } from "../Services/Context"
 // components
 import Search from "./Search"
 import ChangePanel from "./ChangePanel"
+import Flag from "./Flag"
 
 //------ MODULE INFO
 // This module is for testing components that aren't being used elsewhere yet.
@@ -59,7 +60,7 @@ const Test = () => {
             })}
             { // this would have to be formatted differently to account for the initial null status 
             isSaved ? <p>{ status }</p> : <ChangePanel save={ save } linkOut={ linkOut } /> }
-            
+            <Flag color="grey" />
         </>
     )
 }
