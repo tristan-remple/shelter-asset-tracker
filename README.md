@@ -62,14 +62,14 @@ This is a project for Shelter Nova Scotia. It's an inventory management system f
 - admin delete location
 
 ### Units
-- view all units in one location (param: location title)
+- view all units in one location (param: location id)
     - may also need to return data from the location table
 - admin add unit
 - admin edit unit
 - admin delete unit
 
 ### Items
-- view all items in one unit (params: location title, unit number)
+- view all items in one unit (param: unit id)
     - may also need to return data from unit and/or location
 - view one item
 - edit item
