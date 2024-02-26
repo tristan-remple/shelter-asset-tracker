@@ -17,7 +17,7 @@ const Header = () => {
     const { userId: userId, username: username, location: { locationId, name } } = userInfo
 
     return (
-        <header className="navbar navbar-expand-lg navbar-light bg-light">
+        <header className="navbar navbar-expand-lg">
             <div className="container">
                 <Link className="navbar-brand" href="/">
                     <img src="img/icons8-room-100.png" alt="" />

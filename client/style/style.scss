@@ -1,14 +1,39 @@
 @import "../node_modules/bootstrap/scss/bootstrap";
 // vs code live sass compiler setting: "savePath": "~/../src/css"
 
-header {
-    background-color: #c4de9b;
+$ltgreen: #c4de9b;
+$brightgreen: #82bc46;
+$olivegreen: #515a2d;
+$ltbrown: #977c6a;
+$midbrown: #563219;
+$palegreen: #d9e4cd;
+$fontmain: "Inter";
+$fontaccent: "Libre Caslon Text";
+
+@mixin border {
+    border: 2px solid $palegreen;
+    border-radius: 0.5rem;
+}
+
+body {
+    font-family: $fontmain;
+}
+
+header, footer {
+    background-color: $ltgreen !important;
+}
+
+footer {
+    margin-top: 2rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 
 .flag-box {
-    width: 3rem;
-    height: 3rem;
-    margin: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    margin: 0.25rem;
 }
 
 .flag {
@@ -33,4 +58,48 @@ header {
 .flag-grey {
     fill: var(--bs-secondary);
     stroke: var(--bs-secondary);
+}
+
+.page-content {
+    @include border;
+    padding: 0.5rem;
+}
+
+.title-row {
+    align-items: center;
+}
+
+.row-info {
+    @include border;
+    margin: 0.5rem;
+}
+
+.col-info {
+    padding: 0;
+    display: flex;
+    flex-flow: column;
+}
+
+.col-head {
+    @include border;
+    font-weight: bold;
+    margin: 0.25rem;
+    padding: 0.25rem;
+}
+
+.col-content {
+    @include border;
+    margin: 0.25rem;
+    padding: 0.25rem;
+    flex-grow: 1;
+}
+
+.col-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    margin: 0.5rem;
 }

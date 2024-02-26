@@ -11,6 +11,7 @@ import authService from './Services/authService'
 import Header from './Reusables/Header'
 import Footer from './Reusables/Footer'
 import Test from './Reusables/Test'
+import ItemDetails from './Items/ItemDetails'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -40,6 +41,8 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={ <Test /> } />
+          <Route path="/item" element={ <ItemDetails /> } />
+          <Route path="/item/:id" element={ <ItemDetails /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>

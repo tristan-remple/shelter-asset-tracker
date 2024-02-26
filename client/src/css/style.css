@@ -9759,14 +9759,25 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-header {
-  background-color: #c4de9b;
+body {
+  font-family: "Inter";
+}
+
+header, footer {
+  background-color: #c4de9b !important;
+}
+
+footer {
+  margin-top: 2rem;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .flag-box {
-  width: 3rem;
-  height: 3rem;
-  margin: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  margin: 0.25rem;
 }
 
 .flag {
@@ -9791,4 +9802,52 @@ header {
 .flag-grey {
   fill: var(--bs-secondary);
   stroke: var(--bs-secondary);
+}
+
+.page-content {
+  border: 2px solid #d9e4cd;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.title-row {
+  align-items: center;
+}
+
+.row-info {
+  border: 2px solid #d9e4cd;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+}
+
+.col-info {
+  padding: 0;
+  display: flex;
+  flex-flow: column;
+}
+
+.col-head {
+  border: 2px solid #d9e4cd;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  margin: 0.25rem;
+  padding: 0.25rem;
+}
+
+.col-content {
+  border: 2px solid #d9e4cd;
+  border-radius: 0.5rem;
+  margin: 0.25rem;
+  padding: 0.25rem;
+  flex-grow: 1;
+}
+
+.col-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  margin: 0.5rem;
 }

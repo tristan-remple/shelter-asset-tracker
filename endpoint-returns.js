@@ -228,6 +228,7 @@ const itemList = {
     items: [
         {
             itemId: 359,
+            itemLabel: "BH-359",
             categoryId: 14,
             categoryName: "couch",
             toAssess: true,
@@ -235,6 +236,7 @@ const itemList = {
         },
         {
             itemId: 365,
+            itemLabel: "BH-365",
             categoryId: 3,
             categoryName: "mattress",
             toAssess: false,
@@ -242,6 +244,7 @@ const itemList = {
         },
         {
             itemId: 397,
+            itemLabel: "BH-397",
             categoryId: 23,
             categoryName: "end table",
             toAssess: false,
@@ -259,8 +262,12 @@ const singleItem = {
         locationName: "Barry House"
     },
     itemId: 397,
-    categoryId: 23,
-    categoryName: "end table",
+    itemLabel: "BH-397",
+    category: {
+        categoryId: 23,
+        categoryName: "end table",
+        categoryIcon: "icons8-console-table-100"
+    },
     toAssess: false,
     toDiscard: false,
     vendor: "Ikea",
@@ -289,6 +296,7 @@ const singleItem = {
 // with an additional field "success: true"
 const updateItem = {
     itemId: 397,
+    itemLabel: "BH-397",
     toAssess: true,
     toDiscard: false,
     currentValue: 285.00,
@@ -307,6 +315,7 @@ const updateItem = {
 // api should return the full item details as shown above, plus success
 const addItem = {
     unitId: 13,
+    itemLabel: "BH-1005",
     locationId: 2,
     categoryId: 23,
     vendor: "Ikea",
