@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 //------ MODULE INFO
 // This module defines the footer navigation that appears on every page.
-// Imported by: App.jsx
+// Imported by: App
 
 const Footer = () => {
     return (

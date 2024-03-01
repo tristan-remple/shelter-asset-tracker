@@ -27,7 +27,7 @@ class apiService {
                 lastName: "Ivany",
                 addedDate: "2022-02-22 13:55:00"
             },
-            inpsected: {
+            inspected: {
                 userId: 4,
                 firstName: "Jimmy",
                 lastName: "Jones",

@@ -8,7 +8,7 @@ import { authContext } from '../Services/Context'
 
 //------ MODULE INFO
 // This module defines the header navigation that appears on every page.
-// Imported by: App.jsx
+// Imported by: App
 
 const Header = () => {
 

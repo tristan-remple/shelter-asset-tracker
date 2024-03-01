@@ -1,4 +1,5 @@
 // external dependencies
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 // internal dependencies
@@ -9,12 +10,13 @@ import capitalize from '../Services/capitalize'
 import Button from "../Reusables/Button"
 import Flag from "../Reusables/Flag"
 import Error from '../Reusables/Error'
+import Dropdown from '../Reusables/Dropdown'
 
 //------ MODULE INFO
-// This module displays the details about a single item in the collection, such as a stove or a table.
+// This module allows a user to edit the details about a single item in the collection.
 // Imported by: App
 
-const ItemDetails = () => {
+const ItemEdit = () => {
 
     const { id } = useParams()
 
@@ -31,24 +33,71 @@ const ItemDetails = () => {
 
     const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comment } = item
 
-    let flagColor = "grey"
-    let flagText = "OK"
+    const flagOptions = [ "OK", "Assess", "Discard" ]
+    const possibleFlags = [ "grey", "yellow", "red" ]
+
+    let flagColor = possibleFlags[0]
+    let flagText = flagOptions[0]
     if ( toDiscard ) {
-        flagColor = "red"
-        flagText = "Discard"
+        flagColor = possibleFlags[2]
+        flagText = flagOptions[2]
     } else if ( toAssess ) {
-        flagColor  = "yellow"
-        flagText = "Assess"
+        flagColor  = possibleFlags[1]
+        flagText = flagOptions[1]
+    }
+
+    const [ dangerMode, setDangerMode ] = useState(false)
+
+    const [ safeChanges, setSafeChanges ] = useState({
+        label: itemLabel,
+        statusColor: flagColor,
+        statusText: flagText,
+        comment: comment
+    })
+
+    const [ dangerChanges, setDangerChanges ] = useState({
+        category,
+        inspected,
+        added,
+        initialValue,
+        currentValue,
+        vendor,
+        donated,
+        unit,
+        discardDate
+    })
+
+    const handleTextChange = (event) => {
+        const fieldName = event.target.name
+        const newChanges = {...safeChanges}
+        newChanges[fieldName] = event.target.value
+        setSafeChanges(newChanges)
+    }
+
+    const handleFlag = (input) => {
+        const newChanges = {...safeChanges}
+        const index = flagOptions.indexOf(input)
+        if (index > -1) {
+            newChanges.statusColor = possibleFlags[index]
+            newChanges.statusText = flagOptions[index]
+        }
+        setSafeChanges(newChanges)
     }
 
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col">
-                    <h1>{ capitalize(category.categoryName) } in { unit.unitName }</h1>
+                <div className="col-6">
+                    <h1>Editing { capitalize(category.categoryName) } in { unit.unitName }</h1>
                 </div>
-                <div className="col">
-                    <Button text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
+                <div className="col-2">
+                    <Button text="Save Changes" linkTo={ `/item/${id}` } type="action" />
+                </div>
+                <div className="col-2">
+                    <Button text="Cancel Edit" linkTo={ `/item/${id}` } type="nav" />
+                </div>
+                <div className="col-2">
+                    <Button text="Advanced Edit" linkTo={ `/item/${id}` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -58,7 +107,7 @@ const ItemDetails = () => {
                             Label
                         </div>
                         <div className="col-content">
-                            { itemLabel }
+                            <input type="text" name="label" value={ safeChanges.label } onChange={ handleTextChange } />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -90,8 +139,12 @@ const ItemDetails = () => {
                             Status
                         </div>
                         <div className="col-content">
-                            <Flag color={ flagColor } />
-                            { flagText }
+                            <Flag color={ safeChanges.statusColor } />
+                            <Dropdown
+                                list={ flagOptions }
+                                current={ safeChanges.statusText }
+                                setCurrent={ handleFlag }
+                            />
                         </div>
                     </div>
                 </div>
@@ -101,7 +154,7 @@ const ItemDetails = () => {
                     </div>
                     <div className="col-8 col-content">
                         <strong>Comments:</strong>
-                        <p>{ comment }</p>
+                        <textarea name="comment" value={ safeChanges.comment } onChange={ handleTextChange } className="comment-area" />
                     </div>
                 </div>
                 <div className="row row-info">
@@ -169,4 +222,4 @@ const ItemDetails = () => {
     )
 }
 
-export default ItemDetails
+export default ItemEdit

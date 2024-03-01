@@ -1,7 +1,7 @@
 //------ MODULE INFO
 // This module is an SVG flag that can be used to convey the overall status of an item.
 // Valid colors are red, yellow, and grey.
-// Imported by: 
+// Imported by: ItemDetails
 
 const Flag = ({ color }) => {
 

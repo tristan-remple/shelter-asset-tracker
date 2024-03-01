@@ -9840,6 +9840,8 @@ footer {
   margin: 0.25rem;
   padding: 0.25rem;
   flex-grow: 1;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .col-icon {
@@ -9850,4 +9852,22 @@ footer {
 
 .icon {
   margin: 0.5rem;
+}
+
+.comment-area {
+  width: 100%;
+  height: 80%;
+}
+
+.dropdown-menu {
+  display: inline-block;
+  top: 100%;
+}
+
+.dropdown-toggle, .dropdown {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
