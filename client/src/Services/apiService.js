@@ -38,6 +38,39 @@ class apiService {
         }
         return item;
     }
+
+    postItem(item) {
+        console.log(item)
+        console.log("Posted")
+        item.success = true
+        return item
+    }
+
+    deleteItem(item) {
+        console.log(item)
+        console.log("Deleted")
+        item.success = true
+        return item
+    }
+
+    listCategories() {
+        return [
+            {
+                categoryId: 1,
+                categoryName: "dining table",
+                defaultValue: 900,
+                icon: "icons8-furniture-100",
+                singleUse: false
+            },
+            {
+                categoryId: 2,
+                categoryName: "end table",
+                defaultValue: 300,
+                icon: "icons8-bureau-100",
+                singleUse: false
+            }
+        ]
+    }
 }
 
 export default new apiService

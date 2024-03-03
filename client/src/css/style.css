@@ -9871,3 +9871,7 @@ footer {
   align-items: center;
   justify-content: space-between;
 }
+
+.btn {
+  margin: 0.5rem;
+}

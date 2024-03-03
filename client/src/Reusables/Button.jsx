@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 //------ MODULE INFO
 // This module defines all buttons.
 // It exists to quickly update the styling of multiple types of button.
-// Imported by: ChangePanel, ItemDetails, Error, Dropdown
+// Imported by: ChangePanel, ItemDetails, Error, Dropdown, ItemEdit
 
 const Button = ({ text, linkTo, type }) => {
 

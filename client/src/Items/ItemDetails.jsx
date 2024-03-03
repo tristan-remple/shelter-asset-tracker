@@ -1,9 +1,11 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
+import { useContext } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
+import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
@@ -17,6 +19,7 @@ import Error from '../Reusables/Error'
 const ItemDetails = () => {
 
     const { id } = useParams()
+    const { status } = useContext(statusContext)
 
     if (id === undefined) {
         console.log("undefined id")
@@ -52,6 +55,7 @@ const ItemDetails = () => {
                 </div>
             </div>
             <div className="page-content">
+                { status && <div className="row row-info"><p>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
