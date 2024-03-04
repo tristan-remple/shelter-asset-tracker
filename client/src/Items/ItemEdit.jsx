@@ -9,7 +9,7 @@ import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
-import Flag from "../Reusables/Flag"
+import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
@@ -62,19 +62,15 @@ const ItemEdit = () => {
     // destructure the item
     const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, comment } = item
 
-    // set up the flag options
-    // this is the only place the strings are defined, so they can be changed for the entire page from here
-    const flagOptions = [ "OK", "Assess", "Discard" ]
-    const possibleFlags = [ "grey", "yellow", "red" ]
-
-    let flagColor = possibleFlags[0]
-    let flagText = flagOptions[0]
+    // flag options are defined in the flag module
+    let flagColor = flagColorOptions[0]
+    let flagText = flagTextOptions[0]
     if ( toDiscard ) {
-        flagColor = possibleFlags[2]
-        flagText = flagOptions[2]
+        flagColor = flagColorOptions[2]
+        flagText = flagTextOptions[2]
     } else if ( toAssess ) {
-        flagColor  = possibleFlags[1]
-        flagText = flagOptions[1]
+        flagColor  = flagColorOptions[1]
+        flagText = flagTextOptions[1]
     }
 
     // set up some page functionality
@@ -124,10 +120,10 @@ const ItemEdit = () => {
     // handles flag dropdown state
     const handleFlag = (input) => {
         const newChanges = {...safeChanges}
-        const index = flagOptions.indexOf(input)
+        const index = flagTextOptions.indexOf(input)
         if (index > -1) {
-            newChanges.statusColor = possibleFlags[index]
-            newChanges.statusText = flagOptions[index]
+            newChanges.statusColor = flagColorOptions[index]
+            newChanges.statusText = flagTextOptions[index]
         }
         setSafeChanges(newChanges)
         setUnsaved(true)
@@ -189,8 +185,8 @@ const ItemEdit = () => {
         const newItem = {...dangerChanges}
         newItem.itemId = id
         newItem.itemLabel = safeChanges.label
-        newItem.toAssess = safeChanges.statusText === flagOptions[1]
-        newItem.toDiscard = safeChanges.statusText === flagOptions[2]
+        newItem.toAssess = safeChanges.statusText === flagTextOptions[1]
+        newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
         newItem.comment = safeChanges.comment
         newItem.discardDate = null
         newItem.inspected = inspected
@@ -298,7 +294,7 @@ const ItemEdit = () => {
                         <div className="col-content">
                             <Flag color={ safeChanges.statusColor } />
                             <Dropdown
-                                list={ flagOptions }
+                                list={ flagTextOptions }
                                 current={ safeChanges.statusText }
                                 setCurrent={ handleFlag }
                             />

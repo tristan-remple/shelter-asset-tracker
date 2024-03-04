@@ -1,6 +1,6 @@
 class apiService {
 
-    singleItem() {
+    singleItem(id) {
         const item = {
             unit: {
                 unitId: 13,
@@ -13,7 +13,7 @@ class apiService {
             category: {
                 categoryId: 23,
                 categoryName: "end table",
-                categoryIcon: "icons8-console-table-100"
+                icon: "icons8-console-table-100"
             },
             toAssess: false,
             toDiscard: false,
@@ -70,6 +70,15 @@ class apiService {
                 singleUse: false
             }
         ]
+    }
+
+    singleUnit(id) {
+        return {
+            unitId: 13,
+            unitName: "3040-B",
+            locationId: 2,
+            locationName: "Barry House"
+        }
     }
 }
 
