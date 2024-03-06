@@ -14,11 +14,11 @@ import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 
 //------ MODULE INFO
-// This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
-// The items within the unit are displayed as well.
+// This module displays the details about a single building.
+// The units within the building are displayed as well.
 // Imported by: App
 
-const UnitDetails = () => {
+const LocationDetails = () => {
 
     // get context information
     const { id } = useParams()
@@ -31,47 +31,47 @@ const UnitDetails = () => {
     }
 
     // fetch unit data from the api
-    const response = apiService.unitItems(id)
+    const response = apiService.singleLocation(id)
     if (response.error) {
         console.log("api error")
         return <Error err="api" />
     }
 
     // destructure api response
-    const { unit, items } = response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comment } = unit
+    const { location, units } = response
+    const { locationName, locationId, locationType, added, deleteDate, comment } = location
 
     // if it has been deleted, throw an error
     if (deleteDate) {
         return <Error err="deleted" />
     }
 
-    // put the items that need to be assessed or discarded at the top of the list
-    items.sort((a, b) => {
-        return a.toAssess < b.toAssess ? 1 : 0
+    // put the units that have items which need to be assessed or discarded at the top of the list
+    units.sort((a, b) => {
+        return a.toInspectItems < b.toInspectItems ? 1 : 0
     }).sort((a, b) => {
-        return a.toDiscard < b.toDiscard ? 1 : 0
+        return a.toDiscardItems < b.toDiscardItems ? 1 : 0
     })
 
-    // map the item objects into table rows
-    const displayItems = items.map(item => {
+    // map the unit objects into table rows
+    const displayItems = units.map(item => {
 
         // flag options are defined in the flag module
         let flagColor = flagColorOptions[0]
         let flagText = flagTextOptions[0]
-        if ( item.toDiscard ) {
+        if ( item.toDiscardItems > 0 ) {
             flagColor = flagColorOptions[2]
             flagText = flagTextOptions[2]
-        } else if ( item.toAssess ) {
+        } else if ( item.toInspectItems > 0 ) {
             flagColor  = flagColorOptions[1]
             flagText = flagTextOptions[1]
         }
 
         return (
-            <tr key={ item.itemId } >
-                <td>{ item.itemLabel }</td>
-                <td>{ capitalize(item.categoryName) }</td>
-                <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
+            <tr key={ item.unitId } >
+                <td>{ item.unitName }</td>
+                <td>{ capitalize(item.unitType) }</td>
+                <td><Button text="Details" linkTo={ `/unit/${ item.unitId }` } type="small" /></td>
                 <td><Flag color={ flagColor } /> { flagText }</td>
             </tr>
         )
@@ -81,13 +81,10 @@ const UnitDetails = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col-6">
-                    <h2>Unit { unitName } in { locationName }</h2>
-                </div>
-                <div className="col-2">
-                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/additem` } type="action" />
+                    <h2>{ locationName }</h2>
                 </div>
                 <div className="col-3">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Return" linkTo="/locations" type="nav" />
                 </div>
             </div>
             <div className="page-content">
@@ -103,34 +100,10 @@ const UnitDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Unit Name
+                            Type
                         </div>
                         <div className="col-content">
-                            { unitName }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Unit Type
-                        </div>
-                        <div className="col-content">
-                            { capitalize(unitType) }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Updated By
-                        </div>
-                        <div className="col-content">
-                            { inspected.firstName } { inspected.lastName }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Updated At
-                        </div>
-                        <div className="col-content">
-                            { friendlyDate(inspected.inspectedDate) }
+                            { capitalize(locationType) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -153,8 +126,8 @@ const UnitDetails = () => {
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
-                            <th scope="col">Label</th>
-                            <th scope="col">Category</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Details</th>
                             <th scope="col">Status</th>
                         </tr>
@@ -168,4 +141,4 @@ const UnitDetails = () => {
     )
 }
 
-export default UnitDetails
+export default LocationDetails

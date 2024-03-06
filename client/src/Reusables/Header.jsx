@@ -19,7 +19,7 @@ const Header = () => {
     return (
         <header className="navbar navbar-expand-lg">
             <div className="container">
-                <Link className="navbar-brand" href="/">
+                <Link className="navbar-brand" to="/">
                     <img src="img/icons8-room-100.png" alt="" />
                 </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,17 +29,17 @@ const Header = () => {
                     <ul className="navbar-nav">
                         { isAdmin && (
                             <li className="nav-item">
-                                <Link className="nav-link" href="/dashboard">Dashboard</Link>
+                                <Link className="nav-link" to="/dashboard">Dashboard</Link>
                             </li>
                         )}
                         <li className="nav-item">
-                            <Link className="nav-link" href={`/location/${locationId}`}>Inventory</Link>
+                            <Link className="nav-link" to={`/location/${locationId}`}>Inventory</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" href={`/user/${userId}`}>Profile</Link>
+                            <Link className="nav-link" to={`/user/${userId}`}>Profile</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" href="/logout">Log Out</Link>
+                            <Link className="nav-link" to="/logout">Log Out</Link>
                         </li>
                     </ul>
                 </div>

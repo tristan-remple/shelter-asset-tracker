@@ -142,6 +142,48 @@ class apiService {
             ]
         }
     }
+
+    // Called by: LocationDetails
+    singleLocation(id) {
+        return {
+            location: {
+                locationId: 2,
+                locationName: "The Hub",
+                locationType: "shelter",
+                added: {
+                    userId: 2,
+                    firstName: "Sally",
+                    lastName: "Ivany",
+                    addedDate: "2022-02-22 13:55:00"
+                },
+                deleteDate: null,
+                comment: "It's got some number of units."
+            },
+            units: [
+                {
+                    unitId: 2,
+                    unitName: "204",
+                    unitType: "snug",
+                    toInspectItems: 3,
+                    toDiscardItems: 0
+                },
+                {
+                    unitId: 3,
+                    unitName: "205",
+                    unitType: "snug",
+                    toInspectItems: 0,
+                    toDiscardItems: 0
+                },
+                {
+                    unitId: 4,
+                    unitName: "206",
+                    unitType: "snug",
+                    toInspectItems: 1,
+                    toDiscardItems: 1
+                }
+            ]
+        }
+    }
 }
 
 export default new apiService

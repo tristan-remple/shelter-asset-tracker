@@ -158,7 +158,8 @@ const deleteLocationResponse = {
 const unitList = {
     location: {
         locationId: 2,
-        locationName: "The Hub"
+        locationName: "The Hub",
+        locationType: "shelter"
     },
     units: [
         {

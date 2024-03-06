@@ -303,7 +303,7 @@ const ItemEdit = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ category.categoryIcon }.png` } alt={ category.categoryName + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
                         <strong>Comments:</strong>

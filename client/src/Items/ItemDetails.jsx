@@ -34,6 +34,11 @@ const ItemDetails = () => {
 
     const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comment } = item
 
+    // if it has been deleted, throw an error
+    if (discardDate) {
+        return <Error err="deleted" />
+    }
+
     // flag options are defined in the flag module
     let flagColor = flagColorOptions[0]
     let flagText = flagTextOptions[0]

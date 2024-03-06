@@ -15,6 +15,7 @@ import ItemDetails from './Items/ItemDetails'
 import ItemEdit from './Items/ItemEdit'
 import ItemCreate from './Items/ItemCreate'
 import UnitDetails from './Units/UnitDetails'
+import LocationDetails from './Locations/LocationDetails'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -34,7 +35,8 @@ function App() {
     setIsAdmin(adminCheck)
   }, [])
 
-  // sets a status message to update the user on site actions
+  // Sets a status message to update the user on site actions.
+  // Some status messages persist for longer than they need to.
   const [ status, setStatus ] = useState("")
 
   return (
@@ -49,6 +51,7 @@ function App() {
           <Route path="/item/:id/edit" element={ <ItemEdit /> } />
           <Route path="/unit/:id/additem" element={ <ItemCreate /> } />
           <Route path="/unit/:id" element={ <UnitDetails /> } />
+          <Route path="/location/:id" element={ <LocationDetails /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>
