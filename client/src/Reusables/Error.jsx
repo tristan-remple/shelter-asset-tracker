@@ -5,7 +5,7 @@ import Button from "./Button"
 //------ MODULE INFO
 // This module is displayed instead of the page when something goes wrong.
 // Refer to the switch case to view and add error messages.
-// Imported by: ItemDetails, ItemEdit
+// Imported by: ItemDetails, ItemEdit, ItemCreate, UnitDetails
 
 const Error = ({ err }) => {
 

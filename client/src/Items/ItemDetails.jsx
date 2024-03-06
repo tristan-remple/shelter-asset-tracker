@@ -9,7 +9,7 @@ import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
-import Flag from "../Reusables/Flag"
+import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 
 //------ MODULE INFO
@@ -34,24 +34,28 @@ const ItemDetails = () => {
 
     const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comment } = item
 
-    let flagColor = "grey"
-    let flagText = "OK"
+    // flag options are defined in the flag module
+    let flagColor = flagColorOptions[0]
+    let flagText = flagTextOptions[0]
     if ( toDiscard ) {
-        flagColor = "red"
-        flagText = "Discard"
+        flagColor = flagColorOptions[2]
+        flagText = flagTextOptions[2]
     } else if ( toAssess ) {
-        flagColor  = "yellow"
-        flagText = "Assess"
+        flagColor  = flagColorOptions[1]
+        flagText = flagTextOptions[1]
     }
 
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col">
+                <div className="col-6">
                     <h1>{ capitalize(category.categoryName) } in { unit.unitName }</h1>
                 </div>
-                <div className="col">
+                <div className="col-2">
                     <Button text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
+                </div>
+                <div className="col-3">
+                    <Button text="Return" linkTo={ `/unit/${ unit.unitId }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
@@ -101,7 +105,7 @@ const ItemDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ category.categoryIcon }.png` } alt={ category.categoryName + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
                         <strong>Comments:</strong>

@@ -9,7 +9,7 @@ import Button from "./Button"
 // list is a list of items to appear in the dropdown
 // current is a state variable that is one of those items, which is currently selected
 // setCurrent is the setter for the current state variable
-// Imported by: ItemEdit
+// Imported by: ItemEdit, ItemCreate
 
 const Dropdown = ({ list, current, setCurrent }) => {
 

@@ -14,17 +14,13 @@ import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
-// This module allows a user to edit the details about a single item in the collection.
+// This module allows a user to add an item to a specific unit.
 // This module does NOT currently record which user is editing.
 // User information will need to be taken either here or in the apiService module.
 // Handling for certain IDs also needs to be implemented.
 //
-// Possible edits are divided into "safe" and"dangerous" changes.
-// Safe changes are expected in the regular use of the app.
-// Dangerous changes would only need to be applied if there was an error when creating the item.
-// Delete item also only appears during "danger mode" editing.
-// When changes are saved or cancelled, this page will redirect to the item details page.
-// When the item is deleted, it will redirect to the unit overview.
+// Redirects to the page of the new item when an item is successfully created.
+// Goes back to the unit page if the item creation is cancelled.
 //
 // Imported by: App
 
@@ -46,6 +42,7 @@ const ItemCreate = () => {
         return <Error err="api" />
     }
 
+    // destructure the unit
     const { unitId, unitName, locationId, locationName } = unit
 
     // grab the list of categories
@@ -59,6 +56,7 @@ const ItemCreate = () => {
         simpleCategories.unshift("Select:")
     }
 
+    // get the date
     const today = new Date()
     const stringToday = today.toLocaleDateString()
     const stringNow = today.toTimeString().split(" ")[0]
@@ -85,7 +83,6 @@ const ItemCreate = () => {
         comment: ""
     })
 
-    // set up some page functionality
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
 
@@ -122,6 +119,7 @@ const ItemCreate = () => {
         setUnsaved(true)
     }
 
+    // handles changes to addedDate
     const handleDateChange = (event) => {
         const newItemAdditions = {...newItem}
         const newDate = event.target.value.replace("T", " ")
@@ -132,10 +130,14 @@ const ItemCreate = () => {
 
     // sends the item object to the apiService
     const saveChanges = () => {
+
+        // check that fields have been filled in
         if (newItem.label === "" || newItem.category.categoryName === "Select:" || newItem.initialValue === 0) {
             setStatus("The new item's label, category, and initial value must be filled in.")
             return
         }
+
+        // send api request and process api response
         const response = apiService.postItem(newItem)
         if (response.success) {
             setStatus(`You have successfully added item ${response.itemLabel}.`)

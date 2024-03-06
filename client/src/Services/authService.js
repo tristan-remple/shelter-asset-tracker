@@ -1,6 +1,6 @@
 //------ MODULE INFO
 // This module handles API interactions related to users.
-// Imported by: App.jsx
+// Imported by: App, Header
 
 class authService {
 
@@ -10,11 +10,12 @@ class authService {
     }
 
     // Check whether the currently logged in user is an admin
-    // Used by: App.jsx
+    // Used by: App
     checkAdmin() {
         return true
     }
 
+    // Called by: Header
     userInfo(userId) {
         const sampleData = {
             userId,

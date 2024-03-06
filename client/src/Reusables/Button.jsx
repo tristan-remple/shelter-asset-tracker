@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 //------ MODULE INFO
 // This module defines all buttons.
 // It exists to quickly update the styling of multiple types of button.
-// Imported by: ChangePanel, ItemDetails, Error, Dropdown, ItemEdit
+// Imported by: ChangePanel, ItemDetails, Error, Dropdown, ItemEdit, ItemCreate, UnitDetails
 
 const Button = ({ text, linkTo, type }) => {
 
@@ -25,6 +25,9 @@ const Button = ({ text, linkTo, type }) => {
             break
         case "dropdown":
             buttonClass += "btn-outline-primary dropdown-toggle"
+            break
+        case "small":
+            buttonClass += "btn-small btn-secondary"
             break
         default:
             buttonClass += "btn-secondary"

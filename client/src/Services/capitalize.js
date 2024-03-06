@@ -1,6 +1,6 @@
 //------ MODULE INFO
 // This helper function takes an all-lowercase string and capitalizes it like a title.
-// Imported by: ItemDetails
+// Imported by: ItemDetails, UnitDetails
 
 function capitalize(str) {
 

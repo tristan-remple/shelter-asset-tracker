@@ -1,5 +1,10 @@
+//------ MODULE INFO
+// This module interacts directly with the API to get data for the pages.
+// Imported by: ItemDetails, ItemEdit, ItemCreate, UnitDetails
+
 class apiService {
 
+    // Called by: ItemDetails
     singleItem(id) {
         const item = {
             unit: {
@@ -39,6 +44,7 @@ class apiService {
         return item;
     }
 
+    // Called by: ItemDetails
     postItem(item) {
         console.log(item)
         console.log("Posted")
@@ -46,6 +52,7 @@ class apiService {
         return item
     }
 
+    // Called by: ItemDetails
     deleteItem(item) {
         console.log(item)
         console.log("Deleted")
@@ -53,6 +60,7 @@ class apiService {
         return item
     }
 
+    // Called by: ItemEdit, ItemCreate
     listCategories() {
         return [
             {
@@ -72,12 +80,66 @@ class apiService {
         ]
     }
 
+    // Called by: ItemCreate
     singleUnit(id) {
         return {
             unitId: 13,
             unitName: "3040-B",
             locationId: 2,
             locationName: "Barry House"
+        }
+    }
+
+    // Called by: UnitDetails
+    unitItems(id) {
+        return {
+            unit: {
+                unitId: 13,
+                unitName: "3040-B",
+                locationId: 2,
+                locationName: "Barry House",
+                unitType: "apartment",
+                added: {
+                    userId: 2,
+                    firstName: "Sally",
+                    lastName: "Ivany",
+                    addedDate: "2022-02-22 13:55:00"
+                },
+                inspected: {
+                    userId: 4,
+                    firstName: "Jimmy",
+                    lastName: "Jones",
+                    inspectedDate: "2024-02-22 13:55:00"
+                },
+                deleteDate: null,
+                comment: "It's got at least one room."
+            },
+            items: [
+                {
+                    itemId: 359,
+                    itemLabel: "BH-359",
+                    categoryId: 14,
+                    categoryName: "couch",
+                    toAssess: true,
+                    toDiscard: false
+                },
+                {
+                    itemId: 365,
+                    itemLabel: "BH-365",
+                    categoryId: 3,
+                    categoryName: "mattress",
+                    toAssess: false,
+                    toDiscard: true
+                },
+                {
+                    itemId: 397,
+                    itemLabel: "BH-397",
+                    categoryId: 23,
+                    categoryName: "end table",
+                    toAssess: false,
+                    toDiscard: false
+                }
+            ]
         }
     }
 }

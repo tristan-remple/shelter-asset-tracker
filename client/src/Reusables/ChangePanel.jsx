@@ -8,7 +8,7 @@ import Button from "./Button"
 // It also takes in linkOut as the link the user clicked on to prompt this warning.
 //-! Depending on how linkReturn handles form data, this component may need to be adjusted.
 //-? Should this be a modal?
-// Imported by: ItemEdit
+// Imported by: ItemEdit, ItemCreate
 
 const ChangePanel = ({ save, linkOut }) => {
 
