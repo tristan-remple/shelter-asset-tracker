@@ -159,22 +159,33 @@ const unitList = {
     location: {
         locationId: 2,
         locationName: "The Hub",
-        locationType: "shelter"
+        locationType: "shelter",
+        added: {
+            userId: 2,
+            firstName: "Sally",
+            lastName: "Ivany",
+            addedDate: "2022-02-22 13:55:00"
+        },
+        deleteDate: null,
+        comment: "It's got some number of units."
     },
     units: [
         {
+            unitId: 2,
             unitName: "204",
             unitType: "snug",
             toInspectItems: 3,
             toDiscardItems: 0
         },
         {
+            unitId: 3,
             unitName: "205",
             unitType: "snug",
             toInspectItems: 0,
             toDiscardItems: 0
         },
         {
+            unitId: 4,
             unitName: "206",
             unitType: "snug",
             toInspectItems: 1,
@@ -218,13 +229,37 @@ const deleteUnitResponse = {
     success: true
 }
 
+// used for item creation within a unit
+const singleUnit = {
+    unitId: 13,
+    unitName: "3040-B",
+    locationId: 2,
+    locationName: "Barry House"
+}
+
 // list unit items
 // this is for the list view, therefore not all item info needs to be returned
 const itemList = {
     unit: {
         unitId: 13,
         unitName: "3040-B",
-        locationId: 2
+        locationId: 2,
+        locationName: "Barry House",
+        unitType: "apartment",
+        added: {
+            userId: 2,
+            firstName: "Sally",
+            lastName: "Ivany",
+            addedDate: "2022-02-22 13:55:00"
+        },
+        inspected: {
+            userId: 4,
+            firstName: "Jimmy",
+            lastName: "Jones",
+            inspectedDate: "2024-02-22 13:55:00"
+        },
+        deleteDate: null,
+        comment: "It's got at least one room."
     },
     items: [
         {
