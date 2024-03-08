@@ -44,18 +44,26 @@ class apiService {
         return item;
     }
 
-    // Called by: ItemDetails
-    postItem(item) {
+    // Called by: ItemEdit
+    postItemEdit(item) {
         console.log(item)
-        console.log("Posted")
+        console.log("Edits Posted")
         item.success = true
         return item
     }
 
-    // Called by: ItemDetails
+    // Called by: ItemEdit
     deleteItem(item) {
         console.log(item)
-        console.log("Deleted")
+        console.log("Item Deleted")
+        item.success = true
+        return item
+    }
+
+    // Called by: ItemCreate
+    postNewItem(item) {
+        console.log(item)
+        console.log("New Posted")
         item.success = true
         return item
     }
@@ -143,6 +151,14 @@ class apiService {
         }
     }
 
+    // Called by: UnitDelete
+    deleteUnit(unit) {
+        console.log(unit)
+        console.log("Unit Deleted")
+        unit.success = true
+        return unit
+    }
+
     // Called by: LocationDetails
     singleLocation(id) {
         return {
@@ -183,6 +199,23 @@ class apiService {
                 }
             ]
         }
+    }
+
+    listLocations() {
+        return [
+            {
+                locationId: 2,
+                locationName: "The Hub",
+                address: "75 Main St., Dartmouth",
+                units: 35
+            },
+            {
+                locationId: 2,
+                locationName: "The Hub",
+                address: "75 Main St., Dartmouth",
+                units: 35
+            }
+        ]
     }
 }
 

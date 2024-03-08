@@ -20,6 +20,9 @@ const Error = ({ err }) => {
         case "deleted":
             errorText = "The thing you're looking for has been deleted."
             break
+        case "permission":
+            errorText = "You do not have permission to do the requested task."
+            break
         default:
             errorText = "Something went wrong"
     }

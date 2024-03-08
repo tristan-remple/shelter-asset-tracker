@@ -4,25 +4,26 @@
 
 class authService {
 
-    // Check whether the current user is logged in
+    // Check whether the current user is logged in.
     checkUser() {
         return true
     }
 
-    // Check whether the currently logged in user is an admin
-    // Used by: App
+    // Check whether the currently logged in user is an admin.
+    // Called by: App
     checkAdmin() {
         return true
     }
 
+    // Get information about the user who is currently signed in.
     // Called by: Header
-    userInfo(userId) {
+    userInfo() {
         const sampleData = {
-            userId,
+            userId: 1,
             username: "shenson",
             name: "Sally Henson",
             location: {
-                locationId: 2,
+                locationId: 5,
                 name: "The Hub"
             }
         }

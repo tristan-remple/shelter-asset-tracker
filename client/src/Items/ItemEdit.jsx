@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { statusContext } from '../Services/Context'
 
@@ -191,13 +192,17 @@ const ItemEdit = () => {
         newItem.discardDate = null
         newItem.inspected = inspected
 
-        const response = apiService.postItem(newItem)
-        if (response.success) {
-            setStatus(`You have successfully saved your changes to item ${response.itemLabel}.`)
-            setUnsaved(false)
-            navigate(`/item/${id}`)
+        if (authService.checkUser()) {
+            const response = apiService.postItemEdit(newItem)
+            if (response.success) {
+                setStatus(`You have successfully saved your changes to item ${response.itemLabel}.`)
+                setUnsaved(false)
+                navigate(`/item/${id}`)
+            } else {
+                setStatus("We weren't able to process your edit item request.")
+            }
         } else {
-            setStatus("We weren't able to process your edit item request.")
+            setStatus("Your log in credentials could not be validated.")
         }
     }
 
@@ -408,7 +413,7 @@ const ItemEdit = () => {
                     </div>
                 </div>
                 { dangerMode && <Button text="Delete Item" linkTo={ deleteItem } type="danger" /> }
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } locationId={ unit.locationId } /> }
             </div>
         </main>
     )

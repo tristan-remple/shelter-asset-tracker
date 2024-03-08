@@ -1,17 +1,18 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
 import friendlyDate from '../Services/friendlyDate'
-import { statusContext } from '../Services/Context'
+import { statusContext, authContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
+import Search from '../Reusables/Search'
 
 //------ MODULE INFO
 // This module displays the details about a single building.
@@ -32,7 +33,7 @@ const LocationDetails = () => {
 
     // fetch unit data from the api
     const response = apiService.singleLocation(id)
-    if (response.error) {
+    if (response.error || !response) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -46,6 +47,22 @@ const LocationDetails = () => {
         return <Error err="deleted" />
     }
 
+    // if the user is admin, populate admin buttons
+    const { isAdmin } = useContext(authContext)
+    let adminButtons = ""
+    if (isAdmin) {
+        adminButtons = (
+            <>
+                <div className="col-2">
+                    <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
+                </div>
+                    <div className="col-2">
+                    <Button text="Delete Location" linkTo={ `/location/${ locationId }/delete` } type="admin" />
+                </div>
+            </>
+        )
+    }
+
     // put the units that have items which need to be assessed or discarded at the top of the list
     units.sort((a, b) => {
         return a.toInspectItems < b.toInspectItems ? 1 : 0
@@ -53,8 +70,10 @@ const LocationDetails = () => {
         return a.toDiscardItems < b.toDiscardItems ? 1 : 0
     })
 
+    const [ filteredUnits, setFilteredUnits ] = useState(units)
+
     // map the unit objects into table rows
-    const displayItems = units.map(item => {
+    const displayItems = filteredUnits.map(item => {
 
         // flag options are defined in the flag module
         let flagColor = flagColorOptions[0]
@@ -83,9 +102,10 @@ const LocationDetails = () => {
                 <div className="col-6">
                     <h2>{ locationName }</h2>
                 </div>
-                <div className="col-3">
-                    <Button text="Return" linkTo="/locations" type="nav" />
+                <div className="col-2">
+                    <Button text="See All" linkTo="/locations" type="nav" />
                 </div>
+                { adminButtons }
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p>{ status }</p></div> }
@@ -123,6 +143,7 @@ const LocationDetails = () => {
                         </p>
                     </div>
                 </div>
+                <Search data={ units } setData={ setFilteredUnits } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>

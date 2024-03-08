@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import capitalize from '../Services/capitalize'
+import authService from '../Services/authService'
 import { statusContext } from '../Services/Context'
 
 // components
@@ -137,14 +137,19 @@ const ItemCreate = () => {
             return
         }
 
-        // send api request and process api response
-        const response = apiService.postItem(newItem)
-        if (response.success) {
-            setStatus(`You have successfully added item ${response.itemLabel}.`)
-            setUnsaved(false)
-            navigate(`/item/${response.itemId}`)
+        // verify user identity
+        if (authService.checkUser()) {
+            // send api request and process api response
+            const response = apiService.postNewItem(newItem)
+            if (response.success) {
+                setStatus(`You have successfully added item ${response.itemLabel}.`)
+                setUnsaved(false)
+                navigate(`/item/${response.itemId}`)
+            } else {
+                setStatus("We weren't able to process your add item request.")
+            }
         } else {
-            setStatus("We weren't able to process your add item request.")
+            setStatus("Your log in credentials could not be validated.")
         }
     }
 
