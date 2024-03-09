@@ -1,0 +1,82 @@
+DROP DATABASE if exists SAT;
+CREATE DATABASE SAT;
+USE SAT;
+
+-- CREATE TABLES
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    password VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    name VARCHAR(255),
+    isAdmin BOOLEAN,
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL
+);
+
+CREATE TABLE Templates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE,
+    defaultValue DECIMAL(10, 2),
+    defaultDepreciation DECIMAL(10, 2),
+    icon VARCHAR(255),
+    singleResident BOOLEAN,
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL
+);
+
+CREATE TABLE Facilities (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE,
+    address VARCHAR(255) UNIQUE,
+    manager VARCHAR(255),
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL
+);
+
+CREATE TABLE Units (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    facilityId INT,
+    name VARCHAR(255) UNIQUE,
+    type VARCHAR(255),
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL,
+    FOREIGN KEY (facilityId) REFERENCES Facilities(id)
+);
+
+CREATE TABLE FacilityAuths (
+    userId INT,
+    facilityId INT,
+    createdAt DATETIME,
+    deletedAt DATETIME NULL,
+    authorizedBy INT,
+    FOREIGN KEY (userId) REFERENCES Users(id),
+    FOREIGN KEY (facilityId) REFERENCES Facilities(id),
+    FOREIGN KEY (authorizedBy) REFERENCES Users(id)
+);
+
+CREATE TABLE Items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    unitId INT,
+    templateId INT,
+    donated BOOLEAN,
+    initialValue DECIMAL(10, 2),
+    depreciationRate DECIMAL(10, 2),
+    toInspect BOOLEAN,
+    addedBy INT,
+    lastInspected DATETIME NULL,
+    inspectedBy INT NULL,
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL,
+    comment VARCHAR(255),
+    FOREIGN KEY (unitId) REFERENCES Units(id),
+    FOREIGN KEY (templateId) REFERENCES Templates(id),
+    FOREIGN KEY (addedBy) REFERENCES Users(id),
+    FOREIGN KEY (inspectedBy) REFERENCES Users(id)
+);
