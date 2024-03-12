@@ -5,7 +5,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 // internal dependencies
 import apiService from "../Services/apiService"
 import authService from '../Services/authService'
+import { formattedDate } from '../Services/dateHelper'
 import { statusContext } from '../Services/Context'
+import handleChanges from '../Services/handleChanges'
 
 // components
 import Button from "../Reusables/Button"
@@ -37,7 +39,7 @@ const ItemCreate = () => {
         return <Error err="undefined" />
     }
     const unit = apiService.singleUnit(id)
-    if (unit.error) {
+    if (!unit || unit.error) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -48,19 +50,13 @@ const ItemCreate = () => {
     // grab the list of categories
     const categoryList = apiService.listCategories()
     let simpleCategories = []
-    if (categoryList[0].error || !categoryList) {
+    if (!categoryList || categoryList[0].error) {
         return <Error err="api" />
     } else {
         // the Dropdown component later is expecting a list of strings
         simpleCategories = categoryList.map(cat => cat.categoryName)
         simpleCategories.unshift("Select:")
     }
-
-    // get the date
-    const today = new Date()
-    const stringToday = today.toLocaleDateString()
-    const stringNow = today.toTimeString().split(" ")[0]
-    const formattedDate = `${stringToday} ${stringNow}`
 
     // new item state
     const [ newItem, setNewItem ] = useState({
@@ -75,7 +71,7 @@ const ItemCreate = () => {
             singleUse: false
         },
         added: {
-            addedDate: formattedDate
+            addedDate: formattedDate()
         },
         vendor: "",
         donated: false,
@@ -86,14 +82,7 @@ const ItemCreate = () => {
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
 
-    // handles text and number changes
-    const handleTextChange = (event) => {
-        const fieldName = event.target.name
-        const newItemAdditions = {...newItem}
-        newItemAdditions[fieldName] = event.target.type === "number" ? parseFloat(event.target.value) : event.target.value
-        setNewItem(newItemAdditions)
-        setUnsaved(true)
-    }
+    // Most changes are handled by Services/handleChanges
 
     // handles category change
     // passed into Dropdown
@@ -111,29 +100,12 @@ const ItemCreate = () => {
         }
     }
 
-    // handles donation checkbox
-    const handleDonatedChange = () => {
-        const newItemAdditions = {...newItem}
-        newItemAdditions.donated = newItemAdditions.donated ? false : true
-        setNewItem(newItemAdditions)
-        setUnsaved(true)
-    }
-
-    // handles changes to addedDate
-    const handleDateChange = (event) => {
-        const newItemAdditions = {...newItem}
-        const newDate = event.target.value.replace("T", " ")
-        newItemAdditions.added.addedDate = newDate
-        setNewItem(newItemAdditions)
-        setUnsaved(true)
-    }
-
     // sends the item object to the apiService
     const saveChanges = () => {
 
         // check that fields have been filled in
         if (newItem.label === "" || newItem.category.categoryName === "Select:" || newItem.initialValue === 0) {
-            setStatus("The new item's label, category, and initial value must be filled in.")
+            setStatus("A new item must have a label, a category, and an initial value.")
             return
         }
 
@@ -156,7 +128,7 @@ const ItemCreate = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-6">
+                <div className="col">
                     <h2>Adding a New Item to { unitName } in { locationName }</h2>
                 </div>
                 <div className="col-2">
@@ -174,7 +146,12 @@ const ItemCreate = () => {
                             Label
                         </div>
                         <div className="col-content">
-                            <input type="text" name="itemLabel" value={ newItem.itemLabel } onChange={ handleTextChange } />
+                            <input 
+                                type="text" 
+                                name="itemLabel" 
+                                value={ newItem.itemLabel } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -196,7 +173,12 @@ const ItemCreate = () => {
                     </div>
                     <div className="col-8 col-content">
                         <strong>Comments:</strong>
-                        <textarea name="comment" value={ newItem.comment } onChange={ handleTextChange } className="comment-area" />
+                        <textarea 
+                            name="comment" 
+                            value={ newItem.comment } 
+                            onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            className="comment-area" 
+                        />
                     </div>
                 </div>
                 <div className="row row-info">
@@ -209,7 +191,7 @@ const ItemCreate = () => {
                                 type="datetime-local" 
                                 name="addedDate" 
                                 value={ newItem.added.addedDate } 
-                                onChange={ handleDateChange } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, newItem, setNewItem, setUnsaved) } 
                             /> }
                         </div>
                     </div>
@@ -223,7 +205,7 @@ const ItemCreate = () => {
                                 step=".01"
                                 name="initialValue" 
                                 value={ newItem.initialValue } 
-                                onChange={ handleTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
                             /> }
                         </div>
                     </div>
@@ -244,7 +226,7 @@ const ItemCreate = () => {
                                 type="text"
                                 name="vendor" 
                                 value={ newItem.vendor } 
-                                onChange={ handleTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
                             /> }
                         </div>
                     </div>
@@ -257,7 +239,7 @@ const ItemCreate = () => {
                                     type="checkbox"
                                     name="donated" 
                                     checked={ newItem.donated }
-                                    onChange={ handleDonatedChange } 
+                                    onChange={ (event) => handleChanges.handleCheckChange(event, newItem, setNewItem, setUnsaved) } 
                                 /> }
                         </div>
                     </div>

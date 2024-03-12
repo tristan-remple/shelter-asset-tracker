@@ -18,6 +18,9 @@ import UnitDetails from './Units/UnitDetails'
 import LocationDetails from './Locations/LocationDetails'
 import LocationList from './Locations/LocationList'
 import UnitDelete from './Units/UnitDelete'
+import LocationEdit from './Locations/LocationEdit'
+import LocationCreate from './Locations/LocationCreate'
+import LocationDelete from './Locations/LocationDelete'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -55,7 +58,10 @@ function App() {
           <Route path="/unit/:id" element={ <UnitDetails /> } />
           <Route path="/unit/:id/delete" element={ <UnitDelete /> } />
           <Route path="/location/:id" element={ <LocationDetails /> } />
+          <Route path="/location/:id/edit" element={ <LocationEdit /> } />
+          <Route path="location/:id/delete" element={ <LocationDelete /> } />
           <Route path="/locations" element={ <LocationList /> } />
+          <Route path="/locations/add" element={ <LocationCreate /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>

@@ -126,9 +126,24 @@ const addLocation = {
     locationType: "shelter"
 }
 
+// used to load the location edit page
+const editLocation = {
+    locationId: 2,
+    locationName: "The Hub",
+    locationType: "shelter",
+    added: {
+        userId: 2,
+        firstName: "Sally",
+        lastName: "Ivany",
+        addedDate: "2022-02-22 13:55:00"
+    },
+    deleteDate: null,
+    comment: "It's got some number of units."
+}
+
 // sent by admin to update location
 // return value should be the updated info
-const editLocation = {
+const editLocationPost = {
     locationId: 2,
     locationName: "The Hub",
     address: "75 Main St., Dartmouth",
@@ -155,7 +170,7 @@ const deleteLocationResponse = {
 // returned for the list of units in one location
 // input param is location id
 // number of items to be inspected or discarded
-const unitList = {
+const singleLocation = {
     location: {
         locationId: 2,
         locationName: "The Hub",

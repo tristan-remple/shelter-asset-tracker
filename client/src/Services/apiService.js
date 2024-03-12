@@ -64,6 +64,7 @@ class apiService {
     postNewItem(item) {
         console.log(item)
         console.log("New Posted")
+        item.itemId = 32
         item.success = true
         return item
     }
@@ -201,21 +202,52 @@ class apiService {
         }
     }
 
+    // Called by: LocationEdit, LocationDelete
+    locationEdit(id) {
+        return {
+            locationId: 2,
+            locationName: "The Hub",
+            locationType: "shelter",
+            added: {
+                userId: 2,
+                firstName: "Sally",
+                lastName: "Ivany",
+                addedDate: "2022-02-22 13:55:00"
+            },
+            deleteDate: null,
+            comment: "It's got some number of units."
+        }
+    }
+
+    // Called by: LocationEdit
+    postLocationEdit(location) {
+        console.log(location)
+        location.success = true
+        return location
+    }
+
+    // Called by: LocationList
     listLocations() {
         return [
             {
                 locationId: 2,
                 locationName: "The Hub",
-                address: "75 Main St., Dartmouth",
                 units: 35
             },
             {
-                locationId: 2,
-                locationName: "The Hub",
-                address: "75 Main St., Dartmouth",
-                units: 35
+                locationId: 3,
+                locationName: "Some Place",
+                units: 4
             }
         ]
+    }
+
+    // Called by: LocationCreate
+    postLocation(location) {
+        console.log(location)
+        location.locationId = 8
+        location.success = true
+        return location
     }
 }
 

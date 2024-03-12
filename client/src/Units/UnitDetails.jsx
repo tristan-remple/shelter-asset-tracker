@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
-import friendlyDate from '../Services/friendlyDate'
+import { friendlyDate } from '../Services/dateHelper'
 import { statusContext, authContext } from '../Services/Context'
 
 // components
@@ -33,7 +33,7 @@ const UnitDetails = () => {
 
     // fetch unit data from the api
     const response = apiService.unitItems(id)
-    if (response.error) {
+    if (!response || response.error) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -94,7 +94,7 @@ const UnitDetails = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-6">
+                <div className="col">
                     <h2>Unit { unitName } in { locationName }</h2>
                 </div>
                 <div className="col-2">

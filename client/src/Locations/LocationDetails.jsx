@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
-import friendlyDate from '../Services/friendlyDate'
+import { friendlyDate } from '../Services/dateHelper'
 import { statusContext, authContext } from '../Services/Context'
 
 // components
@@ -33,7 +33,7 @@ const LocationDetails = () => {
 
     // fetch unit data from the api
     const response = apiService.singleLocation(id)
-    if (response.error || !response) {
+    if (!response || response.error) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -56,7 +56,10 @@ const LocationDetails = () => {
                 <div className="col-2">
                     <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
                 </div>
-                    <div className="col-2">
+                <div className="col-2">
+                    <Button text="Edit Location" linkTo={ `/location/${ locationId }/edit` } type="admin" />
+                </div>
+                <div className="col-2">
                     <Button text="Delete Location" linkTo={ `/location/${ locationId }/delete` } type="admin" />
                 </div>
             </>
@@ -99,7 +102,7 @@ const LocationDetails = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-6">
+                <div className="col">
                     <h2>{ locationName }</h2>
                 </div>
                 <div className="col-2">

@@ -23,7 +23,7 @@ const LocationList = () => {
     
     // get the locations from the api
     const locations = apiService.listLocations()
-    if (locations.error || !locations) {
+    if (!locations || locations.error) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -34,7 +34,7 @@ const LocationList = () => {
     if (isAdmin) {
         adminButtons = (
             <div className="col-2">
-                <Button text="Add Location" linkTo="/location/add" type="admin" />
+                <Button text="Add Location" linkTo="/locations/add" type="admin" />
             </div>
         )
     }
@@ -45,6 +45,7 @@ const LocationList = () => {
         return (
             <tr key={ item.locationId } >
                 <td>{ item.locationName }</td>
+                <td>{ item.units }</td>
                 <td><Button text="Details" linkTo={ `/location/${ item.locationId }` } type="small" /></td>
             </tr>
         )
@@ -53,7 +54,7 @@ const LocationList = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-6">
+                <div className="col">
                     <h2>All Shelter NS Locations</h2>
                 </div>
                 { adminButtons }
@@ -64,6 +65,7 @@ const LocationList = () => {
                     <thead>
                         <tr>
                             <th scope="col">Location</th>
+                            <th scope="col">Unit Count</th>
                             <th scope="col">Details</th>
                         </tr>
                     </thead>
