@@ -1,5 +1,8 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const dbConnect = require('../data/dbConnect')
+const { DataTypes } = require('sequelize');
+const dbConnect = require('../data/dbConnect');
+const Unit = require('./unit');
+const Template = require('./template');
+const User = require('./user');
 
 const Item = dbConnect.define('Item', {
     id: {
@@ -59,6 +62,14 @@ const Item = dbConnect.define('Item', {
             key: 'id'
         }
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
     deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -69,5 +80,10 @@ const Item = dbConnect.define('Item', {
         allowNull: true
     }
 });
+
+Item.belongsTo(Unit, { foreignKey: 'unitId' });
+Item.belongsTo(Template, { foreignKey: 'templateId' });
+Item.belongsTo(User, { foreignKey: 'addedBy', as: 'addedByUser' });
+Item.belongsTo(User, { foreignKey: 'inspectedBy', as: 'inspectedByUser' });
 
 module.exports = Item;

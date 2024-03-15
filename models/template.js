@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const dbConnect = require('../data/dbConnect')
 
 const Template = dbConnect.define('Template', {
@@ -26,6 +26,14 @@ const Template = dbConnect.define('Template', {
     },
     singleResident: {
         type: DataTypes.BOOLEAN,
+        allowNull: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
         allowNull: false
     },
     deletedAt: {

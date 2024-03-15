@@ -1,5 +1,7 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const dbConnect = require('../data/dbConnect')
+const { DataTypes } = require('sequelize');
+const dbConnect = require('../data/dbConnect');
+const User = require('./user');
+const Facility = require('./facility');
 
 const FacilityAuth = dbConnect.define('FacilityAuth', {
     userId: {
@@ -18,6 +20,10 @@ const FacilityAuth = dbConnect.define('FacilityAuth', {
             key: 'id'
         }
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
     deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -33,5 +39,8 @@ const FacilityAuth = dbConnect.define('FacilityAuth', {
     },
     updatedAt: false
 });
+
+FacilityAuth.belongsTo(User, { foreignKey: 'userId', as: 'authorizedUser' });
+FacilityAuth.belongsTo(Facility, { foreignKey: 'facilityId', as: 'facility' });
 
 module.exports = FacilityAuth;
