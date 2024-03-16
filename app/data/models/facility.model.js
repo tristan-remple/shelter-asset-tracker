@@ -28,11 +28,6 @@ module.exports = (db) => {
         email: {
             type: DataTypes.STRING,
             allowNull: true
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            default: null
         }
     }, {
         tableName: 'Facilities'

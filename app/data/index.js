@@ -11,6 +11,10 @@ const sequelize = new Sequelize(
     {   
         host: process.env.DB_HOST,
         dialect: 'mysql',
+        define: {
+            paranoid: true,     // Enables soft deletion for all models
+            timestamps: true,   // Adds createdAt and updatedAt fields for all models
+        },
         pool: {
             max: 5,
             min: 0,

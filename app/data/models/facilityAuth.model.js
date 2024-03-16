@@ -23,11 +23,6 @@ module.exports = (db) => {
                 key: 'id'
             }
         },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            default: null
-        },
         authorizedBy: {
             type: DataTypes.INTEGER,
             allowNull: true,
@@ -35,9 +30,9 @@ module.exports = (db) => {
                 model: 'User',
                 key: 'id'
             }
-        },
-        updatedAt: false
+        }
     }, {
-        tableName: 'FacilityAuths'
+        tableName: 'FacilityAuths',
+        updatedAt: false
     });
 };
