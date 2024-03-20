@@ -12,7 +12,7 @@ import Flag from "./Flag"
 //------ MODULE INFO
 // This module is for testing components that aren't being used elsewhere yet.
 // This component should never appear in the finished app.
-// Imported by: App.jsx
+// Imported by: App
 
 const Test = () => {
 

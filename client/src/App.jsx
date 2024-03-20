@@ -11,12 +11,17 @@ import authService from './Services/authService'
 import Header from './Reusables/Header'
 import Footer from './Reusables/Footer'
 import Test from './Reusables/Test'
+import ItemDetails from './Items/ItemDetails'
+import ItemEdit from './Items/ItemEdit'
+import ItemCreate from './Items/ItemCreate'
+import UnitDetails from './Units/UnitDetails'
+import LocationDetails from './Locations/LocationDetails'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
 // The page template is set in this file.
 // The routing and context is also here.
-// Imported by: main.jsx
+// Imported by: main
 
 function App() {
 
@@ -30,7 +35,8 @@ function App() {
     setIsAdmin(adminCheck)
   }, [])
 
-  // sets a status message to update the user on site actions
+  // Sets a status message to update the user on site actions.
+  // Some status messages persist for longer than they need to.
   const [ status, setStatus ] = useState("")
 
   return (
@@ -40,6 +46,12 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={ <Test /> } />
+          <Route path="/item" element={ <ItemDetails /> } />
+          <Route path="/item/:id" element={ <ItemDetails /> } />
+          <Route path="/item/:id/edit" element={ <ItemEdit /> } />
+          <Route path="/unit/:id/additem" element={ <ItemCreate /> } />
+          <Route path="/unit/:id" element={ <UnitDetails /> } />
+          <Route path="/location/:id" element={ <LocationDetails /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>
