@@ -44,18 +44,27 @@ class apiService {
         return item;
     }
 
-    // Called by: ItemDetails
-    postItem(item) {
+    // Called by: ItemEdit
+    postItemEdit(item) {
         console.log(item)
-        console.log("Posted")
+        console.log("Edits Posted")
         item.success = true
         return item
     }
 
-    // Called by: ItemDetails
+    // Called by: ItemEdit
     deleteItem(item) {
         console.log(item)
-        console.log("Deleted")
+        console.log("Item Deleted")
+        item.success = true
+        return item
+    }
+
+    // Called by: ItemCreate
+    postNewItem(item) {
+        console.log(item)
+        console.log("New Posted")
+        item.itemId = 32
         item.success = true
         return item
     }
@@ -143,6 +152,14 @@ class apiService {
         }
     }
 
+    // Called by: UnitDelete
+    deleteUnit(unit) {
+        console.log(unit)
+        console.log("Unit Deleted")
+        unit.success = true
+        return unit
+    }
+
     // Called by: LocationDetails
     singleLocation(id) {
         return {
@@ -183,6 +200,62 @@ class apiService {
                 }
             ]
         }
+    }
+
+    // Called by: LocationEdit, LocationDelete
+    locationEdit(id) {
+        return {
+            locationId: 2,
+            locationName: "The Hub",
+            locationType: "shelter",
+            added: {
+                userId: 2,
+                firstName: "Sally",
+                lastName: "Ivany",
+                addedDate: "2022-02-22 13:55:00"
+            },
+            deleteDate: null,
+            comment: "It's got some number of units."
+        }
+    }
+
+    // Called by: LocationEdit
+    postLocationEdit(location) {
+        console.log(location)
+        location.success = true
+        return location
+    }
+
+    // Called by: LocationList
+    listLocations() {
+        return [
+            {
+                locationId: 2,
+                locationName: "The Hub",
+                units: 35
+            },
+            {
+                locationId: 3,
+                locationName: "Some Place",
+                units: 4
+            }
+        ]
+    }
+
+    // Called by: LocationCreate
+    postLocation(location) {
+        console.log(location)
+        location.locationId = 8
+        location.success = true
+        return location
+    }
+
+    // Called by: LocationDelete
+    deleteLocation(location) {
+        console.log(location)
+        location.deleteDate = "2022-02-22 13:55:00"
+        location.success = true
+        return location
     }
 }
 

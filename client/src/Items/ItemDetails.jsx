@@ -27,7 +27,7 @@ const ItemDetails = () => {
     }
 
     const item = apiService.singleItem(id)
-    if (item.error) {
+    if (!item || item.error) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -53,7 +53,7 @@ const ItemDetails = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-6">
+                <div className="col">
                     <h1>{ capitalize(category.categoryName) } in { unit.unitName }</h1>
                 </div>
                 <div className="col-2">
@@ -113,8 +113,10 @@ const ItemDetails = () => {
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
-                        <strong>Comments:</strong>
-                        <p>{ comment }</p>
+                        <p>
+                            <strong>Comments:</strong><br />
+                            { comment }
+                        </p>
                     </div>
                 </div>
                 <div className="row row-info">

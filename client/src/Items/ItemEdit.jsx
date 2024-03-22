@@ -4,8 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { statusContext } from '../Services/Context'
+import handleChanges from '../Services/handleChanges'
 
 // components
 import Button from "../Reusables/Button"
@@ -42,7 +44,7 @@ const ItemEdit = () => {
         return <Error err="undefined" />
     }
     const item = apiService.singleItem(id)
-    if (item.error) {
+    if (!item || item.error) {
         console.log("api error")
         return <Error err="api" />
     }
@@ -50,7 +52,7 @@ const ItemEdit = () => {
     // grab the list of categories for dangerous editing
     const categoryList = apiService.listCategories()
     let simpleCategories = []
-    if (categoryList[0].error || !categoryList) {
+    if (!categoryList || categoryList[0].error) {
         // since this is unlikely to be a needed field, print a warning if the fetch fails but don't redirect to Error
         setStatus("The list of categories could not be found. This may prevent advanced editing.")
     } else {
@@ -88,7 +90,7 @@ const ItemEdit = () => {
         label: itemLabel,
         statusColor: flagColor,
         statusText: flagText,
-        comment: comment
+        comment: ""
     })
 
     // object (nested) that defines fields that are dangerous to change
@@ -108,14 +110,7 @@ const ItemEdit = () => {
     // added.userId, added.firstName, added.lastName (shouldn't be changed) 
     // These should all be handled programmatically and do not need to be available for users.
 
-    // handles safe text changes: item label and comment
-    const handleTextChange = (event) => {
-        const fieldName = event.target.name
-        const newChanges = {...safeChanges}
-        newChanges[fieldName] = event.target.value
-        setSafeChanges(newChanges)
-        setUnsaved(true)
-    }
+    // Most changes are handled by Services/handleChanges
 
     // handles flag dropdown state
     const handleFlag = (input) => {
@@ -142,21 +137,6 @@ const ItemEdit = () => {
         }
     }
 
-    // handles changes to dangerous text or number fields
-    const handleDangerTextChange = (event) => {
-        const fieldName = event.target.name
-        const newChanges = {...dangerChanges}
-        if (newChanges[fieldName] && event.target.value !== "") {
-            newChanges[fieldName] = event.target.type === "number" ? parseFloat(event.target.value) : event.target.value
-        } else if (newChanges.added[fieldName]) {
-            newChanges.added[fieldName] = event.target.value
-        } else if (newChanges.unit[fieldName]) {
-            newChanges.unit[fieldName] = event.target.value
-        }
-        setDangerChanges(newChanges)
-        setUnsaved(true)
-    }
-
     // handles category change
     // passed into Dropdown
     const handleCategoryChange = (newCatName) => {
@@ -172,14 +152,6 @@ const ItemEdit = () => {
         }
     }
 
-    // handles donation checkbox
-    const handleDonatedChange = () => {
-        const newChanges = {...dangerChanges}
-        newChanges.donated = newChanges.donated ? false : true
-        setDangerChanges(newChanges)
-        setUnsaved(true)
-    }
-
     // sends the item object to the apiService
     const saveChanges = () => {
         const newItem = {...dangerChanges}
@@ -191,13 +163,17 @@ const ItemEdit = () => {
         newItem.discardDate = null
         newItem.inspected = inspected
 
-        const response = apiService.postItem(newItem)
-        if (response.success) {
-            setStatus(`You have successfully saved your changes to item ${response.itemLabel}.`)
-            setUnsaved(false)
-            navigate(`/item/${id}`)
+        if (authService.checkUser()) {
+            const response = apiService.postItemEdit(newItem)
+            if (response.success) {
+                setStatus(`You have successfully saved your changes to item ${response.itemLabel}.`)
+                setUnsaved(false)
+                navigate(`/item/${id}`)
+            } else {
+                setStatus("We weren't able to process your edit item request.")
+            }
         } else {
-            setStatus("We weren't able to process your edit item request.")
+            setStatus("Your log in credentials could not be validated.")
         }
     }
 
@@ -235,7 +211,7 @@ const ItemEdit = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-5">
+                <div className="col">
                     <h2>Editing { capitalize(category.categoryName) } in { unit.unitName }</h2>
                 </div>
                 <div className="col-2">
@@ -256,7 +232,12 @@ const ItemEdit = () => {
                             Label
                         </div>
                         <div className="col-content">
-                            <input type="text" name="label" value={ safeChanges.label } onChange={ handleTextChange } />
+                            <input 
+                                type="text" 
+                                name="label" 
+                                value={ safeChanges.label } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -306,8 +287,16 @@ const ItemEdit = () => {
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
-                        <strong>Comments:</strong>
-                        <textarea name="comment" value={ safeChanges.comment } onChange={ handleTextChange } className="comment-area" />
+                        <p>
+                            <strong>Comments:</strong><br />
+                            { comment }
+                        </p>
+                        <textarea 
+                            name="comment" 
+                            value={ safeChanges.comment } 
+                            onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
+                            className="comment-area" 
+                        />
                     </div>
                 </div>
                 <div className="row row-info">
@@ -317,10 +306,10 @@ const ItemEdit = () => {
                         </div>
                         <div className="col-content">
                             { dangerMode ? <input 
-                                type="text" 
+                                type="date" 
                                 name="addedDate" 
-                                value={ dangerChanges.added.addedDate } 
-                                onChange={ handleDangerTextChange } 
+                                value={ dangerChanges.added.addedDate.split(" ")[0] } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                             /> : added.addedDate }
                         </div>
                     </div>
@@ -334,7 +323,7 @@ const ItemEdit = () => {
                                 step=".01"
                                 name="initialValue" 
                                 value={ dangerChanges.initialValue } 
-                                onChange={ handleDangerTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                             /> : `$${ initialValue.toFixed(2) }` }
                         </div>
                     </div>
@@ -348,7 +337,7 @@ const ItemEdit = () => {
                                 step=".01"
                                 name="currentValue" 
                                 value={ dangerChanges.currentValue } 
-                                onChange={ handleDangerTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                             /> : `$${ currentValue.toFixed(2) }` }
                         </div>
                     </div>
@@ -361,7 +350,7 @@ const ItemEdit = () => {
                                 type="text"
                                 name="vendor" 
                                 value={ dangerChanges.vendor } 
-                                onChange={ handleDangerTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                             /> : vendor }
                         </div>
                     </div>
@@ -374,7 +363,7 @@ const ItemEdit = () => {
                                     type="checkbox"
                                     name="donated" 
                                     checked={ dangerChanges.donated }
-                                    onChange={ handleDonatedChange } 
+                                    onChange={ (event) => handleChanges.handleCheckChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                                 /> : donated ? "Yes" : "No" }
                         </div>
                     </div>
@@ -389,7 +378,7 @@ const ItemEdit = () => {
                                 type="text" 
                                 name="addedDate" 
                                 value={ dangerChanges.unit.locationName } 
-                                onChange={ handleDangerTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                             /> : unit.locationName }
                         </div>
                     </div>
@@ -402,13 +391,13 @@ const ItemEdit = () => {
                                 type="text" 
                                 name="addedDate" 
                                 value={ dangerChanges.unit.unitName } 
-                                onChange={ handleDangerTextChange } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
                             /> : unit.unitName }
                         </div>
                     </div>
                 </div>
                 { dangerMode && <Button text="Delete Item" linkTo={ deleteItem } type="danger" /> }
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } locationId={ unit.locationId } /> }
             </div>
         </main>
     )

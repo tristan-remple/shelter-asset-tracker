@@ -13,7 +13,7 @@ import { authContext } from '../Services/Context'
 const Header = () => {
 
     const { isAdmin } = useContext(authContext)
-    const userInfo = authService.userInfo(1)
+    const userInfo = authService.userInfo()
     const { userId: userId, username: username, location: { locationId, name } } = userInfo
 
     return (
