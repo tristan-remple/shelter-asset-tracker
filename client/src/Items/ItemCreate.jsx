@@ -16,6 +16,7 @@ import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module allows a user to add an item to a specific unit.
 // This module does NOT currently record which user is editing.
 // User information will need to be taken either here or in the apiService module.

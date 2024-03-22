@@ -1,4 +1,5 @@
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module is an SVG flag that can be used to convey the overall status of an item.
 // Valid colors are red, yellow, and grey.
 // Imported by: ItemDetails, ItemEdit, UnitDetails

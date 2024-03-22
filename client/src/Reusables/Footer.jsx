@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module defines the footer navigation that appears on every page.
 // Imported by: App
 

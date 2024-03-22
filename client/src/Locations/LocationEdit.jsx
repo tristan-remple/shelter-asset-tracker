@@ -12,8 +12,10 @@ import handleChanges from '../Services/handleChanges'
 import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import ChangePanel from '../Reusables/ChangePanel'
+import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module allows an admin to edit a location.
 // Imported by: App
 
@@ -44,7 +46,7 @@ const LocationEdit = () => {
     }
 
     // destructure api response
-    const { locationName, locationId, locationType, added, deleteDate, comment } = location
+    const { locationName, locationId, locationType, added, deleteDate, comments } = location
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -91,7 +93,7 @@ const LocationEdit = () => {
                     <h2>{ locationName }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="All Locations" linkTo="/locations" type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
@@ -148,16 +150,14 @@ const LocationEdit = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
-                        <p>
-                            <strong>Comments:</strong><br />
-                            { comment }
-                        </p>
+                        <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 
                             value={ changes.comment } 
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             className="comment-area" 
                         />
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
             </div>

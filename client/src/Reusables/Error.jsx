@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import Button from "./Button"
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module is displayed instead of the page when something goes wrong.
 // Refer to the switch case to view and add error messages.
 // Imported by: ItemDetails, ItemEdit, ItemCreate, UnitDetails

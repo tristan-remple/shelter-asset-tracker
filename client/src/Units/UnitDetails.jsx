@@ -13,8 +13,10 @@ import Button from "../Reusables/Button"
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
+import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
 // The items within the unit are displayed as well.
 // Imported by: App
@@ -40,7 +42,7 @@ const UnitDetails = () => {
 
     // destructure api response
     const { unit, items } = response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comment } = unit
+    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
 
     // if it has been deleted, throw an error
     if (deleteDate) {
@@ -52,9 +54,14 @@ const UnitDetails = () => {
     let adminButtons = ""
     if (isAdmin) {
         adminButtons = (
-            <div className="col-2">
-                <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="admin" />
-            </div>
+            <>
+                <div className="col-2">
+                    <Button text="Edit Unit" linkTo={ `/unit/${ unitId }/edit` } type="admin" />
+                </div>
+                <div className="col-2">
+                    <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="admin" />
+                </div>
+            </>
         )
     }
 
@@ -98,10 +105,10 @@ const UnitDetails = () => {
                     <h2>Unit { unitName } in { locationName }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
+                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
                 </div>
                 { adminButtons }
             </div>
@@ -159,10 +166,7 @@ const UnitDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
-                        <p>
-                            <strong>Comments:</strong><br />
-                            { comment }
-                        </p>
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
                 <Search data={ items } setData={ setFilteredItems } />

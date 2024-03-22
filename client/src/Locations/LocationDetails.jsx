@@ -13,8 +13,10 @@ import Button from "../Reusables/Button"
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
+import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays the details about a single building.
 // The units within the building are displayed as well.
 // Imported by: App
@@ -40,7 +42,7 @@ const LocationDetails = () => {
 
     // destructure api response
     const { location, units } = response
-    const { locationName, locationId, locationType, added, deleteDate, comment } = location
+    const { locationName, locationId, locationType, added, deleteDate, comments } = location
 
     // if it has been deleted, throw an error
     if (deleteDate) {
@@ -140,10 +142,7 @@ const LocationDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
-                        <p>
-                            <strong>Comments:</strong><br />
-                            { comment }
-                        </p>
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
                 <Search data={ units } setData={ setFilteredUnits } />

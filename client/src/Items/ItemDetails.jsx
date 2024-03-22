@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -11,8 +11,10 @@ import { statusContext } from '../Services/Context'
 import Button from "../Reusables/Button"
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
+import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays the details about a single item in the collection, such as a stove or a table.
 // Imported by: App
 
@@ -32,7 +34,7 @@ const ItemDetails = () => {
         return <Error err="api" />
     }
 
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comment } = item
+    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comments } = item
 
     // if it has been deleted, throw an error
     if (discardDate) {
@@ -113,10 +115,7 @@ const ItemDetails = () => {
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
-                        <p>
-                            <strong>Comments:</strong><br />
-                            { comment }
-                        </p>
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
                 <div className="row row-info">

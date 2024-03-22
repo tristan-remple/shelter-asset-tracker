@@ -10,6 +10,7 @@ import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays a list of all locations.
 // Imported by: App
 
