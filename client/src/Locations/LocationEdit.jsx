@@ -91,7 +91,7 @@ const LocationEdit = () => {
                     <h2>{ locationName }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="All Locations" linkTo="/locations" type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />

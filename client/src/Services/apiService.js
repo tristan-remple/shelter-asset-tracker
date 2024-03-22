@@ -28,18 +28,31 @@ class apiService {
             currentValue: 285.00,
             added: {
                 userId: 2,
-                firstName: "Sally",
-                lastName: "Ivany",
+                userName: "Sally Ivany",
                 addedDate: "2022-02-22 13:55:00"
             },
             inspected: {
                 userId: 4,
-                firstName: "Jimmy",
-                lastName: "Jones",
+                userName: "Jimmy Jones",
                 inspectedDate: "2024-02-22 13:55:00"
             },
             discardDate: null,
-            comment: "Legs are uneven, one side is scraped."
+            comments: [
+                {
+                    commentId: 2,
+                    commentDate: "2022-02-22 13:55:00",
+                    userId: 2,
+                    userName: "Sally Ivany",
+                    commentText: "Legs are uneven, one side is scraped."
+                },
+                {
+                    commentId: 3,
+                    commentDate: "2021-07-15 09:35:00",
+                    userId: 7,
+                    userName: "Joe Rivers",
+                    commentText: "Seems sturdy enough."
+                }
+            ]
         }
         return item;
     }
@@ -110,18 +123,31 @@ class apiService {
                 unitType: "apartment",
                 added: {
                     userId: 2,
-                    firstName: "Sally",
-                    lastName: "Ivany",
+                    userName: "Sally Ivany",
                     addedDate: "2022-02-22 13:55:00"
                 },
                 inspected: {
                     userId: 4,
-                    firstName: "Jimmy",
-                    lastName: "Jones",
+                    userName: "Jimmy Jones",
                     inspectedDate: "2024-02-22 13:55:00"
                 },
                 deleteDate: null,
-                comment: "It's got at least one room."
+                comments: [
+                    {
+                        commentId: 5,
+                        commentDate: "2022-02-22 13:55:00",
+                        userId: 2,
+                        userName: "Sally Ivany",
+                        commentText: "The tenants have been rough with it; one hole in the wall."
+                    },
+                    {
+                        commentId: 10,
+                        commentDate: "2021-07-15 09:35:00",
+                        userId: 7,
+                        userName: "Joe Rivers",
+                        commentText: "It's got at least one room."
+                    }
+                ]
             },
             items: [
                 {
@@ -169,12 +195,19 @@ class apiService {
                 locationType: "shelter",
                 added: {
                     userId: 2,
-                    firstName: "Sally",
-                    lastName: "Ivany",
+                    userName: "Sally Ivany",
                     addedDate: "2022-02-22 13:55:00"
                 },
                 deleteDate: null,
-                comment: "It's got some number of units."
+                comments: [
+                    {
+                        commentId: 12,
+                        commentDate: "2021-07-15 09:35:00",
+                        userId: 7,
+                        userName: "Joe Rivers",
+                        commentText: "It's got at least one unit."
+                    }
+                ]
             },
             units: [
                 {
@@ -210,12 +243,19 @@ class apiService {
             locationType: "shelter",
             added: {
                 userId: 2,
-                firstName: "Sally",
-                lastName: "Ivany",
+                userName: "Sally Ivany",
                 addedDate: "2022-02-22 13:55:00"
             },
             deleteDate: null,
-            comment: "It's got some number of units."
+            comments: [
+                {
+                    commentId: 12,
+                    commentDate: "2021-07-15 09:35:00",
+                    userId: 7,
+                    userName: "Joe Rivers",
+                    commentText: "It's got at least one unit."
+                }
+            ]
         }
     }
 

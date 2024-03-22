@@ -52,9 +52,14 @@ const UnitDetails = () => {
     let adminButtons = ""
     if (isAdmin) {
         adminButtons = (
-            <div className="col-2">
-                <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="admin" />
-            </div>
+            <>
+                <div className="col-2">
+                    <Button text="Edit Unit" linkTo={ `/unit/${ unitId }/edit` } type="admin" />
+                </div>
+                <div className="col-2">
+                    <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="admin" />
+                </div>
+            </>
         )
     }
 
@@ -98,10 +103,10 @@ const UnitDetails = () => {
                     <h2>Unit { unitName } in { locationName }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
+                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
                 </div>
                 { adminButtons }
             </div>
