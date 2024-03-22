@@ -102,13 +102,41 @@ class apiService {
         ]
     }
 
-    // Called by: ItemCreate
+    // Called by: ItemCreate, UnitEdit
     singleUnit(id) {
         return {
             unitId: 13,
             unitName: "3040-B",
             locationId: 2,
-            locationName: "Barry House"
+            locationName: "Barry House",
+            unitType: "apartment",
+            added: {
+                userId: 2,
+                userName: "Sally Ivany",
+                addedDate: "2022-02-22 13:55:00"
+            },
+            inspected: {
+                userId: 4,
+                userName: "Jimmy Jones",
+                inspectedDate: "2024-02-22 13:55:00"
+            },
+            deleteDate: null,
+            comments: [
+                {
+                    commentId: 5,
+                    commentDate: "2022-02-22 13:55:00",
+                    userId: 2,
+                    userName: "Sally Ivany",
+                    commentText: "The tenants have been rough with it; one hole in the wall."
+                },
+                {
+                    commentId: 10,
+                    commentDate: "2021-07-15 09:35:00",
+                    userId: 7,
+                    userName: "Joe Rivers",
+                    commentText: "It's got at least one room."
+                }
+            ]
         }
     }
 
@@ -176,6 +204,14 @@ class apiService {
                 }
             ]
         }
+    }
+
+    // Called by: UnitEdit
+    postUnitEdit(unit) {
+        console.log(unit)
+        console.log("Updated")
+        unit.success = true
+        return unit
     }
 
     // Called by: UnitDelete
