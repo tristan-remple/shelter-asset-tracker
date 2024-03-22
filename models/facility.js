@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const dbConnect = require('../data/dbConnect')
+const { DataTypes } = require('sequelize');
+const dbConnect = require('../data/dbConnect');
+const User = require('./user');
 
 // facilities.js
 const Facility = dbConnect.define('Facility', {
@@ -23,12 +24,20 @@ const Facility = dbConnect.define('Facility', {
         allowNull: true
     },
     phone: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: true
     },
     email: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
     },
     deletedAt: {
         type: DataTypes.DATE,
@@ -36,5 +45,7 @@ const Facility = dbConnect.define('Facility', {
         default: null
     }
 });    
+
+Facility.belongsToMany(User, { through: 'FacilityAuths', foreignKey: 'facilityId' });
 
 module.exports = Facility;

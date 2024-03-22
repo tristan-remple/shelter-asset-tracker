@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const dbConnect = require('../data/dbConnect')
+const { DataTypes } = require('sequelize');
+const dbConnect = require('../data/dbConnect');
+const Facility = require('./facility');
 
 const Unit = dbConnect.define('Unit', {
     id: {
@@ -24,11 +25,21 @@ const Unit = dbConnect.define('Unit', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
     deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
         default: null
     }
 });
+
+Unit.belongsTo(Facility, { foreignKey: 'facilityId' });
 
 module.exports = Unit;
