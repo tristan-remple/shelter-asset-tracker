@@ -144,7 +144,7 @@ const UnitDetails = () => {
                             Updated By
                         </div>
                         <div className="col-content">
-                            { inspected.firstName } { inspected.lastName }
+                            { inspected.userName }
                         </div>
                     </div>
                     <div className="col col-info">
