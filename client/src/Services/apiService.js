@@ -249,6 +249,14 @@ class apiService {
         location.success = true
         return location
     }
+
+    // Called by: LocationDelete
+    deleteLocation(location) {
+        console.log(location)
+        location.deleteDate = "2022-02-22 13:55:00"
+        location.success = true
+        return location
+    }
 }
 
 export default new apiService
