@@ -109,7 +109,7 @@ const ItemEdit = () => {
     // Note that the following fields are not available to edit:
     // unitId, locationId, inspected (unhandled)
     // categoryId, categoryIcon, itemId, discardDate (handled)
-    // added.userId, added.firstName, added.lastName (shouldn't be changed) 
+    // added.userId, added.userName (shouldn't be changed) 
     // These should all be handled programmatically and do not need to be available for users.
 
     // Most changes are handled by Services/handleChanges
@@ -259,7 +259,7 @@ const ItemEdit = () => {
                             Updated By
                         </div>
                         <div className="col-content">
-                            { inspected.firstName } { inspected.lastName }
+                            { inspected.userName }
                         </div>
                     </div>
                     <div className="col col-info">
