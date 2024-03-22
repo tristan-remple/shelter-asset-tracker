@@ -15,6 +15,7 @@ import Error from '../Reusables/Error'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module allows an admin to edit a location.
 // Imported by: App
 

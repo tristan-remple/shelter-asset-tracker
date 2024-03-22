@@ -7,6 +7,7 @@ import authService from '../Services/authService'
 import { authContext } from '../Services/Context'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module defines the header navigation that appears on every page.
 // Imported by: App
 

@@ -1,6 +1,8 @@
+// internal dependencies
 import { friendlyDate } from "../Services/dateHelper"
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays a single comment, with it's meta-information.
 // It takes a comment object.
 // Imported by: CommentBox

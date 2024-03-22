@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module defines all buttons.
 // It exists to quickly update the styling of multiple types of button.
 // Imported by: ChangePanel, ItemDetails, Error, Dropdown, ItemEdit, ItemCreate, UnitDetails
@@ -9,6 +10,7 @@ import { Link } from 'react-router-dom'
 const Button = ({ text, linkTo, type }) => {
 
     // apply styling classes depending on type
+    // feel free to change these classes
     let buttonClass = "btn "
     switch (type) {
         case "action":

@@ -14,6 +14,7 @@ import Error from '../Reusables/Error'
 import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays the details about a single item in the collection, such as a stove or a table.
 // Imported by: App
 

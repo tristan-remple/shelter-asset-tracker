@@ -2,6 +2,7 @@
 import { useState } from "react"
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module is a search bar used to filter results that display on a page.
 // It takes in the data and setData state variables defined by the component importing it.
 // The data variable should be the full original data.

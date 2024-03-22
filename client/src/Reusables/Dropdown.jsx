@@ -5,6 +5,7 @@ import { useState } from "react"
 import Button from "./Button"
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module creates a dropdown for use with forms.
 // list is a list of items to appear in the dropdown
 // current is a state variable that is one of those items, which is currently selected

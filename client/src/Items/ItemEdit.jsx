@@ -15,8 +15,10 @@ import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
+import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module allows a user to edit the details about a single item in the collection.
 // This module does NOT currently record which user is editing.
 // User information will need to be taken either here or in the apiService module.
@@ -62,7 +64,7 @@ const ItemEdit = () => {
     }
 
     // destructure the item
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, comment } = item
+    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, comments } = item
 
     // flag options are defined in the flag module
     let flagColor = flagColorOptions[0]
@@ -287,16 +289,14 @@ const ItemEdit = () => {
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
-                        <p>
-                            <strong>Comments:</strong><br />
-                            { comment }
-                        </p>
+                        <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 
                             value={ safeChanges.comment } 
                             onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
                             className="comment-area" 
                         />
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
                 <div className="row row-info">
