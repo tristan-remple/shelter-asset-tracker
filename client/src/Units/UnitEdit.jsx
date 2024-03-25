@@ -13,6 +13,7 @@ import handleChanges from '../Services/handleChanges'
 import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import CommentBox from '../Reusables/CommentBox'
+import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -47,7 +48,8 @@ const UnitEdit = () => {
     }
 
     // destructure api response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = response
+    const { unit } = response
+    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -71,7 +73,7 @@ const UnitEdit = () => {
     const saveChanges = () => {
 
         // verify user identity
-        if (authService.checkUser()) {
+        if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
             const response = apiService.postUnitEdit(changes)
             if (response.success) {
@@ -82,7 +84,7 @@ const UnitEdit = () => {
                 setStatus("We weren't able to process your add item request.")
             }
         } else {
-            setStatus("Your log in credentials could not be validated.")
+            return <Error err="permission" />
         }
     }
 

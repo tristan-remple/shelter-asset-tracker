@@ -43,7 +43,9 @@ const CommentBox = ({ comments }) => {
             <strong>Comments:</strong><br />
             { displayComment }
             { olderComments && displayOlderComments }
-            { readMore && <div className="comment-toggle" onClick={ toggleOlderComments } >Display older comments</div> }
+            { readMore && <div className="comment-toggle" onClick={ toggleOlderComments } >
+                { olderComments ? "Hide" : "Show" } older comments
+            </div> }
         </div>
     )
 }

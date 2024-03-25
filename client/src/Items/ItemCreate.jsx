@@ -39,13 +39,14 @@ const ItemCreate = () => {
         console.log("undefined id")
         return <Error err="undefined" />
     }
-    const unit = apiService.singleUnit(id)
-    if (!unit || unit.error) {
+    const response = apiService.singleUnit(id)
+    if (!response || response.error) {
         console.log("api error")
         return <Error err="api" />
     }
 
     // destructure the unit
+    const { unit } = response
     const { unitId, unitName, locationId, locationName } = unit
 
     // grab the list of categories
@@ -189,7 +190,7 @@ const ItemCreate = () => {
                         </div>
                         <div className="col-content">
                             { <input 
-                                type="datetime-local" 
+                                type="date" 
                                 name="addedDate" 
                                 value={ newItem.added.addedDate } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, newItem, setNewItem, setUnsaved) } 

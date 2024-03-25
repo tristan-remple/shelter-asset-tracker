@@ -71,7 +71,7 @@ const LocationEdit = () => {
     const saveChanges = () => {
 
         // verify user identity
-        if (authService.checkUser()) {
+        if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
             const response = apiService.postLocationEdit(changes)
             if (response.success) {
@@ -82,7 +82,7 @@ const LocationEdit = () => {
                 setStatus("We weren't able to process your add item request.")
             }
         } else {
-            setStatus("Your log in credentials could not be validated.")
+            return <Error err="permission" />
         }
     }
 

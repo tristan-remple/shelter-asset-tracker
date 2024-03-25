@@ -5,6 +5,7 @@ import { useContext, useState } from 'react'
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
+import { friendlyDate } from '../Services/dateHelper'
 import { statusContext } from '../Services/Context'
 
 // components
@@ -20,20 +21,24 @@ import CommentBox from '../Reusables/CommentBox'
 
 const ItemDetails = () => {
 
+    // get the id and status
     const { id } = useParams()
     const { status } = useContext(statusContext)
 
+    // if no id has been provided, throw an error
     if (id === undefined) {
         console.log("undefined id")
         return <Error err="undefined" />
     }
 
+    // if the item can't be found, throw an error
     const item = apiService.singleItem(id)
     if (!item || item.error) {
         console.log("api error")
         return <Error err="api" />
     }
 
+    // destructure the item object
     const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comments } = item
 
     // if it has been deleted, throw an error
@@ -97,7 +102,7 @@ const ItemDetails = () => {
                             Updated At
                         </div>
                         <div className="col-content">
-                            { inspected.inspectedDate }
+                            { friendlyDate(inspected.inspectedDate) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -124,7 +129,7 @@ const ItemDetails = () => {
                             Acquired Date
                         </div>
                         <div className="col-content">
-                            { added.addedDate }
+                            { friendlyDate(added.addedDate) }
                         </div>
                     </div>
                     <div className="col col-info">

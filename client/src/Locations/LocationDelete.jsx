@@ -42,12 +42,16 @@ const LocationDelete = () => {
     const { locationId, locationName } = location
 
     const confirmDelete = () => {
-        const response = apiService.deleteUnit(location)
-        if (response.success) {
-            setStatus(`You have successfully deleted unit ${ response.locationName }.`)
-            navigate(`/locations`)
+        if (authService.checkUser() && authService.checkAdmin()) {
+            const response = apiService.deleteUnit(location)
+            if (response.success) {
+                setStatus(`You have successfully deleted unit ${ response.locationName }.`)
+                navigate(`/locations`)
+            } else {
+                setStatus("We weren't able to process your delete location request.")
+            }
         } else {
-            setStatus("We weren't able to process your delete location request.")
+            return <Error err="permission" />
         }
     }
 

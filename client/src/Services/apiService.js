@@ -102,46 +102,8 @@ class apiService {
         ]
     }
 
-    // Called by: ItemCreate, UnitEdit
+    // Called by: UnitDetails, ItemCreate, UnitEdit
     singleUnit(id) {
-        return {
-            unitId: 13,
-            unitName: "3040-B",
-            locationId: 2,
-            locationName: "Barry House",
-            unitType: "apartment",
-            added: {
-                userId: 2,
-                userName: "Sally Ivany",
-                addedDate: "2022-02-22 13:55:00"
-            },
-            inspected: {
-                userId: 4,
-                userName: "Jimmy Jones",
-                inspectedDate: "2024-02-22 13:55:00"
-            },
-            deleteDate: null,
-            comments: [
-                {
-                    commentId: 5,
-                    commentDate: "2022-02-22 13:55:00",
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    commentText: "The tenants have been rough with it; one hole in the wall."
-                },
-                {
-                    commentId: 10,
-                    commentDate: "2021-07-15 09:35:00",
-                    userId: 7,
-                    userName: "Joe Rivers",
-                    commentText: "It's got at least one room."
-                }
-            ]
-        }
-    }
-
-    // Called by: UnitDetails
-    unitItems(id) {
         return {
             unit: {
                 unitId: 13,
@@ -184,7 +146,8 @@ class apiService {
                     categoryId: 14,
                     categoryName: "couch",
                     toAssess: true,
-                    toDiscard: false
+                    toDiscard: false,
+                    inspectedDate: "2024-02-22 13:55:00"
                 },
                 {
                     itemId: 365,
@@ -192,7 +155,8 @@ class apiService {
                     categoryId: 3,
                     categoryName: "mattress",
                     toAssess: false,
-                    toDiscard: true
+                    toDiscard: true,
+                    inspectedDate: "2023-02-22 13:55:00"
                 },
                 {
                     itemId: 397,
@@ -200,7 +164,8 @@ class apiService {
                     categoryId: 23,
                     categoryName: "end table",
                     toAssess: false,
-                    toDiscard: false
+                    toDiscard: false,
+                    inspectedDate: "2024-08-22 13:55:00"
                 }
             ]
         }
@@ -210,6 +175,15 @@ class apiService {
     postUnitEdit(unit) {
         console.log(unit)
         console.log("Updated")
+        unit.success = true
+        return unit
+    }
+
+    // Called by: UnitCreate
+    postNewUnit(unit) {
+        console.log(unit)
+        console.log("Created")
+        unit.unitId = 18
         unit.success = true
         return unit
     }
