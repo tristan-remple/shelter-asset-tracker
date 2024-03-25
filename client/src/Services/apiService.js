@@ -1,6 +1,10 @@
+import { formattedDate } from './dateHelper'
+
 //------ MODULE INFO
 // This module interacts directly with the API to get data for the pages.
-// Imported by: ItemDetails, ItemEdit, ItemCreate, UnitDetails
+// It is assumed that lists will not contain deleted items.
+// If an individual queried item has been deleted, it should be returned anyway.
+// Imported by: all Item, Unit, and Location pages
 
 class apiService {
 
@@ -192,6 +196,7 @@ class apiService {
     deleteUnit(unit) {
         console.log(unit)
         console.log("Unit Deleted")
+        unit.deleteDate = formattedDate()
         unit.success = true
         return unit
     }
@@ -303,9 +308,47 @@ class apiService {
     // Called by: LocationDelete
     deleteLocation(location) {
         console.log(location)
-        location.deleteDate = "2022-02-22 13:55:00"
+        location.deleteDate = formattedDate()
         location.success = true
         return location
+    }
+
+    // Called by: CategoryList
+    categoryList() {
+        const categoryList = [
+            {
+                categoryId: 1,
+                categoryName: "dining table",
+                defaultValue: 900,
+                items: 16,
+                icon: "icons8-furniture-100",
+                singleUse: false
+            },
+            {
+                categoryId: 2,
+                categoryName: "end table",
+                defaultValue: 300,
+                items: 34,
+                icon: "icons8-bureau-100",
+                singleUse: false
+            }
+        ]
+        return categoryList
+    }
+
+    singleCategory(id) {
+        const singleCategory = {
+            categoryId: 2,
+            categoryName: "end table",
+            defaultValue: 300,
+            defaultUsefulLife: 20,
+            icon: "icons8-bureau-100",
+            singleUse: false,
+            items: 34,
+            created: "2024-02-22 13:55:00",
+            updated: "2024-02-22 13:55:00"
+        }
+        return singleCategory
     }
 }
 

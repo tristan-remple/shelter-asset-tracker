@@ -102,8 +102,17 @@ footer {
     justify-content: center;
 }
 
+.col-right {
+    text-align: right;
+}
+
 .icon {
     margin: 0.5rem;
+}
+
+.small-icon {
+    width: 2.5rem;
+    margin: 0.25rem 1.5rem;
 }
 
 .comment-area {

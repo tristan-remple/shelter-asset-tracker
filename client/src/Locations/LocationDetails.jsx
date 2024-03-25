@@ -4,6 +4,7 @@ import { useContext, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
 import { statusContext, authContext } from '../Services/Context'
@@ -14,7 +15,6 @@ import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
 import CommentBox from '../Reusables/CommentBox'
-import authService from '../Services/authService'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -29,7 +29,6 @@ const LocationDetails = () => {
     const { status } = useContext(statusContext)
 
     let urlId = id
-    console.log(urlId)
 
     // validate id
     if (urlId === undefined) {
