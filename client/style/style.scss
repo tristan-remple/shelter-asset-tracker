@@ -10,6 +10,7 @@ $palegreen: #d9e4cd;
 $fontmain: "Inter";
 $fontaccent: "Libre Caslon Text";
 
+
 @mixin border {
     border: 2px solid $palegreen !important;
     border-radius: 0.5rem;
@@ -19,47 +20,8 @@ body {
     font-family: $fontmain;
 }
 
-header, footer {
-    background-color: $ltgreen !important;
-}
 
-footer {
-    margin-top: 2rem;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
-.flag-box {
-    width: 2rem;
-    height: 2rem;
-    margin: 0.25rem;
-}
-
-.flag {
-    fill-opacity: 1;
-    stroke-width: 1.75;
-    stroke-linecap: "round";
-    stroke-linejoin: "round";
-    stroke-dasharray: "none";
-    stroke-opacity: 1;
-}
-
-.flag-red {
-    fill: var(--bs-danger);
-    stroke: var(--bs-danger);
-}
-
-.flag-yellow {
-    fill: var(--bs-warning);
-    stroke: var(--bs-warning);
-}
-
-.flag-grey {
-    fill: var(--bs-secondary);
-    stroke: var(--bs-secondary);
-}
-
+/* Layout Styles */
 .page-content {
     @include border;
     padding: 0.5rem;
@@ -102,10 +64,6 @@ footer {
     justify-content: center;
 }
 
-.icon {
-    margin: 0.5rem;
-}
-
 .comment-area {
     width: 100%;
     height: 80%;
@@ -124,15 +82,6 @@ footer {
     justify-content: space-between;
 }
 
-.btn {
-    margin: 0.5rem;
-}
-
-.btn-small {
-    margin: 0.1rem;
-    padding: 0.125rem 0.75rem;
-}
-
 .c-table-info {
     @include border;
     margin: 0.5rem;
@@ -144,4 +93,96 @@ footer {
 td, th {
     @include border;
     padding: 0.125rem 0.75rem !important;
+}
+
+/* Header Styles */
+.logo-image {
+    width: auto;
+    height: 60px;
+}
+
+header, footer {
+    background-color: $ltgreen !important;
+}
+
+.nav-link {
+    color: $olivegreen;
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    color: $midbrown;
+    border-bottom: 2px solid $midbrown;
+    padding-bottom: 0;
+}
+
+.nav-link.active {
+    color: $midbrown; 
+}
+
+
+/* Icon Styles */
+.icon {
+    margin: 0.5rem;
+}
+
+/* Flag Styles */
+.flag-box {
+    width: 2rem;
+    height: 2rem;
+    margin: 0.25rem;
+}
+
+.flag {
+    fill-opacity: 1;
+    stroke-width: 1.75;
+    stroke-linecap: "round";
+    stroke-linejoin: "round";
+    stroke-dasharray: "none";
+    stroke-opacity: 1;
+}
+
+.flag-red {
+    fill: var(--bs-danger);
+    stroke: var(--bs-danger);
+}
+
+.flag-yellow {
+    fill: var(--bs-warning);
+    stroke: var(--bs-warning);
+}
+
+.flag-grey {
+    fill: var(--bs-secondary);
+    stroke: var(--bs-secondary);
+}
+
+
+/* Buttons */
+.btn {
+    margin: 0.5rem;
+}
+
+.btn-small {
+    margin: 0.1rem;
+    padding: 0.125rem 0.75rem;
+    background-color: $ltgreen;
+    color:black;
+    border: 1px solid $brightgreen;
+}
+
+.btn-admin {
+    background-color: $brightgreen;
+    color: white;
+    border: 1px solid $olivegreen;
+}
+
+
+
+/* Footer Styles */
+footer {
+    margin-top: 2rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }

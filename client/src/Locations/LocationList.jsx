@@ -34,8 +34,8 @@ const LocationList = () => {
     let adminButtons = ""
     if (isAdmin) {
         adminButtons = (
-            <div className="col-2">
-                <Button text="Add Location" linkTo="/locations/add" type="admin" />
+            <div className="col-2 d-flex justify-content-end">
+                <Button text="Add Location" linkTo="/locations/add" type="admin"/>
             </div>
         )
     }
@@ -54,14 +54,14 @@ const LocationList = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>All Shelter NS Locations</h2>
+                    <h2 className='mt-2'>All Shelter NS Locations</h2>
                 </div>
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info pt-2"><p className='mb-2'>{ status }</p></div> }
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>

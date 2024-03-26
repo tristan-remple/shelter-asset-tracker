@@ -1,10 +1,12 @@
 // external dependencies
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 // internal dependencies
 import authService from '../Services/authService'
 import { authContext } from '../Services/Context'
+
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -21,7 +23,7 @@ const Header = () => {
         <header className="navbar navbar-expand-lg">
             <div className="container">
                 <Link className="navbar-brand" to="/">
-                    <img src="img/icons8-room-100.png" alt="" />
+                    <img src="../../public/img/logo.png" alt="Shelter Nova Scotia Logo" className="logo-image"/>
                 </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -30,17 +32,17 @@ const Header = () => {
                     <ul className="navbar-nav">
                         { isAdmin && (
                             <li className="nav-item">
-                                <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                                 <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/dashboard">Dashboard</NavLink>
                             </li>
                         )}
                         <li className="nav-item">
-                            <Link className="nav-link" to={`/location/${locationId}`}>Inventory</Link>
+                            <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to={`/location/${locationId}`}>Inventory</NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to={`/user/${userId}`}>Profile</Link>
+                            <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to={`/user/${userId}`}>Profile</NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/logout">Log Out</Link>
+                            <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/logout">Log Out</NavLink>
                         </li>
                     </ul>
                 </div>

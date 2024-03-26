@@ -9763,7 +9763,47 @@ body {
   font-family: "Inter";
 }
 
-/* Layout Styles */
+header, footer {
+  background-color: #c4de9b !important;
+}
+
+footer {
+  margin-top: 2rem;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.flag-box {
+  width: 2rem;
+  height: 2rem;
+  margin: 0.25rem;
+}
+
+.flag {
+  fill-opacity: 1;
+  stroke-width: 1.75;
+  stroke-linecap: "round";
+  stroke-linejoin: "round";
+  stroke-dasharray: "none";
+  stroke-opacity: 1;
+}
+
+.flag-red {
+  fill: var(--bs-danger);
+  stroke: var(--bs-danger);
+}
+
+.flag-yellow {
+  fill: var(--bs-warning);
+  stroke: var(--bs-warning);
+}
+
+.flag-grey {
+  fill: var(--bs-secondary);
+  stroke: var(--bs-secondary);
+}
+
 .page-content {
   border: 2px solid #d9e4cd !important;
   border-radius: 0.5rem;
@@ -9810,6 +9850,10 @@ body {
   justify-content: center;
 }
 
+.icon {
+  margin: 0.5rem;
+}
+
 .comment-area {
   width: 100%;
   height: 80%;
@@ -9828,6 +9872,15 @@ body {
   justify-content: space-between;
 }
 
+.btn {
+  margin: 0.5rem;
+}
+
+.btn-small {
+  margin: 0.1rem;
+  padding: 0.125rem 0.75rem;
+}
+
 .c-table-info {
   border: 2px solid #d9e4cd !important;
   border-radius: 0.5rem;
@@ -9841,92 +9894,4 @@ td, th {
   border: 2px solid #d9e4cd !important;
   border-radius: 0.5rem;
   padding: 0.125rem 0.75rem !important;
-}
-
-/* Header Styles */
-.logo-image {
-  width: auto;
-  height: 60px;
-}
-
-header, footer {
-  background-color: #c4de9b !important;
-}
-
-.nav-link {
-  color: #515a2d;
-  font-weight: 600;
-}
-
-.nav-link:hover {
-  color: #563219;
-  border-bottom: 2px solid #563219;
-  padding-bottom: 0;
-}
-
-.nav-link.active {
-  color: #563219;
-}
-
-/* Icon Styles */
-.icon {
-  margin: 0.5rem;
-}
-
-/* Flag Styles */
-.flag-box {
-  width: 2rem;
-  height: 2rem;
-  margin: 0.25rem;
-}
-
-.flag {
-  fill-opacity: 1;
-  stroke-width: 1.75;
-  stroke-linecap: "round";
-  stroke-linejoin: "round";
-  stroke-dasharray: "none";
-  stroke-opacity: 1;
-}
-
-.flag-red {
-  fill: var(--bs-danger);
-  stroke: var(--bs-danger);
-}
-
-.flag-yellow {
-  fill: var(--bs-warning);
-  stroke: var(--bs-warning);
-}
-
-.flag-grey {
-  fill: var(--bs-secondary);
-  stroke: var(--bs-secondary);
-}
-
-/* Buttons */
-.btn {
-  margin: 0.5rem;
-}
-
-.btn-small {
-  margin: 0.1rem;
-  padding: 0.125rem 0.75rem;
-  background-color: #c4de9b;
-  color: black;
-  border: 1px solid #82bc46;
-}
-
-.btn-admin {
-  background-color: #82bc46;
-  color: white;
-  border: 1px solid #515a2d;
-}
-
-/* Footer Styles */
-footer {
-  margin-top: 2rem;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
+}/*# sourceMappingURL=style.css.map */
