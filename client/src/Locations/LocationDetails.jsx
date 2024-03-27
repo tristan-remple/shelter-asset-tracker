@@ -55,13 +55,13 @@ const LocationDetails = () => {
     if (isAdmin) {
         adminButtons = (
             <>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Location" linkTo={ `/location/${ locationId }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Delete Location" linkTo={ `/location/${ locationId }/delete` } type="admin" />
                 </div>
             </>
@@ -102,12 +102,12 @@ const LocationDetails = () => {
     })
 
     return (
-        <main className="container">
-            <div className="row title-row">
+        <main className="container mt-3">
+            <div className="row title-row mb-2">
                 <div className="col">
                     <h2>{ locationName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="See All" linkTo="/locations" type="nav" />
                 </div>
                 { adminButtons }

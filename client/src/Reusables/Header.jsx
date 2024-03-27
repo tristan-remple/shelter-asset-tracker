@@ -21,7 +21,7 @@ const Header = () => {
 
     return (
         <header className="navbar navbar-expand-lg">
-            <div className="container">
+            <div className="container my-2">
                 <Link className="navbar-brand" to="/">
                     <img src="../../public/img/logo.png" alt="Shelter Nova Scotia Logo" className="logo-image"/>
                 </Link>
@@ -29,7 +29,7 @@ const Header = () => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div id="navbarNav" className="collapse navbar-collapse show justify-content-end">
-                    <ul className="navbar-nav">
+                    <ul className="navbar-nav my-2">
                         { isAdmin && (
                             <li className="nav-item">
                                  <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/dashboard">Dashboard</NavLink>

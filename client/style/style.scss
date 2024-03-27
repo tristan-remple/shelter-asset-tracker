@@ -2,11 +2,12 @@
 // vs code live sass compiler setting: "savePath": "~/../src/css"
 
 $ltgreen: #c4de9b;
-$brightgreen: #82bc46;
+$brightgreen: #9cc76d;
 $olivegreen: #515a2d;
 $ltbrown: #977c6a;
 $midbrown: #563219;
 $palegreen: #d9e4cd;
+$fontColour: #332114;
 $fontmain: "Inter";
 $fontaccent: "Libre Caslon Text";
 
@@ -18,6 +19,7 @@ $fontaccent: "Libre Caslon Text";
 
 body {
     font-family: $fontmain;
+    color: $fontColour;
 }
 
 
@@ -32,7 +34,8 @@ body {
 }
 
 .row-info {
-    @include border;
+    border: 2px solid $brightgreen !important;
+    border-radius: 0.5rem;
     margin: 0.5rem;
 }
 
@@ -66,7 +69,12 @@ body {
 
 .comment-area {
     width: 100%;
-    height: 80%;
+    height: 70%;
+}
+
+.triangle {
+    width: 50%;
+    height: auto;
 }
 
 .dropdown-menu {
@@ -83,7 +91,8 @@ body {
 }
 
 .c-table-info {
-    @include border;
+    border: 2px solid $brightgreen !important;
+    border-radius: 0.5rem;
     margin: 0.5rem;
     width: calc(100% - 1rem);
     border-collapse: separate;
@@ -106,18 +115,31 @@ header, footer {
 }
 
 .nav-link {
-    color: $olivegreen;
+    color:$fontColour;
     font-weight: 600;
+    background-color: #9cc76d;
+    margin-left: 0.5rem;
+    width: 7rem;
+    text-align: center;
+    border-radius: .3rem;
+    border: 1px solid $brightgreen;
+    margin-top: .5rem;
 }
 
 .nav-link:hover {
-    color: $midbrown;
-    border-bottom: 2px solid $midbrown;
-    padding-bottom: 0;
+    color: $olivegreen;
+    background-color: #c4de9b;
+    border: 1px solid white;
 }
 
 .nav-link.active {
-    color: $midbrown; 
+    color:#332114;
+    border: 1px solid white;
+}
+
+.nav-link.active:hover {
+    color:$olivegreen;
+    border: 1px solid white;
 }
 
 
@@ -167,17 +189,29 @@ header, footer {
     margin: 0.1rem;
     padding: 0.125rem 0.75rem;
     background-color: $ltgreen;
-    color:black;
+    color: $olivegreen;
     border: 1px solid $brightgreen;
+}
+
+.btn-small:hover {
+    background-color: $brightgreen;
+    color: white;
 }
 
 .btn-admin {
     background-color: $brightgreen;
     color: white;
+    width: 150px;
+}
+
+.btn-admin:hover {
     border: 1px solid $olivegreen;
 }
 
-
+.btn-secondary {
+    background-color: $palegreen;
+    color: $olivegreen;   
+}
 
 /* Footer Styles */
 footer {
@@ -185,4 +219,14 @@ footer {
     right: 0;
     bottom: 0;
     left: 0;
+}
+
+footer a {
+    text-decoration: none;
+    color: $fontColour;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: #e1f9df;
 }

@@ -73,7 +73,7 @@ const LocationCreate = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col">
+                <div className="col my-3">
                     <h2>Add a New Location</h2>
                 </div>
                 <div className="col-2">
@@ -128,14 +128,14 @@ const LocationCreate = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
-                        <p>
+                        <p className="mb-2">
                             <strong>Comments:</strong><br />
                         </p>
                         <textarea 
                             name="comment" 
                             value={ changes.comment } 
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            className="comment-area" 
+                            className="comment-area mb-5" 
                         />
                     </div>
                 </div>

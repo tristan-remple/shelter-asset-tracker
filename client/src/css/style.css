@@ -9761,6 +9761,7 @@ textarea.form-control-lg {
 }
 body {
   font-family: "Inter";
+  color: #332114;
 }
 
 /* Layout Styles */
@@ -9775,7 +9776,7 @@ body {
 }
 
 .row-info {
-  border: 2px solid #d9e4cd !important;
+  border: 2px solid #9cc76d !important;
   border-radius: 0.5rem;
   margin: 0.5rem;
 }
@@ -9812,7 +9813,12 @@ body {
 
 .comment-area {
   width: 100%;
-  height: 80%;
+  height: 70%;
+}
+
+.triangle {
+  width: 50%;
+  height: auto;
 }
 
 .dropdown-menu {
@@ -9829,7 +9835,7 @@ body {
 }
 
 .c-table-info {
-  border: 2px solid #d9e4cd !important;
+  border: 2px solid #9cc76d !important;
   border-radius: 0.5rem;
   margin: 0.5rem;
   width: calc(100% - 1rem);
@@ -9854,18 +9860,31 @@ header, footer {
 }
 
 .nav-link {
-  color: #515a2d;
+  color: #332114;
   font-weight: 600;
+  background-color: #9cc76d;
+  margin-left: 0.5rem;
+  width: 7rem;
+  text-align: center;
+  border-radius: 0.3rem;
+  border: 1px solid #9cc76d;
+  margin-top: 0.5rem;
 }
 
 .nav-link:hover {
-  color: #563219;
-  border-bottom: 2px solid #563219;
-  padding-bottom: 0;
+  color: #515a2d;
+  background-color: #c4de9b;
+  border: 1px solid white;
 }
 
 .nav-link.active {
-  color: #563219;
+  color: #332114;
+  border: 1px solid white;
+}
+
+.nav-link.active:hover {
+  color: #515a2d;
+  border: 1px solid white;
 }
 
 /* Icon Styles */
@@ -9913,14 +9932,28 @@ header, footer {
   margin: 0.1rem;
   padding: 0.125rem 0.75rem;
   background-color: #c4de9b;
-  color: black;
-  border: 1px solid #82bc46;
+  color: #515a2d;
+  border: 1px solid #9cc76d;
+}
+
+.btn-small:hover {
+  background-color: #9cc76d;
+  color: white;
 }
 
 .btn-admin {
-  background-color: #82bc46;
+  background-color: #9cc76d;
   color: white;
+  width: 150px;
+}
+
+.btn-admin:hover {
   border: 1px solid #515a2d;
+}
+
+.btn-secondary {
+  background-color: #d9e4cd;
+  color: #515a2d;
 }
 
 /* Footer Styles */
@@ -9929,4 +9962,14 @@ footer {
   right: 0;
   bottom: 0;
   left: 0;
+}
+
+footer a {
+  text-decoration: none;
+  color: #332114;
+}
+
+footer a:hover {
+  text-decoration: none;
+  color: #e1f9df;
 }

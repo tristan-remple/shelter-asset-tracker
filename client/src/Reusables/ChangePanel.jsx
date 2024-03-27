@@ -30,8 +30,8 @@ const ChangePanel = ({ save, linkOut, locationId }) => {
 
     return (
         <div className="row row-info">
-            <div className="col-3">
-                <img src="/img/warning.png" alt="Warning triangle icon" />
+            <div className="col-3 d-flex justify-content-center align-items-center">
+                <img src="../../public/img/warningTriangle.jpg" alt="Warning triangle icon" className="triangle"/>
             </div>
             <div className="col">
                 <h3>Do you want to save your changes?</h3>
