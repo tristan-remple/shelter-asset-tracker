@@ -4,23 +4,27 @@ import { useParams } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import { statusContext, authContext } from '../Services/Context'
 import capitalize from '../Services/capitalize'
+import handleChanges from '../Services/handleChanges'
+import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
-import { friendlyDate } from '../Services/dateHelper'
+import IconSelector from './IconSelector'
+import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
-// The information about a single category.
+// Allows the user to change the information about a single category.
 // Imported by: App
 
-const CategoryDetails = () => {
+const CategoryEdit = () => {
 
     // get the status from context
     const { id } = useParams()
-    const { status } = useContext(statusContext)
+    const { status, setStatus } = useContext(statusContext)
 
     // validate id
     if (id === undefined) {
@@ -38,19 +42,53 @@ const CategoryDetails = () => {
     // destructure response
     const { categoryId, categoryName, defaultValue, defaultUsefulLife, icon, singleUse, items, created, updated } = response
 
-    
+    const [ unsaved, setUnsaved ] = useState(false)
+    const [ changes, setChanges ] = useState({
+        categoryName,
+        defaultValue,
+        defaultUsefulLife,
+        icon,
+        singleUse
+    })
+
+    const [ selector, setSelector ] = useState(false)
+    const toggleSelector = () => {
+        const newSelector = selector ? false : true
+        setSelector(newSelector)
+    }
+
+    // sends the item object to the apiService
+    const saveChanges = () => {
+        const editedCategory = {...changes}
+        editedCategory.categoryId = categoryId
+        editedCategory.created = created
+        editedCategory.updated = updated // change this
+
+        if (authService.checkUser()) {
+            const response = apiService.postCategoryEdit(editedCategory)
+            if (response.success) {
+                setStatus(`You have successfully saved your changes to category ${ response.categoryName }.`)
+                setUnsaved(false)
+                navigate(`/category/${id}`)
+            } else {
+                setStatus("We weren't able to process your edit category request.")
+            }
+        } else {
+            setStatus("Your log in credentials could not be validated.")
+        }
+    }
 
     return (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>{ capitalize(categoryName) } Category</h2>
+                    <h2>Edit { capitalize(categoryName) } Category</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="See All" linkTo="/categories" type="nav" />
+                    <Button text="Return" linkTo={ `/category/${ categoryId }` } type="nav" />
                 </div>
                 <div className="col-2">
-                    <Button text="Edit" linkTo={ `/category/${ categoryId }/edit` } type="admin" />
+                    <Button text="Save" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2">
                     <Button text="Delete" linkTo={ `/category/${ categoryId }/delete` } type="admin" />
@@ -64,7 +102,12 @@ const CategoryDetails = () => {
                             Name
                         </div>
                         <div className="col-content">
-                            { categoryName }
+                            <input 
+                                type="text" 
+                                name="categoryName" 
+                                value={ changes.categoryName } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     
@@ -73,7 +116,12 @@ const CategoryDetails = () => {
                             Single Use
                         </div>
                         <div className="col-content">
-                            { singleUse ? "Yes" : "No" }
+                            <input 
+                                type="checkbox"
+                                name="singleUse" 
+                                checked={ changes.singleUse }
+                                onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -99,15 +147,26 @@ const CategoryDetails = () => {
                             Default Value
                         </div>
                         <div className="col-content">
-                            { `$${ defaultValue.toFixed(2) }` }
+                            <input 
+                                type="number" 
+                                name="defaultValue" 
+                                step=".01"
+                                value={ changes.defaultValue } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life
+                            Default Useful Life (in Quarters)
                         </div>
                         <div className="col-content">
-                            { `${( defaultUsefulLife / 4 )} years` }
+                            <input 
+                                type="number" 
+                                name="defaultUsefulLife" 
+                                value={ changes.defaultUsefulLife } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -123,14 +182,16 @@ const CategoryDetails = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ icon }.png` } alt={ categoryName + " icon" } />
-                            <Button text="Change Icon" linkTo={ `/category/${ id }/edit` } type="admin" />
+                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } alt={ categoryName + " icon" } />
+                            <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
+                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } /> }
                         </div>
                     </div>
                 </div>
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/category/${id}` } locationId="0" /> }
             </div>
         </main>
     )
 }
 
-export default CategoryDetails
+export default CategoryEdit

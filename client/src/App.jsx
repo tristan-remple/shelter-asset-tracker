@@ -25,6 +25,9 @@ import UnitEdit from './Units/UnitEdit'
 import UnitCreate from './Units/UnitCreate'
 import CategoryList from './Categories/CategoryList'
 import CategoryDetails from './Categories/CategoryDetails'
+import CategoryEdit from './Categories/CategoryEdit'
+import Dashboard from './Admin/Dashboard'
+import CategoryDelete from './Categories/CategoryDelete'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -71,6 +74,9 @@ function App() {
           <Route path="/locations/add" element={ <LocationCreate /> } />
           <Route path="/categories" element={ <CategoryList /> } />
           <Route path="/category/:id" element={ <CategoryDetails /> } />
+          <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
+          <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
+          <Route path="/admin" element={ <Dashboard /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>

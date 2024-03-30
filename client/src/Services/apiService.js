@@ -350,6 +350,19 @@ class apiService {
         }
         return singleCategory
     }
+
+    postCategoryEdit(category) {
+        console.log(category)
+        category.success = true
+        return category
+    }
+
+    deleteCategory(category) {
+        console.log(category)
+        category.success = true
+        category.deleteDate = "2024-02-22 13:55:00"
+        return category
+    }
 }
 
 export default new apiService

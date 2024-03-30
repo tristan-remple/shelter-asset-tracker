@@ -1,6 +1,10 @@
 import capitalize from "../Services/capitalize"
 
-const IconSelector = ({ icon, setIcon }) => {
+//------ MODULE INFO
+// Displays a modal that allows the user to select a new icon for a category
+// Imported by: CategoryEdit
+
+const IconSelector = ({ changes, setChanges }) => {
 
     const availableIcons = [
         "bathtub", "bureau", "chair", "coffee-table", "console-table", "empty-bed", "fire-alarm", "fridge", "furniture", "garbage-disposal", "interior-mirror", "lamp", "lights", "microwave", "mosquito-net", "power-strip", "room", "sink", "smoke-detector", "sofa", "stove", "trash", "tv-show", "wc", "window-shade"
@@ -9,7 +13,9 @@ const IconSelector = ({ icon, setIcon }) => {
     const pickIcon = (event) => {
         const target = event.target.id
         const filename = `icons8-${ target }-100`
-        setIcon(filename)
+        const newChanges = {...changes}
+        newChanges.icon = filename
+        setChanges(newChanges)
     }
 
     const displayIcons = availableIcons.map(icon => {

@@ -34,7 +34,7 @@ const Header = () => {
                     <ul className="navbar-nav">
                         { userId && isAdmin && (
                             <li className="nav-item">
-                                <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                                <Link className="nav-link" to="/admin">Dashboard</Link>
                             </li>
                         )}
                         { userId ? ( <>

@@ -154,3 +154,11 @@ td, th {
     @include border;
     padding: 0.125rem 0.75rem !important;
 }
+
+#icon-selector {
+    position: fixed;
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    z-index: 5;
+}
