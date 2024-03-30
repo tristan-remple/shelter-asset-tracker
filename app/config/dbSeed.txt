@@ -14,10 +14,19 @@ INSERT INTO Templates (name, defaultValue, defaultDepreciation, icon, singleResi
 ('Mattress', 250.00, 5, 'mattress_icon.png', 1, NOW());
 
 -- Inserting facilities
-INSERT INTO Facilities (name, address, manager, phone, email, createdAt) VALUES
-('Blank House', '123 Main St', 'John Doe', '902-555-1234', 'john@example.com', NOW()),
-('Elm Apartments', '456 Elm St', 'Jane Smith', '902-555-5678', 'jane@example.com', NOW()),
-('Shelter Centre', '789 Oak St', 'Michael Johnson', '902-555-9012', 'michael@example.com', NOW());
+INSERT INTO Facilities (name, managerId, phone, createdAt) VALUES
+('Blank House', 2, '902-555-1234', NOW()),
+('Elm Apartments', 3, '902-555-5678', NOW()),
+('Shelter Centre', 4, '902-555-9012', NOW());
+
+-- Inserting authorizations
+INSERT INTO FacilityAuths (userId, FacilityId, createdAt) VALUES
+(1, 1, NOW()),
+(1, 2, NOW()),
+(1, 3, NOW()),
+(2, 1, NOW()),
+(3, 2, NOW()),
+(4, 3, NOW());
 
 -- Inserting units
 INSERT INTO Units (facilityId, name, type, createdAt) VALUES

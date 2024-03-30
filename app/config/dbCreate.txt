@@ -29,13 +29,12 @@ CREATE TABLE Templates (
 CREATE TABLE Facilities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
-    address VARCHAR(255) UNIQUE,
-    manager VARCHAR(255),
+    managerId INT,
     phone VARCHAR(20),
-    email VARCHAR(255),
     createdAt DATETIME,
     updatedAt DATETIME,
-    deletedAt DATETIME NULL
+    deletedAt DATETIME NULL,
+    FOREIGN KEY (managerId) REFERENCES Users(id)
 );
 
 CREATE TABLE Units (
