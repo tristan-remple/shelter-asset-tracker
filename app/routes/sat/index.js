@@ -8,10 +8,10 @@ const templateRouter = require('./templates');
 const unitsRouter = require('./units');
 const usersRouter = require('./users');
 
-//router.use('/facilites', facilitiesRouter);
+router.use('/facilities', facilitiesRouter);
 //router.use('/items', itemsRouter);
-//router.use('/templates', templateRouter);
-//router.use('/units', unitsRouter);
+router.use('/templates', templateRouter);
+router.use('/units', unitsRouter);
 router.use('/users', usersRouter);
 
 /*SAT API Index*/
