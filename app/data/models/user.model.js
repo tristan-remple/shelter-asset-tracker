@@ -1,6 +1,4 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (db) => {
+module.exports = (db, { DataTypes }) => {
     db.define('User', {
         id: {
             type: DataTypes.INTEGER,

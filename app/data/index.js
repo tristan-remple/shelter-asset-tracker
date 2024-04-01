@@ -1,5 +1,5 @@
 // index.js
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize');
 const addAssociations = require('./addAssociations');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -34,7 +34,7 @@ const models = [
 ];
 
 models.forEach(model => {
-    model(sequelize);
+    model(sequelize, Sequelize);
 })
 
 addAssociations(sequelize);
