@@ -23,6 +23,10 @@ module.exports = (db) => {
                 key: 'id'
             }
         },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         donated: {
             type: DataTypes.BOOLEAN,
             allowNull: false
@@ -37,7 +41,13 @@ module.exports = (db) => {
         },
         toInspect: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            default: false
+        },
+        toDelete: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            default: false
         },
         addedBy: {
             type: DataTypes.INTEGER,
