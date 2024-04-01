@@ -5,6 +5,7 @@
 class authService {
 
     // Check whether the current user is logged in.
+    // Called by: LogIn
     checkUser() {
         return true
     }
@@ -16,7 +17,7 @@ class authService {
     }
 
     // Get information about the user who is currently signed in.
-    // Called by: Header, LocationDetails
+    // Called by: Header, LocationDetails, ChangePanel
     userInfo() {
 
         const sampleData = {
@@ -41,6 +42,17 @@ class authService {
             },
             error: "<Whatever API error the user generated.>"
         }
+    }
+
+    // Called by: LogIn
+    login(user) {
+        user.success = true
+        return user
+    }
+
+    // Called by: LogOut
+    logout() {
+        return { success: true }
     }
 }
 

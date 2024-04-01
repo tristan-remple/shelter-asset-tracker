@@ -13,6 +13,7 @@ import authService from '../Services/authService'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module checks that the user wants to delete a unit.
 // Imported by: App
 

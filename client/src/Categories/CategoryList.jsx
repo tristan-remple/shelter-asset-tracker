@@ -13,6 +13,7 @@ import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // A list of item categories that is only available to admin users.
 // Imported by: App
 

@@ -17,6 +17,7 @@ import IconSelector from './IconSelector'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // Allows the user to change the information about a single category.
 // Imported by: App
 

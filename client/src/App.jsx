@@ -28,6 +28,11 @@ import CategoryDetails from './Categories/CategoryDetails'
 import CategoryEdit from './Categories/CategoryEdit'
 import Dashboard from './Admin/Dashboard'
 import CategoryDelete from './Categories/CategoryDelete'
+import LogIn from './Auth/LogIn'
+import LogOut from './Auth/LogOut'
+import UserList from './Users/UserList'
+import UserDetails from './Users/UserDetails'
+import UserCreate from './Users/UserCreate'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -57,7 +62,8 @@ function App() {
       <statusContext.Provider value={ { status, setStatus } }>
         <Header />
         <Routes>
-          <Route path="/" element={ <Test /> } />
+          <Route path="/" element={ <LogIn /> } />
+          <Route path="/logout" element={ <LogOut /> } />
           <Route path="/item" element={ <ItemDetails /> } />
           <Route path="/item/:id" element={ <ItemDetails /> } />
           <Route path="/item/:id/edit" element={ <ItemEdit /> } />
@@ -77,6 +83,9 @@ function App() {
           <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
           <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
           <Route path="/admin" element={ <Dashboard /> } />
+          <Route path="/users" element={ <UserList /> } />
+          <Route path="/user/:id" element={ <UserDetails /> } />
+          <Route path="/users/add" element={ <UserCreate /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>

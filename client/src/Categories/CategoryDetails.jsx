@@ -13,6 +13,7 @@ import Error from '../Reusables/Error'
 import { friendlyDate } from '../Services/dateHelper'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // The information about a single category.
 // Imported by: App
 

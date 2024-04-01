@@ -314,7 +314,7 @@ class apiService {
     }
 
     // Called by: CategoryList
-    categoryList() {
+    listCategories() {
         const categoryList = [
             {
                 categoryId: 1,
@@ -362,6 +362,54 @@ class apiService {
         category.success = true
         category.deleteDate = "2024-02-22 13:55:00"
         return category
+    }
+
+    listUsers() {
+        return [
+            {
+                userId: 1,
+                userName: "shenson",
+                userType: "admin",
+                created: "2024-02-22 13:55:00",
+                deleted: null,
+                location: {
+                    locationId: 2,
+                    locationName: "The Hub"
+                }
+            },
+            {
+                userId: 1,
+                userName: "joeblow",
+                userType: "general",
+                created: "2022-02-22 13:55:00",
+                deleted: null,
+                location: {
+                    locationId: 2,
+                    locationName: "The Hub"
+                }
+            }
+        ]
+    }
+
+    singleUser(id) {
+        return {
+            userId: 1,
+            userName: "joeblow",
+            userType: "general",
+            created: "2022-02-22 13:55:00",
+            deleted: null,
+            location: {
+                locationId: 2,
+                locationName: "The Hub"
+            }
+        }
+    }
+
+    postNewUser(user)  {
+        console.log(user)
+        user.userId = 13
+        user.success = true
+        return user
     }
 }
 

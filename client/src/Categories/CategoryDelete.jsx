@@ -12,6 +12,11 @@ import Error from '../Reusables/Error'
 import authService from '../Services/authService'
 import ChangePanel from '../Reusables/ChangePanel'
 
+//------ MODULE INFO
+// ** Available for SCSS **
+// This module checks that the user wants to delete a category.
+// Imported by: App
+
 const CategoryDelete = () => {
 
     const navigate = useNavigate()
@@ -31,14 +36,14 @@ const CategoryDelete = () => {
         return <Error err="undefined" />
     }
 
-    // fetch unit data from the api
+    // fetch category data from the api
     const category = apiService.singleCategory(id)
     if (!category || category.error) {
         console.log("api error")
         return <Error err="api" />
     }
 
-    // destructure the unit
+    // destructure the category
     const { categoryId, categoryName } = category
 
     const confirmDelete = () => {

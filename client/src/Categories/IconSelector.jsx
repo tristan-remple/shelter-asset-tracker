@@ -1,6 +1,7 @@
 import capitalize from "../Services/capitalize"
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // Displays a modal that allows the user to select a new icon for a category
 // Imported by: CategoryEdit
 
