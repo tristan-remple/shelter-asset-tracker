@@ -9,6 +9,11 @@ import Button from "../Reusables/Button"
 import Error from "../Reusables/Error"
 import { adminDate } from "../Services/dateHelper"
 
+//------ MODULE INFO
+// ** Available for SCSS **
+// This module shows the details about a specific user to the admin.
+// Imported by: App
+
 const UserDetails = () => {
 
     // get context information

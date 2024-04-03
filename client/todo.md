@@ -1,0 +1,4 @@
+- user set or reset password
+- keyboard navigation
+- api integration
+- protected routes

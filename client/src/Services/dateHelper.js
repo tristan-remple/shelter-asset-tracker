@@ -18,10 +18,10 @@ export function friendlyDate(dateString) {
 // This function takes a date in any JS-readable format and returns a date that is formatted the way administrative staff are used to.
 export function adminDate(dateString) {
     const date = new Date(dateString)
-    const day = date.getDate()
-    const month = date.getMonth() + 1
+    const day = date.getDate().toString()
+    const month = (date.getMonth() + 1).toString()
     const year = date.getFullYear()
-    return `${year}-${month}-${day}`
+    return `${ year }-${ month.padStart(2, "0") }-${ day.padStart(2, "0") }`
 }
 
 // This function takes today's date and formats it.

@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { statusContext } from '../Services/Context'
 import authService from '../Services/authService'
 import apiService from '../Services/apiService'
-import { formattedDate, adminDate } from '../Services/dateHelper'
+import { adminDate } from '../Services/dateHelper'
 import handleChanges from '../Services/handleChanges'
 
 import Error from '../Reusables/Error'
@@ -14,33 +14,49 @@ import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
 // ** Available for SCSS **
-// This module allows the admin to create a new user.
+// This module allows the admin to edit a specific user.
 // Imported by: App
 
-const UserCreate = () => {
+const UserEdit = () => {
 
     // get context information
+    const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
 
-    // check that user is an admin
+    // check that active user is an admin
     if (!authService.checkAdmin()) {
         console.log("insufficient permission")
         return <Error err="permission" />
     }
+
+    // validate id
+    if (id === undefined) {
+        console.log("undefined id")
+        return <Error err="undefined" />
+    }
+
+    // fetch user data from the api
+    const response = apiService.singleUser(id)
+    if (!response || response.error) {
+        console.log("api error")
+        return <Error err="api" />
+    }
+
+    const { userId, userName, userType, created, deleted, location } = response
 
     // set up the change panel state
     const [ unsaved, setUnsaved ] = useState(false)
 
     // form handling state
     const [ changes, setChanges ] = useState({
-        userName: "",
-        admin: false,
+        userId,
+        userName,
+        admin: userType == "admin" ? true: false,
         added: {
-            addedDate: adminDate(new Date())
+            addedDate: created
         },
-        location: {},
-        email: ""
+        location
     })
 
     // list of locations for dropdown
@@ -65,24 +81,16 @@ const UserCreate = () => {
         }
     }
 
-    // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-    const validateEmail = (email) => {
-        return String(email)
-            .toLowerCase()
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            )
-    }
-
+    // send data to the api
     const saveChanges = () => {
-        if (changes.userName === "" || changes.email === "") {
-            setStatus("Please enter a username and email.")
-            return
-        } else if (!validateEmail(changes.email)) {
-            setStatus("Please provide a valid email.")
+
+        // validation
+        if (changes.userName === "") {
+            setStatus("Please enter a username.")
             return
         }
 
+        // convert the changes object into a valid user object
         const newUser = {...changes}
         if (newUser.admin === true) {
             newUser.userType = "admin"
@@ -93,13 +101,13 @@ const UserCreate = () => {
         newUser.created = newUser.added.addedDate
         delete newUser.added
 
-        const response = apiService.postNewUser(newUser)
+        const response = apiService.postUserEdit(newUser)
         if (response.success) {
-            setStatus(`You have successfully added user ${response.userName}.`)
+            setStatus(`You have successfully updated user ${response.userName}.`)
             setUnsaved(false)
             navigate(`/user/${response.userId}`)
         } else {
-            setStatus("We weren't able to process your add user request.")
+            setStatus("We weren't able to process your edit user request.")
         }
     }
 
@@ -107,13 +115,16 @@ const UserCreate = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Add New User</h2>
+                    <h2>Editing User { userName }</h2>
                 </div>
                 <div className="col-2">
                     <Button text="Return" linkTo="/users" type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
+                </div>
+                <div className="col-2">
+                    <Button text="Delete" linkTo={ `/users/${id}/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -153,7 +164,7 @@ const UserCreate = () => {
                             <input 
                                 type="date" 
                                 name="addedDate" 
-                                value={ changes.added.addedDate } 
+                                value={ adminDate(changes.added.addedDate) } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -170,19 +181,6 @@ const UserCreate = () => {
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Email
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="email" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
                 </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut="/users" /> }
             </div>
@@ -190,4 +188,4 @@ const UserCreate = () => {
     )
 }
 
-export default UserCreate
+export default UserEdit

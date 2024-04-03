@@ -33,6 +33,8 @@ import LogOut from './Auth/LogOut'
 import UserList from './Users/UserList'
 import UserDetails from './Users/UserDetails'
 import UserCreate from './Users/UserCreate'
+import UserEdit from './Users/UserEdit'
+import UserDelete from './Users/UserDelete'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -85,7 +87,9 @@ function App() {
           <Route path="/admin" element={ <Dashboard /> } />
           <Route path="/users" element={ <UserList /> } />
           <Route path="/user/:id" element={ <UserDetails /> } />
+          <Route path="/user/:id/edit" element={ <UserEdit /> } />
           <Route path="/users/add" element={ <UserCreate /> } />
+          <Route path="/users/:id/delete" element={ <UserDelete /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>
