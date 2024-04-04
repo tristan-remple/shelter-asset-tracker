@@ -34,7 +34,7 @@ const UnitDetails = () => {
     }
 
     // fetch unit data from the api
-    const response = apiService.unitItems(id)
+    const response = apiService.singleUnit(id)
     if (!response || response.error) {
         console.log("api error")
         return <Error err="api" />
@@ -65,8 +65,11 @@ const UnitDetails = () => {
         )
     }
 
+    // order the items by most recently updated first
     // put the items that need to be assessed or discarded at the top of the list
     items.sort((a, b) => {
+        return new Date(b.inspectedDate) - new Date(a.inspectedDate)
+    }).sort((a, b) => {
         return a.toAssess < b.toAssess ? 1 : 0
     }).sort((a, b) => {
         return a.toDiscard < b.toDiscard ? 1 : 0

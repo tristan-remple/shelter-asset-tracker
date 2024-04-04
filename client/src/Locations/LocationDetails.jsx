@@ -4,6 +4,7 @@ import { useContext, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
 import { statusContext, authContext } from '../Services/Context'
@@ -27,14 +28,19 @@ const LocationDetails = () => {
     const { id } = useParams()
     const { status } = useContext(statusContext)
 
+    let urlId = id
+
     // validate id
-    if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
+    if (urlId === undefined) {
+        urlId = authService.userInfo().location.locationId
+        if (urlId === 0 || urlId === undefined) {
+            console.log("undefined id")
+            return <Error err="undefined" />
+        }
     }
 
     // fetch unit data from the api
-    const response = apiService.singleLocation(id)
+    const response = apiService.singleLocation(urlId)
     if (!response || response.error) {
         console.log("api error")
         return <Error err="api" />
@@ -70,6 +76,8 @@ const LocationDetails = () => {
 
     // put the units that have items which need to be assessed or discarded at the top of the list
     units.sort((a, b) => {
+        return a.unitName.localeCompare(b.unitName)
+    }).sort((a, b) => {
         return a.toInspectItems < b.toInspectItems ? 1 : 0
     }).sort((a, b) => {
         return a.toDiscardItems < b.toDiscardItems ? 1 : 0

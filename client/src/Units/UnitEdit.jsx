@@ -5,25 +5,34 @@ import { useContext, useState } from 'react'
 // internal dependencies
 import apiService from "../Services/apiService"
 import authService from '../Services/authService'
-import { statusContext } from '../Services/Context'
+import { friendlyDate } from '../Services/dateHelper'
+import { statusContext, authContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
-import { formattedDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
+import CommentBox from '../Reusables/CommentBox'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
 // ** Available for SCSS **
-// This module allows an admin to edit a location.
+// This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
+// The items within the unit are displayed as well.
 // Imported by: App
 
-const LocationCreate = () => {
+const UnitEdit = () => {
 
     // get context information
+    const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
+
+    // validate id
+    if (id === undefined) {
+        console.log("undefined id")
+        return <Error err="undefined" />
+    }
 
     // check that user is an admin
     if (!authService.checkAdmin()) {
@@ -31,39 +40,48 @@ const LocationCreate = () => {
         return <Error err="permission" />
     }
 
+    // fetch unit data from the api
+    const response = apiService.singleUnit(id)
+    if (!response || response.error) {
+        console.log("api error")
+        return <Error err="api" />
+    }
+
+    // destructure api response
+    const { unit } = response
+    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
+
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
 
+    // set delete label
+    const [ deletedLabel, setDeletedLabel ] = useState("Delete Location")
+    if (deleteDate) {
+        setDeletedLabel("Restore Location")
+    }
+
     // set possible changes
     const [ changes, setChanges ] = useState({
-        locationName: "",
-        locationType: "",
-        added: {
-            addedDate: formattedDate()
-        },
+        unitName,
+        unitType,
+        added,
+        inspected,
         comment: ""
     })
-
-    // Most changes are handled by Services/handleChanges
 
     // sends the item object to the apiService
     const saveChanges = () => {
 
-        if (changes.locationName === "" || changes.locationType === "") {
-            setStatus("A new location must have a title and a type.")
-            return
-        }
-
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
-            const response = apiService.postLocation(changes)
+            const response = apiService.postUnitEdit(changes)
             if (response.success) {
-                setStatus(`You have successfully created ${ response.locationName }.`)
+                setStatus(`You have successfully updated ${ response.unitName }.`)
                 setUnsaved(false)
-                navigate(`/location/${ response.locationId }`)
+                navigate(`/location/${ response.unitId }`)
             } else {
-                setStatus("We weren't able to process your add location request.")
+                setStatus("We weren't able to process your add item request.")
             }
         } else {
             return <Error err="permission" />
@@ -74,13 +92,16 @@ const LocationCreate = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Add a New Location</h2>
+                    <h2>Unit { unitName } in { locationName }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="All Locations" linkTo="/locations" type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
+                </div>
+                <div className="col-2">
+                    <Button text={ deletedLabel } linkTo={ `/unit/${ unitId }/delete` } type="admin" />
                 </div>
             </div>
             <div className="page-content">
@@ -88,28 +109,52 @@ const LocationCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Title
+                            Location
+                        </div>
+                        <div className="col-content">
+                            { locationName }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Unit Name
                         </div>
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="locationName" 
-                                value={ changes.locationName } 
+                                name="unitName" 
+                                value={ changes.unitName } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Type
+                            Unit Type
                         </div>
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="locationType" 
-                                value={ changes.locationType } 
+                                name="unitType" 
+                                value={ changes.unitType } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Updated By
+                        </div>
+                        <div className="col-content">
+                            { inspected.userName }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Updated At
+                        </div>
+                        <div className="col-content">
+                            { friendlyDate(inspected.inspectedDate) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -128,21 +173,20 @@ const LocationCreate = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
-                        <p>
-                            <strong>Comments:</strong><br />
-                        </p>
+                        <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 
                             value={ changes.comment } 
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             className="comment-area" 
                         />
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/locations` } locationId={ null } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${id}` } locationId={ locationId } /> }
         </main>
     )
 }
 
-export default LocationCreate
+export default UnitEdit

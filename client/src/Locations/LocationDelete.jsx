@@ -12,6 +12,11 @@ import Error from '../Reusables/Error'
 import authService from '../Services/authService'
 import ChangePanel from '../Reusables/ChangePanel'
 
+//------ MODULE INFO
+// ** Available for SCSS **
+// This module checks that the user wants to delete a location.
+// Imported by: App
+
 const LocationDelete = () => {
 
     const navigate = useNavigate()
@@ -41,13 +46,18 @@ const LocationDelete = () => {
     // destructure the unit
     const { locationId, locationName } = location
 
+    // send delete api call
     const confirmDelete = () => {
-        const response = apiService.deleteUnit(location)
-        if (response.success) {
-            setStatus(`You have successfully deleted unit ${ response.locationName }.`)
-            navigate(`/locations`)
+        if (authService.checkUser() && authService.checkAdmin()) {
+            const response = apiService.deleteUnit(location)
+            if (response.success) {
+                setStatus(`You have successfully deleted unit ${ response.locationName }.`)
+                navigate(`/locations`)
+            } else {
+                setStatus("We weren't able to process your delete location request.")
+            }
         } else {
-            setStatus("We weren't able to process your delete location request.")
+            return <Error err="permission" />
         }
     }
 

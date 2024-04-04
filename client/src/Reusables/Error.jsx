@@ -24,6 +24,9 @@ const Error = ({ err }) => {
         case "permission":
             errorText = "You do not have permission to do the requested task."
             break
+        case "unknown":
+            errorText = "The page you are looking for either does not exist, or is spelled incorrectly."
+            break
         default:
             errorText = "Something went wrong"
     }
@@ -31,14 +34,16 @@ const Error = ({ err }) => {
     return (
         <main className="container">
             <h1>Error</h1>
-            <p>If you're seeing this page, something has gone wrong.</p>
-            <p>{ errorText }</p>
-            <div className="row">
-                <div className="col">
-                    <Button text="Return Home" linkTo="/" type="nav" />
-                </div>
-                <div className="col">
-                    <Button text="Read Help Document" linkTo="/help" type="nav" />
+            <div className="page-content">
+                <p>If you're seeing this page, something has gone wrong.</p>
+                <p>{ errorText }</p>
+                <div className="row">
+                    <div className="col">
+                        <Button text="Return Home" linkTo="/" type="nav" />
+                    </div>
+                    <div className="col">
+                        <Button text="Read Help Document" linkTo="/help" type="nav" />
+                    </div>
                 </div>
             </div>
         </main>
