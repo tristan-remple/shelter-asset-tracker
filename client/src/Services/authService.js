@@ -54,6 +54,26 @@ class authService {
     logout() {
         return { success: true }
     }
+
+    requestResetPassword(id) {
+        return {
+            userId: id,
+            success: true
+        }
+    }
+
+    getResetRequest(hash) {
+        return {
+            userId: 3,
+            success: true
+        }
+    }
+
+    resetPassword(request) {
+        console.log(request)
+        request.success = true
+        return request
+    }
 }
 
 export default new authService

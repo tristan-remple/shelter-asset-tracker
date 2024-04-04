@@ -31,7 +31,7 @@ const UserEdit = () => {
     }
 
     // validate id
-    if (id === undefined) {
+    if (id === undefined || id === "undefined") {
         console.log("undefined id")
         return <Error err="undefined" />
     }
@@ -118,7 +118,7 @@ const UserEdit = () => {
                     <h2>Editing User { userName }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo="/users" type="nav" />
+                    <Button text="Return" linkTo={ `/user/${ userId }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
@@ -182,7 +182,7 @@ const UserEdit = () => {
                         </div>
                     </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut="/users" /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ userId }` } /> }
             </div>
         </main>
     )

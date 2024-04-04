@@ -1,5 +1,6 @@
 // external dependencies
 import { Link } from 'react-router-dom'
+import { HashLink } from 'react-router-hash-link'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -40,6 +41,8 @@ const Button = ({ text, linkTo, type }) => {
         return <div className={ buttonClass } onClick={ linkTo } >{ text }</div>
     } else if (linkTo === null) {
         return <div className={ buttonClass } >{ text }</div>
+    } else if (linkTo.includes("#")) {
+        return <HashLink to={ linkTo } className={ buttonClass }>{ text }</HashLink>
     } else {
         return <Link to={ linkTo } className={ buttonClass }>{ text }</Link>
     }

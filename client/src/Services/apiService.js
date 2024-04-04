@@ -411,6 +411,13 @@ class apiService {
         user.success = true
         return user
     }
+
+    postNewCategory(category) {
+        console.log(category)
+        category.categoryId = 20
+        category.success = true
+        return category
+    }
 }
 
 export default new apiService

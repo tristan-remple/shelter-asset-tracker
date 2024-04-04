@@ -30,7 +30,7 @@ const CategoryList = () => {
     }
 
     // get the categories from the api
-    const categories = apiService.categoryList()
+    const categories = apiService.listCategories()
     if (!categories || categories.error) {
         console.log("api error")
         return <Error err="api" />

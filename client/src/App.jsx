@@ -35,6 +35,10 @@ import UserDetails from './Users/UserDetails'
 import UserCreate from './Users/UserCreate'
 import UserEdit from './Users/UserEdit'
 import UserDelete from './Users/UserDelete'
+import ResetPassword from './Auth/ResetPassword'
+import Error from './Reusables/Error'
+import CategoryCreate from './Categories/CategoryCreate'
+import FAQ from './Reusables/FAQ'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -66,7 +70,6 @@ function App() {
         <Routes>
           <Route path="/" element={ <LogIn /> } />
           <Route path="/logout" element={ <LogOut /> } />
-          <Route path="/item" element={ <ItemDetails /> } />
           <Route path="/item/:id" element={ <ItemDetails /> } />
           <Route path="/item/:id/edit" element={ <ItemEdit /> } />
           <Route path="/unit/:id/add" element={ <ItemCreate /> } />
@@ -81,15 +84,20 @@ function App() {
           <Route path="/locations" element={ <LocationList /> } />
           <Route path="/locations/add" element={ <LocationCreate /> } />
           <Route path="/categories" element={ <CategoryList /> } />
+          <Route path="/categories/add" element={ <CategoryCreate /> } />
           <Route path="/category/:id" element={ <CategoryDetails /> } />
           <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
           <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
           <Route path="/admin" element={ <Dashboard /> } />
           <Route path="/users" element={ <UserList /> } />
+          <Route path="/user" element={ <UserDetails /> } />
           <Route path="/user/:id" element={ <UserDetails /> } />
           <Route path="/user/:id/edit" element={ <UserEdit /> } />
           <Route path="/users/add" element={ <UserCreate /> } />
           <Route path="/users/:id/delete" element={ <UserDelete /> } />
+          <Route path="/reset/:hash" element={ <ResetPassword /> } />
+          <Route path="/faq" element={ <FAQ /> } />
+          <Route path="/*" element={ <Error err="unknown" /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>

@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import { statusContext } from "../Services/Context"
 import { useNavigate, redirect } from "react-router-dom"
 
@@ -24,10 +24,12 @@ const LogIn = () => {
     const { status, setStatus } = useContext(statusContext)
 
     // check if user is already logged in
-    // if (authService.checkUser()) {
-    //     return redirect("/location")
-    // }
-
+    useEffect(() => {
+        if (authService.checkUser()) {
+            navigate("/location")
+        }
+    }, [])
+    
     // form handling
     const [ changes, setChanges ] = useState({
         userName: "",
