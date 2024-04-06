@@ -1,6 +1,4 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (db) => {
+module.exports = (db, { DataTypes }) => {
     db.define('Facility', {
         id: {
             type: DataTypes.INTEGER,
@@ -12,20 +10,11 @@ module.exports = (db) => {
             allowNull: false,
             unique: true
         },
-        address: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        manager: {
-            type: DataTypes.STRING,
+        managerId: {
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         phone: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        email: {
             type: DataTypes.STRING,
             allowNull: true
         }

@@ -1,4 +1,4 @@
-const { models } = require('../data')
+const { models } = require('../data');
 
 exports.getAllUsers = async (req, res, next) => {
     try {
@@ -38,7 +38,49 @@ exports.getAllUsers = async (req, res, next) => {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
     } 
-}
+};
+
+exports.getUserById = async (req, res, next) => {
+    try {
+        const userId = req.params.id; 
+
+        const user = await models.User.findOne({
+            attributes: ['id', 'email', 'name', 'isAdmin', 'createdAt', 'updatedAt'],
+            where: { id: userId },
+            include: {
+                model: models.FacilityAuth,
+                attributes: ['userId', 'facilityId'],
+                include: {
+                    model: models.Facility,
+                    attributes: ['id', 'name']
+                }
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        const userDetails = {
+            userId: user.id,
+            email: user.email,
+            name: user.name,
+            isAdmin: user.isAdmin,
+            created: user.createdAt,
+            updated: user.updatedAt,
+            facilities: user.FacilityAuths.map(facilityAuth => ({
+                facilityId: facilityAuth.Facility.id,
+                name: facilityAuth.Facility.name
+            }))
+        };
+
+        res.status(200).json(userDetails);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error.' });
+    }
+};
 
 exports.createNewUser = async (req, res, next) => {
     try {
@@ -63,48 +105,6 @@ exports.createNewUser = async (req, res, next) => {
     }
 };
 
-exports.getUserById = async (req, res, next) => {
-    try {
-        const userId = req.params.id; 
-
-        const user = await models.User.findOne({
-            attributes: ['id', 'email', 'name', 'isAdmin', 'createdAt', 'updatedAt'],
-            where: { id: userId },
-            include: {
-                model: models.FacilityAuth,
-                attributes: ['userId', 'facilityId'],
-                include: {
-                    model: models.Facility,
-                    attributes: ['id', 'name']
-                }
-            },
-        });
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        const userProfile = {
-            userId: user.id,
-            email: user.email,
-            name: user.name,
-            isAdmin: user.isAdmin,
-            created: user.createdAt,
-            updated: user.updatedAt,
-            facilities: user.FacilityAuths.map(facilityAuth => ({
-                facilityId: facilityAuth.Facility.id,
-                name: facilityAuth.Facility.name
-            }))
-        };
-
-        res.status(200).json(userProfile);
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Server error' });
-    }
-};
-
 exports.updateUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
@@ -113,12 +113,14 @@ exports.updateUser = async (req, res, next) => {
         const user = await models.User.findByPk(userId);
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found.' });
         }
 
-        user.username = username || user.username;
-        user.name = name || user.name;
-        user.email = email || user.email;
+        user.set({
+            username: username,
+            name: name,
+            email: email
+        })
 
         await user.save();
 
@@ -126,7 +128,7 @@ exports.updateUser = async (req, res, next) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -137,8 +139,8 @@ exports.deleteUser = async (req, res, next) => {
 
         const user = await models.User.findByPk(userId);
 
-        if (!user || user.email !== email) {
-            return res.status(404).json({ error: 'User not found or invalid email' });
+        if (!user || user.email != email) {
+            return res.status(404).json({ error: 'User not found.' });
         }
 
         const deletedUser = await user.destroy();
@@ -153,6 +155,6 @@ exports.deleteUser = async (req, res, next) => {
         res.status(200).json(deleteResponse);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Server error.' });
     }
 };

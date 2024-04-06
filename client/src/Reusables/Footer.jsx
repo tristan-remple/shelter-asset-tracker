@@ -10,9 +10,12 @@ const Footer = () => {
     return (
         <footer className="navbar navbar-expand-lg fixed-bottom">
             <div className="container p-3">
-                <p className='mt-3'>Shelter Asset Tracker © <a href="https://www.nscc.ca/about/research-and-innovation/index.asp">Applied Research NSCC</a></p>
+                <p className='mt-3'>
+                    Shelter Asset Tracker © <a href="https://www.nscc.ca/about/research-and-innovation/index.asp">Applied Research NSCC</a><br />
+                    All information on this site belongs exclusively and confidentially to <a href={ import.meta.env.VITE_ORG_URL }>{ import.meta.env.VITE_ORGANIZATION }</a>.
+                    </p>
                     <div className="nav-link">
-                        <Link id="faq" className="navbar-brand m-lg-2" href="/faq">?</Link>
+                        <Link id="faq" className="navbar-brand m-lg-2" to="/faq">?</Link>
                     </div>
             </div>
         </footer>

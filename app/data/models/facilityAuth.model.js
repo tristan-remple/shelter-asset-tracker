@@ -32,6 +32,7 @@ module.exports = (db) => {
             }
         }
     }, {
+    }, {
         tableName: 'FacilityAuths',
         updatedAt: false
     });

@@ -19,7 +19,7 @@ const ChangePanel = ({ save, linkOut, locationId }) => {
     const userLocation = userInfo.location.locationId
 
     let locationWarning = ""
-    if (userLocation != locationId) {
+    if (userLocation !== locationId && !authService.checkAdmin()) {
         locationWarning = <p>The object you are editing is not at your assigned location.</p>
     }
 

@@ -14,14 +14,14 @@ import Comment from '../Reusables/Comment'
 const CommentBox = ({ comments }) => {
 
     // order the comments by date
-    const orderedComments = comments.sort((a, b) => (new Date(b.commentDate) - new Date(a.commentDate) ))
+    comments.sort((a, b) => (new Date(b.commentDate) - new Date(a.commentDate) ))
 
     // grab the most recent comment and format it for display
-    const latestComment = orderedComments[0]
+    const latestComment = comments[0]
     const displayComment = <Comment key={ latestComment.commentId } comment={ latestComment } />
 
     // format all the comments for display
-    const displayOlderComments = orderedComments.map(cmt => {
+    const displayOlderComments = comments.map(cmt => {
         return <Comment key={ cmt.commentId } comment={ cmt } />
     })
 
@@ -43,7 +43,9 @@ const CommentBox = ({ comments }) => {
             <strong>Comments:</strong><br />
             { displayComment }
             { olderComments && displayOlderComments }
-            { readMore && <div className="comment-toggle" onClick={ toggleOlderComments } >Display older comments</div> }
+            { readMore && <div className="comment-toggle" onClick={ toggleOlderComments } >
+                { olderComments ? "Hide" : "Show" } older comments
+            </div> }
         </div>
     )
 }

@@ -40,6 +40,11 @@ const LocationList = () => {
         )
     }
 
+    // sort locations alphabetically
+    locations.sort((a, b) => {
+        return a.locationName.localeCompare(b.locationName)
+    })
+
     // map the unit objects into table rows
     const displayItems = locations.map(item => {
 

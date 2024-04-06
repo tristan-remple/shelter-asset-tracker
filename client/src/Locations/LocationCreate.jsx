@@ -55,7 +55,7 @@ const LocationCreate = () => {
         }
 
         // verify user identity
-        if (authService.checkUser()) {
+        if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
             const response = apiService.postLocation(changes)
             if (response.success) {
@@ -66,7 +66,7 @@ const LocationCreate = () => {
                 setStatus("We weren't able to process your add location request.")
             }
         } else {
-            setStatus("Your log in credentials could not be validated.")
+            return <Error err="permission" />
         }
     }
 

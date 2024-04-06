@@ -16,7 +16,7 @@ class handleChanges {
     // handles changes to addedDate
     handleDateChange = (event, changes, setChanges, setUnsaved) => {
         const newChanges = {...changes}
-        const newDate = event.target.value.replace("T", " ")
+        const newDate = event.target.value
         newChanges.added.addedDate = newDate
         setChanges(newChanges)
         setUnsaved(true)
