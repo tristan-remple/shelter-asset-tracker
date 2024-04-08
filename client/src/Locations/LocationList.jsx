@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import { statusContext, authContext } from '../Services/Context'
 
 // components
@@ -19,7 +20,9 @@ const LocationList = () => {
     // get the status from context, set it to a warning
     const { status, setStatus } = useContext(statusContext)
     useEffect(() => {
-        setStatus('You may not need to view or edit locations other than your assigned location.')
+        if (!authService.checkAdmin()) {
+            setStatus('You may not need to view or edit locations other than your assigned location.')
+        }
     }, [])
     
     // get the locations from the api

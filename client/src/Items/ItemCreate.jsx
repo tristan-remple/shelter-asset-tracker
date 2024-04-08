@@ -51,14 +51,13 @@ const ItemCreate = () => {
 
     // grab the list of categories
     const categoryList = apiService.listCategories()
-    let simpleCategories = []
-    if (!categoryList || categoryList[0].error) {
+    if (!categoryList || categoryList.error) {
         return <Error err="api" />
-    } else {
-        // the Dropdown component later is expecting a list of strings
-        simpleCategories = categoryList.map(cat => cat.categoryName)
-        simpleCategories.unshift("Select:")
     }
+
+    // the Dropdown component later is expecting a list of strings
+    const simpleCategories = categoryList.map(cat => cat.categoryName)
+    simpleCategories.unshift("Select:")
 
     // new item state
     const [ newItem, setNewItem ] = useState({
@@ -98,7 +97,7 @@ const ItemCreate = () => {
             setUnsaved(true)
             setStatus("")
         } else {
-            setStatus("The category you have selected cannot be found.")
+            setStatus("The category you selected cannot be found.")
         }
     }
 

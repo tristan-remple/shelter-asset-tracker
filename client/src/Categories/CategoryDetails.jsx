@@ -37,9 +37,7 @@ const CategoryDetails = () => {
     }
 
     // destructure response
-    const { categoryId, categoryName, defaultValue, defaultUsefulLife, icon, singleUse, items, created, updated } = response
-
-    
+    const { categoryId, categoryName, defaultValue, defaultDepreciation, icon, singleResident, items, created, updated } = response
 
     return (
         <main className="container">
@@ -71,10 +69,10 @@ const CategoryDetails = () => {
                     
                     <div className="col col-info">
                         <div className="col-head">
-                            Single Use
+                            Single Resident
                         </div>
                         <div className="col-content">
-                            { singleUse ? "Yes" : "No" }
+                            { singleResident ? "Yes" : "No" }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -105,10 +103,10 @@ const CategoryDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life
+                            Default Depreciation Rate
                         </div>
                         <div className="col-content">
-                            { `${( defaultUsefulLife / 4 )} years` }
+                            { defaultDepreciation }
                         </div>
                     </div>
                     <div className="col col-info">

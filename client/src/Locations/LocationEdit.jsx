@@ -15,6 +15,7 @@ import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import ChangePanel from '../Reusables/ChangePanel'
 import CommentBox from '../Reusables/CommentBox'
+import Dropdown from '../Reusables/Dropdown'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -48,7 +49,13 @@ const LocationEdit = () => {
     }
 
     // destructure api response
-    const { locationName, locationId, locationTypes, added, deleteDate, comments, phone } = location
+    const { locationName, locationId, locationTypes, added, deleteDate, comments, phone, user } = location
+
+    // get the list of users
+    const users = apiService.listUsers()
+    if (!users || users.error) {
+        return <Error err="api" />
+    }
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -63,11 +70,30 @@ const LocationEdit = () => {
     const [ changes, setChanges ] = useState({
         locationName,
         phone,
+        user,
         added,
         comment: ""
     })
 
     // Most changes are handled by Services/handleChanges
+
+    // user dropdown expects an array of strings
+    const simpleUsers = users.map(usr => usr.userName)
+
+    // user dropdown functionality
+    // take the string and assign the corresponding user object to the location object
+    const handleUserChange = (newUser) => {
+        const newUserIndex = users.map(usr => usr.userName).indexOf(newUser)
+        if (newUserIndex !== -1) {
+            const newChanges = {...changes}
+            newChanges.user = users[newUserIndex]
+            setChanges(newChanges)
+            setUnsaved(true),
+            setStatus("")
+        } else {
+            setStatus("The user you selected cannot be found.")
+        }
+    }
 
     // sends the item object to the apiService
     const saveChanges = () => {
@@ -148,6 +174,18 @@ const LocationEdit = () => {
                                 name="phone" 
                                 value={ changes.phone } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Primary User
+                        </div>
+                        <div className="col-content">
+                            <Dropdown 
+                                list={ simpleUsers } 
+                                current={ changes.user.userName } 
+                                setCurrent={ handleUserChange }
                             />
                         </div>
                     </div>

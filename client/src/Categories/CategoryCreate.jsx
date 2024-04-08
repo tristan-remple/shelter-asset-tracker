@@ -32,9 +32,9 @@ const CategoryCreate = () => {
     const [ changes, setChanges ] = useState({
         categoryName: "",
         defaultValue: 0,
-        defaultUsefulLife: 0,
+        defaultDepreciation: 0,
         icon: "",
-        singleUse: false
+        singleResident: false
     })
 
     // open or close the icon selector menu
@@ -48,7 +48,7 @@ const CategoryCreate = () => {
     const saveChanges = () => {
 
         // validation
-        if (changes.categoryName === "" || changes.defaultValue < 1 || changes.defaultUsefulLife < 1 || changes.icon === "") {
+        if (changes.categoryName === "" || changes.defaultValue < 1 || changes.defaultDepreciation < 1 || changes.icon === "") {
             setStatus("Please fill in all category fields.")
             return
         }
@@ -65,6 +65,8 @@ const CategoryCreate = () => {
                 setStatus(`You have successfully created category ${ response.categoryName }.`)
                 setUnsaved(false)
                 navigate(`/category/${response.categoryId}`)
+            } else if (response.status === 400) {
+                setStatus(`Category ${ changes.categoryName } already exists.`)
             } else {
                 setStatus("We weren't able to process your create category request.")
             }
@@ -105,13 +107,13 @@ const CategoryCreate = () => {
                     
                     <div className="col col-info">
                         <div className="col-head">
-                            Single Use
+                            Single Resident
                         </div>
                         <div className="col-content">
                             <input 
                                 type="checkbox"
-                                name="singleUse" 
-                                checked={ changes.singleUse }
+                                name="singleResident" 
+                                checked={ changes.singleResident }
                                 onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -134,13 +136,13 @@ const CategoryCreate = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life (in Quarters)
+                            Default Depreciation Rate
                         </div>
                         <div className="col-content">
                             <input 
                                 type="number" 
-                                name="defaultUsefulLife" 
-                                value={ changes.defaultUsefulLife } 
+                                name="defaultDepreciation" 
+                                value={ changes.defaultDepreciation } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

@@ -52,8 +52,7 @@ const CategoryList = () => {
                 <td className="col-icon"><img className="small-icon" src={ `/img/${ item.icon }.png` } /></td>
                 <td>{ item.categoryName }</td>
                 <td className="col-right">{ item.defaultValue }</td>
-                <td className="col-right">{ item.items }</td>
-                <td>{ item.singleUse ? "Yes" : "No" }</td>
+                <td>{ item.singleResident ? "Yes" : "No" }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.categoryId }` } type="small" /></td>
             </tr>
         )
@@ -81,8 +80,7 @@ const CategoryList = () => {
                             <th scope="col">Icon</th>
                             <th scope="col">Name</th>
                             <th scope="col">Default Value</th>
-                            <th scope="col"># of Items</th>
-                            <th scope="col">Single Use</th>
+                            <th scope="col">Single Resident</th>
                             <th scope="col">Details</th>
                         </tr>
                     </thead>

@@ -94,14 +94,14 @@ class apiService {
                 categoryName: "dining table",
                 defaultValue: 900,
                 icon: "icons8-furniture-100",
-                singleUse: false
+                singleResident: false
             },
             {
                 categoryId: 2,
                 categoryName: "end table",
                 defaultValue: 300,
                 icon: "icons8-bureau-100",
-                singleUse: false
+                singleResident: false
             }
         ]
     }
@@ -264,6 +264,10 @@ class apiService {
                 addedDate: "2022-02-22 13:55:00"
             },
             deleteDate: null,
+            user: {
+                userId: 7,
+                userName: "Joe Rivers"
+            },
             comments: [
                 {
                     commentId: 12,
@@ -324,7 +328,7 @@ class apiService {
                 defaultValue: 900,
                 items: 16,
                 icon: "icons8-furniture-100",
-                singleUse: false
+                singleResident: false
             },
             {
                 categoryId: 2,
@@ -332,7 +336,7 @@ class apiService {
                 defaultValue: 300,
                 items: 34,
                 icon: "icons8-bureau-100",
-                singleUse: false
+                singleResident: false
             }
         ]
         return categoryList
@@ -345,7 +349,7 @@ class apiService {
             defaultValue: 300,
             defaultUsefulLife: 20,
             icon: "icons8-bureau-100",
-            singleUse: false,
+            singleResident: false,
             items: 34,
             created: "2024-02-22 13:55:00",
             updated: "2024-02-22 13:55:00"

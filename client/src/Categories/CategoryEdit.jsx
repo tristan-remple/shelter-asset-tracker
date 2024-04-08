@@ -42,16 +42,16 @@ const CategoryEdit = () => {
     }
 
     // destructure response
-    const { categoryId, categoryName, defaultValue, defaultUsefulLife, icon, singleUse, items, created, updated } = response
+    const { categoryId, categoryName, defaultValue, defaultDepreciation, icon, singleResident, items, created, updated } = response
 
     // form controls
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
         categoryName,
         defaultValue,
-        defaultUsefulLife,
+        defaultDepreciation,
         icon,
-        singleUse
+        singleResident
     })
 
     // open or close the icon selector menu
@@ -117,7 +117,7 @@ const CategoryEdit = () => {
                     
                     <div className="col col-info">
                         <div className="col-head">
-                            Single Use
+                            Single Resident
                         </div>
                         <div className="col-content">
                             <input 
@@ -162,13 +162,13 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life (in Quarters)
+                            Default Depreciation Rate
                         </div>
                         <div className="col-content">
                             <input 
                                 type="number" 
-                                name="defaultUsefulLife" 
-                                value={ changes.defaultUsefulLife } 
+                                name="defaultDepreciation" 
+                                value={ changes.defaultDepreciation } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
