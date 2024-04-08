@@ -7,6 +7,8 @@ import apiService from "../Services/apiService"
 import authService from '../Services/authService'
 import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
+import capitalize from '../Services/capitalize'
+import validatePhone from '../Services/validatePhone'
 
 // components
 import Button from "../Reusables/Button"
@@ -46,7 +48,7 @@ const LocationEdit = () => {
     }
 
     // destructure api response
-    const { locationName, locationId, locationType, added, deleteDate, comments } = location
+    const { locationName, locationId, locationTypes, added, deleteDate, comments, phone } = location
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -60,7 +62,7 @@ const LocationEdit = () => {
     // set possible changes
     const [ changes, setChanges ] = useState({
         locationName,
-        locationType,
+        phone,
         added,
         comment: ""
     })
@@ -72,6 +74,21 @@ const LocationEdit = () => {
 
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
+
+            // validate title
+            if (changes.locationName == "") {
+                setStatus("Locations must have a title.")
+                return
+            }
+
+            // validate phone number
+            const validPhone = validatePhone(changes.phone)
+            if (validPhone.error) {
+                setStatus(validPhone.error)
+                return
+            }
+            changes.phone = validPhone.number
+
             // send api request and process api response
             const response = apiService.postLocationEdit(changes)
             if (response.success) {
@@ -123,15 +140,23 @@ const LocationEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Type
+                            Phone Number
                         </div>
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="locationType" 
-                                value={ changes.locationType } 
+                                name="phone" 
+                                value={ changes.phone } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Unit Types
+                        </div>
+                        <div className="col-content">
+                            { capitalize( locationTypes.join(", ") ) }
                         </div>
                     </div>
                     <div className="col col-info">

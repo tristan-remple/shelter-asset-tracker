@@ -37,7 +37,6 @@ const LocationCreate = () => {
     // set possible changes
     const [ changes, setChanges ] = useState({
         locationName: "",
-        locationType: "",
         added: {
             addedDate: formattedDate()
         },
@@ -95,19 +94,6 @@ const LocationCreate = () => {
                                 type="text" 
                                 name="locationName" 
                                 value={ changes.locationName } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Type
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="locationType" 
-                                value={ changes.locationType } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

@@ -48,7 +48,7 @@ const LocationDetails = () => {
 
     // destructure api response
     const { location, units } = response
-    const { locationName, locationId, locationType, added, deleteDate, comments } = location
+    const { locationName, locationId, locationTypes, added, deleteDate, comments, phone } = location
 
     // if it has been deleted, throw an error
     if (deleteDate) {
@@ -91,7 +91,7 @@ const LocationDetails = () => {
         // flag options are defined in the flag module
         let flagColor = flagColorOptions[0]
         let flagText = flagTextOptions[0]
-        if ( item.toDiscardItems > 0 ) {
+        if ( item.discardCount > 0 ) {
             flagColor = flagColorOptions[2]
             flagText = flagTextOptions[2]
         } else if ( item.toInspectItems > 0 ) {
@@ -133,10 +133,18 @@ const LocationDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Type
+                            Phone Number
                         </div>
                         <div className="col-content">
-                            { capitalize(locationType) }
+                            { phone }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Unit Types
+                        </div>
+                        <div className="col-content">
+                            { capitalize( locationTypes.join(", ") ) }
                         </div>
                     </div>
                     <div className="col col-info">

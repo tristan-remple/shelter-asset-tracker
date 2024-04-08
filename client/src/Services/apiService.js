@@ -207,7 +207,8 @@ class apiService {
             location: {
                 locationId: 2,
                 locationName: "The Hub",
-                locationType: "shelter",
+                locationTypes: ["snug", "office"],
+                phone: "(902) 222-2222",
                 added: {
                     userId: 2,
                     userName: "Sally Ivany",
@@ -230,21 +231,21 @@ class apiService {
                     unitName: "204",
                     unitType: "snug",
                     toInspectItems: 3,
-                    toDiscardItems: 0
+                    discardCount: 0
                 },
                 {
                     unitId: 3,
                     unitName: "205",
                     unitType: "snug",
                     toInspectItems: 0,
-                    toDiscardItems: 0
+                    discardCount: 0
                 },
                 {
                     unitId: 4,
                     unitName: "206",
                     unitType: "snug",
                     toInspectItems: 1,
-                    toDiscardItems: 1
+                    discardCount: 1
                 }
             ]
         }
@@ -255,7 +256,8 @@ class apiService {
         return {
             locationId: 2,
             locationName: "The Hub",
-            locationType: "shelter",
+            locationTypes: ["snug", "office"],
+            phone: "(902) 222-2222",
             added: {
                 userId: 2,
                 userName: "Sally Ivany",
