@@ -43,10 +43,13 @@ exports.getFacilityById = async (req, res, next) => {
             where: { id: facilityId },
             include: [{
                 model: models.User,
-                attributes: ['name'],
+                attributes: ['id', 'name'],
             }, {
                 model: models.Unit,
-                attributes: ['id', 'name', 'type'],
+                attributes: [
+                    'id', 
+                    'name', 
+                    'type'],
                 include: {
                     model: models.Item,
                     attributes: []
@@ -62,15 +65,20 @@ exports.getFacilityById = async (req, res, next) => {
         const facilityDetails = {
             facilityId: facility.id,
             name: facility.name,
-            created: facility.createdAt,
-            updated: facility.updatedAt,
+            phone: facility.phone,
+            manager: {
+                id: facility.User.id,
+                name: facility.User.name
+            },
             units: facility.Units.map(unit => ({
                 unitId: unit.id,
                 name: unit.name,
                 type: unit.type,
                 inspectCount: unit.inspectCount || 0,
                 deleteCount: unit.discardCount || 0
-            }))
+            })),
+            created: facility.createdAt,
+            updated: facility.updatedAt,
         };
 
         res.status(200).json(facilityDetails);
