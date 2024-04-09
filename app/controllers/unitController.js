@@ -11,7 +11,7 @@ exports.getUnitById = async (req, res, next) => {
                 'type'
             ],
             where: { id: unitId },
-            include: {
+            include: [{
                 model: models.Item,
                 attributes: [
                     'id',
@@ -24,7 +24,10 @@ exports.getUnitById = async (req, res, next) => {
                     attributes: ['id', 'name']
                 },
                 required: false
-            },
+            }, {
+                model: models.Facility,
+                attributes: ['id','name']
+            }],
             group: [] 
         });
 
@@ -35,6 +38,10 @@ exports.getUnitById = async (req, res, next) => {
         const unitListItems = {
             unitId: unit.id,
             unitName: unit.name,
+            facility: {
+                id: unit.Facility.id,
+                name: unit.Facility.name
+            },
             items: unit.Items.map(item => ({
                 itemId: item.id,
                 itemName: item.name,
