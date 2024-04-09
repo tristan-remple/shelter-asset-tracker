@@ -21,13 +21,11 @@ exports.getUnitById = async (req, res, next) => {
                 ],
                 include: {
                     model: models.Template,
-                    attributes: [
-                        'id',
-                        'name'
-                    ]
-                }
+                    attributes: ['id', 'name']
+                },
+                required: false
             },
-            group: [] // Don't forget me
+            group: [] 
         });
 
         if (!unit) {
@@ -67,13 +65,49 @@ exports.createNewUnit = async (req, res, next) => {
             type: type
         });
 
-        res.status(201).json({
-            id: newUnit.id,
-            name: newUnit.name,
+        const createResponse = {
+            unitId: newUnit.id,
+            facility: newUnit.facilityId,
             type: newUnit.type,
-            facilityId: newUnit.facilityId,
+            createdAt: newUnit.createdAt,
             success: true
-        });
+        };
+
+        res.status(201).json(createResponse);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.updateUnit = async (req, res, next) => {
+    try {
+        const unitId = req.params.id;
+        const { facilityId, name, type } = req.body;
+
+        const unit = await models.Unit.findByPk(unitId);
+
+        if (!unit) {
+            return res.status(404).json({ error: 'Unit not found.' });
+        }
+
+        unit.set({
+            facilityId: facilityId,
+            name: name,
+            type: type
+        })
+
+        const updateResponse = {
+            facilityId: facilityId,
+            name: unit.name,
+            type: unit.type,
+            success: true
+        }
+
+        await unit.save();
+
+        res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);

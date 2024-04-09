@@ -30,7 +30,8 @@ const models = [
     require('./models/item.model'),
     require('./models/template.model'),
     require('./models/unit.model'),
-    require('./models/user.model')
+    require('./models/user.model'),
+    require('./models/comment.model'),
 ];
 
 models.forEach(model => {
@@ -38,5 +39,12 @@ models.forEach(model => {
 })
 
 addAssociations(sequelize);
+// sequelize.sync({ alter: true })
+//   .then(() => {
+//     console.log('Database synced successfully');
+//   })
+//   .catch((error) => {
+//     console.error('Error syncing database:', error);
+//   });
 
 module.exports = sequelize;

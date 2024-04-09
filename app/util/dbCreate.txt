@@ -72,13 +72,25 @@ CREATE TABLE Items (
     toInspect BOOLEAN DEFAULT false,
     addedBy INT,
     lastInspected DATETIME NULL,
-    inspectedBy INT NULL,
+    inspectedBy INT,
     createdAt DATETIME,
     updatedAt DATETIME,
     deletedAt DATETIME NULL,
-    comment VARCHAR(255),
     FOREIGN KEY (unitId) REFERENCES Units(id),
     FOREIGN KEY (templateId) REFERENCES Templates(id),
     FOREIGN KEY (addedBy) REFERENCES Users(id),
     FOREIGN KEY (inspectedBy) REFERENCES Users(id)
+);
+
+CREATE TABLE Comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT,
+    itemId INT,
+    comment TEXT,
+    archive JSON,
+    FOREIGN KEY (userId) REFERENCES Users(id),
+    FOREIGN KEY (itemId) REFERENCES Items(id),
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL
 );

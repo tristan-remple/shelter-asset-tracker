@@ -9,6 +9,7 @@ router.route('/')
 
 router.route('/:id')
     .get(unitController.getUnitById)
+    .put(unitController.updateUnit)
     .delete(unitController.deleteUnit);
 
 module.exports = router;

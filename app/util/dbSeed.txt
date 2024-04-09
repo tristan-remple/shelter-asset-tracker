@@ -1,0 +1,101 @@
+-- SEED DB
+-- Inserting users
+INSERT INTO Users (password, name, isAdmin, email, createdAt, updatedAt) VALUES
+('password', 'Admin', 1, 'test1@test.com', NOW(), NOW()),
+('password', 'John Doe', 0, 'test2@test.com', NOW(), NOW()),
+('password', 'Jane Smith', 0, 'test3@test.com', NOW(), NOW()),
+('password', 'Michael Johnson', 0, 'test4@test.com', NOW(), NOW());
+
+-- Inserting templates
+INSERT INTO Templates (name, defaultValue, defaultDepreciation, icon, singleResident, createdAt, updatedAt) VALUES
+('Chair', 50.00, 0.04, 'chair_icon.png', 0, NOW(), NOW()),
+('Table', 100.00, 0.04, 'table_icon.png', 0, NOW(), NOW()),
+('Desk', 150.00, 0.03, 'desk_icon.png', 0, NOW(), NOW()),
+('Mattress', 250.00, 0.05, 'mattress_icon.png', 1, NOW(), NOW());
+
+-- Inserting facilities
+INSERT INTO Facilities (name, managerId, phone, createdAt, updatedAt) VALUES
+('Blank House', 2, '902-555-1234', NOW(), NOW()),
+('Elm Apartments', 3, '902-555-5678', NOW(), NOW()),
+('Shelter Centre', 4, '902-555-9012', NOW(), NOW());
+
+-- Inserting authorizations
+INSERT INTO FacilityAuths (userId, FacilityId, createdAt) VALUES
+(1, 1, NOW()),
+(1, 2, NOW()),
+(1, 3, NOW()),
+(2, 1, NOW()),
+(3, 2, NOW()),
+(4, 3, NOW());
+
+-- Inserting units
+INSERT INTO Units (facilityId, name, type, createdAt, updatedAt) VALUES
+(1, 'Unit A', 'Apartment', NOW(), NOW()),
+(1, 'Unit B', 'Apartment', NOW(), NOW()),
+(2, '101', 'Apartment', NOW(), NOW()),
+(2, '102', 'Apartment', NOW(), NOW()),
+(2, '201', 'Apartment', NOW(), NOW()),
+(3, '1-01', 'Room', NOW(), NOW()),
+(3, '1-02', 'Room', NOW(), NOW()),
+(3, '2-01', 'Room', NOW(), NOW()),
+(3, '2-02', 'Room', NOW(), NOW());
+
+-- Inserting items
+-- Inserting items for UnitID 1
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(1, 1, 'chair A-01', 0, 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
+(1, 1, 'chair A-02', 0, 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
+(1, 1, 'chair A-03', 0, 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()), 
+(1, 2, 'table A-01', 0, 100.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()), 
+(1, 3, 'desk A-01', 1, 150.00, 0.03, 1, 2, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
+(1, 4, 'mattress A-01', 0, 250.00, 0.05, 0, 2, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW());  
+
+-- Inserting items for UnitID 2
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(2, 1, 'chair B-01', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
+(2, 1, 'chair B-02', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
+(2, 1, 'chair B-03', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(2, 1, 'chair B-04', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()),
+(2, 2, 'table B-01', 0, 100.00, 0.04, 0, 1, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
+(2, 4, 'mattress B-01', 0, 250.00, 0.05, 0, 1, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW()); 
+
+-- Inserting items for UnitID 3
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(3, 1, '101-chair01', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
+(3, 1, '101-chair02', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
+(3, 2, '101-table01', 0, 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(3, 4, '101-mattress01', 0, 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+
+-- Inserting items for UnitID 4
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(4, 1, '102-chair01', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
+(4, 1, '102-chair02', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
+(4, 2, '102-table01', 0, 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(4, 4, '102-mattress01', 0, 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+
+-- Inserting items for UnitID 5
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(5, 1, '201-chair01', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
+(5, 1, '201-chair02', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
+(5, 2, '201-desk01', 0, 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(5, 4, '201-mattress01', 0, 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+
+-- Inserting items for UnitID 6
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(6, 4, '101-m', 0, 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+
+-- Inserting items for UnitID 7
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(7, 4, '102-m', 0, 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+
+-- Inserting items for UnitID 8
+INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+VALUES
+(8, 4, '201-m', 0, 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());

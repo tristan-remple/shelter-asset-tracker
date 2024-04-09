@@ -21,11 +21,6 @@ module.exports = (db, { DataTypes }) => {
         isAdmin: {
             type: DataTypes.BOOLEAN,
             allowNull: false
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            default: null
         }
     }, {
         tableName: 'Users'
