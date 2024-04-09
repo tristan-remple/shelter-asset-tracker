@@ -24,16 +24,17 @@ const LocationDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
     
     if (!authService.checkAdmin()) {
         console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // validate id
     if (id === undefined) {
         console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
     // fetch unit data from the api
@@ -50,7 +51,7 @@ const LocationDelete = () => {
             await apiService.singleLocation(id, function(data){
                 if (!data || data.error) {
                     console.log("api error")
-                    return <Error err="api" />
+                    setErr("api")
                 }
                 setResponse(data)
             })
@@ -62,9 +63,10 @@ const LocationDelete = () => {
     const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
             console.log(location)
-            await apiService.deleteUnit(location, (response) => {
+            await apiService.deleteLocation(location, (response) => {
+                console.log(response)
                 if (response.success) {
-                    setStatus(`You have successfully deleted unit ${ response.name }.`)
+                    setStatus(`You have successfully deleted location ${ response.name }.`)
                     navigate(`/locations`)
                 } else {
                     setStatus("We weren't able to process your delete location request.")
@@ -75,7 +77,7 @@ const LocationDelete = () => {
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">

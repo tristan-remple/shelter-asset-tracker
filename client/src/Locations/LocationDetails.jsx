@@ -27,6 +27,8 @@ const LocationDetails = () => {
     // get context information
     const { id } = useParams()
     const { status } = useContext(statusContext)
+    
+    const [ err, setErr ] = useState(null)
 
     let urlId = id
 
@@ -35,7 +37,7 @@ const LocationDetails = () => {
         urlId = authService.userInfo().location.locationId
         if (urlId === 0 || urlId === undefined) {
             console.log("undefined id")
-            return <Error err="undefined" />
+            setErr("undefined")
         }
     }
 
@@ -47,7 +49,7 @@ const LocationDetails = () => {
             await apiService.singleLocation(urlId, function(data){
                 if (!data || data.error) {
                     console.log("api error")
-                    return <Error err="api" />
+                    setErr("api")
                 }
                 setResponse(data)
                 setFilteredUnits(data.units)
@@ -58,8 +60,8 @@ const LocationDetails = () => {
     // destructure api response
     if (response) {
 
-    const { facilityId, name, created, updated, units, types } = response
-    const missing = [ "phone" ]
+    const { facilityId, name, created, updated, units, types, phone } = response
+    console.log(response)
 
     // if the user is admin, populate admin buttons
     let adminButtons = ""
@@ -80,7 +82,7 @@ const LocationDetails = () => {
     }
 
     // put the units that have items which need to be assessed or discarded at the top of the list
-    units.sort((a, b) => {
+    units?.sort((a, b) => {
         return a.name.localeCompare(b.name)
     }).sort((a, b) => {
         return a.inspectCount < b.inspectCount ? 1 : 0
@@ -89,7 +91,7 @@ const LocationDetails = () => {
     })
 
     // map the unit objects into table rows
-    const displayItems = filteredUnits.map(item => {
+    const displayItems = filteredUnits?.map(item => {
 
         // flag options are defined in the flag module
         let flagColor = flagColorOptions[0]
@@ -111,8 +113,8 @@ const LocationDetails = () => {
             </tr>
         )
     })
-
-    return (
+    
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
@@ -139,7 +141,7 @@ const LocationDetails = () => {
                             Phone Number
                         </div>
                         <div className="col-content">
-                            {/* { phone } */}
+                            { phone }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -147,7 +149,7 @@ const LocationDetails = () => {
                             Unit Types
                         </div>
                         <div className="col-content">
-                            { capitalize( types.join(", ") ) }
+                            { types.length > 0 ? capitalize( types.join(", ") ) : "No units yet" }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -175,7 +177,9 @@ const LocationDetails = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems }
+                        { displayItems.length > 0 ? displayItems : <tr>
+                            <td colspan="4">No units yet</td>
+                        </tr> }
                     </tbody>
                 </table>
             </div>

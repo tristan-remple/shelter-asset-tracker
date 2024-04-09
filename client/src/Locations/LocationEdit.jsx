@@ -28,11 +28,12 @@ const LocationEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
+    const [ err, setErr ] = useState(null)
 
     // validate id
     if (id === undefined) {
         console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
     // check that user is an admin
@@ -48,7 +49,7 @@ const LocationEdit = () => {
             await apiService.singleLocation(id, function(data){
                 if (!data || data.error) {
                     console.log("api error")
-                    return <Error err="api" />
+                    setErr("api")
                 }
                 setResponse(data)
             })
@@ -78,11 +79,13 @@ const LocationEdit = () => {
     useEffect(() => {
         if (location) {
             const { name, facilityId, created, types, phone, user } = location
+            console.log(location)
             setChanges({
                 facilityId,
                 name,
                 created,
                 types,
+                phone: phone ? phone : "xxx-xxx-xxxx",
                 user: {
                     userName: "",
                     userId: 0
@@ -147,20 +150,20 @@ const LocationEdit = () => {
 
             // send api request and process api response
             await apiService.postLocationEdit(changes, (response) => {
-                if (response.status === 200) {
+                if (response.success) {
                     setStatus(`You have successfully updated ${ response.name }.`)
                     setUnsaved(false)
-                    navigate(`/location/${ response.facilityId }`)
+                    navigate(`/location/${ response.id }`)
                 } else {
                     setStatus("We weren't able to process your add item request.")
                 }
             })
         } else {
-            return <Error err="permission" />
+            setErr("permission")
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
@@ -225,7 +228,7 @@ const LocationEdit = () => {
                             Unit Types
                         </div>
                         <div className="col-content">
-                            { capitalize( changes.types.join(", ") ) }
+                            { changes.types.length > 0 ? capitalize( changes.types.join(", ") ) : "No units yet" }
                         </div>
                     </div>
                     <div className="col col-info">

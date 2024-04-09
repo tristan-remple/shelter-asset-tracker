@@ -101,10 +101,11 @@ const LocationCreate = () => {
 
             // send api request and process api response
             await apiService.postLocation(changes, (response) => {
-                if (response.status === 201) {
+                console.log(response)
+                if (response.success) {
                     setStatus(`You have successfully created ${ response.name }.`)
                     setUnsaved(false)
-                    navigate(`/location/${ response.id }`)
+                    navigate(`/location/${ response.facilityId }`)
                 } else {
                     setStatus("We weren't able to process your add location request.")
                 }
