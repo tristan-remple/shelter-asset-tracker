@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
     return (
-        <footer className="navbar navbar-expand-lg fixed-bottom">
+        <footer className="navbar navbar-expand-lg">
             <div className="container p-3">
                 <p className='mt-3'>
                     Shelter Asset Tracker © <a href="https://www.nscc.ca/about/research-and-innovation/index.asp">Applied Research NSCC</a><br />

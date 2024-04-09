@@ -94,13 +94,13 @@ const UnitEdit = () => {
                 <div className="col">
                     <h2>Unit { unitName } in { locationName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text={ deletedLabel } linkTo={ `/unit/${ unitId }/delete` } type="admin" />
                 </div>
             </div>

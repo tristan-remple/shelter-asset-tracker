@@ -9764,6 +9764,10 @@ body {
   color: #332114;
 }
 
+main {
+  min-height: 100vh;
+}
+
 /* Layout Styles */
 .page-content {
   border: 2px solid #d9e4cd !important;
@@ -9858,6 +9862,14 @@ td, th {
   padding: 0.125rem 0.75rem !important;
 }
 
+#icon-selector {
+  position: fixed;
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  z-index: 5;
+}
+
 /* Header Styles */
 .logo-image {
   width: auto;
@@ -9866,6 +9878,13 @@ td, th {
 
 header, footer {
   background-color: #c4de9b !important;
+}
+
+#app-title {
+  width: 500px;
+  font-size: 2rem;
+  color: #332114;
+  font-weight: 500;
 }
 
 .nav-link {
@@ -9901,6 +9920,7 @@ header, footer {
   margin: 0.5rem;
 }
 
+/* Titles */
 /* Flag Styles */
 .flag-box {
   width: 2rem;
@@ -9963,6 +9983,77 @@ header, footer {
 .btn-secondary {
   background-color: #d9e4cd;
   color: #515a2d;
+  min-width: 150px;
+}
+
+.btn-secondary:hover {
+  background-color: #9cc76d;
+  color: white;
+}
+
+.btn-primary {
+  color: white;
+  background-color: #9cc76d;
+  border-color: #9cc76d;
+  min-width: 150px;
+}
+
+.btn-primary:hover, .btn-danger:hover {
+  color: #515a2d;
+  background-color: #9cc76d;
+  border-color: #515a2d;
+}
+
+.btn-outline-primary {
+  border-color: #157347;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  border-color: #157347;
+  background-color: #9cc76d;
+}
+
+.btn-danger {
+  color: #fff;
+  border-color: #157347;
+  background-color: #9cc76d;
+  min-width: 150px;
+}
+
+.btn-danger:hover {
+  color: #fff;
+  background-color: #157347;
+  border-color: #9cc76d;
+}
+
+/* Dropdown */
+.dropdown-toggle {
+  color: #157347;
+}
+
+.dropdown {
+  color: #157347;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: #157347;
+}
+
+/* Label/Content */
+.col-head {
+  padding-left: 10px;
+}
+
+.col-content {
+  padding-left: 10px;
+  align-items: center;
+}
+
+.comment-area {
+  height: 200px;
 }
 
 /* Footer Styles */

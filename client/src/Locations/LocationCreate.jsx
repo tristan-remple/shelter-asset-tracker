@@ -72,14 +72,14 @@ const LocationCreate = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
-                <div className="col my-3">
+            <div className="row title-row mt-3 mb-2">
+                <div className="col">
                     <h2>Add a New Location</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="All Locations" linkTo="/locations" type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
             </div>

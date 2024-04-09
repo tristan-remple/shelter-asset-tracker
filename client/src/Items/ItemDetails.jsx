@@ -59,14 +59,14 @@ const ItemDetails = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h1>{ capitalize(category.categoryName) } in { unit.unitName }</h1>
+                    <h1 className=" mt-3">{ capitalize(category.categoryName) } in { unit.unitName }</h1>
                 </div>
-                <div className="col-2">
-                    <Button text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
+                <div className="col-2 d-flex justify-content-end mx-2">
+                    <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
                 </div>
-                <div className="col-3">
+                <div className="col-1 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/unit/${ unit.unitId }` } type="nav" />
                 </div>
             </div>

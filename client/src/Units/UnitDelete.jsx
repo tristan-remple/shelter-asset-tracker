@@ -66,7 +66,7 @@ const UnitDelete = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row my-3">
                 <div className="col">
                     <h2>Deleting Unit { unitName } in { locationName }</h2>
                 </div>

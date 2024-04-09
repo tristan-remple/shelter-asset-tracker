@@ -212,17 +212,17 @@ const ItemEdit = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Editing { capitalize(category.categoryName) } in { unit.unitName }</h2>
                 </div>
-                <div className="col-2">
-                    <Button text="Save Changes" linkTo={ saveChanges } type="action" />
-                </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end p-0">
                     <Button text="Cancel Edit" linkTo={ `/item/${id}` } type="nav" />
                 </div>
-                <div className="col-3">
+                <div className="col-2 d-flex justify-content-end p-0">
+                    <Button text="Save Changes" linkTo={ saveChanges } type="action" />
+                </div>
+                <div className="col-2 d-flex justify-content-end p-0">
                     <Button text={ dangerLabel } linkTo={ toggleDanger } type="danger" />
                 </div>
             </div>

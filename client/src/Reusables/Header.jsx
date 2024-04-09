@@ -23,11 +23,10 @@ const Header = () => {
         <header className="navbar navbar-expand-lg">
             <div className="container my-2">
                 <Link className="navbar-brand" to="/">
-                    <img src={ `/img/${ import.meta.env.VITE_LOGO_FILENAME }` } alt={ import.meta.env.VITE_LOGO_ALTTEXT } />
+                    <img src="/img/logo.png" alt="Shelter Nova Scotia Logo" className='logo-image' />
                 </Link>
                 <div className="col">
-                    <h1>Shelter Asset Tracker</h1>
-                    <h2>For { import.meta.env.VITE_ORGANIZATION }</h2>
+                    <h1 id="app-title" className='mt-4'>Shelter Asset Tracker</h1>
                 </div>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>

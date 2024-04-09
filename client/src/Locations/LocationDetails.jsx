@@ -111,7 +111,7 @@ const LocationDetails = () => {
 
     return (
         <main className="container mt-3">
-            <div className="row title-row mb-2">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>{ locationName }</h2>
                 </div>

@@ -8,6 +8,7 @@ $ltbrown: #977c6a;
 $midbrown: #563219;
 $palegreen: #d9e4cd;
 $fontColour: #332114;
+$accentGreen: #157347;
 $fontmain: "Inter";
 $fontaccent: "Libre Caslon Text";
 
@@ -21,6 +22,12 @@ body {
     font-family: $fontmain;
     color: $fontColour;
 }
+
+// APPLIED 100vh to main instead of body!!
+main {
+    min-height: 100vh;
+}
+
 
 
 /* Layout Styles */
@@ -122,6 +129,7 @@ td, th {
 }
 
 /* Header Styles */
+
 .logo-image {
     width: auto;
     height: 60px;
@@ -131,10 +139,17 @@ header, footer {
     background-color: $ltgreen !important;
 }
 
+#app-title {
+    width: 500px;
+    font-size: 2rem;
+    color:$fontColour;
+    font-weight: 500;
+}
+
 .nav-link {
     color:$fontColour;
     font-weight: 600;
-    background-color: #9cc76d;
+    background-color: $brightgreen;
     margin-left: 0.5rem;
     width: 7rem;
     text-align: center;
@@ -164,6 +179,9 @@ header, footer {
 .icon {
     margin: 0.5rem;
 }
+
+/* Titles */
+
 
 /* Flag Styles */
 .flag-box {
@@ -227,8 +245,83 @@ header, footer {
 
 .btn-secondary {
     background-color: $palegreen;
-    color: $olivegreen;   
+    color: $olivegreen;  
+    min-width: 150px;
+
 }
+
+.btn-secondary:hover {
+    background-color: $brightgreen;
+    color: white;
+}
+
+.btn-primary {
+    color: white;
+    background-color: $brightgreen;
+    border-color: $brightgreen;
+    min-width: 150px;
+}
+
+.btn-primary:hover, .btn-danger:hover {
+    color: $olivegreen;
+    background-color: $brightgreen;
+    border-color: $olivegreen;
+}
+
+.btn-outline-primary {
+    border-color: $accentGreen;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    border-color: $accentGreen;
+    background-color: $brightgreen;
+}
+
+.btn-danger {
+    color: #fff;
+    border-color: $accentGreen;
+    background-color: $brightgreen;
+    min-width: 150px;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background-color:$accentGreen;
+    border-color: $brightgreen;
+}
+
+
+/* Dropdown */
+.dropdown-toggle {
+    color: $accentGreen;
+}
+
+.dropdown {
+    color: $accentGreen;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: #fff;
+    text-decoration: none;
+    background-color: $accentGreen;
+  }
+
+
+/* Label/Content */
+.col-head  {
+    padding-left:10px;
+}
+
+.col-content {
+    padding-left: 10px;
+    align-items: center;
+}
+
+.comment-area {
+    height: 200px;
+}
+
 
 /* Footer Styles */
 footer {
