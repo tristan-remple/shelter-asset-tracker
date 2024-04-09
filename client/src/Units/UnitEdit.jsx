@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams, useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -26,76 +26,99 @@ const UnitEdit = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
+    const [ unsaved, setUnsaved ] = useState(false)
     const navigate = useNavigate()
 
     // validate id
     if (id === undefined) {
         console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
     // check that user is an admin
     if (!authService.checkAdmin()) {
         console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // fetch unit data from the api
-    const response = apiService.singleUnit(id)
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    // const response = apiService.singleUnit(id)
+    // if (!response || response.error) {
+    //     console.log("api error")
+    //     setErr("api")
+    // }
 
-    // destructure api response
-    const { unit } = response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate } = unit
-
-    // unsaved toggles the ChangePanel
-    const [ unsaved, setUnsaved ] = useState(false)
+    const [ response, setResponse ] = useState()
+    // fetch unit data from the api
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleUnit(id, function(data){
+                if (!data || data.error) {
+                    console.log("api error")
+                    setErr("api")
+                }
+                console.log(data)
+                setResponse(data)
+            })
+        })()
+    }, [])
 
     // set delete label
     const [ deletedLabel, setDeletedLabel ] = useState("Delete Location")
-    if (deleteDate) {
-        setDeletedLabel("Restore Location")
-    }
+    // if (deleteDate) {
+    //     setDeletedLabel("Restore Location")
+    // }
 
     // set possible changes
     const [ changes, setChanges ] = useState({
-        unitName,
-        unitType,
-        added,
-        inspected
+        unitName: "",
+        // type,
+        // added,
+        // inspected
         // comment: ""
     })
 
+    useEffect(() => {
+        if (response) {
+            setChanges({
+                unitName: response.unitName
+            })
+        }
+    }, [ response ])
+
+    if (response) {
+    // destructure api response
+    const { unitId, unitName } = response   
+
     // sends the item object to the apiService
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
-            const response = apiService.postUnitEdit(changes)
-            if (response.success) {
-                setStatus(`You have successfully updated ${ response.unitName }.`)
-                setUnsaved(false)
-                navigate(`/location/${ response.unitId }`)
-            } else {
-                setStatus("We weren't able to process your add item request.")
-            }
+            await apiService.postUnitEdit(changes, (response) => {
+                if (response.success) {
+                    setStatus(`You have successfully updated ${ response.unitName }.`)
+                    setUnsaved(false)
+                    navigate(`/unit/${ response.unitId }`)
+                } else {
+                    setStatus("We weren't able to process your add item request.")
+                }
+            })
         } else {
-            return <Error err="permission" />
+            setErr("permission")
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Unit { unitName } in { locationName }</h2>
+                    <h2>Unit { unitName } in (Location)</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${2}` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
@@ -112,7 +135,7 @@ const UnitEdit = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { locationName }
+                            {/* { locationName } */}
                         </div>
                     </div>
                     <div className="col col-info">
@@ -133,15 +156,15 @@ const UnitEdit = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            <input 
+                            {/* <input 
                                 type="text" 
                                 name="unitType" 
                                 value={ changes.unitType } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
+                            /> */}
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Updated By
                         </div>
@@ -156,37 +179,26 @@ const UnitEdit = () => {
                         <div className="col-content">
                             { friendlyDate(inspected.inspectedDate) }
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Added
                         </div>
                         <div className="col-content">
-                            <input 
+                            {/* <input 
                                 type="date" 
                                 name="addedDate" 
                                 value={ changes.added.addedDate.split(" ")[0] } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            />
+                            /> */}
                         </div>
                     </div>
                 </div>
-                {/* <div className="row row-info">
-                    <div className="col-8 col-content">
-                        <strong>New Comment: </strong><br />
-                        <textarea 
-                            name="comment" 
-                            value={ changes.comment } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            className="comment-area" 
-                        />
-                        <CommentBox comments={ comments } />
-                    </div>
-                </div> */}
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${id}` } locationId={ locationId } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unitId }` } locationId={ 2 } /> }
         </main>
     )
+}
 }
 
 export default UnitEdit

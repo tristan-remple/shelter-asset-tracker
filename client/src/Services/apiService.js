@@ -107,80 +107,97 @@ class apiService {
     }
 
     // Called by: UnitDetails, ItemCreate, UnitEdit
-    singleUnit(id) {
-        return {
-            unit: {
-                unitId: 13,
-                unitName: "3040-B",
-                locationId: 2,
-                locationName: "Barry House",
-                unitType: "apartment",
-                added: {
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    addedDate: "2022-02-22 13:55:00"
-                },
-                inspected: {
-                    userId: 4,
-                    userName: "Jimmy Jones",
-                    inspectedDate: "2024-02-22 13:55:00"
-                },
-                deleteDate: null,
-                comments: [
-                    {
-                        commentId: 5,
-                        commentDate: "2022-02-22 13:55:00",
-                        userId: 2,
-                        userName: "Sally Ivany",
-                        commentText: "The tenants have been rough with it; one hole in the wall."
-                    },
-                    {
-                        commentId: 10,
-                        commentDate: "2021-07-15 09:35:00",
-                        userId: 7,
-                        userName: "Joe Rivers",
-                        commentText: "It's got at least one room."
-                    }
-                ]
-            },
-            items: [
-                {
-                    itemId: 359,
-                    itemLabel: "BH-359",
-                    categoryId: 14,
-                    categoryName: "couch",
-                    toAssess: true,
-                    toDiscard: false,
-                    inspectedDate: "2024-02-22 13:55:00"
-                },
-                {
-                    itemId: 365,
-                    itemLabel: "BH-365",
-                    categoryId: 3,
-                    categoryName: "mattress",
-                    toAssess: false,
-                    toDiscard: true,
-                    inspectedDate: "2023-02-22 13:55:00"
-                },
-                {
-                    itemId: 397,
-                    itemLabel: "BH-397",
-                    categoryId: 23,
-                    categoryName: "end table",
-                    toAssess: false,
-                    toDiscard: false,
-                    inspectedDate: "2024-08-22 13:55:00"
-                }
-            ]
-        }
+    singleUnit = async(id, callback) => {
+
+        await fetch(`${ import.meta.env.VITE_API_URL }/units/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+
+        // return {
+        //     unit: {
+        //         unitId: 13,
+        //         unitName: "3040-B",
+        //         locationId: 2,
+        //         locationName: "Barry House",
+        //         unitType: "apartment",
+        //         added: {
+        //             userId: 2,
+        //             userName: "Sally Ivany",
+        //             addedDate: "2022-02-22 13:55:00"
+        //         },
+        //         inspected: {
+        //             userId: 4,
+        //             userName: "Jimmy Jones",
+        //             inspectedDate: "2024-02-22 13:55:00"
+        //         },
+        //         deleteDate: null,
+        //         comments: [
+        //             {
+        //                 commentId: 5,
+        //                 commentDate: "2022-02-22 13:55:00",
+        //                 userId: 2,
+        //                 userName: "Sally Ivany",
+        //                 commentText: "The tenants have been rough with it; one hole in the wall."
+        //             },
+        //             {
+        //                 commentId: 10,
+        //                 commentDate: "2021-07-15 09:35:00",
+        //                 userId: 7,
+        //                 userName: "Joe Rivers",
+        //                 commentText: "It's got at least one room."
+        //             }
+        //         ]
+        //     },
+        //     items: [
+        //         {
+        //             itemId: 359,
+        //             itemLabel: "BH-359",
+        //             categoryId: 14,
+        //             categoryName: "couch",
+        //             toAssess: true,
+        //             toDiscard: false,
+        //             inspectedDate: "2024-02-22 13:55:00"
+        //         },
+        //         {
+        //             itemId: 365,
+        //             itemLabel: "BH-365",
+        //             categoryId: 3,
+        //             categoryName: "mattress",
+        //             toAssess: false,
+        //             toDiscard: true,
+        //             inspectedDate: "2023-02-22 13:55:00"
+        //         },
+        //         {
+        //             itemId: 397,
+        //             itemLabel: "BH-397",
+        //             categoryId: 23,
+        //             categoryName: "end table",
+        //             toAssess: false,
+        //             toDiscard: false,
+        //             inspectedDate: "2024-08-22 13:55:00"
+        //         }
+        //     ]
+        // }
     }
 
     // Called by: UnitEdit
-    postUnitEdit(unit) {
-        console.log(unit)
-        console.log("Updated")
-        unit.success = true
-        return unit
+    postUnitEdit= async(unit, callback) => {
+
+        const id = unit.unitId
+
+        await fetch(`${ import.meta.env.VITE_API_URL }/units/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(unit)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
     // Called by: UnitCreate
@@ -338,7 +355,7 @@ class apiService {
     listUsers() {
         return [
             {
-                userId: 1,
+                userId: 2,
                 userName: "shenson",
                 userType: "admin",
                 created: "2024-02-22 13:55:00",
@@ -349,7 +366,7 @@ class apiService {
                 }
             },
             {
-                userId: 1,
+                userId: 3,
                 userName: "joeblow",
                 userType: "general",
                 created: "2022-02-22 13:55:00",

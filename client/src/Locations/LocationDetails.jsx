@@ -161,11 +161,6 @@ const LocationDetails = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="row row-info">
-                    <div className="col-8 col-content">
-                        <CommentBox comments={ comments } />
-                    </div>
-                </div> */}
                 <Search data={ units } setData={ setFilteredUnits } />
                 <table className="c-table-info align-middle">
                     <thead>

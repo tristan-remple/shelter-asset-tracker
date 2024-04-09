@@ -78,8 +78,7 @@ const LocationEdit = () => {
     // destructure api response
     useEffect(() => {
         if (location) {
-            const { name, facilityId, created, types, phone, user } = location
-            console.log(location)
+            const { name, facilityId, created, types, phone, manager } = location
             setChanges({
                 facilityId,
                 name,
@@ -87,8 +86,8 @@ const LocationEdit = () => {
                 types,
                 phone: phone ? phone : "xxx-xxx-xxxx",
                 user: {
-                    userName: "",
-                    userId: 0
+                    userName: manager.name,
+                    userId: manager.id
                 }
             })
         }
@@ -245,18 +244,6 @@ const LocationEdit = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="row row-info">
-                    <div className="col-8 col-content">
-                        <strong>New Comment: </strong><br />
-                        <textarea 
-                            name="comment" 
-                            value={ changes.comment } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            className="comment-area" 
-                        />
-                        <CommentBox comments={ comments } />
-                    </div>
-                </div> */}
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ changes.facilityId }` } locationId={ changes.facilityId } /> }
         </main>

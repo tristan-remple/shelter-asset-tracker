@@ -70,7 +70,12 @@ exports.getFacilityById = async (req, res, next) => {
                 type: unit.type,
                 inspectCount: unit.inspectCount || 0,
                 deleteCount: unit.discardCount || 0
-            }))
+            })),
+            phone: facility.phone, 
+            manager: {
+                id: facility.managerId,
+                name: facility.User.name
+            }
         };
 
         res.status(200).json(facilityDetails);
