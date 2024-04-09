@@ -42,7 +42,7 @@ const UnitDetails = () => {
 
     // destructure api response
     const { unit, items } = response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
+    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate } = unit
 
     // if it has been deleted, throw an error
     if (deleteDate) {
@@ -167,11 +167,11 @@ const UnitDetails = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
+                {/* <div className="row row-info">
                     <div className="col-8 col-content">
                         <CommentBox comments={ comments } />
                     </div>
-                </div>
+                </div> */}
                 <Search data={ items } setData={ setFilteredItems } />
                 <table className="c-table-info align-middle">
                     <thead>

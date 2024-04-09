@@ -201,122 +201,134 @@ class apiService {
         return unit
     }
 
-    // Called by: LocationDetails
-    singleLocation(id) {
-        return {
-            location: {
-                locationId: 2,
-                locationName: "The Hub",
-                locationTypes: ["snug", "office"],
-                phone: "(902) 222-2222",
-                added: {
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    addedDate: "2022-02-22 13:55:00"
-                },
-                deleteDate: null,
-                comments: [
-                    {
-                        commentId: 12,
-                        commentDate: "2021-07-15 09:35:00",
-                        userId: 7,
-                        userName: "Joe Rivers",
-                        commentText: "It's got at least one unit."
-                    }
-                ]
-            },
-            units: [
-                {
-                    unitId: 2,
-                    unitName: "204",
-                    unitType: "snug",
-                    toInspectItems: 3,
-                    discardCount: 0
-                },
-                {
-                    unitId: 3,
-                    unitName: "205",
-                    unitType: "snug",
-                    toInspectItems: 0,
-                    discardCount: 0
-                },
-                {
-                    unitId: 4,
-                    unitName: "206",
-                    unitType: "snug",
-                    toInspectItems: 1,
-                    discardCount: 1
-                }
-            ]
-        }
-    }
+    // Called by: LocationDetails, LocationEdit, LocationDelete
+    singleLocation= async(id, callback) => {
 
-    // Called by: LocationEdit, LocationDelete
-    locationEdit(id) {
-        return {
-            locationId: 2,
-            locationName: "The Hub",
-            locationTypes: ["snug", "office"],
-            phone: "(902) 222-2222",
-            added: {
-                userId: 2,
-                userName: "Sally Ivany",
-                addedDate: "2022-02-22 13:55:00"
-            },
-            deleteDate: null,
-            user: {
-                userId: 7,
-                userName: "Joe Rivers"
-            },
-            comments: [
-                {
-                    commentId: 12,
-                    commentDate: "2021-07-15 09:35:00",
-                    userId: 7,
-                    userName: "Joe Rivers",
-                    commentText: "It's got at least one unit."
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                let unitTypes
+                if (data.units) {
+                    unitTypes = [...new Set(data.units.map(unit => unit.type))]
+                } else {
+                    unitTypes = []
                 }
-            ]
-        }
+                data.types = unitTypes
+                callback(data)
+            })
+
+        // return {
+        //     location: {
+        //         locationId: 2,
+        //         locationName: "The Hub",
+        //         locationTypes: ["snug", "office"],
+        //         phone: "(902) 222-2222",
+        //         added: {
+        //             userId: 2,
+        //             userName: "Sally Ivany",
+        //             addedDate: "2022-02-22 13:55:00"
+        //         },
+        //         deleteDate: null,
+        //         comments: [
+        //             {
+        //                 commentId: 12,
+        //                 commentDate: "2021-07-15 09:35:00",
+        //                 userId: 7,
+        //                 userName: "Joe Rivers",
+        //                 commentText: "It's got at least one unit."
+        //             }
+        //         ]
+        //     },
+        //     units: [
+        //         {
+        //             unitId: 2,
+        //             unitName: "204",
+        //             unitType: "snug",
+        //             toInspectItems: 3,
+        //             discardCount: 0
+        //         },
+        //         {
+        //             unitId: 3,
+        //             unitName: "205",
+        //             unitType: "snug",
+        //             toInspectItems: 0,
+        //             discardCount: 0
+        //         },
+        //         {
+        //             unitId: 4,
+        //             unitName: "206",
+        //             unitType: "snug",
+        //             toInspectItems: 1,
+        //             discardCount: 1
+        //         }
+        //     ]
+        // }
     }
 
     // Called by: LocationEdit
-    postLocationEdit(location) {
+    postLocationEdit= async(location, callback) => {
+
+        const id = location.facilityId
+
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(location)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
+
         console.log(location)
         location.success = true
         return location
     }
 
     // Called by: LocationList
-    listLocations() {
-        return [
-            {
-                locationId: 2,
-                locationName: "The Hub",
-                units: 35
-            },
-            {
-                locationId: 3,
-                locationName: "Some Place",
-                units: 4
-            }
-        ]
+    listLocations = async(callback) => {
+
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: LocationCreate
-    postLocation(location) {
-        console.log(location)
-        location.locationId = 8
-        location.success = true
-        return location
+    postLocation = async(location, callback) => {
+
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities`, {
+                method: "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(location)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: LocationDelete
-    deleteLocation(location) {
-        console.log(location)
-        location.deleteDate = formattedDate()
-        location.success = true
-        return location
+    deleteLocation = async(location, callback) => {
+
+        const id = location.facilityId
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(location)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+
     }
 
     // Called by: CategoryList

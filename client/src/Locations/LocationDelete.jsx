@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams, useNavigate } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -37,25 +37,39 @@ const LocationDelete = () => {
     }
 
     // fetch unit data from the api
-    const location = apiService.locationEdit(id)
-    if (!location || location.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    // const location = apiService.locationEdit(id)
+    // if (!location || location.error) {
+    //     console.log("api error")
+    //     return <Error err="api" />
+    // }
 
-    // destructure the unit
-    const { locationId, locationName } = location
-
+    // fetch data from the api
+    const [ location, setResponse ] = useState()
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleLocation(id, function(data){
+                if (!data || data.error) {
+                    console.log("api error")
+                    return <Error err="api" />
+                }
+                setResponse(data)
+            })
+        })()
+    }, [])
+    
+    if (location) {
     // send delete api call
-    const confirmDelete = () => {
+    const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
-            const response = apiService.deleteUnit(location)
-            if (response.success) {
-                setStatus(`You have successfully deleted unit ${ response.locationName }.`)
-                navigate(`/locations`)
-            } else {
-                setStatus("We weren't able to process your delete location request.")
-            }
+            console.log(location)
+            await apiService.deleteUnit(location, (response) => {
+                if (response.success) {
+                    setStatus(`You have successfully deleted unit ${ response.name }.`)
+                    navigate(`/locations`)
+                } else {
+                    setStatus("We weren't able to process your delete location request.")
+                }
+            })
         } else {
             return <Error err="permission" />
         }
@@ -65,18 +79,19 @@ const LocationDelete = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Deleting { locationName }</h2>
+                    <h2>Deleting { location.name }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ location.facilityId }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p>{ status }</p></div> }
-                <ChangePanel save={ confirmDelete } linkOut={ `/location/${ locationId }` } locationId={ locationId } />
+                <ChangePanel save={ confirmDelete } linkOut={ `/location/${ location.facilityId }` } locationId={ location.facilityId } />
             </div>
         </main>
     )
+}
 }
 
 export default LocationDelete

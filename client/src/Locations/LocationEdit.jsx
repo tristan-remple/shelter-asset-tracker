@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams, useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -41,15 +41,57 @@ const LocationEdit = () => {
         return <Error err="permission" />
     }
 
-    // fetch unit data from the api
-    const location = apiService.locationEdit(id)
-    if (!location || location.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    // fetch data from the api
+    const [ location, setResponse ] = useState()
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleLocation(id, function(data){
+                if (!data || data.error) {
+                    console.log("api error")
+                    return <Error err="api" />
+                }
+                setResponse(data)
+            })
+        })()
+    }, [])
+
+    // unsaved toggles the ChangePanel
+    const [ unsaved, setUnsaved ] = useState(false)
+
+    // set delete label
+    const [ deletedLabel, setDeletedLabel ] = useState("Delete Location")
+
+    // set possible changes
+    const [ changes, setChanges ] = useState({
+        name: "",
+        // phone: "",
+        user: {
+            userName: "",
+            userId: 0
+        },
+        created: "",
+        types: []
+        // comment: ""
+    })
 
     // destructure api response
-    const { locationName, locationId, locationTypes, added, deleteDate, comments, phone, user } = location
+    useEffect(() => {
+        if (location) {
+            const { name, facilityId, created, types, phone, user } = location
+            setChanges({
+                facilityId,
+                name,
+                created,
+                types,
+                user: {
+                    userName: "",
+                    userId: 0
+                }
+            })
+        }
+    }, [ location ])
+
+    if (location) {
 
     // get the list of users
     const users = apiService.listUsers()
@@ -57,23 +99,9 @@ const LocationEdit = () => {
         return <Error err="api" />
     }
 
-    // unsaved toggles the ChangePanel
-    const [ unsaved, setUnsaved ] = useState(false)
-
-    // set delete label
-    const [ deletedLabel, setDeletedLabel ] = useState("Delete Location")
-    if (deleteDate) {
-        setDeletedLabel("Restore Location")
-    }
-
-    // set possible changes
-    const [ changes, setChanges ] = useState({
-        locationName,
-        phone,
-        user,
-        added,
-        comment: ""
-    })
+    // if (deleteDate) {
+    //     setDeletedLabel("Restore Location")
+    // }
 
     // Most changes are handled by Services/handleChanges
 
@@ -96,13 +124,13 @@ const LocationEdit = () => {
     }
 
     // sends the item object to the apiService
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
 
             // validate title
-            if (changes.locationName == "") {
+            if (changes.name == "") {
                 setStatus("Locations must have a title.")
                 return
             }
@@ -115,15 +143,18 @@ const LocationEdit = () => {
             }
             changes.phone = validPhone.number
 
+            changes.managerId = changes.user.userId
+
             // send api request and process api response
-            const response = apiService.postLocationEdit(changes)
-            if (response.success) {
-                setStatus(`You have successfully updated ${ response.locationName }.`)
-                setUnsaved(false)
-                navigate(`/location/${ response.locationId }`)
-            } else {
-                setStatus("We weren't able to process your add item request.")
-            }
+            await apiService.postLocationEdit(changes, (response) => {
+                if (response.status === 200) {
+                    setStatus(`You have successfully updated ${ response.name }.`)
+                    setUnsaved(false)
+                    navigate(`/location/${ response.facilityId }`)
+                } else {
+                    setStatus("We weren't able to process your add item request.")
+                }
+            })
         } else {
             return <Error err="permission" />
         }
@@ -133,19 +164,19 @@ const LocationEdit = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>{ locationName }</h2>
+                    <h2>{ changes.name }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ changes.facilityId }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
+                    <Button text="Add Unit" linkTo={ `/location/${ changes.facilityId }/add` } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text={ deletedLabel } linkTo={ `/location/${ locationId }/delete` } type="admin" />
+                    <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="admin" />
                 </div>
             </div>
             <div className="page-content">
@@ -158,8 +189,8 @@ const LocationEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="locationName" 
-                                value={ changes.locationName } 
+                                name="name" 
+                                value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -194,7 +225,7 @@ const LocationEdit = () => {
                             Unit Types
                         </div>
                         <div className="col-content">
-                            { capitalize( locationTypes.join(", ") ) }
+                            { capitalize( changes.types.join(", ") ) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -204,14 +235,14 @@ const LocationEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="date" 
-                                name="addedDate" 
-                                value={ changes.added.addedDate.split(" ")[0] } 
+                                name="created" 
+                                value={ changes.created.split("T")[0] } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
+                {/* <div className="row row-info">
                     <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />
                         <textarea 
@@ -222,11 +253,12 @@ const LocationEdit = () => {
                         />
                         <CommentBox comments={ comments } />
                     </div>
-                </div>
+                </div> */}
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${id}` } locationId={ locationId } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ changes.facilityId }` } locationId={ changes.facilityId } /> }
         </main>
     )
+}
 }
 
 export default LocationEdit

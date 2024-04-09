@@ -39,7 +39,7 @@ const ItemDetails = () => {
     }
 
     // destructure the item object
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comments } = item
+    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate } = item
 
     // if it has been deleted, throw an error
     if (discardDate) {
@@ -119,9 +119,9 @@ const ItemDetails = () => {
                     <div className="col-2 col-content col-icon">
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
-                    <div className="col-8 col-content">
+                    {/* <div className="col-8 col-content">
                         <CommentBox comments={ comments } />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">

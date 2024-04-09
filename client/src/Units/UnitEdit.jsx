@@ -49,7 +49,7 @@ const UnitEdit = () => {
 
     // destructure api response
     const { unit } = response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
+    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate } = unit
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -65,8 +65,8 @@ const UnitEdit = () => {
         unitName,
         unitType,
         added,
-        inspected,
-        comment: ""
+        inspected
+        // comment: ""
     })
 
     // sends the item object to the apiService
@@ -171,7 +171,7 @@ const UnitEdit = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
+                {/* <div className="row row-info">
                     <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />
                         <textarea 
@@ -182,7 +182,7 @@ const UnitEdit = () => {
                         />
                         <CommentBox comments={ comments } />
                     </div>
-                </div>
+                </div> */}
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${id}` } locationId={ locationId } /> }
         </main>

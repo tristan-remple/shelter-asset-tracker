@@ -58,8 +58,8 @@ const UnitCreate = () => {
         unitType: "",
         added: {
             addedDate: formattedDate()
-        },
-        comment: ""
+        }
+        // comment: ""
     })
 
     // sends the item object to the apiService

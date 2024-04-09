@@ -64,7 +64,7 @@ const ItemEdit = () => {
     }
 
     // destructure the item
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, comments } = item
+    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected } = item
 
     // flag options are defined in the flag module
     let flagColor = flagColorOptions[0]
@@ -91,8 +91,8 @@ const ItemEdit = () => {
     const [ safeChanges, setSafeChanges ] = useState({
         label: itemLabel,
         statusColor: flagColor,
-        statusText: flagText,
-        comment: ""
+        statusText: flagText
+        // comment: ""
     })
 
     // object (nested) that defines fields that are dangerous to change
@@ -288,7 +288,7 @@ const ItemEdit = () => {
                     <div className="col-2 col-content col-icon">
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
-                    <div className="col-8 col-content">
+                    {/* <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 
@@ -297,7 +297,7 @@ const ItemEdit = () => {
                             className="comment-area" 
                         />
                         <CommentBox comments={ comments } />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">

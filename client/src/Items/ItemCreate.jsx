@@ -76,8 +76,8 @@ const ItemCreate = () => {
         },
         vendor: "",
         donated: false,
-        initialValue: 0,
-        comment: ""
+        initialValue: 0
+        // comment: ""
     })
 
     // unsaved toggles the ChangePanel
@@ -160,11 +160,11 @@ const ItemCreate = () => {
                             Item Category
                         </div>
                         <div className="col-content">
-                            { <Dropdown 
+                            <Dropdown 
                                 list={ simpleCategories } 
                                 current={ newItem.category.categoryName } 
                                 setCurrent={ handleCategoryChange }
-                            /> }
+                            />
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@ const ItemCreate = () => {
                     <div className="col-2 col-content col-icon">
                         <img className="img-fluid icon" src={ `/img/${ newItem.category.icon }.png` } alt={ newItem.category.categoryName + " icon" } />
                     </div>
-                    <div className="col-8 col-content">
+                    {/* <div className="col-8 col-content">
                         <strong>Comments:</strong>
                         <textarea 
                             name="comment" 
@@ -180,7 +180,7 @@ const ItemCreate = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
                             className="comment-area" 
                         />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">

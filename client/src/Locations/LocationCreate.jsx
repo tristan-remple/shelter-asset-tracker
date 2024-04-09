@@ -49,7 +49,7 @@ const LocationCreate = () => {
         added: {
             addedDate: formattedDate()
         },
-        comment: "",
+        // comment: "",
         user: {
             userId: 0,
             userName: "Select:"
@@ -78,7 +78,7 @@ const LocationCreate = () => {
     }
 
     // sends the item object to the apiService
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // validate title
         if (changes.locationName === "") {
@@ -96,15 +96,20 @@ const LocationCreate = () => {
 
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
+
+            changes.managerId = changes.user.userId
+
             // send api request and process api response
-            const response = apiService.postLocation(changes)
-            if (response.success) {
-                setStatus(`You have successfully created ${ response.locationName }.`)
-                setUnsaved(false)
-                navigate(`/location/${ response.locationId }`)
-            } else {
-                setStatus("We weren't able to process your add location request.")
-            }
+            await apiService.postLocation(changes, (response) => {
+                if (response.status === 201) {
+                    setStatus(`You have successfully created ${ response.name }.`)
+                    setUnsaved(false)
+                    navigate(`/location/${ response.id }`)
+                } else {
+                    setStatus("We weren't able to process your add location request.")
+                }
+            })
+            
         } else {
             return <Error err="permission" />
         }
@@ -178,7 +183,7 @@ const LocationCreate = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
+                {/* <div className="row row-info">
                     <div className="col-8 col-content">
                         <p>
                             <strong>Comments:</strong><br />
@@ -190,7 +195,7 @@ const LocationCreate = () => {
                             className="comment-area" 
                         />
                     </div>
-                </div>
+                </div> */}
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/locations` } locationId={ null } /> }
         </main>
