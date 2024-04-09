@@ -91,12 +91,14 @@ exports.createNewFacility = async (req, res, next) => {
             phone: phone
         });
 
-        res.status(201).json({
-            id: newFacility.id,
+        const createResponse = {
+            facilityId: newFacility.id,
             name: newFacility.name,
-            managerId: newFacility.managerId,
-            phone: newFacility.phone
-        });
+            createdAt: newFacility.createdAt,
+            success: true
+        };
+
+        res.status(201).json(createResponse);
 
     } catch (err) {
         console.error(err);
@@ -120,10 +122,17 @@ exports.updateFacility = async (req, res, next) => {
             managerId: managerId,
             phone: phone
         });
+
+        const updateResponse = {
+            id: facility.id,
+            name: facility.name,
+            managerId: facility.managerId,
+            phone: facility.phone,
+            success: true
+        }
         
         await facility.save();
-
-        res.status(200).json(facility);
+        res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);

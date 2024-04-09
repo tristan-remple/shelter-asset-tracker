@@ -3,19 +3,21 @@ const { models } = require('../data');
 exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await models.User.findAll({
-            attributes: ['id', 'email', 'name'],
+            attributes: [
+                'id', 
+                'email', 
+                'name'
+            ],
             include: {
                 model: models.FacilityAuth,
                 attributes: ['userId', 'facilityId'],
                 include: {
                     model: models.Facility,
                     attributes: ['id', 'name']
-                }
+                },
+                required: false
             },
-            order: [['createdAt', 'ASC']],
-            where: {
-                deletedAt: null
-            }
+            order: [['createdAt', 'SC']]
         });
 
         if (!users) {
@@ -45,7 +47,13 @@ exports.getUserById = async (req, res, next) => {
         const userId = req.params.id; 
 
         const user = await models.User.findOne({
-            attributes: ['id', 'email', 'name', 'isAdmin', 'createdAt', 'updatedAt'],
+            attributes: [
+                'id', 
+                'email', 
+                'name', 
+                'isAdmin', 
+                'createdAt', 
+                'updatedAt'],
             where: { id: userId },
             include: {
                 model: models.FacilityAuth,
@@ -53,7 +61,8 @@ exports.getUserById = async (req, res, next) => {
                 include: {
                     model: models.Facility,
                     attributes: ['id', 'name']
-                }
+                },
+                required: false
             },
         });
 
@@ -62,7 +71,7 @@ exports.getUserById = async (req, res, next) => {
         }
 
         const userDetails = {
-            userId: user.id,
+            id: user.id,
             email: user.email,
             name: user.name,
             isAdmin: user.isAdmin,
@@ -92,13 +101,21 @@ exports.createNewUser = async (req, res, next) => {
         }
 
         const newUser = await models.User.create({
-            email,       //----------------------!!!
-            password,   //               <-- HASH ME
-            name,
-            isAdmin
+            email: email,       //----------------------!!!
+            password: password,   //               <-- HASH ME
+            name: name,
+            isAdmin: isAdmin
         });
 
-        res.status(201).json(newUser);
+        const createResponse = {
+            userId: newUser.id,
+            name: newUser.name,
+            isAdmin: newUser.isAdmin,
+            created: newUser.createdAt,
+            success: true
+        };
+
+        res.status(201).json(createResponse);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
@@ -108,7 +125,7 @@ exports.createNewUser = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
-        const { username, name, email } = req.body;
+        const { name, email, isAdmin } = req.body;
 
         const user = await models.User.findByPk(userId);
 
@@ -117,14 +134,21 @@ exports.updateUser = async (req, res, next) => {
         }
 
         user.set({
-            username: username,
             name: name,
-            email: email
+            email: email,
+            isAdmin: isAdmin
         })
+
+        const updateResponse = {
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            success: true
+        }
 
         await user.save();
 
-        res.status(200).json(user);
+        res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
