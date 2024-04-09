@@ -3,10 +3,14 @@ const { models, Sequelize } = require('../data');
 exports.getAllTemplates = async (req, res, next) => {
     try {
         const templates = await models.Template.findAll({
-            attributes: ['id', 'name', 'defaultValue', 'defaultDepreciation', 'icon', 'singleResident'],
-            where: {
-                deletedAt: null
-            }
+            attributes: [
+                'id', 
+                'name', 
+                'defaultValue', 
+                'defaultDepreciation', 
+                'icon', 
+                'singleResident'
+            ]
         });
 
         if (!templates) {
@@ -40,7 +44,8 @@ exports.getTemplateById = async (req, res, next) => {
             where: { id: templateId },
             include: {
                 model: models.Item,
-                attributes: []
+                attributes: [],
+                required: false
             },
         });
 
@@ -73,7 +78,18 @@ exports.createNewTemplate = async (req, res, next) => {
             singleResident
         });
 
-        res.status(201).json(newTemplate);
+        const createResponse = {
+            name: newTemplate.name,
+            defaultValue: newTemplate.defaultValue,
+            defaultDepreciation: newTemplate.defaultDepreciation,
+            icon: newTemplate.icon,
+            singleResident: newTemplate.singleResident,
+            createdAt: newTemplate.createdAt,
+            success: true
+        };
+
+        res.status(201).json(createResponse);
+        
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
@@ -93,16 +109,25 @@ exports.updateTemplate = async (req, res, next) => {
         }
 
         template.set({
-            name: name ? name : template.name,
-            defaultValue: defaultValue ? defaultValue : template.defaultValue,
-            defaultDepreciation: defaultDepreciation ? defaultDepreciation : template.defaultDepreciation,
-            icon: icon ? icon : template.icon,
-            singleResident: singleResident ? singleResident : template.singleResident
+            name: name,
+            defaultValue: defaultValue,
+            defaultDepreciation: defaultDepreciation,
+            icon: icon,
+            singleResident: singleResident
         })
 
-        await template.save();
+        const updateResponse = {
+            name: template.name,
+            defaultValue: template.defaultValue,
+            defaultDepreciation: template.defaultDepreciation,
+            icon: template.icon,
+            singleResident: template.singleResident,
+            success: true
+        }
 
-        res.status(200).json(template);
+        await user.save();
+
+        res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
@@ -131,6 +156,7 @@ exports.deleteTemplate = async (req, res, next) => {
         };
 
         res.status(200).json(deleteResponse);
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error.' });

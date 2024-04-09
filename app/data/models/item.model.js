@@ -1,6 +1,4 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (db) => {
+module.exports = (db, { DataTypes }) => {
     db.define('Item', {
         id: {
             type: DataTypes.INTEGER,
@@ -9,19 +7,11 @@ module.exports = (db) => {
         },
         unitId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Unit',
-                key: 'id'
-            }
+            allowNull: false
         },
         templateId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Template',
-                key: 'id'
-            }
+            allowNull: false
         },
         name: {
             type: DataTypes.STRING,
@@ -44,7 +34,7 @@ module.exports = (db) => {
             allowNull: false,
             default: false
         },
-        toDelete: {
+        toDiscard: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             default: false
@@ -52,10 +42,7 @@ module.exports = (db) => {
         addedBy: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: 'User',
-                key: 'id'
-            }
+            field: 'addedBy'
         },
         lastInspected: {
             type: DataTypes.DATE,
@@ -64,19 +51,7 @@ module.exports = (db) => {
         inspectedBy: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            references: {
-                model: 'User',
-                key: 'id'
-            }
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            default: null
-        },
-        comment: {
-            type: DataTypes.STRING,
-            allowNull: true
+            field: 'inspectedBy'
         }
     }, {
         tableName: 'Items'
