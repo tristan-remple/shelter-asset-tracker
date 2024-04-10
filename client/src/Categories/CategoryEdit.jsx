@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 // internal dependencies
@@ -27,31 +27,36 @@ const CategoryEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
+    const [ err, setErr ] = useState(null)
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
-    // fetch unit data from the api
-    const response = apiService.singleCategory(id)
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
-
-    // destructure response
-    const { categoryId, categoryName, defaultValue, defaultDepreciation, icon, singleResident, items, created, updated } = response
+    // fetch data from the api
+    const [ response, setResponse ] = useState()
+    useEffect(() => {
+        (async() => {
+            await apiService.singleCategory(id, (data) => {
+                if (!data || data.error) {
+                    setErr("api")
+                } else {
+                    setResponse(data)
+                }
+            })
+        })()
+    }, [])
 
     // form controls
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
-        categoryName,
-        defaultValue,
-        defaultDepreciation,
-        icon,
-        singleResident
+        id: null,
+        name: null,
+        defaultValue: null,
+        defaultDepreciation: null,
+        icon: null,
+        singleResident: null
     })
 
     // open or close the icon selector menu
@@ -61,22 +66,36 @@ const CategoryEdit = () => {
         setSelector(newSelector)
     }
 
+    useEffect(() => {
+        if (response) {
+            setChanges({
+                id: id,
+                name: response.name,
+                defaultValue: response.defaultValue,
+                defaultDepreciation: response.defaultDepreciation,
+                icon: response.icon,
+                singleResident: response.singleResident
+            })
+        }
+    }, [ response ])
+
+    if (response) {
+
     // sends the item object to the apiService
-    const saveChanges = () => {
+    const saveChanges = async() => {
         const editedCategory = {...changes}
-        editedCategory.categoryId = categoryId
-        editedCategory.created = created
-        editedCategory.updated = formattedDate()
 
         if (authService.checkUser()) {
-            const response = apiService.postCategoryEdit(editedCategory)
-            if (response.success) {
-                setStatus(`You have successfully saved your changes to category ${ response.categoryName }.`)
-                setUnsaved(false)
-                navigate(`/category/${id}`)
-            } else {
-                setStatus("We weren't able to process your edit category request.")
-            }
+            await apiService.postCategoryEdit(editedCategory, (res) => {
+                if (res.success) {
+                    setStatus(`You have successfully saved your changes to category ${ res.name }.`)
+                    setUnsaved(false)
+                    navigate(`/category/${ id }`)
+                } else {
+                    setStatus("We weren't able to process your edit category request.")
+                }
+            })
+            
         } else {
             setStatus("Your log in credentials could not be validated.")
         }
@@ -86,16 +105,16 @@ const CategoryEdit = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Edit { capitalize(categoryName) } Category</h2>
+                    <h2>Edit { capitalize(response.name) } Category</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/category/${ categoryId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/category/${ id }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text="Delete" linkTo={ `/category/${ categoryId }/delete` } type="admin" />
+                    <Button text="Delete" linkTo={ `/category/${ id }/delete` } type="admin" />
                 </div>
             </div>
             <div className="page-content">
@@ -108,8 +127,8 @@ const CategoryEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="categoryName" 
-                                value={ changes.categoryName } 
+                                name="name" 
+                                value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -122,8 +141,8 @@ const CategoryEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="checkbox"
-                                name="singleUse" 
-                                checked={ changes.singleUse }
+                                name="singleResident" 
+                                checked={ changes.singleResident }
                                 onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -133,7 +152,7 @@ const CategoryEdit = () => {
                             Updated
                         </div>
                         <div className="col-content">
-                            { friendlyDate(updated) }
+                            { friendlyDate(response.updatedAt) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -141,7 +160,7 @@ const CategoryEdit = () => {
                             Added
                         </div>
                         <div className="col-content">
-                            { friendlyDate(created) }
+                            { friendlyDate(response.createdAt) }
                         </div>
                     </div>
                 </div>
@@ -178,7 +197,7 @@ const CategoryEdit = () => {
                             # of Items
                         </div>
                         <div className="col-content">
-                            { items }
+                            { response.itemCount }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -186,16 +205,17 @@ const CategoryEdit = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } alt={ categoryName + " icon" } />
+                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } alt={ response.name + " icon" } />
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } /> }
+                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
                         </div>
                     </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/category/${id}` } locationId="0" /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/category/${ id }` } locationId="0" /> }
             </div>
         </main>
     )
+}
 }
 
 export default CategoryEdit

@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -21,44 +21,48 @@ const CategoryList = () => {
 
     // get the status from context
     const { status } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // check that user is an admin
-    const { isAdmin } = useContext(authContext)
-    if (!isAdmin) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
-    }
+    // const { isAdmin } = useContext(authContext)
+    // if (!isAdmin) {
+    //     setErr("permission")
+    // }
 
     // get the categories from the api
-    const categories = apiService.listCategories()
-    if (!categories || categories.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    const [ categories, setCategories ] = useState([])
+    const [ filteredCategories, setFilteredCategories ] = useState([])
+    useEffect(() => {
+        (async() => {
+            await apiService.listCategories((data) => {
+                if (!data || data.error) {
+                    setErr("api")
+                }
+                const sortedData = data.sort((a, b) => {
+                    return a.name.localeCompare(b.name)
+                })
+                setCategories(sortedData)
+                setFilteredCategories(sortedData)
+            })
+        })()
+    }, [])
 
-    // sort categories alphabetically
-    categories.sort((a, b) => {
-        return a.categoryName.localeCompare(b.categoryName)
-    })
-
-    // set filter state for the search component
-    const [ filteredCategories, setFilteredCategories ] = useState(categories)
-
+    if (categories) {
     // map the category objects into table rows
     const displayItems = filteredCategories.map(item => {
 
         return (
-            <tr key={ item.categoryId } >
+            <tr key={ item.id } >
                 <td className="col-icon"><img className="small-icon" src={ `/img/${ item.icon }.png` } /></td>
-                <td>{ item.categoryName }</td>
-                <td className="col-right">{ item.defaultValue }</td>
+                <td>{ item.name }</td>
+                <td className="col-right">${ item.defaultValue }</td>
                 <td>{ item.singleResident ? "Yes" : "No" }</td>
-                <td><Button text="Details" linkTo={ `/category/${ item.categoryId }` } type="small" /></td>
+                <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
             </tr>
         )
     })
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
@@ -91,6 +95,7 @@ const CategoryList = () => {
             </div>
         </main>
     )
+}
 }
 
 export default CategoryList

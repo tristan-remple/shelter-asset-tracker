@@ -36,7 +36,6 @@ const LocationDetails = () => {
     if (urlId === undefined) {
         urlId = authService.userInfo().location.locationId
         if (urlId === 0 || urlId === undefined) {
-            console.log("undefined id")
             setErr("undefined")
         }
     }
@@ -48,7 +47,6 @@ const LocationDetails = () => {
         (async()=>{
             await apiService.singleLocation(urlId, function(data){
                 if (!data || data.error) {
-                    console.log("api error")
                     setErr("api")
                 }
                 setResponse(data)
@@ -61,7 +59,6 @@ const LocationDetails = () => {
     if (response) {
 
     const { facilityId, name, created, updated, units, types, phone } = response
-    console.log(response)
 
     // if the user is admin, populate admin buttons
     let adminButtons = ""

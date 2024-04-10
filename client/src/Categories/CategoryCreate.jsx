@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 // internal dependencies
@@ -26,11 +26,12 @@ const CategoryCreate = () => {
     // get the status from context
     const navigate = useNavigate()
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // form controls
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
-        categoryName: "",
+        name: "",
         defaultValue: 0,
         defaultDepreciation: 0,
         icon: "",
@@ -45,31 +46,27 @@ const CategoryCreate = () => {
     }
 
     // sends the item object to the apiService
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // validation
-        if (changes.categoryName === "" || changes.defaultValue < 1 || changes.defaultDepreciation < 1 || changes.icon === "") {
+        if (changes.name === "" || changes.defaultValue < 1 || changes.defaultDepreciation <= 0 || changes.icon === "") {
             setStatus("Please fill in all category fields.")
             return
         }
 
-        // object normalization
-        const newCategory = {...changes}
-        newCategory.created = formattedDate()
-        newCategory.updated = formattedDate()
-
         // api call
         if (authService.checkAdmin()) {
-            const response = apiService.postNewCategory(newCategory)
-            if (response.success) {
-                setStatus(`You have successfully created category ${ response.categoryName }.`)
-                setUnsaved(false)
-                navigate(`/category/${response.categoryId}`)
-            } else if (response.status === 400) {
-                setStatus(`Category ${ changes.categoryName } already exists.`)
-            } else {
-                setStatus("We weren't able to process your create category request.")
-            }
+            await apiService.postNewCategory(changes, (response) => {
+                if (response.success) {
+                    setStatus(`You have successfully created category ${ response.nameame }.`)
+                    setUnsaved(false)
+                    navigate(`/category/${ response.id }`)
+                } else if (response.status === 400) {
+                    setStatus(`Category ${ changes.name } already exists.`)
+                } else {
+                    setStatus("We weren't able to process your create category request.")
+                }
+            })
         } else {
             setStatus("Your log in credentials could not be validated.")
         }
@@ -98,8 +95,8 @@ const CategoryCreate = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="categoryName" 
-                                value={ changes.categoryName } 
+                                name="name" 
+                                value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -154,7 +151,7 @@ const CategoryCreate = () => {
                         <div className="col-icon col-content">
                             { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } /> }
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } /> }
+                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
                         </div>
                     </div>
                 </div>

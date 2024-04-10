@@ -31,16 +31,8 @@ const UnitDetails = () => {
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
     }
-
-    // fetch unit data from the api
-    // const response = apiService.singleUnit(id)
-    // if (!response || response.error) {
-    //     console.log("api error")
-    //     return <Error err="api" />
-    // }
 
     const [ response, setResponse ] = useState()
     const [ filteredItems, setFilteredItems ] = useState([])
@@ -49,10 +41,8 @@ const UnitDetails = () => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
                 if (!data || data.error) {
-                    console.log("api error")
                     setErr("api")
                 }
-                console.log(data)
                 setResponse(data)
                 setFilteredItems(data.items)
             })
@@ -61,7 +51,7 @@ const UnitDetails = () => {
 
     if (response) {
     // destructure api response
-    const { unitId, unitName, items } = response
+    const { id, name, type, facility, createdAt, updatedAt, items } = response
     // const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate } = unit
 
     // if it has been deleted, throw an error
@@ -75,10 +65,10 @@ const UnitDetails = () => {
         adminButtons = (
             <>
                 <div className="col-2">
-                    <Button text="Edit Unit" linkTo={ `/unit/${ unitId }/edit` } type="admin" />
+                    <Button text="Edit Unit" linkTo={ `/unit/${ id }/edit` } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="admin" />
+                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="admin" />
                 </div>
             </>
         )
@@ -119,7 +109,7 @@ const UnitDetails = () => {
         return (
             <tr key={ item.itemId } >
                 <td>{ item.itemName }</td>
-                <td>{ capitalize(item.type.templateName) }</td>
+                <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
                 <td><Flag color={ flagColor } /> { flagText }</td>
             </tr>
@@ -130,13 +120,13 @@ const UnitDetails = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Unit { unitName } in (Location)</h2>
+                    <h2>Unit { name } in { facility.name }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${2}` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ facility.id }` } type="nav" />
                 </div>
                 <div className="col-2">
-                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
+                    <Button text="Add Item" linkTo={ `/unit/${ id }/add` } type="action" />
                 </div>
                 { adminButtons }
             </div>
@@ -148,7 +138,7 @@ const UnitDetails = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            {/* { locationName } */}
+                            { facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -156,7 +146,7 @@ const UnitDetails = () => {
                             Unit Name
                         </div>
                         <div className="col-content">
-                            { unitName }
+                            { name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -164,7 +154,7 @@ const UnitDetails = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            {/* { capitalize(unitType) } */}
+                            { capitalize(type) }
                         </div>
                     </div>
                     {/* <div className="col col-info">
@@ -174,21 +164,21 @@ const UnitDetails = () => {
                         <div className="col-content">
                             { inspected.userName }
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Updated At
                         </div>
                         <div className="col-content">
-                            { friendlyDate(inspected.inspectedDate) }
+                            { friendlyDate(updatedAt) }
                         </div>
-                    </div> */}
+                    </div>
                     <div className="col col-info">
                         <div className="col-head">
                             Added
                         </div>
                         <div className="col-content">
-                            {/* { friendlyDate(added.addedDate) } */}
+                            { friendlyDate(createdAt) }
                         </div>
                     </div>
                 </div>

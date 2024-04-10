@@ -13,6 +13,15 @@ import Comment from '../Reusables/Comment'
 
 const CommentBox = ({ comments }) => {
 
+    if (!comments || comments.length == 0) {
+        return (
+            <div className="comment-box">
+                <strong>Comments:</strong><br />
+                No comments yet!
+            </div>
+        )
+    }
+
     // order the comments by date
     comments.sort((a, b) => (new Date(b.commentDate) - new Date(a.commentDate) ))
 

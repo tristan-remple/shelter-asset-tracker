@@ -16,8 +16,8 @@ exports.getAllUsers = async (req, res, next) => {
                     attributes: ['id', 'name']
                 },
                 required: false
-            },
-            order: [['createdAt', 'SC']]
+            }
+            // order: [['createdAt', 'SC']]
         });
 
         if (!users) {

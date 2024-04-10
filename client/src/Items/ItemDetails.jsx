@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -28,7 +28,6 @@ const ItemDetails = () => {
 
     // if no id has been provided, throw an error
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
     }
 
@@ -36,9 +35,8 @@ const ItemDetails = () => {
     const [ item, setItem ] = useState()
     useEffect(() => {
         (async()=>{
-            await apiService.singleLocation(id, function(data){
+            await apiService.singleItem(id, function(data){
                 if (!data || data.error) {
-                    console.log("api error")
                     setErr("api")
                 }
                 setItem(data)
@@ -46,8 +44,9 @@ const ItemDetails = () => {
         })()
     }, [])
 
+    if (item) {
     // destructure the item object
-    const { unit, name, template, toInspect, toDiscard, vendor, donated, value, addedBy, createdAt, inspected, comments } = item
+    const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments } = item
 
     // if it has been deleted, throw an error
     // if (discardDate) {
@@ -64,8 +63,8 @@ const ItemDetails = () => {
         flagColor  = flagColorOptions[1]
         flagText = flagTextOptions[1]
     }
-
-    return (
+    
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
@@ -99,18 +98,18 @@ const ItemDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Updated By
+                            Inspected By
                         </div>
                         <div className="col-content">
-                            { inspected.name }
+                            { inspected ? inspected.name : "No inspection recorded." }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Updated At
+                            Inspected At
                         </div>
                         <div className="col-content">
-                            { friendlyDate(inspected.date) }
+                            { inspected ? friendlyDate(inspected.date) : "No inspection recorded." }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -145,7 +144,7 @@ const ItemDetails = () => {
                             Initial Value
                         </div>
                         <div className="col-content">
-                            ${ value.initialValue.toFixed(2) }
+                            ${ parseFloat(value.initialValue).toFixed(2) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -153,23 +152,7 @@ const ItemDetails = () => {
                             Current Value
                         </div>
                         <div className="col-content">
-                            ${ value.currentValue.toFixed(2) }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Vendor
-                        </div>
-                        <div className="col-content">
-                            { vendor }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Donated
-                        </div>
-                        <div className="col-content">
-                            { value.donated ? "Yes" : "No" }
+                            ${ parseFloat(value.currentValue).toFixed(2) }
                         </div>
                     </div>
                 </div>
@@ -179,7 +162,7 @@ const ItemDetails = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { unit.locationName }
+                            { unit.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -187,13 +170,14 @@ const ItemDetails = () => {
                             Unit
                         </div>
                         <div className="col-content">
-                            { unit.unitName }
+                            { unit.name }
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     )
+}
 }
 
 export default ItemDetails

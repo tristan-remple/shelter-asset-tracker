@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams } from "react-router-dom"
-import { useContext } from "react"
+import { useContext, useState, useEffect } from "react"
 
 // internal dependencies
 import { statusContext } from "../Services/Context"
@@ -22,41 +22,43 @@ const UserDetails = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // validate id
     const currentUser = authService.userInfo()
     const currentUserId = currentUser.userId
+    let userId = null
     if (id === undefined && currentUserId === null) {
-        console.log("undefined id")
-        return <Error err="undefined" />
-    }
+        setErr("undefined")
+    } else if (id) {
+        userId = id
+    } else if ( id === undefined ) {
+        userId = currentUserId
+    } 
 
     // check permissions: only the user whose profile this is and admins should have access
     let permission = false
-    if (currentUser?.userId === id || authService.checkAdmin()) {
+    if (currentUser?.userId === userId || authService.checkAdmin()) {
         permission = true
     }
 
     if (!permission) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // fetch user data from the api
-    let response
-    if (id !== undefined || id !== "undefined") {
-        response = apiService.singleUser(id)
-    } else {
-        response = apiService.singleUser(currentUserId)
-    }
-
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
-
-    // destructure response
-    const { userId, userName, userType, created, deleted, location } = response
+    const [ user, setUser ] = useState([])
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleUser(userId, function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                setUser(data)
+            })
+        })()
+    }, [])
 
     // send reset password request to the api
     const resetPassword = () => {
@@ -94,11 +96,14 @@ const UserDetails = () => {
         </div>
     }
 
-    return (
+    if (!user) {
+        return <Error err={ err } />
+    } else {
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>User { userName }</h2>
+                    <h2>User { user.name }</h2>
                 </div>
                 <div className="col-2">
                     <Button text="Return" linkTo="/users" type="nav" />
@@ -114,7 +119,7 @@ const UserDetails = () => {
                             User Name
                         </div>
                         <div className="col-content">
-                            { userName }
+                            { user.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -122,29 +127,30 @@ const UserDetails = () => {
                             Admin?
                         </div>
                         <div className="col-content">
-                            { userType === "admin" ? "Yes" : "No" }
+                            { user.isAdmin ? "Yes" : "No" }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Date Added
                         </div>
                         <div className="col-content">
                             { adminDate(created) }
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
-                            Location
+                            Locations
                         </div>
                         <div className="col-content">
-                            { location.locationName }
+                            { user.facilities?.map(loc => loc.name).join(", ") }
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     )
+}
 }
 
 export default UserDetails

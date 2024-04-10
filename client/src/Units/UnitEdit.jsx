@@ -43,14 +43,7 @@ const UnitEdit = () => {
     }
 
     // fetch unit data from the api
-    // const response = apiService.singleUnit(id)
-    // if (!response || response.error) {
-    //     console.log("api error")
-    //     setErr("api")
-    // }
-
     const [ response, setResponse ] = useState()
-    // fetch unit data from the api
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
@@ -65,45 +58,48 @@ const UnitEdit = () => {
     }, [])
 
     // set delete label
-    const [ deletedLabel, setDeletedLabel ] = useState("Delete Location")
+    const [ deletedLabel, setDeletedLabel ] = useState("Delete Unit")
     // if (deleteDate) {
-    //     setDeletedLabel("Restore Location")
+    //     setDeletedLabel("Restore Unit")
     // }
 
     // set possible changes
     const [ changes, setChanges ] = useState({
-        unitName: "",
-        // type,
-        // added,
-        // inspected
-        // comment: ""
+        name: "",
+        type: "",
+        createdAt: ""
     })
 
     useEffect(() => {
         if (response) {
             setChanges({
-                unitName: response.unitName
+                name: response.name,
+                type: response.type,
+                createdAt: response.createdAt
             })
         }
     }, [ response ])
 
     if (response) {
     // destructure api response
-    const { unitId, unitName } = response   
+    const { id, name } = response   
 
     // sends the item object to the apiService
     const saveChanges = async() => {
+
+        changes.id = id
+        changes.facilityId = response.facility.id
 
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
             await apiService.postUnitEdit(changes, (response) => {
                 if (response.success) {
-                    setStatus(`You have successfully updated ${ response.unitName }.`)
+                    setStatus(`You have successfully updated ${ response.name }.`)
                     setUnsaved(false)
-                    navigate(`/unit/${ response.unitId }`)
+                    navigate(`/unit/${ id }`)
                 } else {
-                    setStatus("We weren't able to process your add item request.")
+                    setStatus("We weren't able to process your update item request.")
                 }
             })
         } else {
@@ -115,16 +111,16 @@ const UnitEdit = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Unit { unitName } in (Location)</h2>
+                    <h2>Unit { name } in (Location)</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${2}` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ response.facility.id }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text={ deletedLabel } linkTo={ `/unit/${ unitId }/delete` } type="admin" />
+                    <Button text={ deletedLabel } linkTo={ `/unit/${ id }/delete` } type="admin" />
                 </div>
             </div>
             <div className="page-content">
@@ -135,7 +131,7 @@ const UnitEdit = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            {/* { locationName } */}
+                            { response.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -145,8 +141,8 @@ const UnitEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="unitName" 
-                                value={ changes.unitName } 
+                                name="name" 
+                                value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -156,12 +152,12 @@ const UnitEdit = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            {/* <input 
+                            <input 
                                 type="text" 
-                                name="unitType" 
-                                value={ changes.unitType } 
+                                name="type" 
+                                value={ changes.type } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            /> */}
+                            />
                         </div>
                     </div>
                     {/* <div className="col col-info">
@@ -185,17 +181,17 @@ const UnitEdit = () => {
                             Added
                         </div>
                         <div className="col-content">
-                            {/* <input 
+                            <input 
                                 type="date" 
-                                name="addedDate" 
-                                value={ changes.added.addedDate.split(" ")[0] } 
+                                name="createdAt" 
+                                value={ changes.createdAt.split("T")[0] } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            /> */}
+                            />
                         </div>
                     </div>
                 </div>
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unitId }` } locationId={ 2 } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ id }` } locationId={ response.facility.id } /> }
         </main>
     )
 }
