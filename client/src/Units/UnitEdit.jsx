@@ -1,19 +1,19 @@
 // external dependencies
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useContext, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import capitalize from '../Services/capitalize'
+import authService from '../Services/authService'
 import { friendlyDate } from '../Services/dateHelper'
 import { statusContext, authContext } from '../Services/Context'
+import handleChanges from '../Services/handleChanges'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
-import Search from '../Reusables/Search'
 import CommentBox from '../Reusables/CommentBox'
+import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -21,16 +21,23 @@ import CommentBox from '../Reusables/CommentBox'
 // The items within the unit are displayed as well.
 // Imported by: App
 
-const UnitDetails = () => {
+const UnitEdit = () => {
 
     // get context information
     const { id } = useParams()
-    const { status } = useContext(statusContext)
+    const { status, setStatus } = useContext(statusContext)
+    const navigate = useNavigate()
 
     // validate id
     if (id === undefined) {
         console.log("undefined id")
         return <Error err="undefined" />
+    }
+
+    // check that user is an admin
+    if (!authService.checkAdmin()) {
+        console.log("insufficient permission")
+        return <Error err="permission" />
     }
 
     // fetch unit data from the api
@@ -41,65 +48,45 @@ const UnitDetails = () => {
     }
 
     // destructure api response
-    const { unit, items } = response
+    const { unit } = response
     const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
 
-    // if it has been deleted, throw an error
+    // unsaved toggles the ChangePanel
+    const [ unsaved, setUnsaved ] = useState(false)
+
+    // set delete label
+    const [ deletedLabel, setDeletedLabel ] = useState("Delete Location")
     if (deleteDate) {
-        return <Error err="deleted" />
+        setDeletedLabel("Restore Location")
     }
 
-    // if the user is admin, populate admin buttons
-    const { isAdmin } = useContext(authContext)
-    let adminButtons = ""
-    if (isAdmin) {
-        adminButtons = (
-            <>
-                <div className="col-2">
-                    <Button text="Edit Unit" linkTo={ `/unit/${ unitId }/edit` } type="admin" />
-                </div>
-                <div className="col-2">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="admin" />
-                </div>
-            </>
-        )
-    }
-
-    // order the items by most recently updated first
-    // put the items that need to be assessed or discarded at the top of the list
-    items.sort((a, b) => {
-        return new Date(b.inspectedDate) - new Date(a.inspectedDate)
-    }).sort((a, b) => {
-        return a.toAssess < b.toAssess ? 1 : 0
-    }).sort((a, b) => {
-        return a.toDiscard < b.toDiscard ? 1 : 0
+    // set possible changes
+    const [ changes, setChanges ] = useState({
+        unitName,
+        unitType,
+        added,
+        inspected,
+        comment: ""
     })
 
-    const [ filteredItems, setFilteredItems ] = useState(items)
+    // sends the item object to the apiService
+    const saveChanges = () => {
 
-    // map the item objects into table rows
-    const displayItems = filteredItems.map(item => {
-
-        // flag options are defined in the flag module
-        let flagColor = flagColorOptions[0]
-        let flagText = flagTextOptions[0]
-        if ( item.toDiscard ) {
-            flagColor = flagColorOptions[2]
-            flagText = flagTextOptions[2]
-        } else if ( item.toAssess ) {
-            flagColor  = flagColorOptions[1]
-            flagText = flagTextOptions[1]
+        // verify user identity
+        if (authService.checkUser() && authService.checkAdmin()) {
+            // send api request and process api response
+            const response = apiService.postUnitEdit(changes)
+            if (response.success) {
+                setStatus(`You have successfully updated ${ response.unitName }.`)
+                setUnsaved(false)
+                navigate(`/location/${ response.unitId }`)
+            } else {
+                setStatus("We weren't able to process your add item request.")
+            }
+        } else {
+            return <Error err="permission" />
         }
-
-        return (
-            <tr key={ item.itemId } >
-                <td>{ item.itemLabel }</td>
-                <td>{ capitalize(item.categoryName) }</td>
-                <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
-                <td><Flag color={ flagColor } /> { flagText }</td>
-            </tr>
-        )
-    })
+    }
 
     return (
         <main className="container">
@@ -111,9 +98,11 @@ const UnitDetails = () => {
                     <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
                 <div className="col-2">
-                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
+                    <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
-                { adminButtons }
+                <div className="col-2">
+                    <Button text={ deletedLabel } linkTo={ `/unit/${ unitId }/delete` } type="admin" />
+                </div>
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p>{ status }</p></div> }
@@ -131,7 +120,12 @@ const UnitDetails = () => {
                             Unit Name
                         </div>
                         <div className="col-content">
-                            { unitName }
+                            <input 
+                                type="text" 
+                                name="unitName" 
+                                value={ changes.unitName } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -139,7 +133,12 @@ const UnitDetails = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            { capitalize(unitType) }
+                            <input 
+                                type="text" 
+                                name="unitType" 
+                                value={ changes.unitType } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -163,32 +162,31 @@ const UnitDetails = () => {
                             Added
                         </div>
                         <div className="col-content">
-                            { friendlyDate(added.addedDate) }
+                            <input 
+                                type="date" 
+                                name="addedDate" 
+                                value={ changes.added.addedDate.split(" ")[0] } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
+                        <strong>New Comment: </strong><br />
+                        <textarea 
+                            name="comment" 
+                            value={ changes.comment } 
+                            onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            className="comment-area" 
+                        />
                         <CommentBox comments={ comments } />
                     </div>
                 </div>
-                <Search data={ items } setData={ setFilteredItems } />
-                <table className="c-table-info align-middle">
-                    <thead>
-                        <tr>
-                            <th scope="col">Label</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Details</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { displayItems }
-                    </tbody>
-                </table>
             </div>
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${id}` } locationId={ locationId } /> }
         </main>
     )
 }
 
-export default UnitDetails
+export default UnitEdit

@@ -1,38 +1,45 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
+import { friendlyDate } from '../Services/dateHelper'
 import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
+import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module displays the details about a single item in the collection, such as a stove or a table.
 // Imported by: App
 
 const ItemDetails = () => {
 
+    // get the id and status
     const { id } = useParams()
     const { status } = useContext(statusContext)
 
+    // if no id has been provided, throw an error
     if (id === undefined) {
         console.log("undefined id")
         return <Error err="undefined" />
     }
 
+    // if the item can't be found, throw an error
     const item = apiService.singleItem(id)
-    if (item.error) {
+    if (!item || item.error) {
         console.log("api error")
         return <Error err="api" />
     }
 
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comment } = item
+    // destructure the item object
+    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate, comments } = item
 
     // if it has been deleted, throw an error
     if (discardDate) {
@@ -53,7 +60,7 @@ const ItemDetails = () => {
     return (
         <main className="container">
             <div className="row title-row">
-                <div className="col-6">
+                <div className="col">
                     <h1>{ capitalize(category.categoryName) } in { unit.unitName }</h1>
                 </div>
                 <div className="col-2">
@@ -87,7 +94,7 @@ const ItemDetails = () => {
                             Updated By
                         </div>
                         <div className="col-content">
-                            { inspected.firstName } { inspected.lastName }
+                            { inspected.userName }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -95,7 +102,7 @@ const ItemDetails = () => {
                             Updated At
                         </div>
                         <div className="col-content">
-                            { inspected.inspectedDate }
+                            { friendlyDate(inspected.inspectedDate) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -113,8 +120,7 @@ const ItemDetails = () => {
                         <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
                     </div>
                     <div className="col-8 col-content">
-                        <strong>Comments:</strong>
-                        <p>{ comment }</p>
+                        <CommentBox comments={ comments } />
                     </div>
                 </div>
                 <div className="row row-info">
@@ -123,7 +129,7 @@ const ItemDetails = () => {
                             Acquired Date
                         </div>
                         <div className="col-content">
-                            { added.addedDate }
+                            { friendlyDate(added.addedDate) }
                         </div>
                     </div>
                     <div className="col col-info">

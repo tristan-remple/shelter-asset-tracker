@@ -1,7 +1,9 @@
 // external dependencies
 import { Link } from 'react-router-dom'
+import { HashLink } from 'react-router-hash-link'
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module defines all buttons.
 // It exists to quickly update the styling of multiple types of button.
 // Imported by: ChangePanel, ItemDetails, Error, Dropdown, ItemEdit, ItemCreate, UnitDetails
@@ -9,6 +11,7 @@ import { Link } from 'react-router-dom'
 const Button = ({ text, linkTo, type }) => {
 
     // apply styling classes depending on type
+    // feel free to change these classes
     let buttonClass = "btn "
     switch (type) {
         case "action":
@@ -38,6 +41,8 @@ const Button = ({ text, linkTo, type }) => {
         return <div className={ buttonClass } onClick={ linkTo } >{ text }</div>
     } else if (linkTo === null) {
         return <div className={ buttonClass } >{ text }</div>
+    } else if (linkTo.includes("#")) {
+        return <HashLink to={ linkTo } className={ buttonClass }>{ text }</HashLink>
     } else {
         return <Link to={ linkTo } className={ buttonClass }>{ text }</Link>
     }

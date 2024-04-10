@@ -16,6 +16,29 @@ import ItemEdit from './Items/ItemEdit'
 import ItemCreate from './Items/ItemCreate'
 import UnitDetails from './Units/UnitDetails'
 import LocationDetails from './Locations/LocationDetails'
+import LocationList from './Locations/LocationList'
+import UnitDelete from './Units/UnitDelete'
+import LocationEdit from './Locations/LocationEdit'
+import LocationCreate from './Locations/LocationCreate'
+import LocationDelete from './Locations/LocationDelete'
+import UnitEdit from './Units/UnitEdit'
+import UnitCreate from './Units/UnitCreate'
+import CategoryList from './Categories/CategoryList'
+import CategoryDetails from './Categories/CategoryDetails'
+import CategoryEdit from './Categories/CategoryEdit'
+import Dashboard from './Admin/Dashboard'
+import CategoryDelete from './Categories/CategoryDelete'
+import LogIn from './Auth/LogIn'
+import LogOut from './Auth/LogOut'
+import UserList from './Users/UserList'
+import UserDetails from './Users/UserDetails'
+import UserCreate from './Users/UserCreate'
+import UserEdit from './Users/UserEdit'
+import UserDelete from './Users/UserDelete'
+import ResetPassword from './Auth/ResetPassword'
+import Error from './Reusables/Error'
+import CategoryCreate from './Categories/CategoryCreate'
+import FAQ from './Reusables/FAQ'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -45,13 +68,36 @@ function App() {
       <statusContext.Provider value={ { status, setStatus } }>
         <Header />
         <Routes>
-          <Route path="/" element={ <Test /> } />
-          <Route path="/item" element={ <ItemDetails /> } />
+          <Route path="/" element={ <LogIn /> } />
+          <Route path="/logout" element={ <LogOut /> } />
           <Route path="/item/:id" element={ <ItemDetails /> } />
           <Route path="/item/:id/edit" element={ <ItemEdit /> } />
-          <Route path="/unit/:id/additem" element={ <ItemCreate /> } />
+          <Route path="/unit/:id/add" element={ <ItemCreate /> } />
           <Route path="/unit/:id" element={ <UnitDetails /> } />
+          <Route path="/unit/:id/edit" element={ <UnitEdit /> } />
+          <Route path="/unit/:id/delete" element={ <UnitDelete /> } />
+          <Route path="/location/:id/add" element={ <UnitCreate /> } />
           <Route path="/location/:id" element={ <LocationDetails /> } />
+          <Route path="/location" element={ <LocationDetails /> } />
+          <Route path="/location/:id/edit" element={ <LocationEdit /> } />
+          <Route path="location/:id/delete" element={ <LocationDelete /> } />
+          <Route path="/locations" element={ <LocationList /> } />
+          <Route path="/locations/add" element={ <LocationCreate /> } />
+          <Route path="/categories" element={ <CategoryList /> } />
+          <Route path="/categories/add" element={ <CategoryCreate /> } />
+          <Route path="/category/:id" element={ <CategoryDetails /> } />
+          <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
+          <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
+          <Route path="/admin" element={ <Dashboard /> } />
+          <Route path="/users" element={ <UserList /> } />
+          <Route path="/user" element={ <UserDetails /> } />
+          <Route path="/user/:id" element={ <UserDetails /> } />
+          <Route path="/user/:id/edit" element={ <UserEdit /> } />
+          <Route path="/users/add" element={ <UserCreate /> } />
+          <Route path="/users/:id/delete" element={ <UserDelete /> } />
+          <Route path="/reset/:hash" element={ <ResetPassword /> } />
+          <Route path="/faq" element={ <FAQ /> } />
+          <Route path="/*" element={ <Error err="unknown" /> } />
         </Routes>
         <Footer />
       </statusContext.Provider>

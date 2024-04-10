@@ -2,10 +2,13 @@
 import { useState } from "react"
 
 //------ MODULE INFO
+// ** Available for SCSS **
 // This module is a search bar used to filter results that display on a page.
 // It takes in the data and setData state variables defined by the component importing it.
-// The data and setData variables should be a COPY of the original data.
-// Imported by: 
+// The data variable should be the full original data.
+// The setData function should alter the state of a COPY of the data.
+// In the importing components, the function that displays data should map the COPY of the data changed by setData.
+// Imported by: LocationDetails
 
 const Search = ({ data, setData }) => {
 
@@ -20,7 +23,7 @@ const Search = ({ data, setData }) => {
     const iterate = (obj, term) => {
         let returnVal = false;
         returnVal = Object.keys(obj).some(key => {
-            if (typeof obj[key] === 'string' && obj[key].includes(term)) {
+            if (typeof obj[key] === 'string' && obj[key].toLowerCase().includes(term.toLowerCase())) {
                 returnVal = true;
                 return true;
             } else if (typeof obj[key] === 'object' && obj[key] !== null) {
@@ -48,9 +51,9 @@ const Search = ({ data, setData }) => {
     }
 
     return (
-        <div id="search" className="d-flex" role="search">
+        <div id="search" className="d-flex row-info" role="search">
             <input
-                className="form-control me-2"
+                className="form-control m-2"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
