@@ -8,10 +8,12 @@ exports.getUnitById = async (req, res, next) => {
             attributes: [
                 'id', 
                 'name', 
-                'type'
+                'type',
+                'createdAt',
+                'updatedAt'
             ],
             where: { id: unitId },
-            include: {
+            include: [{
                 model: models.Item,
                 attributes: [
                     'id',
@@ -24,7 +26,10 @@ exports.getUnitById = async (req, res, next) => {
                     attributes: ['id', 'name']
                 },
                 required: false
-            },
+            }, {
+                model: models.Facility,
+                attributes: ['id','name']
+            }],
             group: [] 
         });
 
@@ -33,18 +38,25 @@ exports.getUnitById = async (req, res, next) => {
         }
 
         const unitListItems = {
-            unitId: unit.id,
-            unitName: unit.name,
+            id: unit.id,
+            name: unit.name,
+            type: unit.type,
+            facility: {
+                id: unit.Facility.id,
+                name: unit.Facility.name
+            },
             items: unit.Items.map(item => ({
                 itemId: item.id,
                 itemName: item.name,
-                type: {
-                    templateId: item.Template.id,
-                    templateName: item.Template.name
+                template: {
+                    id: item.Template.id,
+                    name: item.Template.name
                 },
                 toInspect: item.toInspect,
                 toDiscard: item.toDiscard
-            }))
+            })),
+            createdAt: unit.createdAt,
+            updatedAt: unit.updatedAt
         };
 
         res.status(200).json(unitListItems);

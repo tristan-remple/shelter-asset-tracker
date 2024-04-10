@@ -24,27 +24,35 @@ const ItemDetails = () => {
     // get the id and status
     const { id } = useParams()
     const { status } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // if no id has been provided, throw an error
     if (id === undefined) {
         console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
-    // if the item can't be found, throw an error
-    const item = apiService.singleItem(id)
-    if (!item || item.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    // fetch data from the api
+    const [ item, setItem ] = useState()
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleLocation(id, function(data){
+                if (!data || data.error) {
+                    console.log("api error")
+                    setErr("api")
+                }
+                setItem(data)
+            })
+        })()
+    }, [])
 
     // destructure the item object
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, discardDate } = item
+    const { unit, name, template, toInspect, toDiscard, vendor, donated, value, addedBy, createdAt, inspected, comments } = item
 
     // if it has been deleted, throw an error
-    if (discardDate) {
-        return <Error err="deleted" />
-    }
+    // if (discardDate) {
+    //     return <Error err="deleted" />
+    // }
 
     // flag options are defined in the flag module
     let flagColor = flagColorOptions[0]
@@ -52,7 +60,7 @@ const ItemDetails = () => {
     if ( toDiscard ) {
         flagColor = flagColorOptions[2]
         flagText = flagTextOptions[2]
-    } else if ( toAssess ) {
+    } else if ( toInspect ) {
         flagColor  = flagColorOptions[1]
         flagText = flagTextOptions[1]
     }
@@ -61,13 +69,13 @@ const ItemDetails = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h1>{ capitalize(category.categoryName) } in { unit.unitName }</h1>
+                    <h1>{ capitalize(template.name) } in { unit.name }</h1>
                 </div>
                 <div className="col-2">
-                    <Button text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
+                    <Button text="Edit" linkTo={ `/item/${ id }/edit` } type="action" />
                 </div>
                 <div className="col-3">
-                    <Button text="Return" linkTo={ `/unit/${ unit.unitId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/unit/${ unit.id }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
@@ -78,7 +86,7 @@ const ItemDetails = () => {
                             Label
                         </div>
                         <div className="col-content">
-                            { itemLabel }
+                            { name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -86,7 +94,7 @@ const ItemDetails = () => {
                             Item Category
                         </div>
                         <div className="col-content">
-                            { category.categoryName }
+                            { template.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -94,7 +102,7 @@ const ItemDetails = () => {
                             Updated By
                         </div>
                         <div className="col-content">
-                            { inspected.userName }
+                            { inspected.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -102,7 +110,7 @@ const ItemDetails = () => {
                             Updated At
                         </div>
                         <div className="col-content">
-                            { friendlyDate(inspected.inspectedDate) }
+                            { friendlyDate(inspected.date) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -117,11 +125,11 @@ const ItemDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ template.icon }.png` } alt={ template.name + " icon" } />
                     </div>
-                    {/* <div className="col-8 col-content">
+                    <div className="col-8 col-content">
                         <CommentBox comments={ comments } />
-                    </div> */}
+                    </div>
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">
@@ -129,7 +137,7 @@ const ItemDetails = () => {
                             Acquired Date
                         </div>
                         <div className="col-content">
-                            { friendlyDate(added.addedDate) }
+                            { friendlyDate(createdAt) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -137,7 +145,7 @@ const ItemDetails = () => {
                             Initial Value
                         </div>
                         <div className="col-content">
-                            ${ initialValue.toFixed(2) }
+                            ${ value.initialValue.toFixed(2) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -145,7 +153,7 @@ const ItemDetails = () => {
                             Current Value
                         </div>
                         <div className="col-content">
-                            ${ currentValue.toFixed(2) }
+                            ${ value.currentValue.toFixed(2) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -161,7 +169,7 @@ const ItemDetails = () => {
                             Donated
                         </div>
                         <div className="col-content">
-                            { donated ? "Yes" : "No" }
+                            { value.donated ? "Yes" : "No" }
                         </div>
                     </div>
                 </div>

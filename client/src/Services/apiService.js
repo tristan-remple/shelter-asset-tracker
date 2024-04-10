@@ -9,56 +9,63 @@ import { formattedDate } from './dateHelper'
 class apiService {
 
     // Called by: ItemDetails
-    singleItem(id) {
-        const item = {
-            unit: {
-                unitId: 13,
-                unitName: "3040-B",
-                locationId: 2,
-                locationName: "Barry House"
-            },
-            itemId: 397,
-            itemLabel: "BH-397",
-            category: {
-                categoryId: 23,
-                categoryName: "end table",
-                icon: "icons8-console-table-100"
-            },
-            toAssess: false,
-            toDiscard: false,
-            vendor: "Ikea",
-            donated: false,
-            initialValue: 439.99,
-            currentValue: 285.00,
-            added: {
-                userId: 2,
-                userName: "Sally Ivany",
-                addedDate: "2022-02-22 13:55:00"
-            },
-            inspected: {
-                userId: 4,
-                userName: "Jimmy Jones",
-                inspectedDate: "2024-02-22 13:55:00"
-            },
-            discardDate: null,
-            comments: [
-                {
-                    commentId: 2,
-                    commentDate: "2022-02-22 13:55:00",
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    commentText: "Legs are uneven, one side is scraped."
-                },
-                {
-                    commentId: 3,
-                    commentDate: "2021-07-15 09:35:00",
-                    userId: 7,
-                    userName: "Joe Rivers",
-                    commentText: "Seems sturdy enough."
-                }
-            ]
-        }
-        return item;
+    singleItem = async(id, callback) => {
+
+        await fetch(`${ import.meta.env.VITE_API_URL }/items/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+
+        // const item = {
+        //     unit: {
+        //         unitId: 13,
+        //         unitName: "3040-B",
+        //         locationId: 2,
+        //         locationName: "Barry House"
+        //     },
+        //     itemId: 397,
+        //     itemLabel: "BH-397",
+        //     category: {
+        //         categoryId: 23,
+        //         categoryName: "end table",
+        //         icon: "icons8-console-table-100"
+        //     },
+        //     toAssess: false,
+        //     toDiscard: false,
+        //     vendor: "Ikea",
+        //     donated: false,
+        //     initialValue: 439.99,
+        //     currentValue: 285.00,
+        //     added: {
+        //         userId: 2,
+        //         userName: "Sally Ivany",
+        //         addedDate: "2022-02-22 13:55:00"
+        //     },
+        //     inspected: {
+        //         userId: 4,
+        //         userName: "Jimmy Jones",
+        //         inspectedDate: "2024-02-22 13:55:00"
+        //     },
+        //     discardDate: null,
+        //     comments: [
+        //         {
+        //             commentId: 2,
+        //             commentDate: "2022-02-22 13:55:00",
+        //             userId: 2,
+        //             userName: "Sally Ivany",
+        //             commentText: "Legs are uneven, one side is scraped."
+        //         },
+        //         {
+        //             commentId: 3,
+        //             commentDate: "2021-07-15 09:35:00",
+        //             userId: 7,
+        //             userName: "Joe Rivers",
+        //             commentText: "Seems sturdy enough."
+        //         }
+        //     ]
+        // }
+        // return item;
     }
 
     // Called by: ItemEdit
