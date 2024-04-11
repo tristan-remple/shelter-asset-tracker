@@ -51,10 +51,10 @@ const UserEdit = () => {
     })
 
     // fetch user data from the api
-    const [ user, setUser ] = useState([])
+    const [ user, setUser ] = useState({})
     useEffect(() => {
         (async()=>{
-            await apiService.singleUser(userId, function(data){
+            await apiService.singleUser(id, function(data){
                 if (!data || data.error) {
                     setErr("api")
                     return
@@ -67,6 +67,7 @@ const UserEdit = () => {
     }, [])
 
     // list of locations for dropdown
+    const [ locations, setLocations ] = useState([])
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
@@ -74,8 +75,7 @@ const UserEdit = () => {
                     setErr("api")
                     return
                 }
-                const newChanges = {...changes}
-                newChanges.locations = data
+                setLocations(data)
             })
         })()
     }, [])
@@ -90,7 +90,7 @@ const UserEdit = () => {
     })
 
     // send data to the api
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // validation
         if (changes.name === "") {
@@ -100,18 +100,17 @@ const UserEdit = () => {
 
         // convert the changes object into a valid user object
         const newUser = {...changes}
-        delete newUser.isAdmin
-        newUser.createdAt = newUser.added.addedDate
-        delete newUser.added
 
-        const response = apiService.postUserEdit(newUser)
-        if (response.success) {
-            setStatus(`You have successfully updated user ${response.userName}.`)
-            setUnsaved(false)
-            navigate(`/user/${response.userId}`)
-        } else {
-            setStatus("We weren't able to process your edit user request.")
-        }
+        await apiService.postUserEdit(newUser, (response) => {
+            if (response.success) {
+                setStatus(`You have successfully updated user ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/user/${ user.id }`)
+            } else {
+                setStatus("We weren't able to process your edit user request.")
+            }
+        })
+        
     }
 
     return (
@@ -159,7 +158,7 @@ const UserEdit = () => {
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Date Added
                         </div>
@@ -171,21 +170,21 @@ const UserEdit = () => {
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
-                    <div className="col col-info">
+                    </div> */}
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Locations
                         </div>
-                        {/* <div className="col-content">
+                        <div className="col-content">
                             <Dropdown 
                                 list={ locationTitles } 
                                 current={ changes.location.locationName } 
                                 setCurrent={ handleLocationChange }
                             />
-                        </div> */}
-                    </div>
+                        </div>
+                    </div> */}
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ userId }` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ user.id }` } /> }
             </div>
         </main>
     )

@@ -242,11 +242,20 @@ class apiService {
         })
     }
 
-    deleteCategory(category) {
-        console.log(category)
-        category.success = true
-        category.deleteDate = "2024-02-22 13:55:00"
-        return category
+    // Called by: CategoryDelete
+    deleteCategory = async(category, callback) => {
+        const id = category.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/templates/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(category)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     listUsers = async(callback) => {
@@ -265,11 +274,50 @@ class apiService {
             })
     }
 
-    postNewUser(user)  {
-        console.log(user)
-        user.userId = 13
-        user.success = true
-        return user
+    postNewUser = async(user, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/users`, {
+            method: "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
+    }
+
+    // Called by: UnitEdit
+    postUserEdit= async(user, callback) => {
+        const id = user.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/users/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
+    }
+
+    // Called by: UserDelete
+    deleteUser = async(user, callback) => {
+        const id = user.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/users/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 }
 
