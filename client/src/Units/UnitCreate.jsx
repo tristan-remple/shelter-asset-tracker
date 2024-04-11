@@ -100,19 +100,19 @@ const UnitCreate = () => {
 
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row my-3">
                 <div className="col">
                     <h2>New Unit in { facilityName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/location/${ facilityId }` } type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -128,6 +128,7 @@ const UnitCreate = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                               className='my-2'
                                 type="text" 
                                 name="name" 
                                 value={ changes.name } 

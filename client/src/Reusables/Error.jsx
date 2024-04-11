@@ -35,14 +35,14 @@ const Error = ({ err }) => {
         <main className="container">
             <h1>Error</h1>
             <div className="page-content">
-                <p>If you're seeing this page, something has gone wrong.</p>
-                <p>{ errorText }</p>
-                <div className="row">
-                    <div className="col">
+                <p className="mx-2">If you're seeing this page, something has gone wrong.</p>
+                <p className="mx-2">{ errorText }</p>
+                <div className="row d-flex-col">
+                    <div className="co-1l">
                         <Button text="Return Home" linkTo="/" type="nav" />
                     </div>
                     <div className="col">
-                        <Button text="Read Help Document" linkTo="/help" type="nav" />
+                        <Button text="Read Help Document" linkTo="/help" type="admin" />
                     </div>
                 </div>
             </div>

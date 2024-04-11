@@ -164,21 +164,34 @@ const LocationEdit = () => {
 
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>{ changes.name }</h2>
                 </div>
+<<<<<<< HEAD
                 <div className="col-2">
                     <Button text="Return" linkTo={ `/location/${ changes.facilityId }` } type="nav" />
+=======
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+>>>>>>> 334a360f42a23ab01cae04e7ad64037a67332e3f
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
+<<<<<<< HEAD
                 <div className="col-2">
                     <Button text="Add Unit" linkTo={ `/location/${ changes.facilityId }/add` } type="admin" />
                 </div>
                 <div className="col-2">
                     <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="admin" />
+=======
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text={ deletedLabel } linkTo={ `/location/${ locationId }/delete` } type="danger" />
+>>>>>>> 334a360f42a23ab01cae04e7ad64037a67332e3f
                 </div>
             </div>
             <div className="page-content">

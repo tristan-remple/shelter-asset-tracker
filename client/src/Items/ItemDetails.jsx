@@ -66,15 +66,18 @@ const ItemDetails = () => {
     
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h1>{ capitalize(template.name) } in { unit.name }</h1>
+                    <h1 className=" mt-3">{ capitalize(template.name) } in { unit.name }</h1>
                 </div>
                 <div className="col-2">
                     <Button text="Edit" linkTo={ `/item/${ id }/edit` } type="action" />
                 </div>
                 <div className="col-3">
                     <Button text="Return" linkTo={ `/unit/${ unit.id }` } type="nav" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
                 </div>
             </div>
             <div className="page-content">

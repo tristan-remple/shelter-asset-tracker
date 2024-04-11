@@ -80,7 +80,7 @@ const UserDetails = () => {
     // if the user viewing the profile is the current user, allow them to reset their password
     let passwordLink
     if (currentUser.userId === userId) {
-        passwordLink = <div className="col-2">
+        passwordLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Reset Password" linkTo={ resetPassword } type="action" />
         </div>
     }
@@ -88,10 +88,10 @@ const UserDetails = () => {
     // if the user viewing the profile is an admin, allow them to edit the user and reset the password
     let editLink
     if (authService.checkAdmin()) {
-        editLink = <div className="col-2">
+        editLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Edit" linkTo={ `/user/${ userId }/edit` } type="admin" />
         </div>
-        passwordLink = <div className="col-2">
+        passwordLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Reset Password" linkTo={ resetPassword } type="action" />
         </div>
     }
@@ -101,18 +101,18 @@ const UserDetails = () => {
     } else {
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>User { user.name }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo="/users" type="nav" />
                 </div>
                 { passwordLink }
                 { editLink }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

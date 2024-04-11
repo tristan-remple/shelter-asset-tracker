@@ -64,7 +64,7 @@ const UnitDetails = () => {
     if (authService.checkAdmin()) {
         adminButtons = (
             <>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Unit" linkTo={ `/unit/${ id }/edit` } type="admin" />
                 </div>
                 <div className="col-2">
@@ -122,16 +122,16 @@ const UnitDetails = () => {
                 <div className="col">
                     <h2>Unit { name } in { facility.name }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-1 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/location/${ facility.id }` } type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Item" linkTo={ `/unit/${ id }/add` } type="action" />
                 </div>
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

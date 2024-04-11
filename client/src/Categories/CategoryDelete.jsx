@@ -67,16 +67,16 @@ const CategoryDelete = () => {
     if (category) {
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Deleting { category.name }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/category/${ category.id }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
             </div>
         </main>

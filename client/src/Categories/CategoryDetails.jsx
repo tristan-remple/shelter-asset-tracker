@@ -48,22 +48,22 @@ const CategoryDetails = () => {
     } else {
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>{ capitalize(response.name) } Category</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="See All" linkTo="/categories" type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text="Delete" linkTo={ `/category/${ response.id }/delete` } type="admin" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Delete" linkTo={ `/category/${ response.id }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
