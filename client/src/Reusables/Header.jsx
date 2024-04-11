@@ -27,7 +27,8 @@ const Header = () => {
                     <ul className="navbar-nav my-2">
                         {userId && isAdmin && (
                             <li className="nav-item">
-                                <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/admin">Dashboard</NavLink>
+                                <NavLink to="/admin"
+                                        className={['/categories', '/users'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>Dashboard</NavLink>
                             </li>
                         )}
                         {userId ? (
@@ -35,8 +36,7 @@ const Header = () => {
                                 <li className="nav-item">
                                     <NavLink
                                         to="/location"
-                                        className={['/location', '/unit', '/item', '/users', '/categories'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}
-                                    >
+                                        className={['/location', '/unit', '/item'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>
                                         Inventory
                                     </NavLink>
                                 </li>
