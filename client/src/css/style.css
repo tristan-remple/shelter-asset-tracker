@@ -9776,7 +9776,9 @@ main {
 }
 
 .title-row {
+  display: flex;
   align-items: center;
+  flex-direction: row wrap;
 }
 
 .row-info {
@@ -9878,7 +9880,7 @@ td, th {
 
 header, footer {
   background-color: #c4de9b !important;
-  width: 100%;
+  width: 100vw;
 }
 
 #app-title {
@@ -9965,6 +9967,7 @@ header, footer {
   background-color: #c4de9b;
   color: #515a2d;
   border: 1px solid #9cc76d;
+  width: 150px;
 }
 
 .btn-small:hover {
@@ -9985,7 +9988,7 @@ header, footer {
 .btn-secondary {
   background-color: #d9e4cd;
   color: #515a2d;
-  min-width: 150px;
+  width: 150px;
 }
 
 .btn-secondary:hover {
@@ -9997,7 +10000,7 @@ header, footer {
   color: white;
   background-color: #9cc76d;
   border-color: #9cc76d;
-  min-width: 150px;
+  width: 150px;
 }
 
 .btn-primary:hover, .btn-danger:hover {
@@ -10020,7 +10023,7 @@ header, footer {
   color: #fff;
   border-color: #157347;
   background-color: #9cc76d;
-  min-width: 150px;
+  width: 150px;
 }
 
 .btn-danger:hover {

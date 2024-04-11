@@ -101,7 +101,7 @@ const UnitCreate = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

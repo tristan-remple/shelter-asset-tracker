@@ -1,23 +1,15 @@
-// external dependencies
-import { useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { NavLink } from 'react-router-dom';
+import { useContext } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
 // internal dependencies
-import authService from '../Services/authService'
-import { authContext } from '../Services/Context'
-
-
-//------ MODULE INFO
-// ** Available for SCSS **
-// This module defines the header navigation that appears on every page.
-// Imported by: App
+import authService from '../Services/authService';
+import { authContext } from '../Services/Context';
 
 const Header = () => {
-
-    const { isAdmin } = useContext(authContext)
-    const userInfo = authService.userInfo()
-    const { userId } = userInfo
+    const { isAdmin } = useContext(authContext);
+    const userInfo = authService.userInfo();
+    const { userId } = userInfo;
+    const location = useLocation();
 
     return (
         <header className="navbar navbar-expand-lg">
@@ -33,22 +25,29 @@ const Header = () => {
                 </button>
                 <div id="navbarNav" className="collapse navbar-collapse show justify-content-end">
                     <ul className="navbar-nav my-2">
-                        { userId && isAdmin && (
+                        {userId && isAdmin && (
                             <li className="nav-item">
-                                 <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/admin">Dashboard</NavLink>
+                                <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/admin">Dashboard</NavLink>
                             </li>
                         )}
-                        { userId ? ( <>
-                            <li className="nav-item">
-                                <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/location">Inventory</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/user">Profile</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/logout">Log Out</NavLink>
-                            </li>
-                        </> ) : (
+                        {userId ? (
+                            <>
+                                <li className="nav-item">
+                                    <NavLink
+                                        to="/location"
+                                        className={['/location', '/unit', '/item', '/users', '/categories'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}
+                                    >
+                                        Inventory
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/user">Profile</NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/logout">Log Out</NavLink>
+                                </li>
+                            </>
+                        ) : (
                             <li className="nav-item">
                                 <Link className="nav-link" to="/">Log In</Link>
                             </li>
@@ -57,7 +56,7 @@ const Header = () => {
                 </div>
             </div>
         </header>
-    )
+    );
 }
 
-export default Header
+export default Header;

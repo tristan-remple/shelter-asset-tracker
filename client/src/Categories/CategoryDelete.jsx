@@ -71,7 +71,7 @@ const CategoryDelete = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='mb-2'>{ status }</p></div> }
                 <ChangePanel save={ confirmDelete } linkOut={ `/category/${ categoryId }` } locationId="0" />
             </div>
         </main>

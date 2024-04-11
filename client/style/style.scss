@@ -37,7 +37,9 @@ main {
 }
 
 .title-row {
+    display: flex;
     align-items: center;
+    flex-direction: row wrap;
 }
 
 .row-info {
@@ -137,7 +139,7 @@ td, th {
 
 header, footer {
     background-color: $ltgreen !important;
-    width: 100%;
+    width: 100vw;
 }
 
 #app-title {
@@ -229,6 +231,7 @@ header, footer {
     background-color: $ltgreen;
     color: $olivegreen;
     border: 1px solid $brightgreen;
+    width: 150px;
 }
 
 .btn-small:hover {
@@ -249,7 +252,7 @@ header, footer {
 .btn-secondary {
     background-color: $palegreen;
     color: $olivegreen;  
-    min-width: 150px;
+    width: 150px;
 
 }
 
@@ -262,7 +265,7 @@ header, footer {
     color: white;
     background-color: $brightgreen;
     border-color: $brightgreen;
-    min-width: 150px;
+    width: 150px;
 }
 
 .btn-primary:hover, .btn-danger:hover {
@@ -285,7 +288,7 @@ header, footer {
     color: #fff;
     border-color: $accentGreen;
     background-color: $brightgreen;
-    min-width: 150px;
+    width: 150px;
 }
 
 .btn-danger:hover {
