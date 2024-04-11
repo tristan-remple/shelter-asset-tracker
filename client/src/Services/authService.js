@@ -7,7 +7,7 @@ class authService {
     // Check whether the current user is logged in.
     // Called by: LogIn
     checkUser() {
-        return true
+        return false
     }
 
     // Check whether the currently logged in user is an admin.

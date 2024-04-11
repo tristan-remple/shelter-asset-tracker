@@ -178,6 +178,24 @@ header, footer {
     border: 1px solid white;
 }
    
+/* Login */
+#loginBtn {
+    width: 500px !important;
+}
+
+
+.login-form-container {
+    width: 80%;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginInput, #loginBtn {
+    width: 100%;
+}
 
 
 /* Icon Styles */
