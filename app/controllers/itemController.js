@@ -56,7 +56,7 @@ exports.getItemById = async (req, res, next) => {
               },
               {
                   model: models.Template,
-                  attributes: ['id', 'name']
+                  attributes: ['id', 'name', 'icon']
               },
               {
                   model: models.Comment,

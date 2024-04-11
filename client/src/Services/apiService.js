@@ -117,6 +117,7 @@ class apiService {
     deleteUnit = async(unit, callback) => {
         const id = unit.id
         unit.facilityId = unit.facility.id
+        console.log(unit)
         await fetch(`${ import.meta.env.VITE_API_URL }/units/${id}`, {
                 method: "DELETE",
                 "headers": {

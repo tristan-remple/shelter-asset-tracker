@@ -69,7 +69,7 @@ const CategoryList = () => {
                     <h2>All Categories</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo="/dashboard" type="nav" />
+                    <Button text="Return" linkTo="/admin" type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Category" linkTo="/categories/add" type="admin" />

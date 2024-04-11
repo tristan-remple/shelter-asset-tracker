@@ -176,7 +176,7 @@ const UnitEdit = () => {
                             { friendlyDate(inspected.inspectedDate) }
                         </div>
                     </div> */}
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Added
                         </div>
@@ -188,7 +188,7 @@ const UnitEdit = () => {
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ id }` } locationId={ response.facility.id } /> }

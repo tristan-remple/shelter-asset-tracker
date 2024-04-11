@@ -84,7 +84,7 @@ const UserEdit = () => {
         return <input 
             type="checkbox"
             name={ loc.name } 
-            checked={  }
+            checked={ true }
             onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
         />
     })

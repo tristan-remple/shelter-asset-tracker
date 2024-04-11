@@ -58,7 +58,7 @@ const CategoryCreate = () => {
         if (authService.checkAdmin()) {
             await apiService.postNewCategory(changes, (response) => {
                 if (response.success) {
-                    setStatus(`You have successfully created category ${ response.nameame }.`)
+                    setStatus(`You have successfully created category ${ response.name }.`)
                     setUnsaved(false)
                     navigate(`/category/${ response.id }`)
                 } else if (response.status === 400) {

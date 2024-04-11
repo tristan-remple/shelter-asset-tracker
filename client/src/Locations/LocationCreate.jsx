@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams, useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -36,12 +36,6 @@ const LocationCreate = () => {
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
 
-    // get the list of users
-    const users = apiService.listUsers()
-    if (!users || users.error) {
-        return <Error err="api" />
-    }
-
     // set possible changes
     const [ changes, setChanges ] = useState({
         locationName: "",
@@ -52,20 +46,34 @@ const LocationCreate = () => {
         // comment: "",
         user: {
             userId: 0,
-            userName: "Select:"
+            name: "Select:"
         }
     })
+
+    const [ users, setUsers ] = useState([])
+    const [ simpleUsers, setSimpleUsers ] = useState([])
+    useEffect(() => {
+        (async()=>{
+            await apiService.listUsers(function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                setUsers(data)
+                const simple = data.map(usr => usr.name)
+                setSimpleUsers(simple)
+            })
+        })()
+    }, [])
 
     // Most changes are handled by Services/handleChanges
 
     // user dropdown expects an array of strings
-    const simpleUsers = users.map(usr => usr.userName)
-    simpleUsers.unshift("Select:")
 
     // user dropdown functionality
     // take the string and assign the corresponding user object to the location object
     const handleUserChange = (newUser) => {
-        const newUserIndex = users.map(usr => usr.userName).indexOf(newUser)
+        const newUserIndex = users.map(usr => usr.name).indexOf(newUser)
         if (newUserIndex !== -1) {
             const newChanges = {...changes}
             newChanges.user = users[newUserIndex]
@@ -165,12 +173,12 @@ const LocationCreate = () => {
                         <div className="col-content">
                             <Dropdown 
                                 list={ simpleUsers } 
-                                current={ changes.user.userName } 
+                                current={ changes.user.name } 
                                 setCurrent={ handleUserChange }
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Added
                         </div>
@@ -182,7 +190,7 @@ const LocationCreate = () => {
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 {/* <div className="row row-info">
                     <div className="col-8 col-content">

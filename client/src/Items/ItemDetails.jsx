@@ -47,6 +47,7 @@ const ItemDetails = () => {
     if (item) {
     // destructure the item object
     const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments } = item
+    console.log(item)
 
     // if it has been deleted, throw an error
     // if (discardDate) {
@@ -70,10 +71,7 @@ const ItemDetails = () => {
                 <div className="col">
                     <h1 className=" mt-3">{ capitalize(template.name) } in { unit.name }</h1>
                 </div>
-                <div className="col-2">
-                    <Button text="Edit" linkTo={ `/item/${ id }/edit` } type="action" />
-                </div>
-                <div className="col-3">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/unit/${ unit.id }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">

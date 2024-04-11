@@ -67,7 +67,7 @@ const LocationEdit = () => {
         name: "",
         // phone: "",
         user: {
-            userName: "",
+            name: "",
             userId: 0
         },
         created: "",
@@ -86,34 +86,41 @@ const LocationEdit = () => {
                 types,
                 phone: phone ? phone : "xxx-xxx-xxxx",
                 user: {
-                    userName: manager.name,
+                    name: manager.name,
                     userId: manager.id
                 }
             })
         }
     }, [ location ])
 
-    if (location) {
-
     // get the list of users
-    const users = apiService.listUsers()
-    if (!users || users.error) {
-        return <Error err="api" />
-    }
+    const [ users, setUsers ] = useState([])
+    const [ simpleUsers, setSimpleUsers ] = useState([])
+    useEffect(() => {
+        (async()=>{
+            await apiService.listUsers(function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                setUsers(data)
+                const simple = data.map(usr => usr.name)
+                setSimpleUsers(simple)
+            })
+        })()
+    }, [])
 
-    // if (deleteDate) {
-    //     setDeletedLabel("Restore Location")
-    // }
+    if (location && users.length > 0) {
 
     // Most changes are handled by Services/handleChanges
 
     // user dropdown expects an array of strings
-    const simpleUsers = users.map(usr => usr.userName)
+    
 
     // user dropdown functionality
     // take the string and assign the corresponding user object to the location object
     const handleUserChange = (newUser) => {
-        const newUserIndex = users.map(usr => usr.userName).indexOf(newUser)
+        const newUserIndex = users.map(usr => usr.name).indexOf(newUser)
         if (newUserIndex !== -1) {
             const newChanges = {...changes}
             newChanges.user = users[newUserIndex]
@@ -168,30 +175,17 @@ const LocationEdit = () => {
                 <div className="col">
                     <h2>{ changes.name }</h2>
                 </div>
-<<<<<<< HEAD
-                <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ changes.facilityId }` } type="nav" />
-=======
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
->>>>>>> 334a360f42a23ab01cae04e7ad64037a67332e3f
+                    <Button text="Return" linkTo={ `/location/${ changes.facilityId }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
-<<<<<<< HEAD
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Unit" linkTo={ `/location/${ changes.facilityId }/add` } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="admin" />
-=======
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
-                </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text={ deletedLabel } linkTo={ `/location/${ locationId }/delete` } type="danger" />
->>>>>>> 334a360f42a23ab01cae04e7ad64037a67332e3f
                 </div>
             </div>
             <div className="page-content">
@@ -230,7 +224,7 @@ const LocationEdit = () => {
                         <div className="col-content">
                             <Dropdown 
                                 list={ simpleUsers } 
-                                current={ changes.user.userName } 
+                                current={ changes.user.name } 
                                 setCurrent={ handleUserChange }
                             />
                         </div>
@@ -243,7 +237,7 @@ const LocationEdit = () => {
                             { changes.types.length > 0 ? capitalize( changes.types.join(", ") ) : "No units yet" }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Added
                         </div>
@@ -255,7 +249,7 @@ const LocationEdit = () => {
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ changes.facilityId }` } locationId={ changes.facilityId } /> }

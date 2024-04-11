@@ -65,25 +65,14 @@ const LocationDetails = () => {
     if (authService.checkAdmin()) {
         adminButtons = (
             <>
-<<<<<<< HEAD
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Unit" linkTo={ `/location/${ facilityId }/add` } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Location" linkTo={ `/location/${ facilityId }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Delete Location" linkTo={ `/location/${ facilityId }/delete` } type="admin" />
-=======
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
-                </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Edit Location" linkTo={ `/location/${ locationId }/edit` } type="admin" />
-                </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete Location" linkTo={ `/location/${ locationId }/delete` } type="danger" />
->>>>>>> 334a360f42a23ab01cae04e7ad64037a67332e3f
                 </div>
             </>
         )
@@ -121,17 +110,10 @@ const LocationDetails = () => {
             </tr>
         )
     })
-<<<<<<< HEAD
     
     return err ? <Error err={ err } /> : (
-        <main className="container">
-            <div className="row title-row">
-=======
-
-    return (
         <main className="container mt-3">
-            <div className="row title-row mt-3 mb-2">
->>>>>>> 334a360f42a23ab01cae04e7ad64037a67332e3f
+            <div className="row title-row mt-3 mb-2">        
                 <div className="col">
                     <h2>{ name }</h2>
                 </div>
