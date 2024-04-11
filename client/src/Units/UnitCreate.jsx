@@ -89,19 +89,19 @@ const UnitCreate = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row my-3">
                 <div className="col">
                     <h2>New Unit in { locationName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -117,6 +117,7 @@ const UnitCreate = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                               className='my-2'
                                 type="text" 
                                 name="unitName" 
                                 value={ changes.unitName } 
@@ -143,6 +144,7 @@ const UnitCreate = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                               className='mx-1'
                                 type="date" 
                                 name="addedDate" 
                                 value={ changes.added.addedDate.split(" ")[0] } 

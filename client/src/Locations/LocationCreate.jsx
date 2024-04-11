@@ -72,19 +72,19 @@ const LocationCreate = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Add a New Location</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="All Locations" linkTo="/locations" type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2 '>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -128,14 +128,14 @@ const LocationCreate = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-8 col-content">
-                        <p>
+                        <p className="mb-2">
                             <strong>Comments:</strong><br />
                         </p>
                         <textarea 
                             name="comment" 
                             value={ changes.comment } 
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            className="comment-area" 
+                            className="comment-area mb-5" 
                         />
                     </div>
                 </div>

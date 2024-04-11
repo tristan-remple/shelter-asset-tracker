@@ -59,13 +59,14 @@ const LogIn = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
-                <div className="col">
+            <div className="row title-row mt-5 mb-2">
+                <div className="col text-center">
                     <h2>Log In</h2>
                 </div>
             </div>
+            <div className="login-form-container"> 
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -73,6 +74,7 @@ const LogIn = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                                className="loginInput"
                                 type="text" 
                                 name="userName" 
                                 value={ changes.userName } 
@@ -88,6 +90,7 @@ const LogIn = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                                className="loginInput"
                                 type="password" 
                                 name="password" 
                                 value={ changes.password } 
@@ -97,7 +100,8 @@ const LogIn = () => {
                     </div>
                 </div>
                 <div className="row row-info">
-                    <Button text="Log In" linkTo={ submitLogin } type="action" />
+                    <Button text="Log In" linkTo={ submitLogin } type="action" id="loginBtn"/>
+                </div>
                 </div>
             </div>
         </main>

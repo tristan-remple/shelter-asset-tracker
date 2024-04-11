@@ -2,13 +2,16 @@
 // vs code live sass compiler setting: "savePath": "~/../src/css"
 
 $ltgreen: #c4de9b;
-$brightgreen: #82bc46;
+$brightgreen: #9cc76d;
 $olivegreen: #515a2d;
 $ltbrown: #977c6a;
 $midbrown: #563219;
 $palegreen: #d9e4cd;
+$fontColour: #332114;
+$accentGreen: #157347;
 $fontmain: "Inter";
 $fontaccent: "Libre Caslon Text";
+
 
 @mixin border {
     border: 2px solid $palegreen !important;
@@ -17,60 +20,31 @@ $fontaccent: "Libre Caslon Text";
 
 body {
     font-family: $fontmain;
+    color: $fontColour;
 }
 
-header, footer {
-    background-color: $ltgreen !important;
+// APPLIED 100vh to main instead of body!!
+main {
+    min-height: 100vh;
 }
 
-footer {
-    margin-top: 2rem;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
 
-.flag-box {
-    width: 2rem;
-    height: 2rem;
-    margin: 0.25rem;
-}
 
-.flag {
-    fill-opacity: 1;
-    stroke-width: 1.75;
-    stroke-linecap: "round";
-    stroke-linejoin: "round";
-    stroke-dasharray: "none";
-    stroke-opacity: 1;
-}
-
-.flag-red {
-    fill: var(--bs-danger);
-    stroke: var(--bs-danger);
-}
-
-.flag-yellow {
-    fill: var(--bs-warning);
-    stroke: var(--bs-warning);
-}
-
-.flag-grey {
-    fill: var(--bs-secondary);
-    stroke: var(--bs-secondary);
-}
-
+/* Layout Styles */
 .page-content {
     @include border;
     padding: 0.5rem;
 }
 
 .title-row {
+    display: flex;
     align-items: center;
+    flex-direction: row wrap;
 }
 
 .row-info {
-    @include border;
+    border: 2px solid $brightgreen !important;
+    border-radius: 0.5rem;
     margin: 0.5rem;
 }
 
@@ -106,10 +80,6 @@ footer {
     text-align: right;
 }
 
-.icon {
-    margin: 0.5rem;
-}
-
 .small-icon {
     width: 2.5rem;
     margin: 0.25rem 1.5rem;
@@ -117,7 +87,12 @@ footer {
 
 .comment-area {
     width: 100%;
-    height: 80%;
+    height: 70%;
+}
+
+.triangle {
+    width: 50%;
+    height: auto;
 }
 
 .dropdown-menu {
@@ -133,17 +108,9 @@ footer {
     justify-content: space-between;
 }
 
-.btn {
-    margin: 0.5rem;
-}
-
-.btn-small {
-    margin: 0.1rem;
-    padding: 0.125rem 0.75rem;
-}
-
 .c-table-info {
-    @include border;
+    border: 2px solid $brightgreen !important;
+    border-radius: 0.5rem;
     margin: 0.5rem;
     width: calc(100% - 1rem);
     border-collapse: separate;
@@ -161,4 +128,247 @@ td, th {
     height: 80%;
     margin: auto;
     z-index: 5;
+}
+
+/* Header Styles */
+
+.logo-image {
+    width: auto;
+    height: 60px;
+}
+
+header, footer {
+    background-color: $ltgreen !important;
+    width: 100vw;
+}
+
+#app-title {
+    width: 500px;
+    font-size: 2rem;
+    color:$fontColour;
+    font-weight: 500;
+    font-family: $fontaccent;
+}
+
+.nav-link {
+    color:$fontColour;
+    font-weight: 600;
+    background-color: $brightgreen;
+    margin-left: 0.5rem;
+    width: 7rem;
+    text-align: center;
+    border-radius: .3rem;
+    border: 1px solid $brightgreen;
+    margin-top: .5rem;
+}
+
+.nav-link:hover {
+    color: $olivegreen;
+    background-color: #c4de9b;
+    border: 1px solid white;
+}
+
+.nav-link.active {
+    color:#332114;
+    border: 1px solid white;
+}
+
+.nav-link.active:hover {
+    color:$olivegreen;
+    border: 1px solid white;
+}
+   
+/* Login */
+#loginBtn {
+    width: 500px !important;
+}
+
+.login-form-container {
+    width: 80%;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginInput, #loginBtn {
+    width: 100%;
+}
+
+
+/* Icon Styles */
+.icon {
+    margin: 0.5rem;
+}
+
+/* Titles */
+
+
+/* Flag Styles */
+.flag-box {
+    width: 2rem;
+    height: 2rem;
+    margin: 0.25rem;
+}
+
+.flag {
+    fill-opacity: 1;
+    stroke-width: 1.75;
+    stroke-linecap: "round";
+    stroke-linejoin: "round";
+    stroke-dasharray: "none";
+    stroke-opacity: 1;
+}
+
+.flag-red {
+    fill: var(--bs-danger);
+    stroke: var(--bs-danger);
+}
+
+.flag-yellow {
+    fill: var(--bs-warning);
+    stroke: var(--bs-warning);
+}
+
+.flag-grey {
+    fill: var(--bs-secondary);
+    stroke: var(--bs-secondary);
+}
+
+
+/* Buttons */
+.btn {
+    margin: 0.5rem;
+}
+
+.btn-small {
+    margin: 0.1rem;
+    padding: 0.125rem 0.75rem;
+    background-color: $ltgreen;
+    color: $olivegreen;
+    border: 1px solid $brightgreen;
+    width: 150px;
+}
+
+.btn-small:hover {
+    background-color: $brightgreen;
+    color: white;
+}
+
+.btn-admin {
+    background-color: $brightgreen;
+    color: white;
+    width: 150px;
+}
+
+.btn-admin:hover {
+    border: 1px solid $olivegreen;
+}
+
+.btn-secondary {
+    background-color: $palegreen;
+    color: $olivegreen;  
+    width: 150px;
+
+}
+
+.btn-secondary:hover {
+    background-color: $brightgreen;
+    color: white;
+}
+
+.btn-primary {
+    color: white;
+    background-color: $brightgreen;
+    border-color: $brightgreen;
+    width: 150px;
+}
+
+.btn-primary:hover, .btn-danger:hover {
+    color: $olivegreen;
+    background-color: $brightgreen;
+    border-color: $olivegreen;
+}
+
+.btn-outline-primary {
+    border-color: $accentGreen;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    border-color: $accentGreen;
+    background-color: $brightgreen;
+}
+
+.btn-danger {
+    color: #fff;
+    border-color: $accentGreen;
+    background-color: $brightgreen;
+    width: 150px;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background-color:$accentGreen;
+    border-color: $brightgreen;
+}
+
+
+/* Dropdown */
+.dropdown-toggle {
+    color: $accentGreen;
+}
+
+.dropdown {
+    color: $accentGreen;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: #fff;
+    text-decoration: none;
+    background-color: $accentGreen;
+  }
+
+
+/* Label/Content */
+.col-head  {
+    padding-left:10px;
+}
+
+.col-content {
+    padding-left: 10px;
+    align-items: center;
+}
+
+.comment-area {
+    height: 200px;
+}
+
+
+/* Footer Styles */
+footer {
+    margin-top: 2rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+footer a {
+    text-decoration: none;
+    color: $fontColour;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: #e1f9df;
+}
+
+footer a {
+    color: $accentGreen;
+}
+
+footer a:hover {
+    color: $olivegreen;
+    font-weight: bold;
 }

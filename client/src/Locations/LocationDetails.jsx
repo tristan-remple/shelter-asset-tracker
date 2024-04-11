@@ -61,14 +61,14 @@ const LocationDetails = () => {
     if (isAdmin) {
         adminButtons = (
             <>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Location" linkTo={ `/location/${ locationId }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text="Delete Location" linkTo={ `/location/${ locationId }/delete` } type="admin" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Delete Location" linkTo={ `/location/${ locationId }/delete` } type="danger" />
                 </div>
             </>
         )
@@ -110,18 +110,18 @@ const LocationDetails = () => {
     })
 
     return (
-        <main className="container">
-            <div className="row title-row">
+        <main className="container mt-3">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>{ locationName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="See All" linkTo="/locations" type="nav" />
                 </div>
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

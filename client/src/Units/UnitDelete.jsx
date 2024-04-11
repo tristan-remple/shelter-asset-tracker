@@ -66,7 +66,7 @@ const UnitDelete = () => {
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row my-3">
                 <div className="col">
                     <h2>Deleting Unit { unitName } in { locationName }</h2>
                 </div>
@@ -75,7 +75,7 @@ const UnitDelete = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <ChangePanel save={ confirmDelete } linkOut={ `/unit/${ unitId }` } locationId={ locationId } />
             </div>
         </main>
