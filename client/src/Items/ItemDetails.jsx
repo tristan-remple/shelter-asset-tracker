@@ -63,11 +63,11 @@ const ItemDetails = () => {
                 <div className="col">
                     <h1 className=" mt-3">{ capitalize(category.categoryName) } in { unit.unitName }</h1>
                 </div>
-                <div className="col-2 d-flex justify-content-end mx-2">
-                    <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
-                </div>
-                <div className="col-1 d-flex justify-content-end">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/unit/${ unit.unitId }` } type="nav" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
                 </div>
             </div>
             <div className="page-content">

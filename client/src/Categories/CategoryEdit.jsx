@@ -88,25 +88,25 @@ const CategoryEdit = () => {
                 <div className="col">
                     <h2>Edit { capitalize(categoryName) } Category</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/category/${ categoryId }` } type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text="Delete" linkTo={ `/category/${ categoryId }/delete` } type="admin" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Delete" linkTo={ `/category/${ categoryId }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='mb-2'>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Name
                         </div>
-                        <div className="col-content">
-                            <input 
+                        <div className="col-content my-2">
+                            <input className='my-2'
                                 type="text" 
                                 name="categoryName" 
                                 value={ changes.categoryName } 
@@ -120,7 +120,7 @@ const CategoryEdit = () => {
                             Single Use
                         </div>
                         <div className="col-content">
-                            <input 
+                            <input
                                 type="checkbox"
                                 name="singleUse" 
                                 checked={ changes.singleUse }
@@ -150,7 +150,7 @@ const CategoryEdit = () => {
                         <div className="col-head">
                             Default Value
                         </div>
-                        <div className="col-content">
+                        <div className="col-content mt-2">
                             <input 
                                 type="number" 
                                 name="defaultValue" 
@@ -164,7 +164,7 @@ const CategoryEdit = () => {
                         <div className="col-head">
                             Default Useful Life (in Quarters)
                         </div>
-                        <div className="col-content">
+                        <div className="col-content mt-2">
                             <input 
                                 type="number" 
                                 name="defaultUsefulLife" 

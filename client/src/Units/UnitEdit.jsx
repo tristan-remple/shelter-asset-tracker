@@ -101,7 +101,7 @@ const UnitEdit = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text={ deletedLabel } linkTo={ `/unit/${ unitId }/delete` } type="admin" />
+                    <Button text={ deletedLabel } linkTo={ `/unit/${ unitId }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">

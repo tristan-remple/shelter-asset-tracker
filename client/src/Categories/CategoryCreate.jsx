@@ -79,15 +79,15 @@ const CategoryCreate = () => {
                 <div className="col">
                     <h2>Create New Category</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo="/categories" type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='mb-2'>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -149,7 +149,7 @@ const CategoryCreate = () => {
                         <div className="col-head">
                             Icon
                         </div>
-                        <div className="col-icon col-content">
+                        <div className="col-icon col-content d-flex justify-content-start">
                             { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } /> }
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
                             { selector && <IconSelector changes={ changes } setChanges={ setChanges } /> }

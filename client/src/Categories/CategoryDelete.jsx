@@ -66,12 +66,12 @@ const CategoryDelete = () => {
                 <div className="col">
                     <h2>Deleting { categoryName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/category/${ categoryId }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='mb-2'>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <ChangePanel save={ confirmDelete } linkOut={ `/category/${ categoryId }` } locationId="0" />
             </div>
         </main>

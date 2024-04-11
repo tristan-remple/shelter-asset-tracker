@@ -28,7 +28,7 @@ const Header = () => {
                         {userId && isAdmin && (
                             <li className="nav-item">
                                 <NavLink to="/admin"
-                                        className={['/categories', '/users'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>Dashboard</NavLink>
+                                        className={['/categories', '/users', '/category'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>Dashboard</NavLink>
                             </li>
                         )}
                         {userId ? (

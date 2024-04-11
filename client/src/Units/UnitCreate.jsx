@@ -117,6 +117,7 @@ const UnitCreate = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                               className='my-2'
                                 type="text" 
                                 name="unitName" 
                                 value={ changes.unitName } 
@@ -143,6 +144,7 @@ const UnitCreate = () => {
                         </div>
                         <div className="col-content">
                             <input 
+                               className='mx-1'
                                 type="date" 
                                 name="addedDate" 
                                 value={ changes.added.addedDate.split(" ")[0] } 

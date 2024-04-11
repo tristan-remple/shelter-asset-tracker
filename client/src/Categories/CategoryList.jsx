@@ -65,15 +65,15 @@ const CategoryList = () => {
                 <div className="col">
                     <h2>All Categories</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo="/dashboard" type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Category" linkTo="/categories/add" type="admin" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='mb-2'>{ status }</p></div> }
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <Search data={ categories } setData={ setFilteredCategories } />
                 <table className="c-table-info align-middle">
                     <thead>
