@@ -183,7 +183,6 @@ header, footer {
     width: 500px !important;
 }
 
-
 .login-form-container {
     width: 80%;
     margin: 0 auto; 
@@ -363,4 +362,13 @@ footer a {
 footer a:hover {
     text-decoration: none;
     color: #e1f9df;
+}
+
+footer a {
+    color: $accentGreen;
+}
+
+footer a:hover {
+    color: $olivegreen;
+    font-weight: bold;
 }

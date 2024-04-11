@@ -10096,3 +10096,12 @@ footer a:hover {
   text-decoration: none;
   color: #e1f9df;
 }
+
+footer a {
+  color: #157347;
+}
+
+footer a:hover {
+  color: #515a2d;
+  font-weight: bold;
+}
