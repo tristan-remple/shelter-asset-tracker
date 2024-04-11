@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { statusContext } from '../Services/Context'
@@ -34,26 +34,34 @@ const UserCreate = () => {
 
     // form handling state
     const [ changes, setChanges ] = useState({
-        userName: "",
-        admin: false,
-        added: {
-            addedDate: adminDate(new Date())
-        },
+        name: "",
+        isAdmin: false,
+        createdAt: "",
         location: {},
         email: ""
     })
 
     // list of locations for dropdown
-    const locations = apiService.listLocations()
-    const locationTitles = locations.map(loc => loc.locationName)
-    if (!locations || locations.error || locations.length === 0) {
-        return <Error err="api" />
-    }
+    const [ locations, setLocations ] = useState([])
+    const [ locationTitles, setLocationTitles ] = useState([])
+    useEffect(() => {
+        (async()=>{
+            await apiService.listLocations(function(data){
+                if (!data || data.error) {
+                    console.log("api error")
+                    return <Error err="api" />
+                }
+                setLocations(data)
+                const titles = data.map(loc => loc.name)
+                setLocationTitles(titles)
+            })
+        })()
+    }, [])
 
     // handles location change
     // passed into Dropdown
     const handleLocationChange = (newLocName) => {
-        const newLocIndex = locations.map(loc => loc.locationName).indexOf(newLocName)
+        const newLocIndex = locations.map(loc => loc.name).indexOf(newLocName)
         if (newLocIndex !== -1) {
             const newChanges = {...changes}
             newChanges.location = locations[newLocIndex]
@@ -75,7 +83,7 @@ const UserCreate = () => {
     }
 
     const saveChanges = () => {
-        if (changes.userName === "" || changes.email === "") {
+        if (changes.name === "" || changes.email === "") {
             setStatus("Please enter a username and email.")
             return
         } else if (!validateEmail(changes.email)) {
@@ -83,24 +91,15 @@ const UserCreate = () => {
             return
         }
 
-        const newUser = {...changes}
-        if (newUser.admin === true) {
-            newUser.userType = "admin"
-        } else {
-            newUser.userType = "general"
-        }
-        delete newUser.admin
-        newUser.created = newUser.added.addedDate
-        delete newUser.added
-
-        const response = apiService.postNewUser(newUser)
-        if (response.success) {
-            setStatus(`You have successfully added user ${response.userName}.`)
-            setUnsaved(false)
-            navigate(`/user/${response.userId}`)
-        } else {
-            setStatus("We weren't able to process your add user request.")
-        }
+        const response = apiService.postNewUser(changes, (response) => {
+            if (response.success) {
+                setStatus(`You have successfully added user ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/user/${response.userId}`)
+            } else {
+                setStatus("We weren't able to process your add user request.")
+            }
+        })
     }
 
     return (
@@ -126,8 +125,8 @@ const UserCreate = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="userName" 
-                                value={ changes.userName } 
+                                name="name" 
+                                value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -139,13 +138,13 @@ const UserCreate = () => {
                         <div className="col-content">
                             <input 
                                 type="checkbox"
-                                name="admin" 
-                                checked={ changes.admin }
+                                name="isAdmin" 
+                                checked={ changes.isAdmin }
                                 onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Date Added
                         </div>
@@ -157,7 +156,7 @@ const UserCreate = () => {
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Location
@@ -165,7 +164,7 @@ const UserCreate = () => {
                         <div className="col-content">
                             <Dropdown 
                                 list={ locationTitles } 
-                                current={ changes.location.locationName } 
+                                current={ changes.location.name } 
                                 setCurrent={ handleLocationChange }
                             />
                         </div>

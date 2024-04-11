@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
@@ -33,39 +33,31 @@ const ItemCreate = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
+    const [ err, setErr ] = useState(null)
 
     // redirect to the error page if no unit is specified or if the unit specified isn't found
     if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
-    }
-    const response = apiService.singleUnit(id)
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
+        setErr("undefined")
     }
 
-    // destructure the unit
-    const { unit } = response
-    const { unitId, unitName, locationId, locationName } = unit
-
-    // grab the list of categories
-    const categoryList = apiService.listCategories()
-    let simpleCategories = []
-    if (!categoryList || categoryList[0].error) {
-        return <Error err="api" />
-    } else {
-        // the Dropdown component later is expecting a list of strings
-        simpleCategories = categoryList.map(cat => cat.categoryName)
-        simpleCategories.unshift("Select:")
-    }
+    const [ unit, setUnit ] = useState()
+    // fetch unit data from the api
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleUnit(id, function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                }
+                setUnit(data)
+            })
+        })()
+    }, [])
 
     // new item state
     const [ newItem, setNewItem ] = useState({
-        unitId,
-        itemLabel: "",
-        locationId,
-        category: {
+        name: "",
+        unitId: 0,
+        template: {
             categoryId: 0,
             categoryName: "Select:",
             defaultValue: 0,
@@ -73,71 +65,111 @@ const ItemCreate = () => {
             singleUse: false
         },
         added: {
-            addedDate: formattedDate()
+            id: 0,
+            name: "Someguy",
+            date: formattedDate()
         },
-        vendor: "",
+        // comment: "",
         donated: false,
         initialValue: 0,
-        comment: ""
+        depreciationRate: 0.03
     })
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
+
+    useEffect(() => {
+        if (unit) {
+            const changes = {...newItem}
+            changes.unitId = unit.id
+            setNewItem(changes)
+        }
+    }, [ unit ])
+
+    const [ categoryList, setCategoryList ] = useState([])
+    const [ simpleCategories, setSimpleCategories ] = useState([])
+    useEffect(() => {
+        (async() => {
+            await apiService.listCategories((data) => {
+                if (!data || data.error) {
+                    setErr("api")
+                }
+                setCategoryList(data)
+
+                // the Dropdown component later is expecting a list of strings
+                const simpleList = data.map(cat => cat.name)
+                simpleList.unshift("Select:")
+                setSimpleCategories(simpleList)
+            })
+        })()
+    }, [])
+
+    // destructure the unit
+    if (unit) {
+        // destructure api response
+        const { id, name, type, facility, createdAt, updatedAt, items } = unit
 
     // Most changes are handled by Services/handleChanges
 
     // handles category change
     // passed into Dropdown
     const handleCategoryChange = (newCatName) => {
-        const newCatIndex = categoryList.map(cat => cat.categoryName).indexOf(newCatName)
+        const newCatIndex = categoryList.map(cat => cat.name).indexOf(newCatName)
         if (newCatIndex !== -1) {
             const newItemAdditions = {...newItem}
-            newItemAdditions.category = categoryList[newCatIndex]
+            newItemAdditions.template = categoryList[newCatIndex]
             newItemAdditions.initialValue = categoryList[newCatIndex].defaultValue
             setNewItem(newItemAdditions)
             setUnsaved(true)
             setStatus("")
         } else {
-            setStatus("The category you have selected cannot be found.")
+            setStatus("The category you selected cannot be found.")
         }
     }
 
     // sends the item object to the apiService
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // check that fields have been filled in
-        if (newItem.label === "" || newItem.category.categoryName === "Select:" || newItem.initialValue === 0) {
+        if (newItem.label === "" || newItem.template.categoryName === "Select:" || newItem.initialValue === 0) {
             setStatus("A new item must have a label, a category, and an initial value.")
             return
         }
 
+        const changes = {...newItem}
+
+        changes.templateId = changes.template.id
+        changes.addedBy = 3
+        changes.donated = newItem.donated ? 1 : 0
+
         // verify user identity
         if (authService.checkUser()) {
             // send api request and process api response
-            const response = apiService.postNewItem(newItem)
-            if (response.success) {
-                setStatus(`You have successfully added item ${response.itemLabel}.`)
-                setUnsaved(false)
-                navigate(`/item/${response.itemId}`)
-            } else {
-                setStatus("We weren't able to process your add item request.")
-            }
+            await apiService.postNewItem(changes, (response => {
+                if (response.success) {
+                    setStatus(`You have successfully added item ${response.name}.`)
+                    setUnsaved(false)
+                    navigate(`/item/${response.itemId}`)
+                } else {
+                    setStatus("We weren't able to process your add item request.")
+                }
+            }))
         } else {
             setStatus("Your log in credentials could not be validated.")
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Adding a New Item to { unitName } in { locationName }</h2>
+                    <h2>Adding a New Item to { unit.name } in { unit.facility.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="action" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Cancel New Item" linkTo={ `/unit/${unitId}` } type="nav" />
+                    <Button text="Cancel New Item" linkTo={ `/unit/${ unit.id }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
@@ -150,8 +182,8 @@ const ItemCreate = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="itemLabel" 
-                                value={ newItem.itemLabel } 
+                                name="name" 
+                                value={ newItem.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
                             />
                         </div>
@@ -161,19 +193,19 @@ const ItemCreate = () => {
                             Item Category
                         </div>
                         <div className="col-content">
-                            { <Dropdown 
+                            <Dropdown 
                                 list={ simpleCategories } 
-                                current={ newItem.category.categoryName } 
+                                current={ newItem.template.name } 
                                 setCurrent={ handleCategoryChange }
-                            /> }
+                            />
                         </div>
                     </div>
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ newItem.category.icon }.png` } alt={ newItem.category.categoryName + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ newItem.template.icon }.png` } alt={ newItem.template.name + " icon" } />
                     </div>
-                    <div className="col-8 col-content">
+                    {/* <div className="col-8 col-content">
                         <strong>Comments:</strong>
                         <textarea 
                             name="comment" 
@@ -181,22 +213,22 @@ const ItemCreate = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
                             className="comment-area" 
                         />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Acquired Date
                         </div>
                         <div className="col-content">
                             { <input 
                                 type="date" 
-                                name="addedDate" 
-                                value={ newItem.added.addedDate } 
+                                name="addedBy.date" 
+                                value={ newItem.addedBy.date.split("T")[0] } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, newItem, setNewItem, setUnsaved) } 
                             /> }
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Initial Value
@@ -211,40 +243,6 @@ const ItemCreate = () => {
                             /> }
                         </div>
                     </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Current Value
-                        </div>
-                        <div className="col-content">
-                            { newItem.initialValue }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Vendor
-                        </div>
-                        <div className="col-content">
-                            { <input 
-                                type="text"
-                                name="vendor" 
-                                value={ newItem.vendor } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Donated
-                        </div>
-                        <div className="col-content">
-                            { <input 
-                                    type="checkbox"
-                                    name="donated" 
-                                    checked={ newItem.donated }
-                                    onChange={ (event) => handleChanges.handleCheckChange(event, newItem, setNewItem, setUnsaved) } 
-                                /> }
-                        </div>
-                    </div>
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">
@@ -252,7 +250,7 @@ const ItemCreate = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { locationName }
+                            { unit.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -260,7 +258,7 @@ const ItemCreate = () => {
                             Unit
                         </div>
                         <div className="col-content">
-                            { unitName }
+                            { unit.name }
                         </div>
                     </div>
                 </div>
@@ -268,6 +266,7 @@ const ItemCreate = () => {
             </div>
         </main>
     )
+}
 }
 
 export default ItemCreate

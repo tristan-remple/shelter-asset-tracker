@@ -1,9 +1,10 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
+import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
 import { statusContext, authContext } from '../Services/Context'
@@ -26,40 +27,48 @@ const UnitDetails = () => {
     // get context information
     const { id } = useParams()
     const { status } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
+    const [ response, setResponse ] = useState()
+    const [ filteredItems, setFilteredItems ] = useState([])
     // fetch unit data from the api
-    const response = apiService.singleUnit(id)
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleUnit(id, function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                }
+                setResponse(data)
+                setFilteredItems(data.items)
+            })
+        })()
+    }, [])
 
+    if (response) {
     // destructure api response
-    const { unit, items } = response
-    const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate, comments } = unit
+    const { id, name, type, facility, createdAt, updatedAt, items } = response
+    // const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate } = unit
 
     // if it has been deleted, throw an error
-    if (deleteDate) {
-        return <Error err="deleted" />
-    }
+    // if (deleteDate) {
+    //     setErr("deleted")
+    // }
 
     // if the user is admin, populate admin buttons
-    const { isAdmin } = useContext(authContext)
     let adminButtons = ""
-    if (isAdmin) {
+    if (authService.checkAdmin()) {
         adminButtons = (
             <>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Edit Unit" linkTo={ `/unit/${ unitId }/edit` } type="admin" />
+                    <Button text="Edit Unit" linkTo={ `/unit/${ id }/edit` } type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ unitId }/delete` } type="danger" />
+                <div className="col-2">
+                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="admin" />
                 </div>
             </>
         )
@@ -67,7 +76,7 @@ const UnitDetails = () => {
 
     // order the items by most recently updated first
     // put the items that need to be assessed or discarded at the top of the list
-    items.sort((a, b) => {
+    items?.sort((a, b) => {
         return new Date(b.inspectedDate) - new Date(a.inspectedDate)
     }).sort((a, b) => {
         return a.toAssess < b.toAssess ? 1 : 0
@@ -75,10 +84,16 @@ const UnitDetails = () => {
         return a.toDiscard < b.toDiscard ? 1 : 0
     })
 
-    const [ filteredItems, setFilteredItems ] = useState(items)
+    filteredItems?.sort((a, b) => {
+        return new Date(b.inspectedDate) - new Date(a.inspectedDate)
+    }).sort((a, b) => {
+        return a.toInspect < b.toInspect ? 1 : 0
+    }).sort((a, b) => {
+        return a.toDiscard < b.toDiscard ? 1 : 0
+    })
 
     // map the item objects into table rows
-    const displayItems = filteredItems.map(item => {
+    const displayItems = filteredItems?.map(item => {
 
         // flag options are defined in the flag module
         let flagColor = flagColorOptions[0]
@@ -86,32 +101,32 @@ const UnitDetails = () => {
         if ( item.toDiscard ) {
             flagColor = flagColorOptions[2]
             flagText = flagTextOptions[2]
-        } else if ( item.toAssess ) {
+        } else if ( item.toInspect ) {
             flagColor  = flagColorOptions[1]
             flagText = flagTextOptions[1]
         }
 
         return (
             <tr key={ item.itemId } >
-                <td>{ item.itemLabel }</td>
-                <td>{ capitalize(item.categoryName) }</td>
+                <td>{ item.itemName }</td>
+                <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
                 <td><Flag color={ flagColor } /> { flagText }</td>
             </tr>
         )
     })
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row mt-3 mb-2">
-                <div className="col-5">
-                    <h2>Unit { unitName } in { locationName }</h2>
+            <div className="row title-row">
+                <div className="col">
+                    <h2>Unit { name } in { facility.name }</h2>
                 </div>
                 <div className="col-1 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ facility.id }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Add Item" linkTo={ `/unit/${ unitId }/add` } type="action" />
+                    <Button text="Add Item" linkTo={ `/unit/${ id }/add` } type="action" />
                 </div>
                 { adminButtons }
             </div>
@@ -123,7 +138,7 @@ const UnitDetails = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { locationName }
+                            { facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -131,7 +146,7 @@ const UnitDetails = () => {
                             Unit Name
                         </div>
                         <div className="col-content">
-                            { unitName }
+                            { name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -139,23 +154,23 @@ const UnitDetails = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            { capitalize(unitType) }
+                            { capitalize(type) }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Updated By
                         </div>
                         <div className="col-content">
                             { inspected.userName }
                         </div>
-                    </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Updated At
                         </div>
                         <div className="col-content">
-                            { friendlyDate(inspected.inspectedDate) }
+                            { friendlyDate(updatedAt) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -163,13 +178,8 @@ const UnitDetails = () => {
                             Added
                         </div>
                         <div className="col-content">
-                            { friendlyDate(added.addedDate) }
+                            { friendlyDate(createdAt) }
                         </div>
-                    </div>
-                </div>
-                <div className="row row-info">
-                    <div className="col-8 col-content">
-                        <CommentBox comments={ comments } />
                     </div>
                 </div>
                 <Search data={ items } setData={ setFilteredItems } />
@@ -189,6 +199,7 @@ const UnitDetails = () => {
             </div>
         </main>
     )
+}
 }
 
 export default UnitDetails

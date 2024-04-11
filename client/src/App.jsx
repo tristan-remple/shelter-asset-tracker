@@ -6,11 +6,11 @@ import { Routes, Route } from 'react-router-dom'
 import './css/style.css'
 import { authContext, statusContext } from './Services/Context'
 import authService from './Services/authService'
+import { GeneralRoutes, AdminRoutes } from './Services/ProtectedRoutes'
 
 // component imports
 import Header from './Reusables/Header'
 import Footer from './Reusables/Footer'
-import Test from './Reusables/Test'
 import ItemDetails from './Items/ItemDetails'
 import ItemEdit from './Items/ItemEdit'
 import ItemCreate from './Items/ItemCreate'
@@ -70,33 +70,37 @@ function App() {
         <Routes>
           <Route path="/" element={ <LogIn /> } />
           <Route path="/logout" element={ <LogOut /> } />
-          <Route path="/item/:id" element={ <ItemDetails /> } />
-          <Route path="/item/:id/edit" element={ <ItemEdit /> } />
-          <Route path="/unit/:id/add" element={ <ItemCreate /> } />
-          <Route path="/unit/:id" element={ <UnitDetails /> } />
-          <Route path="/unit/:id/edit" element={ <UnitEdit /> } />
-          <Route path="/unit/:id/delete" element={ <UnitDelete /> } />
-          <Route path="/location/:id/add" element={ <UnitCreate /> } />
-          <Route path="/location/:id" element={ <LocationDetails /> } />
-          <Route path="/location" element={ <LocationDetails /> } />
-          <Route path="/location/:id/edit" element={ <LocationEdit /> } />
-          <Route path="location/:id/delete" element={ <LocationDelete /> } />
-          <Route path="/locations" element={ <LocationList /> } />
-          <Route path="/locations/add" element={ <LocationCreate /> } />
-          <Route path="/categories" element={ <CategoryList /> } />
-          <Route path="/categories/add" element={ <CategoryCreate /> } />
-          <Route path="/category/:id" element={ <CategoryDetails /> } />
-          <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
-          <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
-          <Route path="/admin" element={ <Dashboard /> } />
-          <Route path="/users" element={ <UserList /> } />
-          <Route path="/user" element={ <UserDetails /> } />
-          <Route path="/user/:id" element={ <UserDetails /> } />
-          <Route path="/user/:id/edit" element={ <UserEdit /> } />
-          <Route path="/users/add" element={ <UserCreate /> } />
-          <Route path="/users/:id/delete" element={ <UserDelete /> } />
           <Route path="/reset/:hash" element={ <ResetPassword /> } />
-          <Route path="/faq" element={ <FAQ /> } />
+          <Route element={<GeneralRoutes />}>
+            <Route path="/item/:id" element={ <ItemDetails /> } />
+            <Route path="/item/:id/edit" element={ <ItemEdit /> } />
+            <Route path="/unit/:id/add" element={ <ItemCreate /> } />
+            <Route path="/unit/:id" element={ <UnitDetails /> } />
+            <Route path="/location/:id" element={ <LocationDetails /> } />
+            <Route path="/location" element={ <LocationDetails /> } />
+            <Route path="/locations" element={ <LocationList /> } />
+            <Route path="/user" element={ <UserDetails /> } />
+            <Route path="/user/:id/edit" element={ <UserEdit /> } />
+            <Route path="/faq" element={ <FAQ /> } />
+          </Route>
+          <Route element={<AdminRoutes />}>
+            <Route path="/unit/:id/edit" element={ <UnitEdit /> } />
+            <Route path="/unit/:id/delete" element={ <UnitDelete /> } />
+            <Route path="/location/:id/add" element={ <UnitCreate /> } />
+            <Route path="/location/:id/edit" element={ <LocationEdit /> } />
+            <Route path="location/:id/delete" element={ <LocationDelete /> } />
+            <Route path="/locations/add" element={ <LocationCreate /> } />
+            <Route path="/categories" element={ <CategoryList /> } />
+            <Route path="/categories/add" element={ <CategoryCreate /> } />
+            <Route path="/category/:id" element={ <CategoryDetails /> } />
+            <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
+            <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
+            <Route path="/admin" element={ <Dashboard /> } />
+            <Route path="/users" element={ <UserList /> } />
+            <Route path="/user/:id" element={ <UserDetails /> } />
+            <Route path="/users/add" element={ <UserCreate /> } />
+            <Route path="/users/:id/delete" element={ <UserDelete /> } />
+          </Route>
           <Route path="/*" element={ <Error err="unknown" /> } />
         </Routes>
         <Footer />

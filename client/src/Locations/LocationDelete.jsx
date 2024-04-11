@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams, useNavigate } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -24,59 +24,76 @@ const LocationDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
     
     if (!authService.checkAdmin()) {
         console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // validate id
     if (id === undefined) {
         console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
     // fetch unit data from the api
-    const location = apiService.locationEdit(id)
-    if (!location || location.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    // const location = apiService.locationEdit(id)
+    // if (!location || location.error) {
+    //     console.log("api error")
+    //     return <Error err="api" />
+    // }
 
-    // destructure the unit
-    const { locationId, locationName } = location
-
+    // fetch data from the api
+    const [ location, setResponse ] = useState()
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleLocation(id, function(data){
+                if (!data || data.error) {
+                    console.log("api error")
+                    setErr("api")
+                }
+                setResponse(data)
+            })
+        })()
+    }, [])
+    
+    if (location) {
     // send delete api call
-    const confirmDelete = () => {
+    const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
-            const response = apiService.deleteUnit(location)
-            if (response.success) {
-                setStatus(`You have successfully deleted unit ${ response.locationName }.`)
-                navigate(`/locations`)
-            } else {
-                setStatus("We weren't able to process your delete location request.")
-            }
+            console.log(location)
+            await apiService.deleteLocation(location, (response) => {
+                console.log(response)
+                if (response.success) {
+                    setStatus(`You have successfully deleted location ${ response.name }.`)
+                    navigate(`/locations`)
+                } else {
+                    setStatus("We weren't able to process your delete location request.")
+                }
+            })
         } else {
             return <Error err="permission" />
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Deleting { locationName }</h2>
+                    <h2>Deleting { location.name }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ location.facilityId }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p>{ status }</p></div> }
-                <ChangePanel save={ confirmDelete } linkOut={ `/location/${ locationId }` } locationId={ locationId } />
+                <ChangePanel save={ confirmDelete } linkOut={ `/location/${ location.facilityId }` } locationId={ location.facilityId } />
             </div>
         </main>
     )
+}
 }
 
 export default LocationDelete

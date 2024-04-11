@@ -125,7 +125,7 @@ exports.updateTemplate = async (req, res, next) => {
             success: true
         }
 
-        await user.save();
+        await template.save();
 
         res.status(200).json(updateResponse);
 

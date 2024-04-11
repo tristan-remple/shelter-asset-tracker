@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 // internal dependencies
@@ -22,39 +22,44 @@ const CategoryDetails = () => {
     // get the status from context
     const { id } = useParams()
     const { status } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
 
-    // fetch unit data from the api
-    const response = apiService.singleCategory(id)
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
+    // fetch data from the api
+    const [ response, setResponse ] = useState()
+    useEffect(() => {
+        (async() => {
+            await apiService.singleCategory(id, (data) => {
+                if (!data || data.error || data.id === null) {
+                    setErr("api")
+                } else {
+                    setResponse(data)
+                }
+            })
+        })()
+    }, [])
 
-    // destructure response
-    const { categoryId, categoryName, defaultValue, defaultUsefulLife, icon, singleUse, items, created, updated } = response
-
-    
-
-    return (
+    if (!response) {
+        return <Error err={ err } />
+    } else {
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>{ capitalize(categoryName) } Category</h2>
+                    <h2>{ capitalize(response.name) } Category</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="See All" linkTo="/categories" type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Edit" linkTo={ `/category/${ categoryId }/edit` } type="admin" />
+                    <Button text="Edit" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete" linkTo={ `/category/${ categoryId }/delete` } type="danger" />
+                    <Button text="Delete" linkTo={ `/category/${ response.id }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -65,16 +70,16 @@ const CategoryDetails = () => {
                             Name
                         </div>
                         <div className="col-content">
-                            { categoryName }
+                            { response.name }
                         </div>
                     </div>
                     
                     <div className="col col-info">
                         <div className="col-head">
-                            Single Use
+                            Single Resident
                         </div>
                         <div className="col-content">
-                            { singleUse ? "Yes" : "No" }
+                            { response.singleResident ? "Yes" : "No" }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -82,15 +87,15 @@ const CategoryDetails = () => {
                             Updated
                         </div>
                         <div className="col-content">
-                            { friendlyDate(updated) }
+                            { friendlyDate(response.updatedAt) }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Added
+                            Created
                         </div>
                         <div className="col-content">
-                            { friendlyDate(created) }
+                            { friendlyDate(response.createdAt) }
                         </div>
                     </div>
                 </div>
@@ -100,15 +105,15 @@ const CategoryDetails = () => {
                             Default Value
                         </div>
                         <div className="col-content">
-                            { `$${ defaultValue.toFixed(2) }` }
+                            { `$${ parseFloat(response.defaultValue).toFixed(2) }` }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life
+                            Default Depreciation Rate
                         </div>
                         <div className="col-content">
-                            { `${( defaultUsefulLife / 4 )} years` }
+                            { response.defaultDepreciation }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -116,7 +121,7 @@ const CategoryDetails = () => {
                             # of Items
                         </div>
                         <div className="col-content">
-                            { items }
+                            { response.itemCount }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -124,14 +129,15 @@ const CategoryDetails = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ icon }.png` } alt={ categoryName + " icon" } />
-                            <Button text="Change Icon" linkTo={ `/category/${ id }/edit` } type="admin" />
+                            <img className="img-fluid small-icon" src={ `/img/${ response.icon }.png` } alt={ response.name + " icon" } />
+                            <Button text="Change Icon" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     )
+}
 }
 
 export default CategoryDetails

@@ -24,7 +24,7 @@ class authService {
             userId: 1,
             userName: "Sally Henson",
             location: {
-                locationId: 5,
+                locationId: 1,
                 locationName: "The Hub"
             }
         }

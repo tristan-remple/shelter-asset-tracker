@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 
 // internal dependencies
 import { statusContext } from '../Services/Context'
@@ -21,38 +21,43 @@ const UserList = () => {
 
     // get the status from context
     const { status } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
 
     // check that user is an admin
     if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // get the users from the api
-    const users = apiService.listUsers()
-    if (!users || users.error) {
-        return <Error err="api" />
-    }
-
-    // sort by date added
-    users.sort((a, b) => {
-        return new Date(b.created) - new Date(a.created)
-    })
-
-    // enable search functionality
-    const [ filteredUsers, setFilteredUsers ] = useState(users)
+    const [ users, setResponse ] = useState([])
+    const [ filteredUsers, setFilteredUsers ] = useState([])
+    useEffect(() => {
+        (async()=>{
+            await apiService.listUsers(function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                setResponse(data)
+                setFilteredUsers(data)
+            })
+        })()
+    }, [])
 
     // render user rows
     const displayUsers = filteredUsers.map(user => {
         return <tr key={ user.userId } >
-            <td>{ user.userName }</td>
-            <td>{ user.location.locationName }</td>
-            <td>{ adminDate(user.created) }</td>
+            <td>{ user.name }</td>
+            <td>{ user.facilities.map(loc => loc.name).join(", ") }</td>
+            {/* <td>{ adminDate(user.created) }</td> */}
             <td><Button text="Details" linkTo={ `/user/${ user.userId }` } type="small" /></td>
         </tr>
     })
 
-    return (
+    if (!users) {
+        return <Error err={ err } />
+    } else {
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
@@ -73,7 +78,7 @@ const UserList = () => {
                         <tr>
                             <th scope="col">Username</th>
                             <th scope="col">Location</th>
-                            <th scope="col">Date Added</th>
+                            {/* <th scope="col">Date Added</th> */}
                             <th scope="col">Details</th>
                         </tr>
                     </thead>
@@ -84,6 +89,7 @@ const UserList = () => {
             </div>
         </main>
     )
+}
 }
 
 export default UserList

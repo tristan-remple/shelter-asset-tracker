@@ -30,7 +30,7 @@ export function formattedDate() {
     const date = new Date()
     const stringDate = date.toLocaleDateString()
     const stringTime = date.toTimeString().split(" ")[0]
-    return `${stringDate} ${stringTime}`
+    return `${stringDate}T${stringTime}`
 }
 
 // This function takes a date in any JS-readable format and formats it.
