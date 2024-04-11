@@ -9878,6 +9878,7 @@ td, th {
 
 header, footer {
   background-color: #c4de9b !important;
+  width: 100%;
 }
 
 #app-title {
@@ -9885,6 +9886,7 @@ header, footer {
   font-size: 2rem;
   color: #332114;
   font-weight: 500;
+  font-family: "Libre Caslon Text";
 }
 
 .nav-link {

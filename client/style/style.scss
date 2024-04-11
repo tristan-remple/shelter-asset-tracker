@@ -137,6 +137,7 @@ td, th {
 
 header, footer {
     background-color: $ltgreen !important;
+    width: 100%;
 }
 
 #app-title {
@@ -144,6 +145,7 @@ header, footer {
     font-size: 2rem;
     color:$fontColour;
     font-weight: 500;
+    font-family: $fontaccent;
 }
 
 .nav-link {
@@ -173,6 +175,7 @@ header, footer {
     color:$olivegreen;
     border: 1px solid white;
 }
+   
 
 
 /* Icon Styles */

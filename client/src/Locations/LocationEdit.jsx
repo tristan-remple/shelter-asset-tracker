@@ -92,17 +92,17 @@ const LocationEdit = () => {
                 <div className="col">
                     <h2>{ locationName }</h2>
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/location/${ locationId }` } type="nav" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Unit" linkTo={ `/location/${ locationId }/add` } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text={ deletedLabel } linkTo={ `/location/${ locationId }/delete` } type="admin" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text={ deletedLabel } linkTo={ `/location/${ locationId }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">

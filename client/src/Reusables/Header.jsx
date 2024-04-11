@@ -25,7 +25,7 @@ const Header = () => {
                 <Link className="navbar-brand" to="/">
                     <img src="/img/logo.png" alt="Shelter Nova Scotia Logo" className='logo-image' />
                 </Link>
-                <div className="col">
+                <div className="col-2">
                     <h1 id="app-title" className='mt-4'>Shelter Asset Tracker</h1>
                 </div>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
