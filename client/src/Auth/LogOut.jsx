@@ -19,7 +19,7 @@ const LogOut = () => {
     useEffect(() => {
         (async() => {
             await authService.logout((response) => {
-                if (response && response.success) {
+                if (response && response.status === 200) {
                     setStatus("You have been successfully logged out.")
                 } else {
                     setStatus("We weren't able to process your request.")
