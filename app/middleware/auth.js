@@ -4,7 +4,7 @@ const { verifyToken } = require('../utils/token');
 const authorize = async (req, res, next) => {
     try {
         const token = req.cookies.authentication;
-        console.log(req.cookies)
+        console.log(req.headers)
 
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized.' });

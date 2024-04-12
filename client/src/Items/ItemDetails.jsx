@@ -38,16 +38,19 @@ const ItemDetails = () => {
             await apiService.singleItem(id, function(data){
                 if (!data || data.error) {
                     setErr("api")
+                } else {
+                    setItem(data)
                 }
-                setItem(data)
             })
         })()
     }, [])
 
     if (item) {
+
+        console.log(err)
+        console.log(item)
     // destructure the item object
     const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments } = item
-    console.log(item)
 
     // if it has been deleted, throw an error
     // if (discardDate) {

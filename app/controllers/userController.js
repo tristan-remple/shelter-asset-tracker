@@ -55,7 +55,7 @@ exports.getAllUsers = async (req, res, next) => {
                 },
                 required: false
             },
-            order: [['createdAt', 'SC']]
+            order: [['createdAt', 'ASC']]
         });
 
         if (!users) {

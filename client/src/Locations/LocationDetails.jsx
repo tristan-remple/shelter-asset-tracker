@@ -47,6 +47,7 @@ const LocationDetails = () => {
         (async()=>{
             await apiService.singleLocation(urlId, function(data){
                 if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
                 }
                 setResponse(data)

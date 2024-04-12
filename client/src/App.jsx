@@ -39,6 +39,7 @@ import ResetPassword from './Auth/ResetPassword'
 import Error from './Reusables/Error'
 import CategoryCreate from './Categories/CategoryCreate'
 import FAQ from './Reusables/FAQ'
+import Register from './Users/Register'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -82,6 +83,7 @@ function App() {
             <Route path="/user" element={ <UserDetails /> } />
             <Route path="/user/:id/edit" element={ <UserEdit /> } />
             <Route path="/faq" element={ <FAQ /> } />
+            <Route path="/register" element={ <Register /> } />
           </Route>
           <Route element={<AdminRoutes />}>
             <Route path="/unit/:id/edit" element={ <UnitEdit /> } />

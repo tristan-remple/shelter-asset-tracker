@@ -17,7 +17,7 @@ import ChangePanel from '../Reusables/ChangePanel'
 // This module allows the admin to create a new user.
 // Imported by: App
 
-const UserCreate = () => {
+const Register = () => {
 
     // get context information
     const { status, setStatus } = useContext(statusContext)
@@ -92,7 +92,10 @@ const UserCreate = () => {
             return
         }
 
-        const response = apiService.postNewUser(changes, (response) => {
+        const request = {...changes}
+        request.auths = [changes.location.id]
+
+        authService.registerNewUser(request, (response) => {
             if (response.success) {
                 setStatus(`You have successfully added user ${response.name}.`)
                 setUnsaved(false)
@@ -129,19 +132,6 @@ const UserCreate = () => {
                                 name="name" 
                                 value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Admin?
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="isAdmin" 
-                                checked={ changes.isAdmin }
-                                onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
@@ -203,4 +193,4 @@ const UserCreate = () => {
     )
 }
 
-export default UserCreate
+export default Register
