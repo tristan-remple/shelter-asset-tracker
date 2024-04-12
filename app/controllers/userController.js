@@ -3,7 +3,7 @@ const { hashPassword } = require('../utils/hash');
 
 exports.createNewUser = async (req, res, next) => {
     try {
-        const { email, password, name, isAdmin } = req.body;
+        const { email, password, name, isAdmin, auths, authorizedBy } = req.body;
         if (!email || !password || !name || isAdmin === undefined) {
             return res.status(400).json({ error: 'Bad request' });
         }
@@ -21,6 +21,19 @@ exports.createNewUser = async (req, res, next) => {
             name: name,
             isAdmin: isAdmin
         });
+
+        
+        if (Array.isArray(auths)) {
+            const facilityAuths = auths.map(async facilityId => {
+                await models.FacilityAuth.create({
+                    userId: newUser.id,
+                    facilityId: facilityId,
+                    authorizedBy: authorizedBy
+                });
+            });
+
+            await Promise.all(facilityAuths);
+        }
 
         const createResponse = {
             userId: newUser.id,
