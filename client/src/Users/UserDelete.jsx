@@ -1,6 +1,6 @@
 // external dependencies
 import { useParams, useNavigate } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -24,56 +24,61 @@ const UserDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
     
     if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // validate id
-    if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
+    if (id === undefined || id === "undefined") {
+        setErr("undefined")
     }
 
-    // fetch unit data from the api
-    const user = apiService.singleUser(id)
-    if (!user || user.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
-
-    // destructure the unit
-    const { userId, userName } = user
+    // fetch user data from the api
+    const [ user, setUser ] = useState({})
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleUser(id, function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                setUser(data)
+            })
+        })()
+    }, [])
 
     // send delete api call
-    const confirmDelete = () => {
+    const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
-            const response = apiService.deleteUnit(user)
-            if (response.success) {
-                setStatus(`You have successfully deleted user ${ response.userName }.`)
-                navigate(`/users`)
-            } else {
-                setStatus("We weren't able to process your delete user request.")
-            }
+            await apiService.deleteUser(user, (response) => {
+                if (response.success) {
+                    setStatus(`You have successfully deleted user ${ response.name }.`)
+                    navigate(`/users`)
+                } else {
+                    setStatus("We weren't able to process your delete user request.")
+                }
+            })
+            
         } else {
-            return <Error err="permission" />
+            setErr("permission")
         }
     }
 
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Deleting { userName }</h2>
+                    <h2>Deleting { user?.name }</h2>
                 </div>
-                <div className="col-2">
-                    <Button text="Return" linkTo={ `/user/${ userId }` } type="nav" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Return" linkTo={ `/user/${ user?.id }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
-                <ChangePanel save={ confirmDelete } linkOut={ `/user/${ userId }` } locationId="0" />
+                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <ChangePanel save={ confirmDelete } linkOut={ `/user/${ user?.id }` } locationId="0" />
             </div>
         </main>
     )

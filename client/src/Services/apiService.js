@@ -8,415 +8,316 @@ import { formattedDate } from './dateHelper'
 
 class apiService {
 
-    // Called by: ItemDetails
-    singleItem(id) {
-        const item = {
-            unit: {
-                unitId: 13,
-                unitName: "3040-B",
-                locationId: 2,
-                locationName: "Barry House"
+    // Called by: ItemDetails, ItemEdit
+    singleItem = async(id, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/items/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+    }
+
+    // Called by: ItemEdit
+    postItemEdit = async(item, callback) => {
+        const id = item.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/items/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
             },
-            itemId: 397,
-            itemLabel: "BH-397",
-            category: {
-                categoryId: 23,
-                categoryName: "end table",
-                icon: "icons8-console-table-100"
-            },
-            toAssess: false,
-            toDiscard: false,
-            vendor: "Ikea",
-            donated: false,
-            initialValue: 439.99,
-            currentValue: 285.00,
-            added: {
-                userId: 2,
-                userName: "Sally Ivany",
-                addedDate: "2022-02-22 13:55:00"
-            },
-            inspected: {
-                userId: 4,
-                userName: "Jimmy Jones",
-                inspectedDate: "2024-02-22 13:55:00"
-            },
-            discardDate: null,
-            comments: [
-                {
-                    commentId: 2,
-                    commentDate: "2022-02-22 13:55:00",
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    commentText: "Legs are uneven, one side is scraped."
+            body: JSON.stringify(item)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
+    }
+
+    // Called by: ItemEdit
+    deleteItem = async(item, callback) => {
+        const id = item.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/items/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
                 },
-                {
-                    commentId: 3,
-                    commentDate: "2021-07-15 09:35:00",
-                    userId: 7,
-                    userName: "Joe Rivers",
-                    commentText: "Seems sturdy enough."
-                }
-            ]
-        }
-        return item;
-    }
-
-    // Called by: ItemEdit
-    postItemEdit(item) {
-        console.log(item)
-        console.log("Edits Posted")
-        item.success = true
-        return item
-    }
-
-    // Called by: ItemEdit
-    deleteItem(item) {
-        console.log(item)
-        console.log("Item Deleted")
-        item.success = true
-        return item
+                body: JSON.stringify(item)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: ItemCreate
-    postNewItem(item) {
-        console.log(item)
-        console.log("New Posted")
-        item.itemId = 32
-        item.success = true
-        return item
+    postNewItem = async(item, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/items`, {
+            method: "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(item)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
     // Called by: ItemEdit, ItemCreate
-    listCategories() {
-        return [
-            {
-                categoryId: 1,
-                categoryName: "dining table",
-                defaultValue: 900,
-                icon: "icons8-furniture-100",
-                singleUse: false
-            },
-            {
-                categoryId: 2,
-                categoryName: "end table",
-                defaultValue: 300,
-                icon: "icons8-bureau-100",
-                singleUse: false
-            }
-        ]
+    listCategories = async(callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/templates`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: UnitDetails, ItemCreate, UnitEdit
-    singleUnit(id) {
-        return {
-            unit: {
-                unitId: 13,
-                unitName: "3040-B",
-                locationId: 2,
-                locationName: "Barry House",
-                unitType: "apartment",
-                added: {
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    addedDate: "2022-02-22 13:55:00"
-                },
-                inspected: {
-                    userId: 4,
-                    userName: "Jimmy Jones",
-                    inspectedDate: "2024-02-22 13:55:00"
-                },
-                deleteDate: null,
-                comments: [
-                    {
-                        commentId: 5,
-                        commentDate: "2022-02-22 13:55:00",
-                        userId: 2,
-                        userName: "Sally Ivany",
-                        commentText: "The tenants have been rough with it; one hole in the wall."
-                    },
-                    {
-                        commentId: 10,
-                        commentDate: "2021-07-15 09:35:00",
-                        userId: 7,
-                        userName: "Joe Rivers",
-                        commentText: "It's got at least one room."
-                    }
-                ]
-            },
-            items: [
-                {
-                    itemId: 359,
-                    itemLabel: "BH-359",
-                    categoryId: 14,
-                    categoryName: "couch",
-                    toAssess: true,
-                    toDiscard: false,
-                    inspectedDate: "2024-02-22 13:55:00"
-                },
-                {
-                    itemId: 365,
-                    itemLabel: "BH-365",
-                    categoryId: 3,
-                    categoryName: "mattress",
-                    toAssess: false,
-                    toDiscard: true,
-                    inspectedDate: "2023-02-22 13:55:00"
-                },
-                {
-                    itemId: 397,
-                    itemLabel: "BH-397",
-                    categoryId: 23,
-                    categoryName: "end table",
-                    toAssess: false,
-                    toDiscard: false,
-                    inspectedDate: "2024-08-22 13:55:00"
-                }
-            ]
-        }
+    singleUnit = async(id, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/units/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: UnitEdit
-    postUnitEdit(unit) {
-        console.log(unit)
-        console.log("Updated")
-        unit.success = true
-        return unit
+    postUnitEdit= async(unit, callback) => {
+        const id = unit.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/units/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(unit)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
     // Called by: UnitCreate
-    postNewUnit(unit) {
-        console.log(unit)
-        console.log("Created")
-        unit.unitId = 18
-        unit.success = true
-        return unit
+    postNewUnit = async(unit, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/units`, {
+            method: "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(unit)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
     // Called by: UnitDelete
-    deleteUnit(unit) {
+    deleteUnit = async(unit, callback) => {
+        const id = unit.id
+        unit.facilityId = unit.facility.id
         console.log(unit)
-        console.log("Unit Deleted")
-        unit.deleteDate = formattedDate()
-        unit.success = true
-        return unit
+        await fetch(`${ import.meta.env.VITE_API_URL }/units/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(unit)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
-    // Called by: LocationDetails
-    singleLocation(id) {
-        return {
-            location: {
-                locationId: 2,
-                locationName: "The Hub",
-                locationType: "shelter",
-                added: {
-                    userId: 2,
-                    userName: "Sally Ivany",
-                    addedDate: "2022-02-22 13:55:00"
-                },
-                deleteDate: null,
-                comments: [
-                    {
-                        commentId: 12,
-                        commentDate: "2021-07-15 09:35:00",
-                        userId: 7,
-                        userName: "Joe Rivers",
-                        commentText: "It's got at least one unit."
-                    }
-                ]
-            },
-            units: [
-                {
-                    unitId: 2,
-                    unitName: "204",
-                    unitType: "snug",
-                    toInspectItems: 3,
-                    toDiscardItems: 0
-                },
-                {
-                    unitId: 3,
-                    unitName: "205",
-                    unitType: "snug",
-                    toInspectItems: 0,
-                    toDiscardItems: 0
-                },
-                {
-                    unitId: 4,
-                    unitName: "206",
-                    unitType: "snug",
-                    toInspectItems: 1,
-                    toDiscardItems: 1
+    // Called by: LocationDetails, LocationEdit, LocationDelete
+    singleLocation= async(id, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                let unitTypes
+                if (data.units) {
+                    unitTypes = [...new Set(data.units.map(unit => unit.type))]
+                } else {
+                    unitTypes = []
                 }
-            ]
-        }
-    }
-
-    // Called by: LocationEdit, LocationDelete
-    locationEdit(id) {
-        return {
-            locationId: 2,
-            locationName: "The Hub",
-            locationType: "shelter",
-            added: {
-                userId: 2,
-                userName: "Sally Ivany",
-                addedDate: "2022-02-22 13:55:00"
-            },
-            deleteDate: null,
-            comments: [
-                {
-                    commentId: 12,
-                    commentDate: "2021-07-15 09:35:00",
-                    userId: 7,
-                    userName: "Joe Rivers",
-                    commentText: "It's got at least one unit."
-                }
-            ]
-        }
+                data.types = unitTypes
+                callback(data)
+            })
     }
 
     // Called by: LocationEdit
-    postLocationEdit(location) {
-        console.log(location)
-        location.success = true
-        return location
+    postLocationEdit= async(location, callback) => {
+        const id = location.facilityId
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(location)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
     // Called by: LocationList
-    listLocations() {
-        return [
-            {
-                locationId: 2,
-                locationName: "The Hub",
-                units: 35
-            },
-            {
-                locationId: 3,
-                locationName: "Some Place",
-                units: 4
-            }
-        ]
+    listLocations = async(callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: LocationCreate
-    postLocation(location) {
-        console.log(location)
-        location.locationId = 8
-        location.success = true
-        return location
+    postLocation = async(location, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities`, {
+                method: "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(location)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
     // Called by: LocationDelete
-    deleteLocation(location) {
-        console.log(location)
-        location.deleteDate = formattedDate()
-        location.success = true
-        return location
+    deleteLocation = async(location, callback) => {
+
+        const id = location.facilityId
+        await fetch(`${ import.meta.env.VITE_API_URL }/facilities/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(location)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+
     }
 
-    // Called by: CategoryList
-    listCategories() {
-        const categoryList = [
-            {
-                categoryId: 1,
-                categoryName: "dining table",
-                defaultValue: 900,
-                items: 16,
-                icon: "icons8-furniture-100",
-                singleUse: false
+    singleCategory = async(id, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/templates/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+    }
+
+    postCategoryEdit = async(category, callback) => {
+        const id = category.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/templates/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
             },
-            {
-                categoryId: 2,
-                categoryName: "end table",
-                defaultValue: 300,
-                items: 34,
-                icon: "icons8-bureau-100",
-                singleUse: false
-            }
-        ]
-        return categoryList
+            body: JSON.stringify(category)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
-    singleCategory(id) {
-        const singleCategory = {
-            categoryId: 2,
-            categoryName: "end table",
-            defaultValue: 300,
-            defaultUsefulLife: 20,
-            icon: "icons8-bureau-100",
-            singleUse: false,
-            items: 34,
-            created: "2024-02-22 13:55:00",
-            updated: "2024-02-22 13:55:00"
-        }
-        return singleCategory
-    }
-
-    postCategoryEdit(category) {
-        console.log(category)
-        category.success = true
-        return category
-    }
-
-    deleteCategory(category) {
-        console.log(category)
-        category.success = true
-        category.deleteDate = "2024-02-22 13:55:00"
-        return category
-    }
-
-    listUsers() {
-        return [
-            {
-                userId: 1,
-                userName: "shenson",
-                userType: "admin",
-                created: "2024-02-22 13:55:00",
-                deleted: null,
-                location: {
-                    locationId: 2,
-                    locationName: "The Hub"
-                }
+    postNewCategory = async(category, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/templates`, {
+            method: "POST",
+            "headers": {
+                "Content-Type": "application/json"
             },
-            {
-                userId: 1,
-                userName: "joeblow",
-                userType: "general",
-                created: "2022-02-22 13:55:00",
-                deleted: null,
-                location: {
-                    locationId: 2,
-                    locationName: "The Hub"
-                }
-            }
-        ]
+            body: JSON.stringify(category)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
     }
 
-    singleUser(id) {
-        return {
-            userId: 1,
-            userName: "joeblow",
-            userType: "general",
-            created: "2022-02-22 13:55:00",
-            deleted: null,
-            location: {
-                locationId: 2,
-                locationName: "The Hub"
-            }
-        }
+    // Called by: CategoryDelete
+    deleteCategory = async(category, callback) => {
+        const id = category.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/templates/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(category)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
-    postNewUser(user)  {
-        console.log(user)
-        user.userId = 13
-        user.success = true
-        return user
+    listUsers = async(callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/users`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 
-    postNewCategory(category) {
-        console.log(category)
-        category.categoryId = 20
-        category.success = true
-        return category
+    singleUser = async(id, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/users/${ id }`)
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
+    }
+
+    postNewUser = async(user, callback) => {
+        await fetch(`${ import.meta.env.VITE_API_URL }/users`, {
+            method: "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
+    }
+
+    // Called by: UnitEdit
+    postUserEdit= async(user, callback) => {
+        const id = user.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/users/${ id }`, {
+            method: "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+        .then(res => res.json())
+        .then(data => {
+            callback(data)
+        })
+    }
+
+    // Called by: UserDelete
+    deleteUser = async(user, callback) => {
+        const id = user.id
+        await fetch(`${ import.meta.env.VITE_API_URL }/users/${id}`, {
+                method: "DELETE",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+            })
+            .then(res => res.json())
+            .then(data => {
+                callback(data)
+            })
     }
 }
 

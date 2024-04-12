@@ -79,6 +79,7 @@ exports.createNewTemplate = async (req, res, next) => {
         });
 
         const createResponse = {
+            id: newTemplate.id,
             name: newTemplate.name,
             defaultValue: newTemplate.defaultValue,
             defaultDepreciation: newTemplate.defaultDepreciation,
@@ -125,7 +126,7 @@ exports.updateTemplate = async (req, res, next) => {
             success: true
         }
 
-        await user.save();
+        await template.save();
 
         res.status(200).json(updateResponse);
 

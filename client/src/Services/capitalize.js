@@ -5,7 +5,7 @@
 function capitalize(str) {
 
     // check if it's blank (loose equality intentional)
-    if (str == "") {
+    if (str == "" || str == null) {
         return "";
     }
 

@@ -1,4 +1,41 @@
 const { models } = require('../data');
+const { hashPassword } = require('../utils/hash'); 
+
+exports.createNewUser = async (req, res, next) => {
+    try {
+        const { email, password, name, isAdmin } = req.body;
+        if (!email || !password || !name || isAdmin === undefined) {
+            return res.status(400).json({ error: 'Bad request' });
+        }
+
+        const existingUser = await models.User.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ error: 'User already exists' });
+        }
+
+        const hashedPassword = await hashPassword(password);
+
+        const newUser = await models.User.create({
+            email: email,      
+            password: hashedPassword,
+            name: name,
+            isAdmin: isAdmin
+        });
+
+        const createResponse = {
+            userId: newUser.id,
+            name: newUser.name,
+            isAdmin: newUser.isAdmin,
+            created: newUser.createdAt,
+            success: true
+        };
+
+        res.status(201).json(createResponse);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
 
 exports.getAllUsers = async (req, res, next) => {
     try {
@@ -6,7 +43,8 @@ exports.getAllUsers = async (req, res, next) => {
             attributes: [
                 'id', 
                 'email', 
-                'name'
+                'name',
+                'createdAt'
             ],
             include: {
                 model: models.FacilityAuth,
@@ -31,7 +69,8 @@ exports.getAllUsers = async (req, res, next) => {
             facilities: user.FacilityAuths.map(facilityAuth => ({
                 facilityId: facilityAuth.Facility.id,
                 name: facilityAuth.Facility.name
-            }))
+            })),
+            createdAt: user.createdAt
         }));
 
         res.status(200).json(usersInfo);
@@ -88,37 +127,6 @@ exports.getUserById = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error.' });
-    }
-};
-
-exports.createNewUser = async (req, res, next) => {
-    try {
-        const { email, password, name, isAdmin } = req.body;
-
-        const existingUser = await models.User.findOne({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ error: 'User already exists' });
-        }
-
-        const newUser = await models.User.create({
-            email: email,       //----------------------!!!
-            password: password,   //               <-- HASH ME
-            name: name,
-            isAdmin: isAdmin
-        });
-
-        const createResponse = {
-            userId: newUser.id,
-            name: newUser.name,
-            isAdmin: newUser.isAdmin,
-            created: newUser.createdAt,
-            success: true
-        };
-
-        res.status(201).json(createResponse);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Server error' });
     }
 };
 

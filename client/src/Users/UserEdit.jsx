@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { statusContext } from '../Services/Context'
@@ -23,108 +23,110 @@ const UserEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
+    const [ err, setErr ] = useState(null)
 
     // check that active user is an admin
     if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
+        setErr("permission")
     }
 
     // validate id
     if (id === undefined || id === "undefined") {
-        console.log("undefined id")
-        return <Error err="undefined" />
+        setErr("undefined")
     }
-
-    // fetch user data from the api
-    const response = apiService.singleUser(id)
-    if (!response || response.error) {
-        console.log("api error")
-        return <Error err="api" />
-    }
-
-    const { userId, userName, userType, created, deleted, location } = response
 
     // set up the change panel state
     const [ unsaved, setUnsaved ] = useState(false)
 
     // form handling state
     const [ changes, setChanges ] = useState({
-        userId,
-        userName,
-        admin: userType == "admin" ? true: false,
-        added: {
-            addedDate: created
-        },
-        location
+        id: 0,
+        name: "",
+        email: "",
+        isAdmin: false,
+        createdAt: "",
+        updatedAt: "",
+        facilities: [],
+        locations: []
     })
 
-    // list of locations for dropdown
-    const locations = apiService.listLocations()
-    const locationTitles = locations.map(loc => loc.locationName)
-    if (!locations || locations.error || locations.length === 0) {
-        return <Error err="api" />
-    }
+    // fetch user data from the api
+    const [ user, setUser ] = useState({})
+    useEffect(() => {
+        (async()=>{
+            await apiService.singleUser(id, function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                data.locations = []
+                setUser(data),
+                setChanges(data)
+            })
+        })()
+    }, [])
 
-    // handles location change
-    // passed into Dropdown
-    const handleLocationChange = (newLocName) => {
-        const newLocIndex = locations.map(loc => loc.locationName).indexOf(newLocName)
-        if (newLocIndex !== -1) {
-            const newChanges = {...changes}
-            newChanges.location = locations[newLocIndex]
-            setChanges(newChanges)
-            setUnsaved(true)
-            setStatus("")
-        } else {
-            setStatus("The location you have selected cannot be found.")
-        }
-    }
+    // list of locations for dropdown
+    const [ locations, setLocations ] = useState([])
+    useEffect(() => {
+        (async()=>{
+            await apiService.listLocations(function(data){
+                if (!data || data.error) {
+                    setErr("api")
+                    return
+                }
+                setLocations(data)
+            })
+        })()
+    }, [])
+
+    const locationSelector = locations.map(loc => {
+        return <input 
+            type="checkbox"
+            name={ loc.name } 
+            checked={ true }
+            onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+        />
+    })
 
     // send data to the api
-    const saveChanges = () => {
+    const saveChanges = async() => {
 
         // validation
-        if (changes.userName === "") {
+        if (changes.name === "") {
             setStatus("Please enter a username.")
             return
         }
 
         // convert the changes object into a valid user object
         const newUser = {...changes}
-        if (newUser.admin === true) {
-            newUser.userType = "admin"
-        } else {
-            newUser.userType = "general"
-        }
-        delete newUser.admin
-        newUser.created = newUser.added.addedDate
-        delete newUser.added
 
-        const response = apiService.postUserEdit(newUser)
-        if (response.success) {
-            setStatus(`You have successfully updated user ${response.userName}.`)
-            setUnsaved(false)
-            navigate(`/user/${response.userId}`)
-        } else {
-            setStatus("We weren't able to process your edit user request.")
-        }
+        await apiService.postUserEdit(newUser, (response) => {
+            if (response.success) {
+                setStatus(`You have successfully updated user ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/user/${ user.id }`)
+            } else {
+                setStatus("We weren't able to process your edit user request.")
+            }
+        })
+        
     }
 
     return (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Editing User { userName }</h2>
+                    <h2>Editing User { user.name }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/user/${ userId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/user/${ user.id }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text="Delete" linkTo={ `/users/${id}/delete` } type="danger" />
+                    <Button text="Delete" linkTo={ `/users/${ user.id }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -137,8 +139,8 @@ const UserEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="userName" 
-                                value={ changes.userName } 
+                                name="name" 
+                                value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -150,28 +152,28 @@ const UserEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="checkbox"
-                                name="admin" 
-                                checked={ changes.admin }
+                                name="isAdmin" 
+                                checked={ changes.isAdmin }
                                 onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Date Added
                         </div>
                         <div className="col-content">
                             <input 
                                 type="date" 
-                                name="addedDate" 
-                                value={ adminDate(changes.added.addedDate) } 
+                                name="createdAt" 
+                                value={ adminDate(changes.createdAt) } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
-                    <div className="col col-info">
+                    </div> */}
+                    {/* <div className="col col-info">
                         <div className="col-head">
-                            Location
+                            Locations
                         </div>
                         <div className="col-content">
                             <Dropdown 
@@ -180,9 +182,9 @@ const UserEdit = () => {
                                 setCurrent={ handleLocationChange }
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ userId }` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ user.id }` } /> }
             </div>
         </main>
     )

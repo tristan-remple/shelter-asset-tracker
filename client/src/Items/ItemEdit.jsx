@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
@@ -8,6 +8,7 @@ import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
+import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Reusables/Button"
@@ -39,43 +40,42 @@ const ItemEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
+    const [ err, setErr ] = useState(null)
 
     // redirect to the error page if no item is specified or if the item specified isn't found
     if (id === undefined) {
-        console.log("undefined id")
-        return <Error err="undefined" />
-    }
-    const item = apiService.singleItem(id)
-    if (!item || item.error) {
-        console.log("api error")
-        return <Error err="api" />
+        setErr("undefined")
     }
 
-    // grab the list of categories for dangerous editing
-    const categoryList = apiService.listCategories()
-    let simpleCategories = []
-    if (!categoryList || categoryList[0].error) {
-        // since this is unlikely to be a needed field, print a warning if the fetch fails but don't redirect to Error
-        setStatus("The list of categories could not be found. This may prevent advanced editing.")
-    } else {
+    const [ item, setItem ] = useState()
+    useEffect(() => {
+        (async() => {
+            await apiService.singleItem(id, (data) => {
+                if (!data || data.error) {
+                    setErr("api")
+                }
+                setItem(data)
+            })
+        })()
+    }, [])
 
-        // the Dropdown component later is expecting a list of strings
-        simpleCategories = categoryList.map(cat => cat.categoryName)
-    }
+    const [ categoryList, setCategoryList ] = useState([])
+    const [ simpleCategories, setSimpleCategories ] = useState([])
+    useEffect(() => {
+        (async() => {
+            await apiService.listCategories((data) => {
+                if (!data || data.error) {
+                    setErr("api")
+                }
+                setCategoryList(data)
 
-    // destructure the item
-    const { unit, itemLabel, category, toAssess, toDiscard, vendor, donated, initialValue, currentValue, added, inspected, comments } = item
-
-    // flag options are defined in the flag module
-    let flagColor = flagColorOptions[0]
-    let flagText = flagTextOptions[0]
-    if ( toDiscard ) {
-        flagColor = flagColorOptions[2]
-        flagText = flagTextOptions[2]
-    } else if ( toAssess ) {
-        flagColor  = flagColorOptions[1]
-        flagText = flagTextOptions[1]
-    }
+                // the Dropdown component later is expecting a list of strings
+                const simpleList = data.map(cat => cat.name)
+                simpleList.unshift("Select:")
+                setSimpleCategories(simpleList)
+            })
+        })()
+    }, [])
 
     // set up some page functionality
     // unsaved toggles the ChangePanel
@@ -89,22 +89,51 @@ const ItemEdit = () => {
 
     // object that defines fields that are safe to change
     const [ safeChanges, setSafeChanges ] = useState({
-        label: itemLabel,
-        statusColor: flagColor,
-        statusText: flagText,
+        name: null,
+        statusColor: flagColorOptions[0],
+        statusText: flagTextOptions[0],
         comment: ""
     })
 
     // object (nested) that defines fields that are dangerous to change
     const [ dangerChanges, setDangerChanges ] = useState({
-        category,
-        added,
-        initialValue,
-        currentValue,
-        vendor,
-        donated,
-        unit
+        template: null,
+        unit: null,
+        depreciationRate: null,
+        initialValue: null
     })
+
+    useEffect(() => {
+        if (item) {
+
+            // flag options are defined in the flag module
+            let flagColor = flagColorOptions[0]
+            let flagText = flagTextOptions[0]
+            if ( item.toDiscard ) {
+                flagColor = flagColorOptions[2]
+                flagText = flagTextOptions[2]
+            } else if ( item.toInspect ) {
+                flagColor  = flagColorOptions[1]
+                flagText = flagTextOptions[1]
+            }
+            
+            setSafeChanges({
+                name: item.name,
+                statusColor: flagColor,
+                statusText: flagText,
+                comment: ""
+            })
+
+            setDangerChanges({
+                template: item.template,
+                unit: item.unit,
+                depreciationRate: item.value.depreciationRate,
+                initialValue: item.value.initialValue
+            })
+        }
+    }, [ item ])
+
+    if (item) {
 
     // Note that the following fields are not available to edit:
     // unitId, locationId, inspected (unhandled)
@@ -142,10 +171,10 @@ const ItemEdit = () => {
     // handles category change
     // passed into Dropdown
     const handleCategoryChange = (newCatName) => {
-        const newCatIndex = categoryList.map(cat => cat.categoryName).indexOf(newCatName)
+        const newCatIndex = categoryList.map(cat => cat.name).indexOf(newCatName)
         if (newCatIndex !== -1) {
             const newChanges = {...dangerChanges}
-            newChanges.category = categoryList[newCatIndex]
+            newChanges.template = categoryList[newCatIndex]
             console.log(newChanges)
             setDangerChanges(newChanges)
             setUnsaved(true)
@@ -155,74 +184,61 @@ const ItemEdit = () => {
     }
 
     // sends the item object to the apiService
-    const saveChanges = () => {
-        const newItem = {...dangerChanges}
-        newItem.itemId = id
-        newItem.itemLabel = safeChanges.label
-        newItem.toAssess = safeChanges.statusText === flagTextOptions[1]
+    const saveChanges = async() => {
+        const newItem = {}
+        newItem.id = id
+        newItem.unitId = dangerChanges.unit.id
+        newItem.name = safeChanges.name
+        newItem.initialValue = dangerChanges.initialValue
+        newItem.depreciationRate = dangerChanges.depreciationRate
+        newItem.toInspect = safeChanges.statusText === flagTextOptions[1]
         newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
-        newItem.comment = safeChanges.comment
-        newItem.discardDate = null
-        newItem.inspected = inspected
 
         if (authService.checkUser()) {
-            const response = apiService.postItemEdit(newItem)
-            if (response.success) {
-                setStatus(`You have successfully saved your changes to item ${response.itemLabel}.`)
-                setUnsaved(false)
-                navigate(`/item/${id}`)
-            } else {
-                setStatus("We weren't able to process your edit item request.")
-            }
+            await apiService.postItemEdit(newItem, (response) => {
+                if (response.success) {
+                    setStatus(`You have successfully saved your changes to item ${response.name}.`)
+                    setUnsaved(false)
+                    navigate(`/item/${response.id}`)
+                } else {
+                    setStatus("We weren't able to process your edit item request.")
+                }
+            })
         } else {
             setStatus("Your log in credentials could not be validated.")
         }
     }
 
     // sends a delete request to the apiService
-    // date handling is commented out, but can be implemented again if needed
-    const deleteItem = () => {
-        // const newItem = item
-        // const today = new Date()
-        // const stringToday = today.toLocaleDateString()
-        // const stringNow = today.toTimeString().split(" ")[0]
-        // const formattedDate = `${stringToday} ${stringNow}`
-
-        // newItem.itemId = id
-        // newItem.discardDate = formattedDate
-
-        // const response = apiService.deleteItem(newItem)
-
+    const deleteItem = async() => {
         const deletedItem = {
-            unitId: item.unit.unitId,
-            locationId: item.unit.locationId,
-            itemLabel,
-            itemId: id
+            id: item.id,
+            name: item.name
         }
-
-        const response = apiService.deleteItem(deletedItem)
-        if (response.success) {
-            setStatus(`You have successfully deleted item ${response.itemLabel}.`)
-            setUnsaved(false)
-            navigate(`/unit/${response.unitId}`)
-        } else {
-            setStatus("We weren't able to process your delete item request.")
-        }
+        await apiService.deleteItem(deletedItem, (response) => {
+            if (response.success) {
+                setStatus(`You have successfully deleted item ${ response.name }.`)
+                setUnsaved(false)
+                navigate(`/unit/${ item.unit.id }`)
+            } else {
+                setStatus("We weren't able to process your delete item request.")
+            }
+        })
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Editing { capitalize(category.categoryName) } in { unit.unitName }</h2>
+                    <h2>Editing { capitalize(item.template.name) } in { item.unit.name }</h2>
                 </div>
-                <div className="col-2">
-                    <Button text="Save Changes" linkTo={ saveChanges } type="action" />
-                </div>
-                <div className="col-2">
+                <div className="col-2 d-flex justify-content-end p-0">
                     <Button text="Cancel Edit" linkTo={ `/item/${id}` } type="nav" />
                 </div>
-                <div className="col-3">
+                <div className="col-2 d-flex justify-content-end p-0">
+                    <Button text="Save Changes" linkTo={ saveChanges } type="action" />
+                </div>
+                <div className="col-2 d-flex justify-content-end p-0">
                     <Button text={ dangerLabel } linkTo={ toggleDanger } type="danger" />
                 </div>
             </div>
@@ -236,38 +252,40 @@ const ItemEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="text" 
-                                name="label" 
-                                value={ safeChanges.label } 
+                                name="name" 
+                                value={ safeChanges.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Item Category
+                            Item Template
                         </div>
                         <div className="col-content">
-                            { dangerMode ? <Dropdown 
-                                list={ simpleCategories } 
-                                current={ dangerChanges.category.categoryName } 
-                                setCurrent={ handleCategoryChange }
-                            /> : category.categoryName }
+                            { 
+                            // dangerMode ? <Dropdown 
+                            //     list={ simpleCategories } 
+                            //     current={ dangerChanges.template.name } 
+                            //     setCurrent={ handleCategoryChange }
+                            // /> :
+                             item.template.name }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Updated By
+                            Inspected By
                         </div>
                         <div className="col-content">
-                            { inspected.userName }
+                            { item.inspected ? item.inspected.name : "No inspection recorded." }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Updated At
+                            Inspected At
                         </div>
                         <div className="col-content">
-                            { inspected.inspectedDate }
+                            { item.inspected ? friendlyDate(item.inspected.date) : "No inspection recorded." }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -284,9 +302,9 @@ const ItemEdit = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
+                {/* <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ category.icon }.png` } alt={ category.categoryName + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ item.template.icon }.png` } alt={ item.template.name + " icon" } />
                     </div>
                     <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />
@@ -298,19 +316,14 @@ const ItemEdit = () => {
                         />
                         <CommentBox comments={ comments } />
                     </div>
-                </div>
+                </div> */}
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Acquired Date
                         </div>
                         <div className="col-content">
-                            { dangerMode ? <input 
-                                type="date" 
-                                name="addedDate" 
-                                value={ dangerChanges.added.addedDate.split(" ")[0] } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : added.addedDate }
+                            { friendlyDate(item.createdAt) }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -324,47 +337,20 @@ const ItemEdit = () => {
                                 name="initialValue" 
                                 value={ dangerChanges.initialValue } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : `$${ initialValue.toFixed(2) }` }
+                            /> : `$${ parseFloat(item.value.initialValue).toFixed(2) }` }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Current Value
+                            Depreciation Rate
                         </div>
                         <div className="col-content">
                             { dangerMode ? <input 
                                 type="number" 
-                                step=".01"
-                                name="currentValue" 
-                                value={ dangerChanges.currentValue } 
+                                name="depreciationRate" 
+                                value={ dangerChanges.depreciationRate } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : `$${ currentValue.toFixed(2) }` }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Vendor
-                        </div>
-                        <div className="col-content">
-                            { dangerMode ? <input 
-                                type="text"
-                                name="vendor" 
-                                value={ dangerChanges.vendor } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : vendor }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Donated
-                        </div>
-                        <div className="col-content">
-                            { dangerMode ? <input 
-                                    type="checkbox"
-                                    name="donated" 
-                                    checked={ dangerChanges.donated }
-                                    onChange={ (event) => handleChanges.handleCheckChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                                /> : donated ? "Yes" : "No" }
+                            /> : item.value.depreciationRate }
                         </div>
                     </div>
                 </div>
@@ -374,12 +360,14 @@ const ItemEdit = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { dangerMode ? <input 
-                                type="text" 
-                                name="addedDate" 
-                                value={ dangerChanges.unit.locationName } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : unit.locationName }
+                            {
+                            // dangerMode ? <input 
+                            //     type="text" 
+                            //     name="unit.facility.name" 
+                            //     value={ dangerChanges.unit.facility.name } 
+                            //     onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
+                            // /> :
+                            item.unit.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -387,20 +375,23 @@ const ItemEdit = () => {
                             Unit
                         </div>
                         <div className="col-content">
-                            { dangerMode ? <input 
-                                type="text" 
-                                name="addedDate" 
-                                value={ dangerChanges.unit.unitName } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : unit.unitName }
+                            { 
+                            // dangerMode ? <input 
+                            //     type="text" 
+                            //     name="unit.name" 
+                            //     value={ dangerChanges.unit.name } 
+                            //     onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
+                            // /> : 
+                            item.unit.name }
                         </div>
                     </div>
                 </div>
                 { dangerMode && <Button text="Delete Item" linkTo={ deleteItem } type="danger" /> }
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } locationId={ unit.locationId } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } locationId={ item.unit.locationId } /> }
             </div>
         </main>
     )
+}
 }
 
 export default ItemEdit
