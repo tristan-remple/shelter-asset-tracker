@@ -46,16 +46,21 @@ const LocationDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(urlId, function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
                     console.log(data)
                     setErr("api")
+                } else {
+                    setResponse(data)
+                    setFilteredUnits(data.units)
                 }
-                setResponse(data)
-                setFilteredUnits(data.units)
             })
         })()
     }, [])
 
+
+    if (err) { return <Error err={ err } /> }
     // destructure api response
     if (response) {
 

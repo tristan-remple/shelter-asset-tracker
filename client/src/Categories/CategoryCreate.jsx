@@ -55,21 +55,17 @@ const CategoryCreate = () => {
         }
 
         // api call
-        if (authService.checkAdmin()) {
-            await apiService.postNewCategory(changes, (response) => {
-                if (response.success) {
-                    setStatus(`You have successfully created category ${ response.name }.`)
-                    setUnsaved(false)
-                    navigate(`/category/${ response.id }`)
-                } else if (response.status === 400) {
-                    setStatus(`Category ${ changes.name } already exists.`)
-                } else {
-                    setStatus("We weren't able to process your create category request.")
-                }
-            })
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        await apiService.postNewCategory(changes, (response) => {
+            if (response.success) {
+                setStatus(`You have successfully created category ${ response.name }.`)
+                setUnsaved(false)
+                navigate(`/category/${ response.id }`)
+            } else if (response.status === 400) {
+                setStatus(`Category ${ changes.name } already exists.`)
+            } else {
+                setStatus("We weren't able to process your create category request.")
+            }
+        })
     }
 
     return (

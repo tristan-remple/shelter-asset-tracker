@@ -19,6 +19,8 @@ const LocationList = () => {
 
     // get the status from context, set it to a warning
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState(null)
+
     useEffect(() => {
         if (!authService.checkAdmin()) {
             setStatus('You may not need to view or edit locations other than your assigned location.')
@@ -30,15 +32,19 @@ const LocationList = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    return <Error err="api" />
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
+                    setErr("api")
+                } else {
+                    setResponse(data)
                 }
-                setResponse(data)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (locations) {
         console.log(locations)
     // if the user is admin, populate admin buttons

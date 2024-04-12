@@ -17,12 +17,15 @@ const LogOut = () => {
 
     // perform the logout api call
     useEffect(() => {
-        const response = authService.logout()
-        if (response && response.success) {
-            setStatus("You have been successfully logged out.")
-        } else {
-            setStatus("We weren't able to process your request.")
-        }
+        (async() => {
+            await authService.logout((response) => {
+                if (response && response.success) {
+                    setStatus("You have been successfully logged out.")
+                } else {
+                    setStatus("We weren't able to process your request.")
+                }
+            })
+        })()
     }, [])
 
     return (

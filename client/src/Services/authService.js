@@ -64,8 +64,6 @@ class authService {
 
     // Called by: LogIn
     login = async(user, callback) => {
-
-        console.log(user)
         await axios.post(`${ import.meta.env.VITE_API_URL }/login`, user, {
             withCredentials: true,
             headers: {
@@ -92,8 +90,19 @@ class authService {
     }
 
     // Called by: LogOut
-    logout() {
-        return { success: true }
+    logout = async(callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/logout`, {im: "leaving"}, {
+            withCredentials: true,
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res)
+        })
+        .catch(err => {
+            callback({ error: err })
+        })
     }
 
     requestResetPassword(id) {

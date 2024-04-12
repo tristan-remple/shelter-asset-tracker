@@ -55,13 +55,16 @@ const UserEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(id, function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
-                    return
+                } else {
+                    data.locations = []
+                    setUser(data),
+                    setChanges(data)
                 }
-                data.locations = []
-                setUser(data),
-                setChanges(data)
             })
         })()
     }, [])
@@ -71,11 +74,14 @@ const UserEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
-                    return
+                } else {
+                    setLocations(data)
                 }
-                setLocations(data)
             })
         })()
     }, [])
@@ -113,6 +119,7 @@ const UserEdit = () => {
         
     }
 
+    if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
             <div className="row title-row">

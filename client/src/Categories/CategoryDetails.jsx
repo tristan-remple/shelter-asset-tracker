@@ -34,7 +34,10 @@ const CategoryDetails = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.error || data.id === null) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
@@ -43,9 +46,8 @@ const CategoryDetails = () => {
         })()
     }, [])
 
-    if (!response) {
-        return <Error err={ err } />
-    } else {
+    if (err) { return <Error err={ err } /> }
+    if (response) {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">

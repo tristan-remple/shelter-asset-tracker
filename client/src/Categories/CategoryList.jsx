@@ -35,18 +35,23 @@ const CategoryList = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
+                } else {
+                    const sortedData = data.sort((a, b) => {
+                        return a.name.localeCompare(b.name)
+                    })
+                    setCategories(sortedData)
+                    setFilteredCategories(sortedData)
                 }
-                const sortedData = data.sort((a, b) => {
-                    return a.name.localeCompare(b.name)
-                })
-                setCategories(sortedData)
-                setFilteredCategories(sortedData)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (categories) {
     // map the category objects into table rows
     const displayItems = filteredCategories.map(item => {

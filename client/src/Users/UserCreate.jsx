@@ -22,12 +22,7 @@ const UserCreate = () => {
     // get context information
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
-    }
+    const [ err, setErr ] = useState(null)
 
     // set up the change panel state
     const [ unsaved, setUnsaved ] = useState(false)
@@ -48,13 +43,17 @@ const UserCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    return <Error err="api" />
+
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
+                    setErr("api")
+                } else {
+                    setLocations(data)
+                    const titles = data.map(loc => loc.name)
+                    setLocationTitles(titles)
                 }
-                setLocations(data)
-                const titles = data.map(loc => loc.name)
-                setLocationTitles(titles)
             })
         })()
     }, [])
@@ -92,7 +91,7 @@ const UserCreate = () => {
             return
         }
 
-        const response = apiService.postNewUser(changes, (response) => {
+        apiService.postNewUser(changes, (response) => {
             if (response.success) {
                 setStatus(`You have successfully added user ${response.name}.`)
                 setUnsaved(false)
@@ -103,6 +102,7 @@ const UserCreate = () => {
         })
     }
 
+    if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
             <div className="row title-row mt-3 mb-2">

@@ -24,11 +24,11 @@ const LogIn = () => {
     const { status, setStatus } = useContext(statusContext)
 
     // check if user is already logged in
-    useEffect(() => {
-        if (authService.checkUser()) {
-            navigate("/location")
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (authService.checkUser()) {
+    //         navigate("/location")
+    //     }
+    // }, [])
     
     // form handling
     const [ changes, setChanges ] = useState({

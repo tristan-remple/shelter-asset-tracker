@@ -34,12 +34,15 @@ const UserList = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
-                    return
+                } else {
+                    setResponse(data)
+                    setFilteredUsers(data)
                 }
-                setResponse(data)
-                setFilteredUsers(data)
             })
         })()
     }, [])
@@ -54,9 +57,8 @@ const UserList = () => {
         </tr>
     })
 
-    if (!users) {
-        return <Error err={ err } />
-    } else {
+    if (err) { return <Error err={ err } /> }
+    if (users) {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">

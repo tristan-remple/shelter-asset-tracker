@@ -47,12 +47,14 @@ const UnitEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
-                    console.log("api error")
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
+                } else {
+                    setResponse(data)
                 }
-                console.log(data)
-                setResponse(data)
             })
         })()
     }, [])
@@ -80,6 +82,7 @@ const UnitEdit = () => {
         }
     }, [ response ])
 
+    if (err) { return <Error err={ err } /> }
     if (response) {
     // destructure api response
     const { id, name } = response   

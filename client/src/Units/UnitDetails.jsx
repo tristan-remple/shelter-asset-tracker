@@ -40,15 +40,20 @@ const UnitDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
+                } else {
+                    setResponse(data)
+                    setFilteredItems(data.items)
                 }
-                setResponse(data)
-                setFilteredItems(data.items)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (response) {
     // destructure api response
     const { id, name, type, facility, createdAt, updatedAt, items } = response

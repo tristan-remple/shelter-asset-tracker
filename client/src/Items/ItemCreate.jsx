@@ -91,20 +91,26 @@ const ItemCreate = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (!data || data.error) {
-                    setErr("api")
-                }
-                setCategoryList(data)
 
-                // the Dropdown component later is expecting a list of strings
-                const simpleList = data.map(cat => cat.name)
-                simpleList.unshift("Select:")
-                setSimpleCategories(simpleList)
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
+                    setErr("api")
+                } else {
+                    setCategoryList(data)
+
+                    // the Dropdown component later is expecting a list of strings
+                    const simpleList = data.map(cat => cat.name)
+                    simpleList.unshift("Select:")
+                    setSimpleCategories(simpleList)
+                }
             })
         })()
     }, [])
 
     // destructure the unit
+    if (err) { return <Error err={ err } /> }
     if (unit) {
         // destructure api response
         const { id, name, type, facility, createdAt, updatedAt, items } = unit

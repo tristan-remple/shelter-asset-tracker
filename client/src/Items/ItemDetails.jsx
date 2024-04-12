@@ -36,7 +36,10 @@ const ItemDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleItem(id, function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
                 } else {
                     setItem(data)
@@ -45,6 +48,7 @@ const ItemDetails = () => {
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (item) {
 
         console.log(err)

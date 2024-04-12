@@ -42,10 +42,14 @@ const UnitCreate = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleLocation(id, (data) => {
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
+                } else {
+                    setResponse(data)
                 }
-                setResponse(data)
             })
         })()
     }, [])
@@ -68,6 +72,7 @@ const UnitCreate = () => {
         }
     }, [ response ])
 
+    if (err) { return <Error err={ err } /> }
     if (response) {
     // destructure api response
     const { facilityId, name: facilityName } = response

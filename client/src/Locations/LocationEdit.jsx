@@ -36,22 +36,19 @@ const LocationEdit = () => {
         setErr("undefined")
     }
 
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
-    }
-
     // fetch data from the api
     const [ location, setResponse ] = useState()
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(id, function(data){
-                if (!data || data.error) {
-                    console.log("api error")
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
+                } else {
+                    setResponse(data)
                 }
-                setResponse(data)
             })
         })()
     }, [])
@@ -99,17 +96,21 @@ const LocationEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
-                    return
+                } else {
+                    setUsers(data)
+                    const simple = data.map(usr => usr.name)
+                    setSimpleUsers(simple)
                 }
-                setUsers(data)
-                const simple = data.map(usr => usr.name)
-                setSimpleUsers(simple)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (location && users.length > 0) {
 
     // Most changes are handled by Services/handleChanges

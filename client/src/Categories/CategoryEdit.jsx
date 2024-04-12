@@ -39,7 +39,10 @@ const CategoryEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
@@ -79,6 +82,7 @@ const CategoryEdit = () => {
         }
     }, [ response ])
 
+    if (err) { return <Error err={ err } /> }
     if (response) {
 
     // sends the item object to the apiService

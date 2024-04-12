@@ -51,11 +51,14 @@ const UserDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(userId, function(data){
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
-                    return
+                } else {
+                    setUser(data)
                 }
-                setUser(data)
             })
         })()
     }, [])
@@ -96,9 +99,8 @@ const UserDetails = () => {
         </div>
     }
 
-    if (!user) {
-        return <Error err={ err } />
-    } else {
+    if (err) { return <Error err={ err } /> }
+    if (user) {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">

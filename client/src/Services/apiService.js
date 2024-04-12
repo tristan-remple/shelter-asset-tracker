@@ -20,14 +20,14 @@ class apiService {
         })
         .catch(err => {
             console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: err.response?.data ? err.response.data : { error: "api error" } })
         })
     }
 
     // Called by: ItemEdit
     postItemEdit = async(item, callback) => {
         const id = item.id
-        await axios.post(`${ import.meta.env.VITE_API_URL }/items/${ id }`, item, {
+        await axios.put(`${ import.meta.env.VITE_API_URL }/items/${ id }`, item, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -105,7 +105,7 @@ class apiService {
     // Called by: UnitEdit
     postUnitEdit= async(unit, callback) => {
         const id = unit.id
-        await axios.post(`${ import.meta.env.VITE_API_URL }/units/${ id }`, unit, {
+        await axios.put(`${ import.meta.env.VITE_API_URL }/units/${ id }`, unit, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -170,7 +170,8 @@ class apiService {
                 callback(data)
             })
             .catch(err => {
-                callback({ error: err.response.data })
+                console.log(err)
+                callback({ error: err.response?.data ? err.response.data : { error: "api error" } })
             })
     }
 

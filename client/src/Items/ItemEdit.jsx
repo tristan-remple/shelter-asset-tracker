@@ -51,10 +51,14 @@ const ItemEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleItem(id, (data) => {
-                if (!data || data.error) {
+                if (data?.error?.error === "Unauthorized.") {
+                    setErr("permission")
+                } else if (!data || data.error) {
+                    console.log(data)
                     setErr("api")
+                } else {
+                    setItem(data)
                 }
-                setItem(data)
             })
         })()
     }, [])
@@ -133,6 +137,7 @@ const ItemEdit = () => {
         }
     }, [ item ])
 
+    if (err) { return <Error err={ err } /> }
     if (item) {
 
     // Note that the following fields are not available to edit:
