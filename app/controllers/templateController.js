@@ -79,6 +79,7 @@ exports.createNewTemplate = async (req, res, next) => {
         });
 
         const createResponse = {
+            id: newTemplate.id,
             name: newTemplate.name,
             defaultValue: newTemplate.defaultValue,
             defaultDepreciation: newTemplate.defaultDepreciation,
