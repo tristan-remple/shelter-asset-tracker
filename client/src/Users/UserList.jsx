@@ -21,7 +21,7 @@ const UserList = () => {
 
     // get the status from context
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // check that user is an admin
     if (!authService.checkAdmin()) {
@@ -37,18 +37,18 @@ const UserList = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
                     setFilteredUsers(data)
+                    setErr(null)
                 }
             })
         })()
     }, [])
 
     // render user rows
-    const displayUsers = filteredUsers.map(user => {
+    const displayUsers = filteredUsers?.map(user => {
         return <tr key={ user.userId } >
             <td>{ user.name }</td>
             <td>{ user.facilities.map(loc => loc.name).join(", ") }</td>
@@ -57,8 +57,6 @@ const UserList = () => {
         </tr>
     })
 
-    if (err) { return <Error err={ err } /> }
-    if (users) {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -91,7 +89,6 @@ const UserList = () => {
             </div>
         </main>
     )
-}
 }
 
 export default UserList

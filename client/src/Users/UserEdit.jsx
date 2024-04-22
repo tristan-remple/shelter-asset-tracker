@@ -23,7 +23,7 @@ const UserEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // check that active user is an admin
     if (!authService.checkAdmin()) {
@@ -58,12 +58,12 @@ const UserEdit = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     data.locations = []
                     setUser(data),
                     setChanges(data)
+                    setErr(null)
                 }
             })
         })()
@@ -77,7 +77,6 @@ const UserEdit = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setLocations(data)

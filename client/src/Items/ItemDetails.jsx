@@ -24,7 +24,7 @@ const ItemDetails = () => {
     // get the id and status
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // if no id has been provided, throw an error
     if (id === undefined) {
@@ -39,10 +39,10 @@ const ItemDetails = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setItem(data)
+                    setErr(null)
                 }
             })
         })()
@@ -51,8 +51,6 @@ const ItemDetails = () => {
     if (err) { return <Error err={ err } /> }
     if (item) {
 
-        console.log(err)
-        console.log(item)
     // destructure the item object
     const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments } = item
 

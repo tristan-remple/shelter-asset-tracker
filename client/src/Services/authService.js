@@ -76,17 +76,6 @@ class authService {
         .catch(err => {
             callback({ error: err })
         })
-
-        // await fetch(`${ import.meta.env.VITE_API_URL }/login`, {
-        //     method: "POST",
-        //     "headers": {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify(user)
-        // })
-        // .then(res => {
-        //     callback(res)
-        // })
     }
 
     // Called by: LogOut

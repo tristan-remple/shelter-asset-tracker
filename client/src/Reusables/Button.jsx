@@ -29,14 +29,20 @@ const Button = ({ text, linkTo, type, className, id }) => {
             break
     }
 
+    const keyboardHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            linkTo()
+        }
+    }
+
     if (typeof linkTo === "function") {
-        return <div className={ buttonClass } onClick={ linkTo } id={id}>{ text }</div>
+        return <div className={ buttonClass } onClick={ linkTo } onKeyUp={ keyboardHandler } id={ id } tabIndex={ 0 }>{ text }</div>
     } else if (linkTo === null) {
-        return <div className={ buttonClass } id={id}>{ text }</div>
+        return <div className={ buttonClass } id={ id }>{ text }</div>
     } else if (linkTo.includes("#")) {
-        return <HashLink to={ linkTo } className={ buttonClass } id={id}>{ text }</HashLink>
+        return <HashLink to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 }>{ text }</HashLink>
     } else {
-        return <Link to={ linkTo } className={ buttonClass } id={id}>{ text }</Link>
+        return <Link to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 }>{ text }</Link>
     }
 }
 

@@ -27,6 +27,9 @@ const Error = ({ err }) => {
         case "unknown":
             errorText = "The page you are looking for either does not exist, or is spelled incorrectly."
             break
+        case "loading":
+            errorText = "We are still trying to find the data you're looking for. Please be patient."
+            break
         default:
             errorText = "Something went wrong"
     }

@@ -40,7 +40,7 @@ const ItemEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // redirect to the error page if no item is specified or if the item specified isn't found
     if (id === undefined) {
@@ -54,10 +54,10 @@ const ItemEdit = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setItem(data)
+                    setErr(null)
                 }
             })
         })()
@@ -93,7 +93,7 @@ const ItemEdit = () => {
 
     // object that defines fields that are safe to change
     const [ safeChanges, setSafeChanges ] = useState({
-        name: null,
+        name: "",
         statusColor: flagColorOptions[0],
         statusText: flagTextOptions[0],
         comment: ""
@@ -101,10 +101,10 @@ const ItemEdit = () => {
 
     // object (nested) that defines fields that are dangerous to change
     const [ dangerChanges, setDangerChanges ] = useState({
-        template: null,
-        unit: null,
-        depreciationRate: null,
-        initialValue: null
+        template: "",
+        unit: "",
+        depreciationRate: 0,
+        initialValue: 0
     })
 
     useEffect(() => {
@@ -180,7 +180,6 @@ const ItemEdit = () => {
         if (newCatIndex !== -1) {
             const newChanges = {...dangerChanges}
             newChanges.template = categoryList[newCatIndex]
-            console.log(newChanges)
             setDangerChanges(newChanges)
             setUnsaved(true)
         } else {

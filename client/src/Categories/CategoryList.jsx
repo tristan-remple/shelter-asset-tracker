@@ -21,13 +21,7 @@ const CategoryList = () => {
 
     // get the status from context
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
-
-    // check that user is an admin
-    // const { isAdmin } = useContext(authContext)
-    // if (!isAdmin) {
-    //     setErr("permission")
-    // }
+    const [ err, setErr ] = useState("loading")
 
     // get the categories from the api
     const [ categories, setCategories ] = useState([])
@@ -46,15 +40,14 @@ const CategoryList = () => {
                     })
                     setCategories(sortedData)
                     setFilteredCategories(sortedData)
+                    setErr(null)
                 }
             })
         })()
     }, [])
 
-    if (err) { return <Error err={ err } /> }
-    if (categories) {
     // map the category objects into table rows
-    const displayItems = filteredCategories.map(item => {
+    const displayItems = filteredCategories?.map(item => {
 
         return (
             <tr key={ item.id } >
@@ -100,7 +93,6 @@ const CategoryList = () => {
             </div>
         </main>
     )
-}
 }
 
 export default CategoryList

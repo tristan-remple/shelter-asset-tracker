@@ -28,7 +28,7 @@ const LocationEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
@@ -44,10 +44,10 @@ const LocationEdit = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
+                    setErr(null)
                 }
             })
         })()

@@ -28,7 +28,7 @@ const LocationDetails = () => {
     const { id } = useParams()
     const { status } = useContext(statusContext)
     
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     let urlId = id
 
@@ -49,11 +49,11 @@ const LocationDetails = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
                     setFilteredUnits(data.units)
+                    setErr(null)
                 }
             })
         })()
@@ -176,7 +176,7 @@ const LocationDetails = () => {
                     </thead>
                     <tbody>
                         { displayItems.length > 0 ? displayItems : <tr>
-                            <td colspan="4">No units yet</td>
+                            <td colSpan={ 4 }>No units yet</td>
                         </tr> }
                     </tbody>
                 </table>

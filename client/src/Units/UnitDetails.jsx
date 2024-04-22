@@ -27,7 +27,7 @@ const UnitDetails = () => {
     // get context information
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
@@ -43,11 +43,11 @@ const UnitDetails = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
                     setFilteredItems(data.items)
+                    setErr(null)
                 }
             })
         })()
@@ -198,7 +198,7 @@ const UnitDetails = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems }
+                        { displayItems ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
                     </tbody>
                 </table>
             </div>

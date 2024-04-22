@@ -24,7 +24,7 @@ const CategoryDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     
     if (!authService.checkAdmin()) {
         setErr("permission")
@@ -44,6 +44,7 @@ const CategoryDelete = () => {
                     setErr("api")
                 } else {
                     setCategory(data)
+                    setErr(null)
                 }
             })
         })()
@@ -65,23 +66,23 @@ const CategoryDelete = () => {
     }
 
     if (category) {
-    return (
-        <main className="container">
-            <div className="row title-row mt-3 mb-2">
-                <div className="col">
-                    <h2>Deleting { category.name }</h2>
+        return err ? <Error err={ err } /> : (
+            <main className="container">
+                <div className="row title-row mt-3 mb-2">
+                    <div className="col">
+                        <h2>Deleting { category.name }</h2>
+                    </div>
+                    <div className="col-2 d-flex justify-content-end">
+                        <Button text="Return" linkTo={ `/category/${ category.id }` } type="nav" />
+                    </div>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/category/${ category.id }` } type="nav" />
+                <div className="page-content">
+                    { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                    <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
                 </div>
-            </div>
-            <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
-                <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
-            </div>
-        </main>
-    )
-}
+            </main>
+        )
+    }
 }
 
 export default CategoryDelete

@@ -24,7 +24,7 @@ const UserDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     
     if (!authService.checkAdmin()) {
         setErr("permission")
@@ -42,9 +42,10 @@ const UserDelete = () => {
             await apiService.singleUser(id, function(data){
                 if (!data || data.error) {
                     setErr("api")
-                    return
+                } else {
+                    setUser(data)
+                    setErr(null)
                 }
-                setUser(data)
             })
         })()
     }, [])
@@ -66,7 +67,7 @@ const UserDelete = () => {
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">

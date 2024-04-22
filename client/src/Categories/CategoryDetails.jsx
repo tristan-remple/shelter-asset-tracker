@@ -22,7 +22,7 @@ const CategoryDetails = () => {
     // get the status from context
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
@@ -41,13 +41,12 @@ const CategoryDetails = () => {
                     setErr("api")
                 } else {
                     setResponse(data)
+                    setErr(null)
                 }
             })
         })()
     }, [])
 
-    if (err) { return <Error err={ err } /> }
-    if (response) {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -139,7 +138,6 @@ const CategoryDetails = () => {
             </div>
         </main>
     )
-}
 }
 
 export default CategoryDetails

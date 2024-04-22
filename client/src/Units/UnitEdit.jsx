@@ -26,7 +26,7 @@ const UnitEdit = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     const [ unsaved, setUnsaved ] = useState(false)
     const navigate = useNavigate()
 
@@ -50,10 +50,10 @@ const UnitEdit = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
+                    setErr(null)
                 }
             })
         })()

@@ -24,25 +24,16 @@ const LocationDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     
     if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
         setErr("permission")
     }
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
     }
-
-    // fetch unit data from the api
-    // const location = apiService.locationEdit(id)
-    // if (!location || location.error) {
-    //     console.log("api error")
-    //     return <Error err="api" />
-    // }
 
     // fetch data from the api
     const [ location, setResponse ] = useState()
@@ -50,14 +41,15 @@ const LocationDelete = () => {
         (async()=>{
             await apiService.singleLocation(id, function(data){
                 if (!data || data.error) {
-                    console.log("api error")
                     setErr("api")
                 }
                 setResponse(data)
+                setErr(null)
             })
         })()
     }, [])
     
+    if (err) { return <Error err={ err } /> }
     if (location) {
     // send delete api call
     const confirmDelete = async() => {

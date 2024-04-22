@@ -48,8 +48,7 @@ const LogIn = () => {
 
         // api call
         authService.login(changes, (response) => {
-            console.log(response)
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 setStatus(`Welcome.`)
                 setUnsaved(false)
                 navigate("/location")

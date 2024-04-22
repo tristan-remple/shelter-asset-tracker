@@ -24,7 +24,7 @@ const UnitDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     
     if (!authService.checkAdmin()) {
         setErr("permission")
@@ -41,11 +41,11 @@ const UnitDelete = () => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
                 if (!data || data.error) {
-                    console.log("api error")
                     setErr("api")
                 }
                 setStatus(`Click Save to delete unit ${ data.name }.`)
                 setResponse(data)
+                setErr(null)
             })
         })()
     }, [])

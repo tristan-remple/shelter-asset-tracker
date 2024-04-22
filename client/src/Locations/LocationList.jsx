@@ -19,7 +19,7 @@ const LocationList = () => {
 
     // get the status from context, set it to a warning
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     useEffect(() => {
         if (!authService.checkAdmin()) {
@@ -35,10 +35,10 @@ const LocationList = () => {
                 if (data?.error?.error === "Unauthorized.") {
                     setErr("permission")
                 } else if (!data || data.error) {
-                    console.log(data)
                     setErr("api")
                 } else {
                     setResponse(data)
+                    setErr(null)
                 }
             })
         })()
@@ -46,7 +46,7 @@ const LocationList = () => {
 
     if (err) { return <Error err={ err } /> }
     if (locations) {
-        console.log(locations)
+    
     // if the user is admin, populate admin buttons
     let adminButtons = ""
     if (authService.checkAdmin()) {
@@ -74,7 +74,7 @@ const LocationList = () => {
         )
     })
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">

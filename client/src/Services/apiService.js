@@ -11,7 +11,6 @@ class apiService {
 
     // Called by: ItemDetails, ItemEdit
     singleItem = async(id, callback) => {
-        console.log(id)
         await axios.get(`${ import.meta.env.VITE_API_URL }/items/${ id }`, {
             withCredentials: true
         })

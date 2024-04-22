@@ -56,19 +56,21 @@ const CategoryCreate = () => {
 
         // api call
         await apiService.postNewCategory(changes, (response) => {
-            if (response.success) {
+            if (response?.status === 200) {
                 setStatus(`You have successfully created category ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/category/${ response.id }`)
-            } else if (response.status === 400) {
+            } else if (response?.status === 400) {
                 setStatus(`Category ${ changes.name } already exists.`)
+            } else if (response?.status === 403) {
+                setErr("permission")
             } else {
                 setStatus("We weren't able to process your create category request.")
             }
         })
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">

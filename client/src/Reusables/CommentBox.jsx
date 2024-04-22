@@ -17,7 +17,7 @@ const CommentBox = ({ comments }) => {
         return (
             <div className="comment-box">
                 <strong>Comments:</strong><br />
-                No comments yet!
+                No comments yet
             </div>
         )
     }
@@ -47,12 +47,18 @@ const CommentBox = ({ comments }) => {
         setOlderComments(newDisplay)
     }
 
+    const keyboardHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            toggleOlderComments()
+        }
+    }
+
     return (
         <div className="comment-box">
             <strong>Comments:</strong><br />
             { displayComment }
             { olderComments && displayOlderComments }
-            { readMore && <div className="comment-toggle" onClick={ toggleOlderComments } >
+            { readMore && <div className="comment-toggle" onClick={ toggleOlderComments } onKeyUp={ keyboardHandler }>
                 { olderComments ? "Hide" : "Show" } older comments
             </div> }
         </div>

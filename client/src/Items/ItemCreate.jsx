@@ -33,7 +33,7 @@ const ItemCreate = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // redirect to the error page if no unit is specified or if the unit specified isn't found
     if (id === undefined) {
@@ -49,6 +49,7 @@ const ItemCreate = () => {
                     setErr("api")
                 }
                 setUnit(data)
+                setErr(null)
             })
         })()
     }, [])
