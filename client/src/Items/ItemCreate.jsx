@@ -46,10 +46,11 @@ const ItemCreate = () => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
                 if (!data || data.error) {
-                    setErr("api")
+                    setErr(data.error)
+                } else {
+                    setUnit(data)
+                    setErr(null)
                 }
-                setUnit(data)
-                setErr(null)
             })
         })()
     }, [])
@@ -92,14 +93,11 @@ const ItemCreate = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    console.log(data)
-                    setErr("api")
+                if (!data || data.error) {
+                    setErr(data.error)
                 } else {
                     setCategoryList(data)
+                    setErr(null)
 
                     // the Dropdown component later is expecting a list of strings
                     const simpleList = data.map(cat => cat.name)
@@ -109,12 +107,6 @@ const ItemCreate = () => {
             })
         })()
     }, [])
-
-    // destructure the unit
-    if (err) { return <Error err={ err } /> }
-    if (unit) {
-        // destructure api response
-        const { id, name, type, facility, createdAt, updatedAt, items } = unit
 
     // Most changes are handled by Services/handleChanges
 
@@ -149,21 +141,16 @@ const ItemCreate = () => {
         changes.addedBy = 3
         changes.donated = newItem.donated ? 1 : 0
 
-        // verify user identity
-        if (authService.checkUser()) {
-            // send api request and process api response
-            await apiService.postNewItem(changes, (response => {
-                if (response.success) {
-                    setStatus(`You have successfully added item ${response.name}.`)
-                    setUnsaved(false)
-                    navigate(`/item/${response.itemId}`)
-                } else {
-                    setStatus("We weren't able to process your add item request.")
-                }
-            }))
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        // send api request and process api response
+        await apiService.postNewItem(changes, (response => {
+            if (response.success) {
+                setStatus(`You have successfully added item ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/item/${response.itemId}`)
+            } else {
+                setErr(response.error)
+            }
+        }))
     }
 
     return err ? <Error err={ err } /> : (
@@ -269,11 +256,10 @@ const ItemCreate = () => {
                         </div>
                     </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${id}` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unit.id }` } /> }
             </div>
         </main>
     )
-}
 }
 
 export default ItemCreate

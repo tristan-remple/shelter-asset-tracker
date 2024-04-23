@@ -17,13 +17,12 @@ import IconSelector from './IconSelector'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // Allows the user add a new category
 // Imported by: App
 
 const CategoryCreate = () => {
 
-    // get the status from context
+    // set up page functionality
     const navigate = useNavigate()
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState(null)
@@ -56,20 +55,21 @@ const CategoryCreate = () => {
 
         // api call
         await apiService.postNewCategory(changes, (response) => {
-            if (response?.status === 200) {
+            if (!response || response.status === 500) {
+                setErr("api")
+            } else if (response.status === 403) {
+                setErr("permission")
+            } else if (response.status === 400) {
+                setStatus(`Category ${ changes.name } already exists.`)
+            } else if (response.status === 200) {
                 setStatus(`You have successfully created category ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/category/${ response.id }`)
-            } else if (response?.status === 400) {
-                setStatus(`Category ${ changes.name } already exists.`)
-            } else if (response?.status === 403) {
-                setErr("permission")
-            } else {
-                setStatus("We weren't able to process your create category request.")
             }
         })
     }
 
+    // if there's an error, return the error screen instead of the page
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">

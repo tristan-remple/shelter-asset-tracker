@@ -1,5 +1,8 @@
-import { formattedDate } from './dateHelper'
+// external dependencies
 import axios from 'axios'
+
+// internal dependencies
+import { errorCodes } from './errorCodes'
 
 //------ MODULE INFO
 // This module interacts directly with the API to get data for the pages.
@@ -18,8 +21,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response?.data ? err.response.data : { error: "api error" } })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -36,8 +38,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -51,8 +52,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -68,8 +68,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -82,8 +81,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -96,8 +94,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -114,8 +111,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -131,8 +127,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -147,8 +142,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -157,21 +151,20 @@ class apiService {
         await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`, {
             withCredentials: true
         })
-            .then(res => {
-                const data = res.data
-                let unitTypes
-                if (data.units) {
-                    unitTypes = [...new Set(data.units.map(unit => unit.type))]
-                } else {
-                    unitTypes = []
-                }
-                data.types = unitTypes
-                callback(data)
-            })
-            .catch(err => {
-                console.log(err)
-                callback({ error: err.response?.data ? err.response.data : { error: "api error" } })
-            })
+        .then(res => {
+            const data = res.data
+            let unitTypes
+            if (data.units) {
+                unitTypes = [...new Set(data.units.map(unit => unit.type))]
+            } else {
+                unitTypes = []
+            }
+            data.types = unitTypes
+            callback(data)
+        })
+        .catch(err => {
+            callback({ error: errorCodes[err.response.status] })
+        })
     }
 
     // Called by: LocationEdit
@@ -187,8 +180,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -201,8 +193,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -215,8 +206,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -233,8 +223,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -243,11 +232,11 @@ class apiService {
             withCredentials: true
         })
         .then(res => {
+            console.log(res.data)
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -263,8 +252,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -279,8 +267,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -294,8 +281,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -307,8 +293,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -320,8 +305,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -336,8 +320,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -354,8 +337,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 
@@ -369,8 +351,7 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
-            callback({ error: err.response.data })
+            callback({ error: errorCodes[err.response.status] })
         })
     }
 }

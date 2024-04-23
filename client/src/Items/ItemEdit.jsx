@@ -51,10 +51,8 @@ const ItemEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleItem(id, (data) => {
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (!data || data.error) {
+                    setErr(data.error)
                 } else {
                     setItem(data)
                     setErr(null)
@@ -69,14 +67,15 @@ const ItemEdit = () => {
         (async() => {
             await apiService.listCategories((data) => {
                 if (!data || data.error) {
-                    setErr("api")
-                }
-                setCategoryList(data)
+                    setErr(data.error)
+                } else {
+                    setCategoryList(data)
 
-                // the Dropdown component later is expecting a list of strings
-                const simpleList = data.map(cat => cat.name)
-                simpleList.unshift("Select:")
-                setSimpleCategories(simpleList)
+                    // the Dropdown component later is expecting a list of strings
+                    const simpleList = data.map(cat => cat.name)
+                    simpleList.unshift("Select:")
+                    setSimpleCategories(simpleList)
+                }
             })
         })()
     }, [])
@@ -197,20 +196,15 @@ const ItemEdit = () => {
         newItem.depreciationRate = dangerChanges.depreciationRate
         newItem.toInspect = safeChanges.statusText === flagTextOptions[1]
         newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
-
-        if (authService.checkUser()) {
-            await apiService.postItemEdit(newItem, (response) => {
-                if (response.success) {
-                    setStatus(`You have successfully saved your changes to item ${response.name}.`)
-                    setUnsaved(false)
-                    navigate(`/item/${response.id}`)
-                } else {
-                    setStatus("We weren't able to process your edit item request.")
-                }
-            })
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        await apiService.postItemEdit(newItem, (response) => {
+            if (response.success) {
+                setStatus(`You have successfully saved your changes to item ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/item/${response.id}`)
+            } else {
+                setErr(response.error)
+            }
+        })
     }
 
     // sends a delete request to the apiService

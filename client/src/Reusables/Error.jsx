@@ -30,6 +30,12 @@ const Error = ({ err }) => {
         case "loading":
             errorText = "We are still trying to find the data you're looking for. Please be patient."
             break
+        case "anonymous":
+            errorText = "You are not logged in. Please log in to use this app."
+            break
+        case "duplicate":
+            errorText = "The thing you are trying to create already exists."
+            break
         default:
             errorText = "Something went wrong"
     }

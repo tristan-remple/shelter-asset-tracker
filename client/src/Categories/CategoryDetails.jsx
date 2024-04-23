@@ -19,7 +19,7 @@ import { friendlyDate } from '../Services/dateHelper'
 
 const CategoryDetails = () => {
 
-    // get the status from context
+    // set up page functionality
     const { id } = useParams()
     const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
@@ -34,11 +34,12 @@ const CategoryDetails = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    console.log(data)
+                if (!data || data.status === 500) {
                     setErr("api")
+                } else if (data.status === 404) {
+                    setErr("unknown")
+                } else if (data.status === 403) {
+                    setErr("permission")
                 } else {
                     setResponse(data)
                     setErr(null)

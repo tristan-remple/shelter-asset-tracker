@@ -13,22 +13,16 @@ import authService from '../Services/authService'
 import ChangePanel from '../Reusables/ChangePanel'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module checks that the user wants to delete a category.
 // Imported by: App
 
 const CategoryDelete = () => {
 
+    // set up page functionality
     const navigate = useNavigate()
-
-    // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
-    
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
 
     // validate id
     if (id === undefined) {
@@ -40,9 +34,13 @@ const CategoryDelete = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.error) {
+                if (!data || data.status === 500) {
                     setErr("api")
-                } else {
+                } else if (data.status === 404) {
+                    setErr("unknown")
+                }else if (data.status === 403) {
+                    setErr("permission")
+                } else if (data.status === 200) {
                     setCategory(data)
                     setErr(null)
                 }
@@ -50,39 +48,33 @@ const CategoryDelete = () => {
         })()
     }, [])
 
+    // confirm that the item should be (soft) deleted
     const confirmDelete = async() => {
-        if (authService.checkUser() && authService.checkAdmin()) {
-            await apiService.deleteCategory(category, (res) => {
-                if (res.success) {
-                    setStatus(`You have successfully deleted category ${ res.name }.`)
-                    navigate(`/categories`)
-                } else {
-                    setStatus("We weren't able to process your delete category request.")
-                }
-            })
-        } else {
-            return <Error err="permission" />
-        }
+        await apiService.deleteCategory(category, (res) => {
+            if (res.status === 200) {
+                setStatus(`You have successfully deleted category ${ res.name }.`)
+                navigate(`/categories`)
+            } else {
+                setStatus("We weren't able to process your delete category request.")
+            }
+        })
     }
-
-    if (category) {
-        return err ? <Error err={ err } /> : (
-            <main className="container">
-                <div className="row title-row mt-3 mb-2">
-                    <div className="col">
-                        <h2>Deleting { category.name }</h2>
-                    </div>
-                    <div className="col-2 d-flex justify-content-end">
-                        <Button text="Return" linkTo={ `/category/${ category.id }` } type="nav" />
-                    </div>
+    return err ? <Error err={ err } /> : (
+        <main className="container">
+            <div className="row title-row mt-3 mb-2">
+                <div className="col">
+                    <h2>Deleting { category?.name }</h2>
                 </div>
-                <div className="page-content">
-                    { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
-                    <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Return" linkTo={ `/category/${ category?.id }` } type="nav" />
                 </div>
-            </main>
-        )
-    }
+            </div>
+            <div className="page-content">
+                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
+            </div>
+        </main>
+    )
 }
 
 export default CategoryDelete
