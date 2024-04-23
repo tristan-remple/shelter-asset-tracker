@@ -140,12 +140,19 @@ exports.getItemById = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
   try {
       const itemId = req.params.id;
-      const { unitId, name, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
+      const { userId, unitId, name, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
 
       const item = await models.Item.findByPk(itemId);
 
       if (!item) {
           return res.status(404).json({ error: 'Item not found.' });
+      }
+
+      if (item.toInspect != toInspect && toInspect == false){
+         item.set({
+            inspectedBy: userId,
+            lastInspected: new Date()
+        });
       }
 
       item.set({
