@@ -1,4 +1,5 @@
 const { models } = require('../data');
+const { verifyToken } = require('../utils/token')
 
 const calculateCurrentValue = (initialValue, depreciationRate, createdAt) => {
   const currentDate = new Date();
@@ -140,7 +141,11 @@ exports.getItemById = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
   try {
       const itemId = req.params.id;
-      const { userId, unitId, name, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
+      const { unitId, name, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
+
+      const token = req.cookies.authentication;
+      const decoded = await verifyToken(token);
+      const userId = decoded.id;
 
       const item = await models.Item.findByPk(itemId);
 

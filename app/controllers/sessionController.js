@@ -9,7 +9,7 @@ exports.login = async (req, res, next) => {
     }
 
     try {
-        const user = await models.User.findOne({ where: { email } });
+        const user = await models.User.findOne({where: { email }});
         if (!user) {
             return res.status(401).json({ error: 'Invalid login' });
         }
@@ -19,7 +19,13 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid login' });
         }
 
-        const token = await createToken(user.email);
+        const facilityAuths = await models.FacilityAuth.findAll({
+            where: { userId: user.id },
+            attributes: ['facilityId']
+        });
+        const facilityIds = facilityAuths.map(auth => auth.facilityId);
+
+        const token = await createToken(user.id, facilityIds);
 
         res.cookie('authentication', token, { httpOnly: true, maxAge: 3600000 });
         res.status(200).send();
