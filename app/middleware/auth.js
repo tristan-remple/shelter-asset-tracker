@@ -1,10 +1,12 @@
+/*
+    Middleware function to authorize users based on their JWT token.
+ */
 const { models } = require('../data');
 const { verifyToken } = require('../utils/token');
 
 const authorize = async (req, res, next) => {
     try {
         const token = req.cookies.authentication;
-
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
@@ -16,6 +18,7 @@ const authorize = async (req, res, next) => {
             return next();
         }
 
+        // !!! Update to check permissions !!!
         return next();
         
     } catch (error) {

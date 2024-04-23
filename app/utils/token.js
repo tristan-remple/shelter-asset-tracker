@@ -1,6 +1,9 @@
+/*
+    Functions for creating and verifying JSON Web Tokens (JWT)
+ */
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config();   
 
 exports.createToken = async (email) => {
     return jwt.sign({ email: email }, process.env.JWT_SECRET, { expiresIn: '1h' });

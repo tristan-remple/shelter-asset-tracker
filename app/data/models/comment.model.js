@@ -26,7 +26,6 @@ module.exports = (db, { DataTypes }) => {
         updatedAt: false
     }).addHook('beforeUpdate', (comment, options) => {
         if (comment.changed('comment')) {
-
             comment.archive = [...(comment.archive || []), {
                 user: comment.userId,
                 createdAt: comment.createdAt,
