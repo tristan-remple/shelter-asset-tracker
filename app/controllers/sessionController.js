@@ -1,5 +1,5 @@
-const { comparePasswords } = require('../utils/hash');
-const { createToken } = require('../utils/token')
+const { comparePasswords, hashPassword } = require('../utils/hash');
+const { createToken } = require('../utils/token');
 const { models } = require('../data');
 
 exports.login = async (req, res, next) => {
@@ -32,6 +32,37 @@ exports.login = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
     res.clearCookie('Authentication').status(200).send()
+};
+
+exports.reset = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const { oldPassword, newPassword } = req.body;
+
+        const user = await models.User.findByPk(userId);
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid request' });
+        }
+
+        const validPassword = await comparePasswords(oldPassword, user.password);
+        if (validPassword) {
+            const hashed = await hashPassword(newPassword);
+            console.log(hashed)
+            user.set({
+                password: hashed
+            });
+            await user.save();
+
+            return res.status(200).json({ user: user.id, success: true });
+
+        } else {
+            return res.status(401).json({ error: 'Invalid request' });
+        }
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error.' });
+    }
 };
 
 module.exports = exports;
