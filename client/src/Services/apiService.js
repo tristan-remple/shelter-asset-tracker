@@ -21,7 +21,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -38,7 +42,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -52,7 +60,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -68,7 +80,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -81,7 +97,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -94,7 +114,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -111,7 +135,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -127,7 +155,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -142,7 +174,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -163,7 +199,11 @@ class apiService {
             callback(data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -180,7 +220,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -193,7 +237,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -206,7 +254,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -223,7 +275,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -236,7 +292,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -252,7 +312,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -267,7 +331,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -281,7 +349,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -293,7 +365,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -305,7 +381,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -320,7 +400,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -337,7 +421,11 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -351,7 +439,59 @@ class apiService {
             callback(res.data)
         })
         .catch(err => {
-            callback({ error: errorCodes[err.response.status] })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    globalReport = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/reports`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    singleReport = async(id, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ id }`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    csvReport = async(title, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ title }`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 }

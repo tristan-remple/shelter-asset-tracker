@@ -32,10 +32,8 @@ const LocationList = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setErr(null)
@@ -64,7 +62,6 @@ const LocationList = () => {
 
     // map the unit objects into table rows
     const displayItems = locations.map(item => {
-
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>

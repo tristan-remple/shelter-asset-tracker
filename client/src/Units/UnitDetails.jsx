@@ -34,16 +34,14 @@ const UnitDetails = () => {
         setErr("undefined")
     }
 
-    const [ response, setResponse ] = useState()
+    const [ response, setResponse ] = useState({})
     const [ filteredItems, setFilteredItems ] = useState([])
     // fetch unit data from the api
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setFilteredItems(data.items)

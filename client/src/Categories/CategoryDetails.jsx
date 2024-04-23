@@ -34,12 +34,8 @@ const CategoryDetails = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.status === 500) {
-                    setErr("api")
-                } else if (data.status === 404) {
-                    setErr("unknown")
-                } else if (data.status === 403) {
-                    setErr("permission")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setErr(null)

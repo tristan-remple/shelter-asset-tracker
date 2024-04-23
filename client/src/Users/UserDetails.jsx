@@ -51,10 +51,8 @@ const UserDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(userId, function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setUser(data)
                     setErr(null)
@@ -66,7 +64,9 @@ const UserDetails = () => {
     // send reset password request to the api
     const resetPassword = () => {
         const resetResponse = authService.requestResetPassword(userId)
-        if (resetResponse?.success) {
+        if (resetResponse.error) {
+            setErr(resetResponse.error)
+        } else {
             let newStatus = `The password has been reset for ${ userName }. `
             if (currentUser.userId === userId) {
                 newStatus += "Please check your email."
@@ -74,9 +74,6 @@ const UserDetails = () => {
                 newStatus += "Please have them check their email."
             }
             setStatus(newStatus)
-        } else {
-            console.log(resetResponse)
-            setStatus("We weren't able to reset the password.")
         }
     }
 

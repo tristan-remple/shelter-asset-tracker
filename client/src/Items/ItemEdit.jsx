@@ -51,7 +51,7 @@ const ItemEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleItem(id, (data) => {
-                if (!data || data.error) {
+                if (data.error) {
                     setErr(data.error)
                 } else {
                     setItem(data)
@@ -66,7 +66,7 @@ const ItemEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (!data || data.error) {
+                if (data.error) {
                     setErr(data.error)
                 } else {
                     setCategoryList(data)
@@ -197,12 +197,12 @@ const ItemEdit = () => {
         newItem.toInspect = safeChanges.statusText === flagTextOptions[1]
         newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
         await apiService.postItemEdit(newItem, (response) => {
-            if (response.success) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully saved your changes to item ${response.name}.`)
                 setUnsaved(false)
                 navigate(`/item/${response.id}`)
-            } else {
-                setErr(response.error)
             }
         })
     }
@@ -214,12 +214,12 @@ const ItemEdit = () => {
             name: item.name
         }
         await apiService.deleteItem(deletedItem, (response) => {
-            if (response.success) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully deleted item ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/unit/${ item.unit.id }`)
-            } else {
-                setStatus("We weren't able to process your delete item request.")
             }
         })
     }

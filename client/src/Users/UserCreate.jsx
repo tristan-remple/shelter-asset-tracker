@@ -43,11 +43,8 @@ const UserCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setLocations(data)
                     const titles = data.map(loc => loc.name)
@@ -91,12 +88,12 @@ const UserCreate = () => {
         }
 
         apiService.postNewUser(changes, (response) => {
-            if (response.success) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully added user ${response.name}.`)
                 setUnsaved(false)
                 navigate(`/user/${response.userId}`)
-            } else {
-                setStatus("We weren't able to process your add user request.")
             }
         })
     }

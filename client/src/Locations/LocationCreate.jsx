@@ -50,10 +50,8 @@ const LocationCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (data?.error.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setUsers(data)
                     const simple = data.map(usr => usr.name)
@@ -103,12 +101,12 @@ const LocationCreate = () => {
 
         // send api request and process api response
         await apiService.postLocation(changes, (response) => {
-            if (response.success) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully created ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/location/${ response.facilityId }`)
-            } else {
-                setStatus("We weren't able to process your add location request.")
             }
         })
     }

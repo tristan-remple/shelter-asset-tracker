@@ -29,11 +29,8 @@ const CategoryList = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    console.log(data)
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     const sortedData = data.sort((a, b) => {
                         return a.name.localeCompare(b.name)

@@ -25,10 +25,6 @@ const UserDelete = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
-    
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
 
     // validate id
     if (id === undefined || id === "undefined") {
@@ -40,8 +36,8 @@ const UserDelete = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(id, function(data){
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setUser(data)
                     setErr(null)
@@ -54,11 +50,11 @@ const UserDelete = () => {
     const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
             await apiService.deleteUser(user, (response) => {
-                if (response.success) {
+                if (response.error) {
+                    setErr(response.error)
+                } else {
                     setStatus(`You have successfully deleted user ${ response.name }.`)
                     navigate(`/users`)
-                } else {
-                    setStatus("We weren't able to process your delete user request.")
                 }
             })
             

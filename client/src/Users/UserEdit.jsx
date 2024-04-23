@@ -25,11 +25,6 @@ const UserEdit = () => {
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
 
-    // check that active user is an admin
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
-
     // validate id
     if (id === undefined || id === "undefined") {
         setErr("undefined")
@@ -55,10 +50,8 @@ const UserEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(id, function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     data.locations = []
                     setUser(data),
@@ -74,10 +67,8 @@ const UserEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setLocations(data)
                 }

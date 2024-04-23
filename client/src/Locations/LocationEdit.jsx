@@ -32,7 +32,6 @@ const LocationEdit = () => {
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
     }
 
@@ -41,10 +40,8 @@ const LocationEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(id, function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setErr(null)
@@ -96,11 +93,8 @@ const LocationEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    console.log(data)
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setUsers(data)
                     const simple = data.map(usr => usr.name)
@@ -136,38 +130,33 @@ const LocationEdit = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
 
-        // verify user identity
-        if (authService.checkUser() && authService.checkAdmin()) {
-
-            // validate title
-            if (changes.name == "") {
-                setStatus("Locations must have a title.")
-                return
-            }
-
-            // validate phone number
-            const validPhone = validatePhone(changes.phone)
-            if (validPhone.error) {
-                setStatus(validPhone.error)
-                return
-            }
-            changes.phone = validPhone.number
-
-            changes.managerId = changes.user.userId
-
-            // send api request and process api response
-            await apiService.postLocationEdit(changes, (response) => {
-                if (response.success) {
-                    setStatus(`You have successfully updated ${ response.name }.`)
-                    setUnsaved(false)
-                    navigate(`/location/${ response.id }`)
-                } else {
-                    setStatus("We weren't able to process your add item request.")
-                }
-            })
-        } else {
-            setErr("permission")
+        // validate title
+        if (changes.name == "") {
+            setStatus("Locations must have a title.")
+            return
         }
+
+        // validate phone number
+        const validPhone = validatePhone(changes.phone)
+        if (validPhone.error) {
+            setStatus(validPhone.error)
+            return
+        }
+
+        // shape object for api
+        changes.phone = validPhone.number
+        changes.managerId = changes.user.userId
+
+        // send api request and process api response
+        await apiService.postLocationEdit(changes, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully updated ${ response.name }.`)
+                setUnsaved(false)
+                navigate(`/location/${ response.id }`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (

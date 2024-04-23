@@ -55,13 +55,9 @@ const CategoryCreate = () => {
 
         // api call
         await apiService.postNewCategory(changes, (response) => {
-            if (!response || response.status === 500) {
-                setErr("api")
-            } else if (response.status === 403) {
-                setErr("permission")
-            } else if (response.status === 400) {
-                setStatus(`Category ${ changes.name } already exists.`)
-            } else if (response.status === 200) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully created category ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/category/${ response.id }`)

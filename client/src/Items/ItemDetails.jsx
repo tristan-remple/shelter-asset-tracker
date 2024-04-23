@@ -36,7 +36,7 @@ const ItemDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleItem(id, function(data){
-                if (!data || data.error) {
+                if (data.error) {
                     setErr(data.error)
                 } else {
                     setItem(data)

@@ -38,15 +38,14 @@ const UnitCreate = () => {
     }
 
     // fetch data from the api
-    const [ response, setResponse ] = useState()
+    const [ response, setResponse ] = useState({})
     useEffect(() => {
         (async() => {
             await apiService.singleLocation(id, (data) => {
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
+                    console.log(data)
                     setResponse(data)
                     setErr(null)
                 }
@@ -72,11 +71,6 @@ const UnitCreate = () => {
         }
     }, [ response ])
 
-    if (err) { return <Error err={ err } /> }
-    if (response) {
-    // destructure api response
-    const { facilityId, name: facilityName } = response
-
     // sends the item object to the apiService
     const saveChanges = () => {
 
@@ -89,13 +83,13 @@ const UnitCreate = () => {
         // verify user identity
         if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
-            const response = apiService.postNewUnit(changes, (response) => {
-                if (response.success) {
+            apiService.postNewUnit(changes, (response) => {
+                if (response.error) {
+                    setErr(response.error)
+                } else {
                     setStatus(`You have successfully created unit ${ changes.name }.`)
                     setUnsaved(false)
                     navigate(`/unit/${ response.unitId }`)
-                } else {
-                    setStatus("We weren't able to process your add unit request.")
                 }
             })
         } else {
@@ -107,10 +101,10 @@ const UnitCreate = () => {
         <main className="container">
             <div className="row title-row my-3">
                 <div className="col">
-                    <h2>New Unit in { facilityName }</h2>
+                    <h2>New Unit in { response.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/location/${ facilityId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ response.facilityId }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
@@ -124,7 +118,7 @@ const UnitCreate = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { facilityName }
+                            { response.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -156,10 +150,9 @@ const UnitCreate = () => {
                     </div>
                 </div>
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ facilityId }` } locationId={ facilityId } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ response.facilityId }` } locationId={ response.facilityId } /> }
         </main>
     )
-}
 }
 
 export default UnitCreate

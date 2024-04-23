@@ -25,10 +25,6 @@ const LocationDelete = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
-    
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
 
     // validate id
     if (id === undefined) {
@@ -40,11 +36,12 @@ const LocationDelete = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(id, function(data){
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setErr(null)
                 }
-                setResponse(data)
-                setErr(null)
             })
         })()
     }, [])
@@ -54,14 +51,12 @@ const LocationDelete = () => {
     // send delete api call
     const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
-            console.log(location)
             await apiService.deleteLocation(location, (response) => {
-                console.log(response)
-                if (response.success) {
+                if (response.error) {
+                    setErr(response.error)
+                } else {
                     setStatus(`You have successfully deleted location ${ response.name }.`)
                     navigate(`/locations`)
-                } else {
-                    setStatus("We weren't able to process your delete location request.")
                 }
             })
         } else {

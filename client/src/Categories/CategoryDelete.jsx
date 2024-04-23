@@ -34,13 +34,9 @@ const CategoryDelete = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.status === 500) {
-                    setErr("api")
-                } else if (data.status === 404) {
-                    setErr("unknown")
-                }else if (data.status === 403) {
-                    setErr("permission")
-                } else if (data.status === 200) {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
                     setCategory(data)
                     setErr(null)
                 }
@@ -51,11 +47,11 @@ const CategoryDelete = () => {
     // confirm that the item should be (soft) deleted
     const confirmDelete = async() => {
         await apiService.deleteCategory(category, (res) => {
-            if (res.status === 200) {
+            if (res.error) {
+                setErr(res.error)
+            } else {
                 setStatus(`You have successfully deleted category ${ res.name }.`)
                 navigate(`/categories`)
-            } else {
-                setStatus("We weren't able to process your delete category request.")
             }
         })
     }

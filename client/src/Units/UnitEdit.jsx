@@ -32,14 +32,7 @@ const UnitEdit = () => {
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
-    }
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        setErr("permission")
     }
 
     // fetch unit data from the api
@@ -47,10 +40,8 @@ const UnitEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setErr(null)
@@ -97,12 +88,12 @@ const UnitEdit = () => {
         if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
             await apiService.postUnitEdit(changes, (response) => {
-                if (response.success) {
+                if (response.error) {
+                    setErr(response.error)
+                } else {
                     setStatus(`You have successfully updated ${ response.name }.`)
                     setUnsaved(false)
                     navigate(`/unit/${ id }`)
-                } else {
-                    setStatus("We weren't able to process your update item request.")
                 }
             })
         } else {

@@ -23,21 +23,14 @@ const UserList = () => {
     const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
-
     // get the users from the api
     const [ users, setResponse ] = useState([])
     const [ filteredUsers, setFilteredUsers ] = useState([])
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setFilteredUsers(data)

@@ -45,7 +45,7 @@ const ItemCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
+                if (data.error) {
                     setErr(data.error)
                 } else {
                     setUnit(data)
@@ -93,7 +93,7 @@ const ItemCreate = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (!data || data.error) {
+                if (data.error) {
                     setErr(data.error)
                 } else {
                     setCategoryList(data)
@@ -143,12 +143,12 @@ const ItemCreate = () => {
 
         // send api request and process api response
         await apiService.postNewItem(changes, (response => {
-            if (response.success) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully added item ${response.name}.`)
                 setUnsaved(false)
                 navigate(`/item/${response.itemId}`)
-            } else {
-                setErr(response.error)
             }
         }))
     }

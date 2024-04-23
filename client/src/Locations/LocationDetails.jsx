@@ -27,9 +27,8 @@ const LocationDetails = () => {
     // get context information
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    
     const [ err, setErr ] = useState("loading")
-
+    
     let urlId = id
 
     // validate id
@@ -39,17 +38,15 @@ const LocationDetails = () => {
             setErr("undefined")
         }
     }
-
+    
+    // fetch unit data from the api
     const [ response, setResponse ] = useState()
     const [ filteredUnits, setFilteredUnits ] = useState([])
-    // fetch unit data from the api
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(urlId, function(data){
-                if (data?.error?.error === "Unauthorized.") {
-                    setErr("permission")
-                } else if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
                     setFilteredUnits(data.units)
