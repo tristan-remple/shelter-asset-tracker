@@ -15,9 +15,10 @@ class handleChanges {
 
     // handles changes to addedDate
     handleDateChange = (event, changes, setChanges, setUnsaved) => {
+        const fieldName = event.target.name
         const newChanges = {...changes}
         const newDate = event.target.value
-        newChanges.addedBy.date = newDate
+        newChanges[fieldName] = newDate
         setChanges(newChanges)
         setUnsaved(true)
     }

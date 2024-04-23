@@ -39,7 +39,7 @@ const Error = ({ err }) => {
         default:
             errorText = "Something went wrong"
     }
-
+    
     return (
         <main className="container">
             <h1>Error</h1>
