@@ -21,6 +21,10 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
+        vendor: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         initialValue: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: true

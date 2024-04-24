@@ -3,15 +3,16 @@ const router = express.Router();
 const { login, logout, reset } = require('../../controllers/sessionController');
 const auth = require('../../middleware/auth');
 
-/*SAT Routes*/
+/*SAT Main Routes*/
 const commentsRouter = require('./comments');
 const facilitiesRouter = require('./facilities');
 const itemsRouter = require('./items');
 const templateRouter = require('./templates');
 const unitsRouter = require('./units');
 const usersRouter = require('./users');
+const reportsRouter = require('./reports');
 
-// Route middleware for SAT routes
+// Middleware for SAT routes
 router.use('/comments', auth, commentsRouter);
 router.use('/facilities', auth, facilitiesRouter);
 router.use('/items', auth, itemsRouter);
@@ -23,6 +24,9 @@ router.use('/users', auth, usersRouter);
 router.post('/login', login);
 router.post('/logout', logout);
 router.put('/reset/:id', reset);
+
+/*Report Routes*/
+router.use('/reports', reportsRouter);
 
 /*SAT API Index*/
 router.get('/', (req, res) => {
