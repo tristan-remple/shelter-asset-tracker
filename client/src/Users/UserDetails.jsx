@@ -22,7 +22,7 @@ const UserDetails = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     const currentUser = authService.userInfo()
@@ -51,11 +51,12 @@ const UserDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(userId, function(data){
-                if (!data || data.error) {
-                    setErr("api")
-                    return
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setUser(data)
+                    setErr(null)
                 }
-                setUser(data)
             })
         })()
     }, [])
@@ -63,7 +64,9 @@ const UserDetails = () => {
     // send reset password request to the api
     const resetPassword = () => {
         const resetResponse = authService.requestResetPassword(userId)
-        if (resetResponse?.success) {
+        if (resetResponse.error) {
+            setErr(resetResponse.error)
+        } else {
             let newStatus = `The password has been reset for ${ userName }. `
             if (currentUser.userId === userId) {
                 newStatus += "Please check your email."
@@ -71,9 +74,6 @@ const UserDetails = () => {
                 newStatus += "Please have them check their email."
             }
             setStatus(newStatus)
-        } else {
-            console.log(resetResponse)
-            setStatus("We weren't able to reset the password.")
         }
     }
 
@@ -96,14 +96,11 @@ const UserDetails = () => {
         </div>
     }
 
-    if (!user) {
-        return <Error err={ err } />
-    } else {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>User { user.name }</h2>
+                    <h2>User { user?.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo="/users" type="nav" />
@@ -119,7 +116,7 @@ const UserDetails = () => {
                             User Name
                         </div>
                         <div className="col-content">
-                            { user.name }
+                            { user?.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -127,7 +124,7 @@ const UserDetails = () => {
                             Admin?
                         </div>
                         <div className="col-content">
-                            { user.isAdmin ? "Yes" : "No" }
+                            { user?.isAdmin ? "Yes" : "No" }
                         </div>
                     </div>
                     {/* <div className="col col-info">
@@ -143,14 +140,13 @@ const UserDetails = () => {
                             Locations
                         </div>
                         <div className="col-content">
-                            { user.facilities?.map(loc => loc.name).join(", ") }
+                            { user?.facilities?.map(loc => loc.name).join(", ") }
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     )
-}
 }
 
 export default UserDetails

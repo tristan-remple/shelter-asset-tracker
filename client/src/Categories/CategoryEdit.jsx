@@ -27,7 +27,7 @@ const CategoryEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
@@ -39,10 +39,11 @@ const CategoryEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
+                    setErr(null)
                 }
             })
         })()
@@ -79,8 +80,6 @@ const CategoryEdit = () => {
         }
     }, [ response ])
 
-    if (response) {
-
     // sends the item object to the apiService
     const saveChanges = async() => {
         const editedCategory = {...changes}
@@ -101,7 +100,7 @@ const CategoryEdit = () => {
         }
     }
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
@@ -215,7 +214,6 @@ const CategoryEdit = () => {
             </div>
         </main>
     )
-}
 }
 
 export default CategoryEdit

@@ -16,7 +16,7 @@ const Error = ({ err }) => {
             errorText = "You are trying to reach a page that describes a single thing, but we don't know which thing."
             break
         case "api":
-            errorText = "We tried to find something in the database for you, but we couldn't find it. This could mean that the thing you're looking for does not exist, or it may mean that the database is offline."
+            errorText = "We tried to find something in the database for you, but we couldn't find it. This could mean that the thing you're looking for does not exist."
             break
         case "deleted":
             errorText = "The thing you're looking for has been deleted."
@@ -27,10 +27,19 @@ const Error = ({ err }) => {
         case "unknown":
             errorText = "The page you are looking for either does not exist, or is spelled incorrectly."
             break
+        case "loading":
+            errorText = "We are still trying to find the data you're looking for. Please be patient."
+            break
+        case "anonymous":
+            errorText = "You are not logged in. Please log in to use this app."
+            break
+        case "duplicate":
+            errorText = "The thing you are trying to create already exists."
+            break
         default:
             errorText = "Something went wrong"
     }
-
+    
     return (
         <main className="container">
             <h1>Error</h1>

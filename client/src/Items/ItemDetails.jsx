@@ -24,7 +24,7 @@ const ItemDetails = () => {
     // get the id and status
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // if no id has been provided, throw an error
     if (id === undefined) {
@@ -36,18 +36,21 @@ const ItemDetails = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleItem(id, function(data){
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setItem(data)
+                    setErr(null)
                 }
-                setItem(data)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (item) {
+
     // destructure the item object
     const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments } = item
-    console.log(item)
 
     // if it has been deleted, throw an error
     // if (discardDate) {

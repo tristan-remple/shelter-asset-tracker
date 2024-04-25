@@ -19,10 +19,10 @@ import { friendlyDate } from '../Services/dateHelper'
 
 const CategoryDetails = () => {
 
-    // get the status from context
+    // set up page functionality
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
@@ -34,18 +34,16 @@ const CategoryDetails = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
-                if (!data || data.error || data.id === null) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
                 } else {
                     setResponse(data)
+                    setErr(null)
                 }
             })
         })()
     }, [])
 
-    if (!response) {
-        return <Error err={ err } />
-    } else {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -137,7 +135,6 @@ const CategoryDetails = () => {
             </div>
         </main>
     )
-}
 }
 
 export default CategoryDetails

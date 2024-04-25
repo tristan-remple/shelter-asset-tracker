@@ -19,6 +19,8 @@ const LocationList = () => {
 
     // get the status from context, set it to a warning
     const { status, setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState("loading")
+
     useEffect(() => {
         if (!authService.checkAdmin()) {
             setStatus('You may not need to view or edit locations other than your assigned location.')
@@ -30,17 +32,19 @@ const LocationList = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    return <Error err="api" />
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setErr(null)
                 }
-                setResponse(data)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (locations) {
-        console.log(locations)
+    
     // if the user is admin, populate admin buttons
     let adminButtons = ""
     if (authService.checkAdmin()) {
@@ -58,7 +62,6 @@ const LocationList = () => {
 
     // map the unit objects into table rows
     const displayItems = locations.map(item => {
-
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
@@ -68,7 +71,7 @@ const LocationList = () => {
         )
     })
 
-    return (
+    return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">

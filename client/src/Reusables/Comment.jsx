@@ -7,15 +7,15 @@ import { friendlyDate } from "../Services/dateHelper"
 // It takes a comment object.
 // Imported by: CommentBox
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment: cmt }) => {
 
-    const { commentDate, userName, commentText } = comment
+    const { createdAt, userName, comment } = cmt
 
     return (
         <div className="comment">
-            <p>{ commentText }</p>
+            <p>{ comment }</p>
             <p className="comment-meta">
-                { userName } on { friendlyDate(commentDate) }
+                { userName } on { friendlyDate(createdAt) }
             </p>
             <hr />
         </div>

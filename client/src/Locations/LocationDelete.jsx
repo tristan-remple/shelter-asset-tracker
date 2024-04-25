@@ -24,52 +24,39 @@ const LocationDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
-    
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        setErr("permission")
-    }
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
     }
-
-    // fetch unit data from the api
-    // const location = apiService.locationEdit(id)
-    // if (!location || location.error) {
-    //     console.log("api error")
-    //     return <Error err="api" />
-    // }
 
     // fetch data from the api
     const [ location, setResponse ] = useState()
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(id, function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setErr(null)
                 }
-                setResponse(data)
             })
         })()
     }, [])
     
+    if (err) { return <Error err={ err } /> }
     if (location) {
     // send delete api call
     const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
-            console.log(location)
             await apiService.deleteLocation(location, (response) => {
-                console.log(response)
-                if (response.success) {
+                if (response.error) {
+                    setErr(response.error)
+                } else {
                     setStatus(`You have successfully deleted location ${ response.name }.`)
                     navigate(`/locations`)
-                } else {
-                    setStatus("We weren't able to process your delete location request.")
                 }
             })
         } else {

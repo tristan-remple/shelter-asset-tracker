@@ -31,7 +31,6 @@ const ResetPassword = () => {
     // check the database for a password reset request
     const resetRequest = authService.getResetRequest(hash)
     if (!resetRequest || !resetRequest.userId) {
-        console.log("insufficient permission")
         return <Error err="permission" />
     }
 
@@ -41,7 +40,6 @@ const ResetPassword = () => {
     // use it to find the user
     const user = apiService.singleUser(userId)
     if (!user || user.error) {
-        console.log("api error")
         return <Error err="api" />
     }
     const { userName } = user
@@ -77,7 +75,7 @@ const ResetPassword = () => {
                 userId,
                 password: changes.password
             })
-            if (resetResponse?.success) {
+            if (resetResponse?.status === 200) {
 
                 // on success, log out the current user, set the status and unsaved, and send them to the login screen
                 authService.logout()

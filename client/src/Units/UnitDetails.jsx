@@ -27,28 +27,31 @@ const UnitDetails = () => {
     // get context information
     const { id } = useParams()
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
         setErr("undefined")
     }
 
-    const [ response, setResponse ] = useState()
+    const [ response, setResponse ] = useState({})
     const [ filteredItems, setFilteredItems ] = useState([])
     // fetch unit data from the api
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setFilteredItems(data.items)
+                    setErr(null)
                 }
-                setResponse(data)
-                setFilteredItems(data.items)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (response) {
     // destructure api response
     const { id, name, type, facility, createdAt, updatedAt, items } = response
@@ -193,7 +196,7 @@ const UnitDetails = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems }
+                        { displayItems ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
                     </tbody>
                 </table>
             </div>

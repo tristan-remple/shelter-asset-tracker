@@ -24,7 +24,7 @@ const UnitDelete = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     
     if (!authService.checkAdmin()) {
         setErr("permission")
@@ -36,16 +36,17 @@ const UnitDelete = () => {
     }
 
     // fetch data from the api
-    const [ response, setResponse ] = useState()
+    const [ response, setResponse ] = useState({})
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setStatus(`Click Save to delete unit ${ data.name }.`)
+                    setResponse(data)
+                    setErr(null)
                 }
-                setStatus(`Click Save to delete unit ${ data.name }.`)
-                setResponse(data)
             })
         })()
     }, [])
@@ -53,11 +54,11 @@ const UnitDelete = () => {
     const confirmDelete = async() => {
         if (authService.checkUser() && authService.checkAdmin()) {
             await apiService.deleteUnit(response, (delres) => {
-                if (delres.success) {
+                if (delres.error) {
+                    setErr(delres.error)
+                } else {
                     setStatus(`You have successfully deleted unit ${ delres.name }.`)
                     navigate(`/location/${ delres.facilityId }`)
-                } else {
-                    setStatus("We weren't able to process your delete unit request.")
                 }
             })
         } else {

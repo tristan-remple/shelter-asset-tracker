@@ -27,9 +27,8 @@ const LocationDetails = () => {
     // get context information
     const { id } = useParams()
     const { status } = useContext(statusContext)
+    const [ err, setErr ] = useState("loading")
     
-    const [ err, setErr ] = useState(null)
-
     let urlId = id
 
     // validate id
@@ -39,22 +38,26 @@ const LocationDetails = () => {
             setErr("undefined")
         }
     }
-
+    
+    // fetch unit data from the api
     const [ response, setResponse ] = useState()
     const [ filteredUnits, setFilteredUnits ] = useState([])
-    // fetch unit data from the api
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(urlId, function(data){
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setFilteredUnits(data.units)
+                    setErr(null)
                 }
-                setResponse(data)
-                setFilteredUnits(data.units)
             })
         })()
     }, [])
 
+
+    if (err) { return <Error err={ err } /> }
     // destructure api response
     if (response) {
 
@@ -170,7 +173,7 @@ const LocationDetails = () => {
                     </thead>
                     <tbody>
                         { displayItems.length > 0 ? displayItems : <tr>
-                            <td colspan="4">No units yet</td>
+                            <td colSpan={ 4 }>No units yet</td>
                         </tr> }
                     </tbody>
                 </table>
