@@ -21,13 +21,6 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid login (password)' });
         }
 
-<<<<<<< HEAD
-        console.log(user)
-        const token = await createToken({
-            email: user.email,
-            isAdmin: user.isAdmin
-        });
-=======
         const facilityAuths = await models.FacilityAuth.findAll({
             where: { userId: user.id },
             attributes: ['facilityId']
@@ -35,7 +28,6 @@ exports.login = async (req, res, next) => {
         const facilityIds = facilityAuths.map(auth => auth.facilityId);
 
         const token = await createToken(user.id, facilityIds);
->>>>>>> 798c1aad347c8f9d220bd2a51e4b526fcf5ea7bf
 
         res.cookie('authentication', token, { httpOnly: true, maxAge: 3600000 });
         res.status(200).send();

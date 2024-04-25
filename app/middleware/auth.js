@@ -8,11 +8,6 @@ const authorize = async (req, res, next) => {
     try {
         // Check for auth token in cookies
         const token = req.cookies.authentication;
-<<<<<<< HEAD
-        console.log(req.headers)
-
-=======
->>>>>>> 798c1aad347c8f9d220bd2a51e4b526fcf5ea7bf
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
