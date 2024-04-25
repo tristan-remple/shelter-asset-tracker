@@ -21,6 +21,10 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
+        vendor: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         initialValue: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: true
@@ -52,8 +56,19 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.INTEGER,
             allowNull: true,
             field: 'inspectedBy'
+        },         
+        inspectionRecord: {
+            type: DataTypes.JSON,
+            allowNull: true
         }
     }, {
         tableName: 'Items'
-    });
+    }).addHook('beforeUpdate', (item, options) => {
+        if (item.changed('toInspect') && item.toInspect == false) {
+            item.inspectionRecord = [...(item.inspectionRecord || []), {
+                inspectionDate: new Date(),
+                inspectedBy: item.inspectedBy
+            }];
+        }
+    });;
 };

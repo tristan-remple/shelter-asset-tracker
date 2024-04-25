@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// Import controller
+// Import facility controller
 const facilityController = require('../../controllers/facilityController');
 
+// Define routes for handling facility operations
 router.route('/')
     .get(facilityController.getAllFacilities)
     .post(facilityController.createNewFacility);

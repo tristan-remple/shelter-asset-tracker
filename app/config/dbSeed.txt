@@ -1,10 +1,10 @@
 -- SEED DB
 -- Inserting users
 INSERT INTO Users (password, name, isAdmin, email, createdAt, updatedAt) VALUES
-('password', 'Admin', 1, 'test1@test.com', NOW(), NOW()),
-('password', 'John Doe', 0, 'test2@test.com', NOW(), NOW()),
-('password', 'Jane Smith', 0, 'test3@test.com', NOW(), NOW()),
-('password', 'Michael Johnson', 0, 'test4@test.com', NOW(), NOW());
+('$2a$12$08zXJFDmXJm1p7f1wP/9a.UXwHs1C1dfIhg6QS09xgQgIEE1cuqEW', 'Admin', 1, 'test1@test.com', NOW(), NOW()),
+('$2a$12$08zXJFDmXJm1p7f1wP/9a.UXwHs1C1dfIhg6QS09xgQgIEE1cuqEW', 'John Doe', 0, 'test2@test.com', NOW(), NOW()),
+('$2a$12$08zXJFDmXJm1p7f1wP/9a.UXwHs1C1dfIhg6QS09xgQgIEE1cuqEW', 'Jane Smith', 0, 'test3@test.com', NOW(), NOW()),
+('$2a$12$08zXJFDmXJm1p7f1wP/9a.UXwHs1C1dfIhg6QS09xgQgIEE1cuqEW', 'Michael Johnson', 0, 'test4@test.com', NOW(), NOW());
 
 -- Inserting templates
 INSERT INTO Templates (name, defaultValue, defaultDepreciation, icon, singleResident, createdAt, updatedAt) VALUES

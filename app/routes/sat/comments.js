@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// Import controller
+// Import comment controller
 const commentController = require('../../controllers/commentController');
 
+// Define routes for handling comment operations
 router.route('/')
     .get(commentController.getAllComments)
     .post(commentController.createNewComment);

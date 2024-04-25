@@ -1,7 +1,10 @@
+/*
+    Functions for hashing passwords and comparing passwords using bcrypt.
+ */
 const bcrypt = require('bcrypt');
 
 exports.hashPassword = async (password) => {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
     return hashedPassword;
 };
 

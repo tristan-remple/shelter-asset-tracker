@@ -49,7 +49,7 @@ exports.getTemplateById = async (req, res, next) => {
             },
         });
 
-        if (!template) {
+        if (template.id === null) {
             return res.status(404).json({ error: 'Template not found.' });
         }
 

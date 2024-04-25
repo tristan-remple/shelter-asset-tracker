@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// Import controller
+// Import item controller
 const itemController = require('../../controllers/itemController');
 
+// Define routes for handling item operations
 router.route('/')
     .get(itemController.getAllItems)
     .post(itemController.createNewItem);

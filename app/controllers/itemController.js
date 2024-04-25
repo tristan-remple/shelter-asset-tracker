@@ -1,10 +1,6 @@
 const { models } = require('../data');
-
-const calculateCurrentValue = (initialValue, depreciationRate, createdAt) => {
-  const currentDate = new Date();
-  const quartersElapsed = (currentDate.getFullYear() - createdAt.getFullYear()) * 4 + Math.floor((currentDate.getMonth() - createdAt.getMonth()) / 3);
-  return (initialValue * Math.pow((1 - depreciationRate), quartersElapsed)).toFixed(2);
-};
+const { verifyToken } = require('../utils/token');
+const { calculateCurrentValue } = require('../utils/calc');
 
 exports.getAllItems = async (req, res, next) => {
   try {
@@ -143,10 +139,21 @@ exports.updateItem = async (req, res, next) => {
       const itemId = req.params.id;
       const { unitId, name, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
 
+      const token = req.cookies.authentication;
+      const decoded = await verifyToken(token);
+      const userId = decoded.id;
+
       const item = await models.Item.findByPk(itemId);
 
       if (!item) {
           return res.status(404).json({ error: 'Item not found.' });
+      }
+
+      if (item.toInspect != toInspect && toInspect == false){
+         item.set({
+            inspectedBy: userId,
+            lastInspected: new Date()
+        });
       }
 
       item.set({

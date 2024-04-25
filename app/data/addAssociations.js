@@ -1,3 +1,6 @@
+/*
+    Define associations between Sequelize models.
+ */
 module.exports = (sequelize) => {
 
     const { Comment, Facility, FacilityAuth, Item, Template, Unit, User } = sequelize.models;

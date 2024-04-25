@@ -1,29 +1,14 @@
-// index.js
+/*
+    Initialize Sequelize and define models for various entities.
+ */
+
 const Sequelize = require('sequelize');
 const addAssociations = require('./addAssociations');
+const sequelize = require('../config/dbConfig')
 const dotenv = require('dotenv');
 dotenv.config();
 
-const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {   
-        host: process.env.DB_HOST,
-        dialect: 'mysql',
-        define: {
-            paranoid: true,     // Enables soft deletion for all models
-            timestamps: true,   // Adds createdAt and updatedAt fields for all models
-        },
-        pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
-        }
-    }
-);
-
+// List of all models to be loaded
 const models = [
     require('./models/facility.model'),
     require('./models/facilityAuth.model'),
@@ -34,11 +19,15 @@ const models = [
     require('./models/comment.model'),
 ];
 
+// Initialize each model with Sequelize and dbConfig
 models.forEach(model => {
     model(sequelize, Sequelize);
 })
 
+// Add associations between models
 addAssociations(sequelize);
+
+// Used to sync db - only enable if needed
 // sequelize.sync({ alter: true })
 //   .then(() => {
 //     console.log('Database synced successfully');
@@ -47,4 +36,5 @@ addAssociations(sequelize);
 //     console.error('Error syncing database:', error);
 //   });
 
+// Export initialized Sequelize instance
 module.exports = sequelize;
