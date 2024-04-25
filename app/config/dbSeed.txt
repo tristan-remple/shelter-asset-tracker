@@ -42,60 +42,72 @@ INSERT INTO Units (facilityId, name, type, createdAt, updatedAt) VALUES
 
 -- Inserting items
 -- Inserting items for UnitID 1
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(1, 1, 'chair A-01', 0, 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
-(1, 1, 'chair A-02', 0, 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
-(1, 1, 'chair A-03', 0, 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()), 
-(1, 2, 'table A-01', 0, 100.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()), 
-(1, 3, 'desk A-01', 1, 150.00, 0.03, 1, 2, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
-(1, 4, 'mattress A-01', 0, 250.00, 0.05, 0, 2, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW());  
+(1, 1, 'chair A-01', 0, 'IKEA', 'INV-ABC123', 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
+(1, 1, 'chair A-02', 0, 'IKEA', 'INV-DEF456', 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
+(1, 1, 'chair A-03', 0, 'IKEA', 'INV-GHI789', 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()), 
+(1, 2, 'table A-01', 0, 'IKEA', 'INV-JKL012', 100.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()), 
+(1, 3, 'desk A-01', 1, 'The Brick', 'INV-MNO345', 150.00, 0.03, 1, 2, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
+(1, 4, 'mattress A-01', 0, 'Leons', 'INV-PQR678', 250.00, 0.05, 0, 2, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW());  
 
 -- Inserting items for UnitID 2
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(2, 1, 'chair B-01', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
-(2, 1, 'chair B-02', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
-(2, 1, 'chair B-03', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(2, 1, 'chair B-04', 0, 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()),
-(2, 2, 'table B-01', 0, 100.00, 0.04, 0, 1, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
-(2, 4, 'mattress B-01', 0, 250.00, 0.05, 0, 1, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW()); 
+(2, 1, 'chair B-01', 0, 'IKEA', 'INV-STU901', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
+(2, 1, 'chair B-02', 0, 'IKEA', 'INV-VWX234', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
+(2, 1, 'chair B-03', 0, 'IKEA', 'INV-YZAB56', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(2, 1, 'chair B-04', 0, 'IKEA', 'INV-CDE789', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()),
+(2, 2, 'table B-01', 0, 'IKEA', 'INV-FGH012', 100.00, 0.04, 0, 1, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
+(2, 4, 'mattress B-01', 0, 'Leons', 'INV-IJK345', 250.00, 0.05, 0, 1, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW()); 
 
 -- Inserting items for UnitID 3
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(3, 1, '101-chair01', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
-(3, 1, '101-chair02', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
-(3, 2, '101-table01', 0, 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(3, 4, '101-mattress01', 0, 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+(3, 1, '101-chair01', 0, 'IKEA', 'INV-LMN678', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
+(3, 1, '101-chair02', 0, 'IKEA', 'INV-OPQ901', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
+(3, 2, '101-table01', 0, 'The Brick', 'INV-RST234', 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(3, 4, '101-mattress01', 0, 'Leons', 'INV-UVW567', 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
 
 -- Inserting items for UnitID 4
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(4, 1, '102-chair01', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
-(4, 1, '102-chair02', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
-(4, 2, '102-table01', 0, 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(4, 4, '102-mattress01', 0, 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+(4, 1, '102-chair01', 0, 'IKEA', 'INV-XYZ890', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
+(4, 1, '102-chair02', 0, 'IKEA', 'INV-123ABC', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
+(4, 2, '102-table01', 0, 'The Brick', 'INV-456DEF', 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(4, 4, '102-mattress01', 0, 'Leons', 'INV-789GHI', 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
 
 -- Inserting items for UnitID 5
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(5, 1, '201-chair01', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
-(5, 1, '201-chair02', 0, 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
-(5, 2, '201-desk01', 0, 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(5, 4, '201-mattress01', 0, 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+(5, 1, '201-chair01', 0, 'IKEA', 'INV-JKL234', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
+(5, 1, '201-chair02', 0, 'IKEA', 'INV-MNO567', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
+(5, 2, '201-desk01', 0, 'The Brick', 'INV-PQR890', 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
+(5, 4, '201-mattress01', 0, 'Leons', 'INV-STU123', 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
 
 -- Inserting items for UnitID 6
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(6, 4, '101-m', 0, 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+(6, 4, '101-m', 0, 'Leons', 'INV-VWX456', 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
 
 -- Inserting items for UnitID 7
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(7, 4, '102-m', 0, 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+(7, 4, '102-m', 0, 'Leons', 'INV-YZ7890', 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
 
 -- Inserting items for UnitID 8
-INSERT INTO Items (unitId, templateId, name, donated, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
 VALUES
-(8, 4, '201-m', 0, 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+(8, 4, '201-m', 0, 'Leons', 'INV-123DEF', 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+
+-- Inserting comments
+INSERT INTO Comments (userId, itemId, comment, archive, createdAt, updatedAt)
+VALUES
+(1, 1, 'The fabric on this chair is starting to show signs of wear.', NULL, NOW(), NOW()), -- Chair A-01
+(2, 4, 'The surface of this table has some scratches.', NULL, NOW(), NOW()), -- Table A-01
+(3, 5, 'The desk has a slight wobble, might need tightening.', NULL, NOW(), NOW()), -- Desk A-01
+(4, 7, 'One of the legs is loose and needs repair.', NULL, NOW(), NOW()), -- Chair B-01
+(1, 13, 'Good condition, only minor cosmetic damage on seat.', NULL, NOW(), NOW()), -- Chair 101-chair01
+(2, 15, 'A few minor scuff marks, otherwise in good shape.', NULL, NOW(), NOW()), -- Desk 101-table01
+(3, 19, 'This chair has a small tear in the upholstery.', NULL, NOW(), NOW()), -- Chair 102-chair01
+(4, 23, 'Desk surface has some stains that might be difficult to remove.', NULL, NOW(), NOW()); -- Desk 201-desk01
