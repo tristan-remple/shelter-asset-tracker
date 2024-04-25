@@ -107,10 +107,10 @@ exports.getItemById = async (req, res, next) => {
             comment: inspection.comment,
             createdAt: inspection.createdAt
           })) : [],
-        //   addedBy: {
-        //       id: item.addedByUser.id,
-        //       name: item.addedByUser.name,
-        //   },
+          addedBy: {
+              id: item.addedByUser.id,
+              name: item.addedByUser.name,
+          },
           inspected: item.inspectedByUser ? {
               id: item.inspectedByUser.id,
               name: item.inspectedByUser.name,

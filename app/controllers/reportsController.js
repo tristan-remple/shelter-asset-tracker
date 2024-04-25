@@ -26,7 +26,7 @@ exports.getSummary = async (req, res, next) => {
                         ],
                         include: [{
                             model: models.Template,
-                            attributes: ['id', 'name']
+                            attributes: ['id', 'name', 'icon']
                         }, {
                             model: models.User,
                             attributes: ['id', 'name'],
@@ -55,6 +55,7 @@ exports.getSummary = async (req, res, next) => {
                         itemCount[item.templateId] = {
                             id: item.templateId,
                             name: item.Template.name,
+                            icon: item.Template.icon,
                             count: 1
                         };
                     } else {
@@ -71,6 +72,7 @@ exports.getSummary = async (req, res, next) => {
                     name: item.name,
                     templateId: item.templateId,
                     template: item.Template.name,
+                    icon: item.Template.icon,
                     initialValue: item.initialValue,
                     currentValue: calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt),
                     donated: item.donated,
