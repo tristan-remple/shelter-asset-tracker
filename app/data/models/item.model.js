@@ -25,6 +25,11 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        invoice: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            unique: true
+        },
         initialValue: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: true
