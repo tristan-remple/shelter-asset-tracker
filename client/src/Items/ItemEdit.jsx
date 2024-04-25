@@ -196,6 +196,7 @@ const ItemEdit = () => {
         newItem.depreciationRate = dangerChanges.depreciationRate
         newItem.toInspect = safeChanges.statusText === flagTextOptions[1]
         newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
+
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
                 setErr(response.error)
@@ -300,7 +301,7 @@ const ItemEdit = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="row row-info">
+                <div className="row row-info">
                     <div className="col-2 col-content col-icon">
                         <img className="img-fluid icon" src={ `/img/${ item.template.icon }.png` } alt={ item.template.name + " icon" } />
                     </div>
@@ -312,9 +313,9 @@ const ItemEdit = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
                             className="comment-area" 
                         />
-                        <CommentBox comments={ comments } />
+                        <CommentBox comments={ item.comments } />
                     </div>
-                </div> */}
+                </div>
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

@@ -16,7 +16,7 @@ const Error = ({ err }) => {
             errorText = "You are trying to reach a page that describes a single thing, but we don't know which thing."
             break
         case "api":
-            errorText = "We tried to find something in the database for you, but we couldn't find it. This could mean that the thing you're looking for does not exist, or it may mean that the database is offline."
+            errorText = "We tried to find something in the database for you, but we couldn't find it. This could mean that the thing you're looking for does not exist."
             break
         case "deleted":
             errorText = "The thing you're looking for has been deleted."
