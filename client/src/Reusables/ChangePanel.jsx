@@ -31,20 +31,16 @@ const ChangePanel = ({ save, linkOut, locationId }) => {
     return (
         <div className="row row-info">
             <div className="col-3 d-flex justify-content-center align-items-center">
-                <img src="../../public/img/warningTriangle.jpg" alt="Warning triangle icon" className="triangle"/>
+                <img src="/img/warningTriangle.jpg" alt="Warning triangle icon" className="triangle"/>
             </div>
             <div className="col">
                 <h3>Do you want to save your changes?</h3>
-                { locationWarning }
                 <div className="row">
                     <div className="col">
                         <Button text="Save" linkTo={ clickSave } type="action" />
                     </div>
                     <div className="col">
                         <Button text="Don't Save" linkTo={ linkOut } type="danger" />
-                    </div>
-                    <div className="col">
-                        <Button text="Cancel" linkTo={ null } type="nav" />
                     </div>
                 </div>
             </div>

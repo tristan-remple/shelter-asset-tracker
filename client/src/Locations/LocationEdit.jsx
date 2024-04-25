@@ -28,18 +28,11 @@ const LocationEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
-    }
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
     }
 
     // fetch data from the api
@@ -47,11 +40,12 @@ const LocationEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleLocation(id, function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setErr(null)
                 }
-                setResponse(data)
             })
         })()
     }, [])
@@ -99,17 +93,18 @@ const LocationEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (!data || data.error) {
-                    setErr("api")
-                    return
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setUsers(data)
+                    const simple = data.map(usr => usr.name)
+                    setSimpleUsers(simple)
                 }
-                setUsers(data)
-                const simple = data.map(usr => usr.name)
-                setSimpleUsers(simple)
             })
         })()
     }, [])
 
+    if (err) { return <Error err={ err } /> }
     if (location && users.length > 0) {
 
     // Most changes are handled by Services/handleChanges
@@ -135,38 +130,33 @@ const LocationEdit = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
 
-        // verify user identity
-        if (authService.checkUser() && authService.checkAdmin()) {
-
-            // validate title
-            if (changes.name == "") {
-                setStatus("Locations must have a title.")
-                return
-            }
-
-            // validate phone number
-            const validPhone = validatePhone(changes.phone)
-            if (validPhone.error) {
-                setStatus(validPhone.error)
-                return
-            }
-            changes.phone = validPhone.number
-
-            changes.managerId = changes.user.userId
-
-            // send api request and process api response
-            await apiService.postLocationEdit(changes, (response) => {
-                if (response.success) {
-                    setStatus(`You have successfully updated ${ response.name }.`)
-                    setUnsaved(false)
-                    navigate(`/location/${ response.id }`)
-                } else {
-                    setStatus("We weren't able to process your add item request.")
-                }
-            })
-        } else {
-            setErr("permission")
+        // validate title
+        if (changes.name == "") {
+            setStatus("Locations must have a title.")
+            return
         }
+
+        // validate phone number
+        const validPhone = validatePhone(changes.phone)
+        if (validPhone.error) {
+            setStatus(validPhone.error)
+            return
+        }
+
+        // shape object for api
+        changes.phone = validPhone.number
+        changes.managerId = changes.user.userId
+
+        // send api request and process api response
+        await apiService.postLocationEdit(changes, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully updated ${ response.name }.`)
+                setUnsaved(false)
+                navigate(`/location/${ response.id }`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (

@@ -40,7 +40,7 @@ const ItemEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // redirect to the error page if no item is specified or if the item specified isn't found
     if (id === undefined) {
@@ -51,10 +51,12 @@ const ItemEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.singleItem(id, (data) => {
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setItem(data)
+                    setErr(null)
                 }
-                setItem(data)
             })
         })()
     }, [])
@@ -64,15 +66,16 @@ const ItemEdit = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (!data || data.error) {
-                    setErr("api")
-                }
-                setCategoryList(data)
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setCategoryList(data)
 
-                // the Dropdown component later is expecting a list of strings
-                const simpleList = data.map(cat => cat.name)
-                simpleList.unshift("Select:")
-                setSimpleCategories(simpleList)
+                    // the Dropdown component later is expecting a list of strings
+                    const simpleList = data.map(cat => cat.name)
+                    simpleList.unshift("Select:")
+                    setSimpleCategories(simpleList)
+                }
             })
         })()
     }, [])
@@ -89,7 +92,7 @@ const ItemEdit = () => {
 
     // object that defines fields that are safe to change
     const [ safeChanges, setSafeChanges ] = useState({
-        name: null,
+        name: "",
         statusColor: flagColorOptions[0],
         statusText: flagTextOptions[0],
         comment: ""
@@ -97,10 +100,10 @@ const ItemEdit = () => {
 
     // object (nested) that defines fields that are dangerous to change
     const [ dangerChanges, setDangerChanges ] = useState({
-        template: null,
-        unit: null,
-        depreciationRate: null,
-        initialValue: null
+        template: "",
+        unit: "",
+        depreciationRate: 0,
+        initialValue: 0
     })
 
     useEffect(() => {
@@ -133,6 +136,7 @@ const ItemEdit = () => {
         }
     }, [ item ])
 
+    if (err) { return <Error err={ err } /> }
     if (item) {
 
     // Note that the following fields are not available to edit:
@@ -175,7 +179,6 @@ const ItemEdit = () => {
         if (newCatIndex !== -1) {
             const newChanges = {...dangerChanges}
             newChanges.template = categoryList[newCatIndex]
-            console.log(newChanges)
             setDangerChanges(newChanges)
             setUnsaved(true)
         } else {
@@ -194,19 +197,15 @@ const ItemEdit = () => {
         newItem.toInspect = safeChanges.statusText === flagTextOptions[1]
         newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
 
-        if (authService.checkUser()) {
-            await apiService.postItemEdit(newItem, (response) => {
-                if (response.success) {
-                    setStatus(`You have successfully saved your changes to item ${response.name}.`)
-                    setUnsaved(false)
-                    navigate(`/item/${response.id}`)
-                } else {
-                    setStatus("We weren't able to process your edit item request.")
-                }
-            })
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        await apiService.postItemEdit(newItem, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully saved your changes to item ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/item/${response.id}`)
+            }
+        })
     }
 
     // sends a delete request to the apiService
@@ -216,12 +215,12 @@ const ItemEdit = () => {
             name: item.name
         }
         await apiService.deleteItem(deletedItem, (response) => {
-            if (response.success) {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully deleted item ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/unit/${ item.unit.id }`)
-            } else {
-                setStatus("We weren't able to process your delete item request.")
             }
         })
     }
@@ -302,7 +301,7 @@ const ItemEdit = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="row row-info">
+                <div className="row row-info">
                     <div className="col-2 col-content col-icon">
                         <img className="img-fluid icon" src={ `/img/${ item.template.icon }.png` } alt={ item.template.name + " icon" } />
                     </div>
@@ -314,9 +313,9 @@ const ItemEdit = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
                             className="comment-area" 
                         />
-                        <CommentBox comments={ comments } />
+                        <CommentBox comments={ item.comments } />
                     </div>
-                </div> */}
+                </div>
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

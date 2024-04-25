@@ -1,8 +1,26 @@
+import axios from 'axios'
+
 //------ MODULE INFO
 // This module handles API interactions related to users.
 // Imported by: App, Header
 
 class authService {
+
+    registerNewUser = async(user, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/register`, user, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+            callback({ error: err.response.data })
+        })
+    }
 
     // Check whether the current user is logged in.
     // Called by: LogIn
@@ -45,14 +63,35 @@ class authService {
     }
 
     // Called by: LogIn
-    login(user) {
-        user.success = true
-        return user
+    login = async(user, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/login`, user, {
+            withCredentials: true,
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res)
+        })
+        .catch(err => {
+            callback({ error: err })
+        })
     }
 
     // Called by: LogOut
-    logout() {
-        return { success: true }
+    logout = async(callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/logout`, {im: "leaving"}, {
+            withCredentials: true,
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res)
+        })
+        .catch(err => {
+            callback({ error: err })
+        })
     }
 
     requestResetPassword(id) {

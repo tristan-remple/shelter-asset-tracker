@@ -24,15 +24,15 @@ const LogIn = () => {
     const { status, setStatus } = useContext(statusContext)
 
     // check if user is already logged in
-    useEffect(() => {
-        if (authService.checkUser()) {
-            navigate("/location")
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (authService.checkUser()) {
+    //         navigate("/location")
+    //     }
+    // }, [])
     
     // form handling
     const [ changes, setChanges ] = useState({
-        userName: "",
+        email: "",
         password: ""
     })
     const [ unsaved, setUnsaved ] = useState(false)
@@ -41,20 +41,21 @@ const LogIn = () => {
     const submitLogin = () => {
 
         // validation
-        if (changes.userName === "" || changes.password === "") {
+        if (changes.email === "" || changes.password === "") {
             setStatus("Please enter your username and password.")
             return
         }
 
         // api call
-        const response = authService.login(changes)
-        if (response.success) {
-            setStatus(`Welcome, ${ response.userName }.`)
-            setUnsaved(false)
-            navigate("/location")
-        } else {
-            setStatus("We weren't able to validate your credentials.")
-        }
+        authService.login(changes, (response) => {
+            if (response?.status === 200) {
+                setStatus(`Welcome.`)
+                setUnsaved(false)
+                navigate("/location")
+            } else {
+                setStatus("We weren't able to validate your credentials.")
+            }
+        })   
     }
 
     return (
@@ -70,14 +71,14 @@ const LogIn = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Username
+                            Email
                         </div>
                         <div className="col-content">
                             <input 
                                 className="loginInput"
                                 type="text" 
-                                name="userName" 
-                                value={ changes.userName } 
+                                name="email" 
+                                value={ changes.email } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

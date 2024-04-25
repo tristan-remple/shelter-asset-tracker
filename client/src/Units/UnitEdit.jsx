@@ -26,20 +26,13 @@ const UnitEdit = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
     const [ unsaved, setUnsaved ] = useState(false)
     const navigate = useNavigate()
 
     // validate id
     if (id === undefined) {
-        console.log("undefined id")
         setErr("undefined")
-    }
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        setErr("permission")
     }
 
     // fetch unit data from the api
@@ -47,12 +40,12 @@ const UnitEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setErr(null)
                 }
-                console.log(data)
-                setResponse(data)
             })
         })()
     }, [])
@@ -80,6 +73,7 @@ const UnitEdit = () => {
         }
     }, [ response ])
 
+    if (err) { return <Error err={ err } /> }
     if (response) {
     // destructure api response
     const { id, name } = response   
@@ -94,12 +88,12 @@ const UnitEdit = () => {
         if (authService.checkUser() && authService.checkAdmin()) {
             // send api request and process api response
             await apiService.postUnitEdit(changes, (response) => {
-                if (response.success) {
+                if (response.error) {
+                    setErr(response.error)
+                } else {
                     setStatus(`You have successfully updated ${ response.name }.`)
                     setUnsaved(false)
                     navigate(`/unit/${ id }`)
-                } else {
-                    setStatus("We weren't able to process your update item request.")
                 }
             })
         } else {

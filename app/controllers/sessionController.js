@@ -4,6 +4,8 @@ const { models } = require('../data');
 
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
+    console.log(req.body)
+    console.log(req.body.password)
     if (!email || !password){
         return res.status(401).json({ error: 'Invalid login'});
     }
@@ -11,12 +13,12 @@ exports.login = async (req, res, next) => {
     try {
         const user = await models.User.findOne({where: { email }});
         if (!user) {
-            return res.status(401).json({ error: 'Invalid login' });
+            return res.status(401).json({ error: 'Invalid login (email)' });
         }
 
         const validPassword = await comparePasswords(password, user.password);
         if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid login' });
+            return res.status(401).json({ error: 'Invalid login (password)' });
         }
 
         const facilityAuths = await models.FacilityAuth.findAll({
@@ -37,7 +39,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.logout = async (req, res, next) => {
-    res.clearCookie('Authentication').status(200).send()
+    res.clearCookie('authentication').status(200).send()
 };
 
 exports.reset = async (req, res, next) => {

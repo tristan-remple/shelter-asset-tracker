@@ -20,6 +20,12 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         toggle()
     }
 
+    const keyboardHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            pickIcon()
+        }
+    }
+
     const displayIcons = availableIcons.map(icon => {
         const iconTitle = capitalize(icon.split("-").join(" "))
         return <img
@@ -30,6 +36,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             title={ iconTitle }
             src={ `/img/icons8-${ icon }-100.png` } 
             onClick={ pickIcon }
+            onKeyUp={ keyboardHandler }
         />
     })
 

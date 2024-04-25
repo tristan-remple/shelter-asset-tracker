@@ -22,12 +22,7 @@ const UserCreate = () => {
     // get context information
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
-    }
+    const [ err, setErr ] = useState(null)
 
     // set up the change panel state
     const [ unsaved, setUnsaved ] = useState(false)
@@ -38,7 +33,8 @@ const UserCreate = () => {
         isAdmin: false,
         createdAt: "",
         location: {},
-        email: ""
+        email: "",
+        password: ""
     })
 
     // list of locations for dropdown
@@ -47,13 +43,13 @@ const UserCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (!data || data.error) {
-                    console.log("api error")
-                    return <Error err="api" />
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setLocations(data)
+                    const titles = data.map(loc => loc.name)
+                    setLocationTitles(titles)
                 }
-                setLocations(data)
-                const titles = data.map(loc => loc.name)
-                setLocationTitles(titles)
             })
         })()
     }, [])
@@ -91,17 +87,18 @@ const UserCreate = () => {
             return
         }
 
-        const response = apiService.postNewUser(changes, (response) => {
-            if (response.success) {
+        apiService.postNewUser(changes, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
                 setStatus(`You have successfully added user ${response.name}.`)
                 setUnsaved(false)
                 navigate(`/user/${response.userId}`)
-            } else {
-                setStatus("We weren't able to process your add user request.")
             }
         })
     }
 
+    if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -178,6 +175,19 @@ const UserCreate = () => {
                                 type="email" 
                                 name="email" 
                                 value={ changes.email } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Password
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="password" 
+                                name="password" 
+                                value={ changes.password } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

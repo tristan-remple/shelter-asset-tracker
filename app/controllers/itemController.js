@@ -15,6 +15,7 @@ exports.getAllItems = async (req, res, next) => {
 exports.getItemById = async (req, res, next) => {
   try {
       const itemId = req.params.id;
+      console.log(itemId)
       const item = await models.Item.findOne({
           attributes: [
               'id',
@@ -106,6 +107,15 @@ exports.getItemById = async (req, res, next) => {
             comment: inspection.comment,
             createdAt: inspection.createdAt
           })) : [],
+        //   addedBy: {
+        //       id: item.addedByUser.id,
+        //       name: item.addedByUser.name,
+        //   },
+          inspected: item.inspectedByUser ? {
+              id: item.inspectedByUser.id,
+              name: item.inspectedByUser.name,
+              date: item.lastInspected
+          } : null,
           value: {
               initialValue: item.initialValue,
               donated: item.donated,

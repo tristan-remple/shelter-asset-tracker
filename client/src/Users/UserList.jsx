@@ -21,12 +21,7 @@ const UserList = () => {
 
     // get the status from context
     const { status } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
+    const [ err, setErr ] = useState("loading")
 
     // get the users from the api
     const [ users, setResponse ] = useState([])
@@ -34,18 +29,19 @@ const UserList = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (!data || data.error) {
-                    setErr("api")
-                    return
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    setFilteredUsers(data)
+                    setErr(null)
                 }
-                setResponse(data)
-                setFilteredUsers(data)
             })
         })()
     }, [])
 
     // render user rows
-    const displayUsers = filteredUsers.map(user => {
+    const displayUsers = filteredUsers?.map(user => {
         return <tr key={ user.userId } >
             <td>{ user.name }</td>
             <td>{ user.facilities.map(loc => loc.name).join(", ") }</td>
@@ -54,9 +50,6 @@ const UserList = () => {
         </tr>
     })
 
-    if (!users) {
-        return <Error err={ err } />
-    } else {
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -89,7 +82,6 @@ const UserList = () => {
             </div>
         </main>
     )
-}
 }
 
 export default UserList

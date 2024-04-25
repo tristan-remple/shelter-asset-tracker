@@ -23,12 +23,7 @@ const UserEdit = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
-
-    // check that active user is an admin
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
+    const [ err, setErr ] = useState("loading")
 
     // validate id
     if (id === undefined || id === "undefined") {
@@ -55,13 +50,14 @@ const UserEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(id, function(data){
-                if (!data || data.error) {
-                    setErr("api")
-                    return
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    data.locations = []
+                    setUser(data),
+                    setChanges(data)
+                    setErr(null)
                 }
-                data.locations = []
-                setUser(data),
-                setChanges(data)
             })
         })()
     }, [])
@@ -71,11 +67,11 @@ const UserEdit = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
-                if (!data || data.error) {
-                    setErr("api")
-                    return
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setLocations(data)
                 }
-                setLocations(data)
             })
         })()
     }, [])
@@ -113,6 +109,7 @@ const UserEdit = () => {
         
     }
 
+    if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
             <div className="row title-row">

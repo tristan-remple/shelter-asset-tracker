@@ -26,12 +26,7 @@ const LocationCreate = () => {
     // get context information
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        console.log("insufficient permission")
-        return <Error err="permission" />
-    }
+    const [ err, setErr ] = useState(null)
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -55,13 +50,13 @@ const LocationCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.listUsers(function(data){
-                if (!data || data.error) {
-                    setErr("api")
-                    return
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setUsers(data)
+                    const simple = data.map(usr => usr.name)
+                    setSimpleUsers(simple)
                 }
-                setUsers(data)
-                const simple = data.map(usr => usr.name)
-                setSimpleUsers(simple)
             })
         })()
     }, [])
@@ -102,28 +97,21 @@ const LocationCreate = () => {
         }
         changes.phone = validPhone.number
 
-        // verify user identity
-        if (authService.checkUser() && authService.checkAdmin()) {
+        changes.managerId = changes.user.userId
 
-            changes.managerId = changes.user.userId
-
-            // send api request and process api response
-            await apiService.postLocation(changes, (response) => {
-                console.log(response)
-                if (response.success) {
-                    setStatus(`You have successfully created ${ response.name }.`)
-                    setUnsaved(false)
-                    navigate(`/location/${ response.facilityId }`)
-                } else {
-                    setStatus("We weren't able to process your add location request.")
-                }
-            })
-            
-        } else {
-            return <Error err="permission" />
-        }
+        // send api request and process api response
+        await apiService.postLocation(changes, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully created ${ response.name }.`)
+                setUnsaved(false)
+                navigate(`/location/${ response.facilityId }`)
+            }
+        })
     }
 
+    if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
             <div className="row title-row mt-3 mb-2">

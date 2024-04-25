@@ -33,7 +33,7 @@ const ItemCreate = () => {
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
-    const [ err, setErr ] = useState(null)
+    const [ err, setErr ] = useState("loading")
 
     // redirect to the error page if no unit is specified or if the unit specified isn't found
     if (id === undefined) {
@@ -45,10 +45,12 @@ const ItemCreate = () => {
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
-                if (!data || data.error) {
-                    setErr("api")
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setUnit(data)
+                    setErr(null)
                 }
-                setUnit(data)
             })
         })()
     }, [])
@@ -91,23 +93,20 @@ const ItemCreate = () => {
     useEffect(() => {
         (async() => {
             await apiService.listCategories((data) => {
-                if (!data || data.error) {
-                    setErr("api")
-                }
-                setCategoryList(data)
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setCategoryList(data)
+                    setErr(null)
 
-                // the Dropdown component later is expecting a list of strings
-                const simpleList = data.map(cat => cat.name)
-                simpleList.unshift("Select:")
-                setSimpleCategories(simpleList)
+                    // the Dropdown component later is expecting a list of strings
+                    const simpleList = data.map(cat => cat.name)
+                    simpleList.unshift("Select:")
+                    setSimpleCategories(simpleList)
+                }
             })
         })()
     }, [])
-
-    // destructure the unit
-    if (unit) {
-        // destructure api response
-        const { id, name, type, facility, createdAt, updatedAt, items } = unit
 
     // Most changes are handled by Services/handleChanges
 
@@ -142,21 +141,16 @@ const ItemCreate = () => {
         changes.addedBy = 3
         changes.donated = newItem.donated ? 1 : 0
 
-        // verify user identity
-        if (authService.checkUser()) {
-            // send api request and process api response
-            await apiService.postNewItem(changes, (response => {
-                if (response.success) {
-                    setStatus(`You have successfully added item ${response.name}.`)
-                    setUnsaved(false)
-                    navigate(`/item/${response.itemId}`)
-                } else {
-                    setStatus("We weren't able to process your add item request.")
-                }
-            }))
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        // send api request and process api response
+        await apiService.postNewItem(changes, (response => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully added item ${response.name}.`)
+                setUnsaved(false)
+                navigate(`/item/${response.itemId}`)
+            }
+        }))
     }
 
     return err ? <Error err={ err } /> : (
@@ -262,11 +256,10 @@ const ItemCreate = () => {
                         </div>
                     </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${id}` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unit.id }` } /> }
             </div>
         </main>
     )
-}
 }
 
 export default ItemCreate

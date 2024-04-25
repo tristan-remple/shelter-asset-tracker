@@ -14,9 +14,7 @@ const Footer = () => {
                     Shelter Asset Tracker © <a href="https://www.nscc.ca/about/research-and-innovation/index.asp">Applied Research NSCC</a><br />
                     All information on this site belongs exclusively and confidentially to <a href={ import.meta.env.VITE_ORG_URL }>{ import.meta.env.VITE_ORGANIZATION }</a>.
                     </p>
-                    <div className="nav-link">
-                        <Link id="faq" className="navbar-brand m-lg-2" to="/faq">?</Link>
-                    </div>
+                    <Link id="faq" className="nav-link navbar-brand m-lg-2" to="/faq">?</Link>
             </div>
         </footer>
     )

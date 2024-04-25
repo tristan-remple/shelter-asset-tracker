@@ -1,9 +1,6 @@
 // external dependencies
 import { useState } from "react"
 
-// components
-import Button from "./Button"
-
 //------ MODULE INFO
 // ** Available for SCSS **
 // This module creates a dropdown for use with forms.
@@ -14,21 +11,55 @@ import Button from "./Button"
 
 const Dropdown = ({ list, current, setCurrent }) => {
 
+    const id = `dropdown-${ list[0] }`
+
     const [ open, setOpen ] = useState(false)
     const toggle = () => {
         const newOpen = open ? false : true
         setOpen(newOpen)
     }
 
+    const keyboardItemHandler = (event, item) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            setOpen(false)
+            setCurrent(item)
+        }
+    }
+
+    const keyboardBlurHandler = (event) => {
+        if (event.target.parentElement.lastChild === event.target) {
+            setOpen(false)
+        }
+    }
+
     const renderedList = list.map((item, index) => {
-        return <li key={ index } onClick={ () => { toggle(); setCurrent(item) } } className="dropdown-item" >{ item }</li>
+        return <li 
+            key={ index } 
+            onClick={ () => { toggle(); setCurrent(item) } } 
+            tabIndex= { 0 }
+            onKeyUp={ (e) => { keyboardItemHandler(e, item) } }
+            onBlur={ (e) => keyboardBlurHandler(e) }
+            className="dropdown-item" 
+        >{ item }</li>
     })
+
+    const keyboardMenuHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            const newOpen = open ? false : true
+            setOpen(newOpen)
+        }
+    }
 
     return (
         <div className="dropdown">
-            <Button text={ current } linkTo={ toggle } type="dropdown" />
+            <div 
+                className="btn btn-outline-primary dropdown-toggle" 
+                onClick={ toggle } 
+                onKeyUp={ keyboardMenuHandler } 
+                tabIndex={ 0 }
+            >{ current ? current : "Select:" }</div>
             { open && (
-                <ul className="dropdown-menu">
+                <ul className="dropdown-menu" id={ id }>
                     { renderedList }
                 </ul>
             )}
