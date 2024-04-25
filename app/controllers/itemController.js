@@ -19,6 +19,8 @@ exports.getItemById = async (req, res, next) => {
           attributes: [
               'id',
               'name',
+              'invoice',
+              'vendor',
               'initialValue',
               'depreciationRate',
               'toDiscard',
@@ -82,6 +84,8 @@ exports.getItemById = async (req, res, next) => {
       const itemProfile = {
           id: item.id,
           name: item.name,
+          invoice: item.invoice,
+          vendor: item.vendor,
           unit: {
               id: item.Unit.id,
               name: item.Unit.name,
@@ -136,7 +140,7 @@ exports.getItemById = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
   try {
       const itemId = req.params.id;
-      const { unitId, name, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
+      const { unitId, name, invoice, vendor, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
 
       const token = req.cookies.authentication;
       const decoded = await verifyToken(token);
@@ -158,6 +162,8 @@ exports.updateItem = async (req, res, next) => {
       item.set({
           unitId: unitId,
           name: name,
+          invoice: invoice,
+          vendor: vendor,
           initialValue: initialValue,
           depreciationRate: depreciationRate,
           toDiscard: toDiscard,
@@ -167,6 +173,8 @@ exports.updateItem = async (req, res, next) => {
       const updateResponse = {
           id: item.id,
           name: item.name,
+          invoice: item.invoice,
+          vendor: item.vendor,
           initialValue: item.initialValue,
           depreciationRate: item.depreciationRate,
           toAssess: item.toAssess,
@@ -189,10 +197,12 @@ exports.updateItem = async (req, res, next) => {
 
 exports.createNewItem = async (req, res, next) => {
   try {
-      const { name, unitId, templateId, donated, initialValue, depreciationRate, addedBy } = req.body;
+      const { name, invoice, vendor, unitId, templateId, donated, initialValue, depreciationRate, addedBy } = req.body;
 
       const newItem = await models.Item.create({
           name: name,
+          invoice: invoice,
+          vendor: vendor,
           unitId: unitId,
           templateId: templateId,
           donated: donated,
@@ -208,6 +218,8 @@ exports.createNewItem = async (req, res, next) => {
       const createResponse = {
           itemId: newItem.id,
           name: newItem.name,
+          invoice: invoice,
+          vendor: vendor,
           unit: newItem.unitId,
           templateId: newItem.templateId,
           donated: newItem.donated,
