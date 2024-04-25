@@ -12,11 +12,11 @@ dotenv.config();
 const models = [
     require('./models/facility.model'),
     require('./models/facilityAuth.model'),
+    require('./models/inspection.model'),
     require('./models/item.model'),
     require('./models/template.model'),
     require('./models/unit.model'),
-    require('./models/user.model'),
-    require('./models/comment.model'),
+    require('./models/user.model')
 ];
 
 // Initialize each model with Sequelize and dbConfig

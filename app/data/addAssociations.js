@@ -3,7 +3,7 @@
  */
 module.exports = (sequelize) => {
 
-    const { Comment, Facility, FacilityAuth, Item, Template, Unit, User } = sequelize.models;
+    const { Facility, FacilityAuth, Inspection, Item, Template, Unit, User } = sequelize.models;
 
     User.hasMany(Facility, { foreignKey: 'managerId' });
     Facility.belongsTo(User, { foreignKey: 'managerId' });
@@ -26,12 +26,9 @@ module.exports = (sequelize) => {
     User.hasMany(Item, { foreignKey: 'addedBy', as: 'addedByUser' });
     Item.belongsTo(User, { foreignKey: 'addedBy', as: 'addedByUser' });
     
-    User.hasMany(Item, { foreignKey: 'inspectedBy', as: 'inspectedByUser' });
-    Item.belongsTo(User, { foreignKey: 'inspectedBy', as: 'inspectedByUser' });
+    User.hasMany(Inspection, { foreignKey: 'userId' });
+    Inspection.belongsTo(User, { foreignKey: 'userId' });
     
-    User.hasMany(Comment, { foreignKey: 'userId' });
-    Comment.belongsTo(User, { foreignKey: 'userId' });
-    
-    Item.hasMany(Comment, { foreignKey: 'itemId' });
-    Comment.belongsTo(Item, { foreignKey: 'itemId' });
+    Item.hasMany(Inspection, { foreignKey: 'itemId' });
+    Inspection.belongsTo(Item, { foreignKey: 'itemId' });
 };

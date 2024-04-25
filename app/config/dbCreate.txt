@@ -86,15 +86,12 @@ CREATE TABLE Items (
     FOREIGN KEY (inspectedBy) REFERENCES Users(id)
 );
 
-CREATE TABLE Comments (
+CREATE TABLE Inspections (
     id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT,
     itemId INT,
     comment TEXT,
-    archive JSON,
     FOREIGN KEY (userId) REFERENCES Users(id),
     FOREIGN KEY (itemId) REFERENCES Items(id),
-    createdAt DATETIME,
-    updatedAt DATETIME,
-    deletedAt DATETIME NULL
+    createdAt DATETIME
 );

@@ -52,28 +52,6 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             field: 'addedBy'
-        },
-        lastInspected: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        inspectedBy: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            field: 'inspectedBy'
         },         
-        inspectionRecord: {
-            type: DataTypes.JSON,
-            allowNull: true
-        }
-    }, {
-        tableName: 'Items'
-    }).addHook('beforeUpdate', (item, options) => {
-        if (item.changed('toInspect') && item.toInspect == false) {
-            item.inspectionRecord = [...(item.inspectionRecord || []), {
-                inspectionDate: new Date(),
-                inspectedBy: item.inspectedBy
-            }];
-        }
-    });;
+    });
 };

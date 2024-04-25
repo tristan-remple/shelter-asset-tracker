@@ -26,8 +26,6 @@ exports.getItemById = async (req, res, next) => {
               'toDiscard',
               'toInspect',
               'addedBy',
-              'inspectedBy',
-              'lastInspected',
               'createdAt',
               'updatedAt',
               'deletedAt'
@@ -47,33 +45,29 @@ exports.getItemById = async (req, res, next) => {
                   as: 'addedByUser'
               },
               {
-                  model: models.User,
-                  attributes: ['id', 'name'],
-                  as: 'inspectedByUser',
-                  required: false
-              },
-              {
                   model: models.Template,
                   attributes: ['id', 'name']
               },
               {
-                  model: models.Comment,
+                  model: models.Inspection,
                   attributes: [
                       'id',
                       'userId',
+                      'itemId',
                       'comment',
-                      'archive',
-                      'createdAt',
-                      'updatedAt'
+                      'createdAt'
                   ],
-                  required: false,
                   include: {
                       model: models.User,
                       attributes: ['id', 'name']
-                  }
+                  },
+                  order: [['createdAt', 'DESC']]
               }
           ]
       })
+
+      console.log(item)
+      console.log(item.Inspection)
 
       if (!item) {
           return res.status(404).json({ message: 'Item not found.' });
@@ -103,26 +97,21 @@ exports.getItemById = async (req, res, next) => {
               id: item.addedByUser.id,
               name: item.addedByUser.name,
           },
-          inspected: item.inspectedByUser ? {
-              id: item.inspectedByUser.id,
-              name: item.inspectedByUser.name,
-              date: item.lastInspected
-          } : null,
+          inspectionRecord: item.Inspections ? item.Inspections.map(inspection => ({
+            id: inspection.id,
+            inspectedBy: {
+                id: inspection.User.id,
+                name: inspection.User.name
+            },
+            comment: inspection.comment,
+            createdAt: inspection.createdAt
+          })) : [],
           value: {
               initialValue: item.initialValue,
               donated: item.donated,
               depreciationRate: item.depreciationRate,
               currentValue: currentValue,
           },
-          comments: item.Comments.map(comment => ({
-              id: comment.id,
-              userId: comment.userId,
-              userName: comment.User.name,
-              comment: comment.comment,
-              archive: comment.archive,
-              createdAt: comment.createdAt,
-              updatedAt: comment.updatedAt
-          })),
           toInspect: item.toInspect,
           toDiscard: item.toDiscard,
           createdAt: item.createdAt,
@@ -180,8 +169,6 @@ exports.updateItem = async (req, res, next) => {
           toAssess: item.toAssess,
           toDiscard: item.toDiscard,
           currentValue: calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt),
-          inspectedBy: item.inspectedBy,
-          lastInspected: item.lastInspected,
           success: true
       }
 
