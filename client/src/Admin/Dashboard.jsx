@@ -14,6 +14,7 @@ import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import { adminDate } from '../Services/dateHelper'
+import Dropdown from '../Reusables/Dropdown'
 
 //------ MODULE INFO
 // Displays some stats and reports for the admin.
@@ -23,48 +24,76 @@ import { adminDate } from '../Services/dateHelper'
 const Dashboard = () => {
 
     // get context information
-    const { id } = useParams()
     const { status } = useContext(statusContext)
-    // const [ err, setErr ] = useState("loading")
     const [ err, setErr ] = useState("loading")
 
+    let viewOptions = []
     // fetch unit data from the api
     const [ response, setResponse ] = useState()
     useEffect(() => {
         (async()=>{
-            // if (urlId !== undefined) {
-            //     await apiService.singleReport(urlId, function(data){
-            //         if (data.error) {
-            //             setErr(data.error)
-            //         } else {
-            //             setResponse(data)
-            //             setErr(null)
-            //         }
-            //     })
-            // } else {
-                await apiService.globalReport(function(data){
-                    if (data.error) {
-                        setErr(data.error)
-                    } else {
-
-                        if (id !== undefined) {
-                            setResponse(data.filter(loc => loc.id === id))
-                        } else {
-                            setResponse(data)
-                        }
-
-
-                        console.log(data[0])
-                        setResponse(data[0])
-                        setErr(null)
-                    }
-                })
-            // }
+            await apiService.globalReport(function(data){
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    console.log(data)
+                    viewOptions = data.map(loc => loc.name)
+                    viewOptions.unshift("All Locations")
+                    setErr(null)
+                }
+            })
         })()
     }, [])
 
+    const [ view, setView ] = useState("All Locations")
+
+    const [ discardItems, setDiscardItems ] = useState([])
+    const [ filteredItems, setFilteredItems ] = useState([])
+    const [ totalValue, setTotalValue ] = useState(0)
+    const [ itemCount, setItemCount ] = useState([])
+
+    useEffect(() => {
+        if (view === "All Locations" && response?.length > 0) {
+            let newItemList = []
+            let newItemCount = []
+            let newTotalValue = 0
+            response.forEach(loc => {
+                loc.units.reduce((newItemList, unit) => {
+                    newItemList.push(...unit.items)
+                    return newItemList
+                }, newItemList)
+                
+                loc.itemCount.reduce((newItemCount, cat) => {
+                    const matchingCat = newItemCount.filter(newCat => newCat.id === cat.id)[0]
+                    if (matchingCat) {
+                        console.log("match")
+                        newItemCount = newItemCount.map(newCat => {
+                            if (newCat.id === cat.id) {
+                                newCat.count += cat.count
+                                console.log(newCat.count)
+                            }
+                            return newCat
+                        })
+                    } else {
+                        newItemCount.push(cat)
+                    }
+                    return newItemCount
+                }, newItemCount)
+
+                newTotalValue += loc.totalValue
+            })
+            setDiscardItems(newItemList)
+            setFilteredItems(newItemList.filter(item => {
+                return item.toDiscard
+            }))
+            setItemCount(newItemCount)
+            setTotalValue(newTotalValue)
+        }
+    }, [ response, view ])
+
     // table rows for the upper table: list of categories and number of items in each
-    const displayCategories = response?.itemCount.sort((a, b) => {
+    const displayCategories = itemCount.sort((a, b) => {
         return a.count < b.count
     }).map(item => {
         return (
@@ -78,20 +107,6 @@ const Dashboard = () => {
     })
 
     // list of all items fetched, initially filtered to display items to be discarded only
-    const [ discardItems, setDiscardItems ] = useState([])
-    const [ filteredItems, setFilteredItems ] = useState([])
-    useEffect(() => {
-        if (response?.units) {
-            const totalDiscardItems = response.units.reduce((itemList, unit) => {
-                itemList.push(...unit.items)
-                return itemList
-            }, [])
-            setDiscardItems(totalDiscardItems)
-            setFilteredItems(totalDiscardItems.filter(item => {
-                return item.toDiscard
-            }))
-        }
-    }, [ response ])
 
     // possible filter criteria
     const [ unsaved, setUnsaved ] = useState(false)
@@ -104,7 +119,7 @@ const Dashboard = () => {
 
     // when filters are updated, update the items listed
     useEffect(() => {
-        const newFilters = discardItems?.filter(item => {
+        const newFilters = discardItems.filter(item => {
             return (
                 new Date(item.eol) > new Date(filters.startDate) &&
                 new Date(item.eol) < new Date(filters.endDate) &&
@@ -116,7 +131,7 @@ const Dashboard = () => {
     }, [ filters ])
 
     // render the filtered items as table rows for the lower table
-    const displayItems = filteredItems?.map(item => {
+    const displayItems = filteredItems.map(item => {
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
@@ -155,13 +170,17 @@ const Dashboard = () => {
                                     Location
                                 </div>
                                 <div className="col-content">
-                                    { response.facility }
+                                    <Dropdown 
+                                        list={ viewOptions } 
+                                        current={ view } 
+                                        setCurrent={ setView }
+                                    />
                                 </div>
                                 <div className="col-head">
                                     Total Value
                                 </div>
                                 <div className="col-content">
-                                    $ { response.totalValue.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }
+                                    $ { totalValue.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }
                                 </div>
                                 <div className="col-head">
                                     CSV Exports
