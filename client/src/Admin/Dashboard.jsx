@@ -26,177 +26,42 @@ const Dashboard = () => {
     const { id } = useParams()
     const { status } = useContext(statusContext)
     // const [ err, setErr ] = useState("loading")
-    const [ err, setErr ] = useState(null)
-    let urlId = id
+    const [ err, setErr ] = useState("loading")
 
     // fetch unit data from the api
-    const [ response, setResponse ] = useState({
-        id: 2,
-        facility: "Barry House",
-        totalValue: 23451.59,
-        itemCount: [
-            {
-                id: 3,
-                name: "chair",
-                count: 7
-            },
-            {
-                id: 4,
-                name: "table",
-                count: 3
-            },
-            {
-                id: 5,
-                name: "bedframe",
-                count: 6
-            }
-        ],
-        units: [
-            {
-                id: 4,
-                name: "Room 204",
-                items: [
-                    {
-                        id: 30,
-                        name: "Some Chair",
-                        templateId: 3,
-                        initialValue: 45,
-                        currentValue: 20,
-                        donated: false,
-                        vendor: "Ikea",
-                        depreciationRate: 0.05,
-                        eol: "2027-02-22 13:55:00",
-                        toDiscard: false,
-                        toInspect: false,
-                        addedBy: "Susan Ivany",
-                        lastInspected: "2024-02-22 13:55:00",
-                        lastInspectedBy: "Joe Blow",
-                        createdAt: "2024-02-22 13:55:00",
-                        updatedAt: "2024-02-22 13:55:00"
-                    },
-                    {
-                        id: 31,
-                        name: "Table 2",
-                        templateId: 4,
-                        initialValue: 75,
-                        currentValue: 40,
-                        donated: false,
-                        vendor: "Brick",
-                        depreciationRate: 0.06,
-                        eol: "2025-02-22 13:55:00",
-                        toDiscard: false,
-                        toInspect: true,
-                        addedBy: "Susan Ivany",
-                        lastInspected: "2024-02-22 13:55:00",
-                        lastInspectedBy: "Joe Blow",
-                        createdAt: "2024-02-22 13:55:00",
-                        updatedAt: "2024-02-22 13:55:00"
-                    },
-                    {
-                        id: 33,
-                        name: "Springy",
-                        templateId: 5,
-                        initialValue: 120,
-                        currentValue: 0,
-                        donated: false,
-                        vendor: "Ikea",
-                        depreciationRate: 0.15,
-                        eol: "2024-02-22 13:55:00",
-                        toDiscard: true,
-                        toInspect: true,
-                        addedBy: "Susan Ivany",
-                        lastInspected: "2024-02-22 13:55:00",
-                        lastInspectedBy: "Joe Blow",
-                        createdAt: "2024-02-22 13:55:00",
-                        updatedAt: "2024-02-22 13:55:00"
+    const [ response, setResponse ] = useState()
+    useEffect(() => {
+        (async()=>{
+            // if (urlId !== undefined) {
+            //     await apiService.singleReport(urlId, function(data){
+            //         if (data.error) {
+            //             setErr(data.error)
+            //         } else {
+            //             setResponse(data)
+            //             setErr(null)
+            //         }
+            //     })
+            // } else {
+                await apiService.globalReport(function(data){
+                    if (data.error) {
+                        setErr(data.error)
+                    } else {
+
+                        if (id !== undefined) {
+                            setResponse(data.filter(loc => loc.id === id))
+                        } else {
+                            setResponse(data)
+                        }
+
+
+                        console.log(data[0])
+                        setResponse(data[0])
+                        setErr(null)
                     }
-                ]
-            },
-            {
-                id: 4,
-                name: "Room 205",
-                items: [
-                    {
-                        id: 34,
-                        name: "Some Chair 2",
-                        templateId: 3,
-                        initialValue: 45,
-                        currentValue: 20,
-                        donated: false,
-                        vendor: "Ikea",
-                        depreciationRate: 0.05,
-                        eol: "2027-02-22 13:55:00",
-                        toDiscard: false,
-                        toInspect: true,
-                        addedBy: "Susan Ivany",
-                        lastInspected: "2024-02-22 13:55:00",
-                        lastInspectedBy: "Joe Blow",
-                        createdAt: "2024-02-22 13:55:00",
-                        updatedAt: "2024-02-22 13:55:00"
-                    },
-                    {
-                        id: 35,
-                        name: "Table 5",
-                        templateId: 4,
-                        initialValue: 75,
-                        currentValue: 40,
-                        donated: false,
-                        vendor: "Brick",
-                        depreciationRate: 0.06,
-                        eol: "2025-02-22 13:55:00",
-                        toDiscard: false,
-                        toInspect: true,
-                        addedBy: "Susan Ivany",
-                        lastInspected: "2024-02-22 13:55:00",
-                        lastInspectedBy: "Joe Blow",
-                        createdAt: "2024-02-22 13:55:00",
-                        updatedAt: "2024-02-22 13:55:00"
-                    },
-                    {
-                        id: 36,
-                        name: "Springier",
-                        templateId: 5,
-                        initialValue: 120,
-                        currentValue: 0,
-                        donated: false,
-                        vendor: "Ikea",
-                        depreciationRate: 0.15,
-                        eol: "2024-02-22 13:55:00",
-                        toDiscard: true,
-                        toInspect: true,
-                        addedBy: "Susan Ivany",
-                        lastInspected: "2024-02-22 13:55:00",
-                        lastInspectedBy: "Joe Blow",
-                        createdAt: "2024-02-22 13:55:00",
-                        updatedAt: "2024-02-22 13:55:00"
-                    }
-                ]
-            }
-        ]
-    })
-    // useEffect(() => {
-    //     (async()=>{
-    //         if (urlId !== undefined) {
-    //             await apiService.singleReport(urlId, function(data){
-    //                 if (data.error) {
-    //                     setErr(data.error)
-    //                 } else {
-    //                     setResponse(data)
-    //                     setErr(null)
-    //                 }
-    //             })
-    //         } else {
-    //             await apiService.globalReport(function(data){
-    //                 if (data.error) {
-    //                     setErr(data.error)
-    //                 } else {
-    //                     setResponse(data)
-    //                     setErr(null)
-    //                 }
-    //             })
-    //         }
-    //     })()
-    // }, [])
+                })
+            // }
+        })()
+    }, [])
 
     // table rows for the upper table: list of categories and number of items in each
     const displayCategories = response?.itemCount.sort((a, b) => {
@@ -216,14 +81,16 @@ const Dashboard = () => {
     const [ discardItems, setDiscardItems ] = useState([])
     const [ filteredItems, setFilteredItems ] = useState([])
     useEffect(() => {
-        const totalDiscardItems = response.units.reduce((itemList, unit) => {
-            itemList.push(...unit.items)
-            return itemList
-        }, [])
-        setDiscardItems(totalDiscardItems)
-        setFilteredItems(totalDiscardItems.filter(item => {
-            return item.toDiscard
-        }))
+        if (response?.units) {
+            const totalDiscardItems = response.units.reduce((itemList, unit) => {
+                itemList.push(...unit.items)
+                return itemList
+            }, [])
+            setDiscardItems(totalDiscardItems)
+            setFilteredItems(totalDiscardItems.filter(item => {
+                return item.toDiscard
+            }))
+        }
     }, [ response ])
 
     // possible filter criteria
@@ -237,7 +104,7 @@ const Dashboard = () => {
 
     // when filters are updated, update the items listed
     useEffect(() => {
-        const newFilters = discardItems.filter(item => {
+        const newFilters = discardItems?.filter(item => {
             return (
                 new Date(item.eol) > new Date(filters.startDate) &&
                 new Date(item.eol) < new Date(filters.endDate) &&
