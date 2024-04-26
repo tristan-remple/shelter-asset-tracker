@@ -53,8 +53,6 @@ exports.getItemById = async (req, res, next) => {
                   model: models.Inspection,
                   attributes: [
                       'id',
-                      'userId',
-                      'itemId',
                       'comment',
                       'createdAt'
                   ],
@@ -94,6 +92,8 @@ exports.getItemById = async (req, res, next) => {
               name: item.Template.name,
               icon: item.Template.icon
           },
+          toInspect: item.toInspect,
+          toDiscard: item.toDiscard,
           addedBy: {
               id: item.addedByUser.id,
               name: item.addedByUser.name,
@@ -107,23 +107,12 @@ exports.getItemById = async (req, res, next) => {
             comment: inspection.comment,
             createdAt: inspection.createdAt
           })) : [],
-          addedBy: {
-              id: item.addedByUser.id,
-              name: item.addedByUser.name,
-          },
-          inspected: item.inspectedByUser ? {
-              id: item.inspectedByUser.id,
-              name: item.inspectedByUser.name,
-              date: item.lastInspected
-          } : null,
           value: {
               initialValue: item.initialValue,
               donated: item.donated,
               depreciationRate: item.depreciationRate,
               currentValue: currentValue,
           },
-          toInspect: item.toInspect,
-          toDiscard: item.toDiscard,
           createdAt: item.createdAt,
           updatedAt: item.updatedAt
       };
@@ -206,8 +195,6 @@ exports.createNewItem = async (req, res, next) => {
           initialValue: initialValue,
           depreciationRate: depreciationRate,
           addedBy: addedBy,
-          inspectedBy: addedBy,
-          lastInspected: new Date(),
           toInspect: false,
           toDiscard: false
       });
@@ -222,8 +209,6 @@ exports.createNewItem = async (req, res, next) => {
           donated: newItem.donated,
           initialValue: newItem.initialValue,
           depreciationRate: newItem.depreciationRate,
-          inspectedBy: newItem.inspectedBy,
-          lastInspected: newItem.lastInspected,
           addedBy: newItem.addedBy,
           success: true
       };

@@ -26,16 +26,26 @@ exports.getSummary = async (req, res, next) => {
                         ],
                         include: [{
                             model: models.Template,
-                            attributes: ['id', 'name', 'icon']
+                            attributes: [
+                                'id', 
+                                'name', 
+                                'icon'
+                            ]
                         }, {
                             model: models.User,
                             attributes: ['id', 'name'],
                             as: 'addedByUser'
                         }, {
-                            model: models.User,
-                            attributes: ['id', 'name'],
-                            as: 'inspectedByUser',
-                            required: false
+                            model: models.Inspection,
+                            attributes: [
+                                'id', 
+                                'comment',
+                                'createdAt'
+                            ],
+                            include: {
+                                model: models.User,
+                                attributes: ['id', 'name']
+                            }
                         }]
                     }
                 }
@@ -70,19 +80,34 @@ exports.getSummary = async (req, res, next) => {
                 items: unit.Items.map(item => ({
                     id: item.id,
                     name: item.name,
-                    templateId: item.templateId,
-                    template: item.Template.name,
-                    icon: item.Template.icon,
-                    initialValue: item.initialValue,
-                    currentValue: calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt),
-                    donated: item.donated,
+                    invoice: item.invoice,
                     vendor: item.vendor,
-                    depreciationRate: item.depreciationRate,
+                    template: {
+                        id: item.Template.id,
+                        name: item.Template.name,
+                        icon: item.Template.icon
+                    },
                     toDiscard: item.toDiscard,
                     toInspect: item.toInspect,
-                    addedBy: item.addedBy,
-                    lastInspected: item.lastInspected,
-                    inspectedBy: item.inspectedBy,
+                    addedBy: {
+                        id: item.addedByUser.id,
+                        name: item.addedByUser.name
+                    },
+                    inspectionRecord: item.Inspections ? item.Inspections.map(inspection => ({
+                        id: inspection.id,
+                        inspectedBy: {
+                            id: inspection.User.id,
+                            name: inspection.User.name
+                        },
+                        comment: inspection.comment,
+                        createdAt: inspection.createdAt
+                    })) : [],
+                    value: {
+                        initialValue: item.initialValue,
+                        donated: item.donated,
+                        depreciationRate: item.depreciationRate,
+                        currentValue: calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt),
+                    },
                     createdAt: item.createdAt,
                     updatedAt: item.updatedAt
                 }))
