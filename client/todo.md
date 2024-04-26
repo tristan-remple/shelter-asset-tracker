@@ -18,15 +18,14 @@
 ```
 
 ## Dashboard
-- include export buttons
+- connect endpoints
 
 ## Item Inspection
-- inspection page sends calls to inspections endpoint and to items endpoint
-- get property item.comments needs to be changed
+- connect endpoints
+- CommentBox will need to be updated
 
 ## Delete Recovery
-- list of deleted things
-- undo delete button on each one
+- connect endpoints
 
 ## Other
 - delete body -> to remove

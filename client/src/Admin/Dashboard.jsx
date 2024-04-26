@@ -1,5 +1,5 @@
 // external dependencies
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
@@ -26,6 +26,7 @@ const Dashboard = () => {
     // get context information
     const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
+    const navigate = useNavigate()
 
     // view options: list of location names to filter by dropdown
     // view: currently selected location
@@ -189,6 +190,49 @@ const Dashboard = () => {
         )
     })
 
+    // open state of the dropdown menu (mouse)
+    const [ open, setOpen ] = useState(false)
+    const toggle = () => {
+        const newOpen = open ? false : true
+        setOpen(newOpen)
+    }
+
+    // open state of the dropdown menu (keyboard)
+    const keyboardMenuHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            const newOpen = open ? false : true
+            setOpen(newOpen)
+        }
+    }
+
+    // when an item is selected by keyboard navigation
+    const keyboardItemHandler = (event, item) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            navigate(`/restore/${ item }`)
+        }
+    }
+
+    // when keyboard focus leaves the dropdown menu, close it
+    const keyboardBlurHandler = (event) => {
+        if (event.target.parentElement.lastChild === event.target) {
+            setOpen(false)
+        }
+    }
+
+    const list = [ "items", "units", "locations", "categories", "users"]
+
+    // render the list, including all listeners
+    const dropdownList = list.map((item, index) => {
+        return <li 
+            key={ index } 
+            onClick={ () => { navigate(`/restore/${ item }`) } } 
+            tabIndex= { 0 }
+            onKeyUp={ (e) => { keyboardItemHandler(e, item) } }
+            onBlur={ (e) => keyboardBlurHandler(e) }
+            className="dropdown-item" 
+        >Deleted { capitalize(item) }</li>
+    })
+
     // https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
     return err ? <Error err={ err } /> : (
         <main className="container">
@@ -201,6 +245,21 @@ const Dashboard = () => {
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Users" linkTo="/users" type="admin" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <div className="dropdown">
+                        <div 
+                            className="btn btn-outline-primary dropdown-toggle" 
+                            onClick={ toggle } 
+                            onKeyUp={ keyboardMenuHandler } 
+                            tabIndex={ 0 }
+                        >Restore Deleted</div>
+                        { open && (
+                            <ul className="dropdown-menu" id="restore">
+                                { dropdownList }
+                            </ul>
+                        )}
+                    </div>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Locations" linkTo="/locations" type="nav" />

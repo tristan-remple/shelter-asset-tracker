@@ -3,36 +3,32 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import capitalize from '../Services/capitalize'
 import { adminDate } from '../Services/dateHelper'
 import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
-import Search from '../Reusables/Search'
 
 //------ MODULE INFO
-// This module displays a list of deleted items, and allows the user to restore them.
+// This module displays a list of deleted locations, and allows the user to restore them.
 // Imported by: App
 
-const ItemRecovery = () => {
+const LocationRecovery = () => {
 
     // get context information
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // fetch data from the api
-    const [ items, setItems ] = useState({})
-    const [ filteredItems, setFilteredItems ] = useState([])
+    const [ locations, setLocations ] = useState({})
     useEffect(() => {
         (async()=>{
-            await apiService.deletedItems(function(data){
+            await apiService.deletedUnits(function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    setItems(data)
-                    setFilteredItems(data)
+                    setLocations(data)
                     setErr(null)
                 }
             })
@@ -40,37 +36,31 @@ const ItemRecovery = () => {
     }, [])
 
     if (err) { return <Error err={ err } /> }
-    if (items) {
+    if (locations) {
 
     // order the items by most recently deleted first
-    items?.sort((a, b) => {
-        return new Date(b.deletedAt) - new Date(a.deletedAt)
-    })
-    filteredItems?.sort((a, b) => {
+    locations?.sort((a, b) => {
         return new Date(b.deletedAt) - new Date(a.deletedAt)
     })
 
     // send an api call to restore the item
-    const restoreItem = async(itemId) => {
-        await apiService.restoreItem(itemId, (response) => {
+    const restoreLocation = async(locationId) => {
+        await apiService.restoreLocation(locationId, (response) => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully restored item ${response.name}.`)
+                setStatus(`You have successfully restored location ${response.name}.`)
             }
         })
     } 
 
     // map the item objects into table rows
-    const displayItems = filteredItems?.map(item => {
+    const displayItems = locations?.map(loc => {
         return (
-            <tr key={ item.id } >
-                <td>{ item.name }</td>
-                <td>{ capitalize(item.template) }</td>
-                <td>{ item.unit }</td>
-                <td>{ item.facility }</td>
-                <td>{ adminDate(item.deletedAt) }</td>
-                <td><Button text="Restore" linkTo={ () => restoreItem(item.id) } type="small" /></td>
+            <tr key={ loc.id } >
+                <td>{ loc.name }</td>
+                <td>{ adminDate(loc.deletedAt) }</td>
+                <td><Button text="Restore" linkTo={ () => restoreLocation(loc.id) } type="small" /></td>
             </tr>
         )
     })
@@ -79,7 +69,7 @@ const ItemRecovery = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Deleted Items</h2>
+                    <h2>Deleted Locations</h2>
                 </div>
                 <div className="col-1 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
@@ -87,20 +77,16 @@ const ItemRecovery = () => {
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
-                <Search data={ items } setData={ setFilteredItems } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
-                            <th scope="col">Label</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col">Location</th>
+                            <th scope="col">Title</th>
                             <th scope="col">Deleted Date</th>
                             <th scope="col">Restore</th>
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems ? displayItems : <td colSpan={ 6 }>No items yet.</td> }
+                        { displayItems ? displayItems : <td colSpan={ 3 }>No items yet.</td> }
                     </tbody>
                 </table>
             </div>
@@ -109,4 +95,4 @@ const ItemRecovery = () => {
 }
 }
 
-export default ItemRecovery
+export default LocationRecovery
