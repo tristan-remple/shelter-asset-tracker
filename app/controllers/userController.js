@@ -1,5 +1,5 @@
 const { models } = require('../data');
-const { hashPassword } = require('../utils/hash'); 
+const { hashPassword } = require('../util/hash'); 
 
 exports.createNewUser = async (req, res, next) => {
     try {

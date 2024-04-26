@@ -1,5 +1,5 @@
 const { models } = require('../data');
-const { calculateCurrentValue } = require('../utils/calc');
+const { calculateCurrentValue } = require('../util/calc');
 
 exports.getSummary = async (req, res, next) => {
     try {

@@ -1,24 +1,20 @@
-const { comparePasswords, hashPassword } = require('../utils/hash');
-const { createToken } = require('../utils/token');
+const { comparePasswords, hashPassword } = require('../util/hash');
+const { createToken } = require('../util/auth');
 const { models } = require('../data');
 
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
-    console.log(req.body)
-    console.log(req.body.password)
+
     if (!email || !password){
-        return res.status(401).json({ error: 'Invalid login'});
+        return res.status(401).json({ error: 'Invalid login.'});
     }
 
     try {
-        const user = await models.User.findOne({where: { email }});
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid login (email)' });
-        }
-
+        const user = await models.User.findOne({ where: { email } });
         const validPassword = await comparePasswords(password, user.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid login (password)' });
+
+        if (!user || !validPassword) {
+            return res.status(401).json({ error: 'Invalid login.' });
         }
 
         const facilityAuths = await models.FacilityAuth.findAll({
@@ -27,7 +23,7 @@ exports.login = async (req, res, next) => {
         });
         const facilityIds = facilityAuths.map(auth => auth.facilityId);
 
-        const token = await createToken(user.id, facilityIds);
+        const token = await createToken(user.id, user.isAdmin, facilityIds);
 
         res.cookie('authentication', token, { httpOnly: true, maxAge: 3600000 });
         res.status(200).send();
@@ -55,7 +51,6 @@ exports.reset = async (req, res, next) => {
         const validPassword = await comparePasswords(oldPassword, user.password);
         if (validPassword) {
             const hashed = await hashPassword(newPassword);
-            console.log(hashed)
             user.set({
                 password: hashed
             });

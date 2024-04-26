@@ -1,9 +1,16 @@
 const { models, Sequelize } = require('../data');
+const { checkAuth } = require('../util/auth');
 
+// Admin only function enforced by admin middleware
 exports.getAllFacilities = async (req, res, next) => {
     try {
         const facilities = await models.Facility.findAll({
-            attributes: ['id', 'name', [Sequelize.fn('COUNT', Sequelize.col('Units.id')), 'units']],
+            attributes: [
+                'id', 
+                'name', 
+                [Sequelize.fn('COUNT', Sequelize.col('Units.id')), 
+                'units'
+            ]],
             include: [
                 {
                     model: models.Unit,
@@ -29,6 +36,11 @@ exports.getAllFacilities = async (req, res, next) => {
 exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id; 
+
+        const authorized = await checkAuth(req.cookies.authorization, facilityId);
+        if (!authorized){
+            res.status(403).send({ message: 'Forbidden.'});
+        };
 
         const facility = await models.Facility.findOne({
             attributes: [

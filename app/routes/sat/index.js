@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { login, logout, reset } = require('../../controllers/sessionController');
-const auth = require('../../middleware/auth');
 
 /*SAT Main Routes*/
 const facilitiesRouter = require('./facilities');
@@ -12,11 +11,11 @@ const usersRouter = require('./users');
 const reportsRouter = require('./reports');
 
 // Middleware for SAT routes
-router.use('/facilities', auth, facilitiesRouter);
-router.use('/items', auth, itemsRouter);
-router.use('/templates', auth, templateRouter);
-router.use('/units', auth, unitsRouter);
-router.use('/users', auth, usersRouter);
+router.use('/facilities', facilitiesRouter);
+router.use('/items', itemsRouter);
+router.use('/templates', templateRouter);
+router.use('/units', unitsRouter);
+router.use('/users', usersRouter);
 
 /*SAT Session Routes*/
 router.post('/login', login);

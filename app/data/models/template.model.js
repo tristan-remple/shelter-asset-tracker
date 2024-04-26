@@ -25,11 +25,6 @@ module.exports = (db, { DataTypes }) => {
         singleResident: {
             type: DataTypes.BOOLEAN,
             allowNull: false
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            default: null
         }
     }, {
         tableName: 'Templates'

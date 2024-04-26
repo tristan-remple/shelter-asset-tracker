@@ -16,7 +16,7 @@ module.exports = (db, { DataTypes }) => {
         comment: {
             type: DataTypes.TEXT,
             allowNull: true
-        },
+        }
     }, {
         tableName: 'Inspections',
         updatedAt: false

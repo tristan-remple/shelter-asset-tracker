@@ -17,11 +17,6 @@ module.exports = (db, { DataTypes }) => {
         type: {
             type: DataTypes.STRING,
             allowNull: true
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            default: null
         }
     }, {
         tableName: 'Units'
