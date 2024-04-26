@@ -18,14 +18,11 @@
 ```
 
 ## Dashboard
-- dropdown to filter by location or totals
 - include export buttons
 
 ## Item Inspection
-- new page for inspection, simplified interface: comment & flag only
-- advanced edit is now the only edit
-- button to inspect directly from unit's list?
 - inspection page sends calls to inspections endpoint and to items endpoint
+- get property item.comments needs to be changed
 
 ## Delete Recovery
 - list of deleted things
@@ -34,7 +31,13 @@
 ## Other
 - delete body -> to remove
 - documentation
-- reformat item details page
-    - top: label, category, location, unit, status
-    - middle: icon, comment
-    - bottom: acquired date, initial value, current value, rate, invoice, vendor
+    - code commenting
+    - readme
+    - faq
+
+# New Endpoints
+- post: inspection
+- post: unit mark all items for inspection
+- get: all deleted items, units, locations, categories, users
+- patch: undo delete item, unit, location, category, user
+- get: csv reports

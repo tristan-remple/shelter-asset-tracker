@@ -15,14 +15,6 @@ import Button from "./Button"
 
 const ChangePanel = ({ save, linkOut, locationId }) => {
 
-    const userInfo = authService.userInfo()
-    const userLocation = userInfo.location.locationId
-
-    let locationWarning = ""
-    if (userLocation !== locationId && !authService.checkAdmin()) {
-        locationWarning = <p>The object you are editing is not at your assigned location.</p>
-    }
-
     // if the user saves stay on this page and change the status
     const clickSave = () => {
         save()

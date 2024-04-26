@@ -74,7 +74,9 @@ const ItemCreate = () => {
         // comment: "",
         donated: false,
         initialValue: 0,
-        depreciationRate: 0.03
+        depreciationRate: 0.03,
+        vendor: "",
+        invoice: ""
     })
 
     // unsaved toggles the ChangePanel
@@ -194,51 +196,6 @@ const ItemCreate = () => {
                             />
                         </div>
                     </div>
-                </div>
-                <div className="row row-info">
-                    <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ newItem.template.icon }.png` } alt={ newItem.template.name + " icon" } />
-                    </div>
-                    {/* <div className="col-8 col-content">
-                        <strong>Comments:</strong>
-                        <textarea 
-                            name="comment" 
-                            value={ newItem.comment } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            className="comment-area" 
-                        />
-                    </div> */}
-                </div>
-                <div className="row row-info">
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Acquired Date
-                        </div>
-                        <div className="col-content">
-                            { <input 
-                                type="date" 
-                                name="addedBy.date" 
-                                value={ newItem.addedBy.date.split("T")[0] } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
-                        </div>
-                    </div> */}
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Initial Value
-                        </div>
-                        <div className="col-content">
-                            { <input 
-                                type="number" 
-                                step=".01"
-                                name="initialValue" 
-                                value={ newItem.initialValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
-                        </div>
-                    </div>
-                </div>
-                <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Location
@@ -255,6 +212,78 @@ const ItemCreate = () => {
                             { unit.name }
                         </div>
                     </div>
+                </div>
+                <div className="row row-info">
+                    <div className="col-2 col-content col-icon">
+                        <img className="img-fluid icon" src={ `/img/${ newItem.template.icon }.png` } alt={ newItem.template.name + " icon" } />
+                    </div>
+                    <div className="col-8 col-content">
+                        <strong>Comments:</strong>
+                        <textarea 
+                            name="comment" 
+                            value={ newItem.comment } 
+                            onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            className="comment-area" 
+                        />
+                    </div>
+                </div>
+                <div className="row row-info">
+                    {/* <div className="col col-info">
+                        <div className="col-head">
+                            Acquired Date
+                        </div>
+                        <div className="col-content">
+                            { <input 
+                                type="date" 
+                                name="createdAt" 
+                                value={ newItem.createdAt.split("T")[0] } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, newItem, setNewItem, setUnsaved) } 
+                            /> }
+                        </div>
+                    </div> */}
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Vendor
+                        </div>
+                        <div className="col-content">
+                            { <input 
+                                type="text" 
+                                name="vendor" 
+                                value={ newItem.vendor } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            /> }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Invoice Number
+                        </div>
+                        <div className="col-content">
+                            { <input 
+                                type="text" 
+                                name="invoice" 
+                                value={ newItem.invoice } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            /> }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Initial Value
+                        </div>
+                        <div className="col-content">
+                            { <input 
+                                type="number" 
+                                step=".01"
+                                name="initialValue" 
+                                value={ newItem.initialValue } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            /> }
+                        </div>
+                    </div>
+                </div>
+                <div className="row row-info">
+                    
                 </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unit.id }` } /> }
             </div>

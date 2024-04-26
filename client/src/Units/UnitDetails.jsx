@@ -114,6 +114,7 @@ const UnitDetails = () => {
                 <td>{ item.itemName }</td>
                 <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
+                <td><Button text="Inspect" linkTo={ `/item/${ item.itemId }/inspect` } type="small" /></td>
                 <td><Flag color={ flagColor } /> { flagText }</td>
             </tr>
         )
@@ -192,6 +193,7 @@ const UnitDetails = () => {
                             <th scope="col">Label</th>
                             <th scope="col">Category</th>
                             <th scope="col">Details</th>
+                            <th scope="col">Inspect</th>
                             <th scope="col">Status</th>
                         </tr>
                     </thead>
