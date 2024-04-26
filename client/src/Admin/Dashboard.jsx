@@ -1,5 +1,5 @@
 // external dependencies
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
@@ -14,6 +14,7 @@ import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import { adminDate } from '../Services/dateHelper'
+import Dropdown from '../Reusables/Dropdown'
 
 //------ MODULE INFO
 // Displays some stats and reports for the admin.
@@ -23,48 +24,123 @@ import { adminDate } from '../Services/dateHelper'
 const Dashboard = () => {
 
     // get context information
-    const { id } = useParams()
     const { status } = useContext(statusContext)
-    // const [ err, setErr ] = useState("loading")
     const [ err, setErr ] = useState("loading")
+    const navigate = useNavigate()
 
+    // view options: list of location names to filter by dropdown
+    // view: currently selected location
+    const [ viewOptions, setViewOptions ] = useState([])
+    const [ view, setView ] = useState("All Locations")
+    
     // fetch unit data from the api
     const [ response, setResponse ] = useState()
+
     useEffect(() => {
         (async()=>{
-            // if (urlId !== undefined) {
-            //     await apiService.singleReport(urlId, function(data){
-            //         if (data.error) {
-            //             setErr(data.error)
-            //         } else {
-            //             setResponse(data)
-            //             setErr(null)
-            //         }
-            //     })
-            // } else {
-                await apiService.globalReport(function(data){
-                    if (data.error) {
-                        setErr(data.error)
-                    } else {
-
-                        if (id !== undefined) {
-                            setResponse(data.filter(loc => loc.id === id))
-                        } else {
-                            setResponse(data)
-                        }
-
-
-                        console.log(data[0])
-                        setResponse(data[0])
-                        setErr(null)
-                    }
-                })
-            // }
+            await apiService.globalReport(function(data){
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setResponse(data)
+                    const viewOpt = data.map(loc => loc.facility)
+                    viewOpt.unshift("All Locations")
+                    setViewOptions(viewOpt)
+                    setErr(null)
+                }
+            })
         })()
     }, [])
 
+    // state to hold the information about the currently selected view
+    const [ discardItems, setDiscardItems ] = useState([])
+    const [ filteredItems, setFilteredItems ] = useState([])
+    const [ totalValue, setTotalValue ] = useState(0)
+    const [ itemCount, setItemCount ] = useState([])
+
+    useEffect(() => {
+
+        // if the api call has been completed successfully and the view is set to all
+        if (view === "All Locations" && response?.length > 0) {
+
+            // initialize arrays and count
+            let newItemList = []
+            let newItemCount = []
+            let newTotalValue = 0
+
+            // loop through the locations
+            response.forEach(loc => {
+
+                // add the items from each unit to the total
+                newItemList = loc.units.reduce((newItemList, unit) => {
+                    newItemList.push(...unit.items)
+                    return newItemList
+                }, newItemList)
+                
+                // tally up the category counts
+                newItemCount = loc.itemCount.reduce((newItemCount, cat) => {
+
+                    // check if the tally for this category is initialized
+                    // add to it if it exists; pass forward existing categories
+                    const matchingCat = newItemCount.filter(newCat => newCat.id === cat.id)[0]
+                    if (matchingCat) {
+                        newItemCount = newItemCount.map(newCat => {
+                            if (newCat.id === cat.id) {
+                                return {
+                                    id: newCat.id,
+                                    name: newCat.name,
+                                    count: newCat.count + cat.count
+                                }
+                            } else {
+                                return newCat
+                            }
+                        })
+                    
+                    // if the category is not already in the counts, add it
+                    } else {
+                        newItemCount.push(cat)
+                    }
+                    return newItemCount
+                }, newItemCount)
+
+                // total up the value
+                newTotalValue += loc.totalValue
+            })
+
+            // set all the totals to state
+            setDiscardItems(newItemList)
+            setFilteredItems(newItemList.filter(item => {
+                return item.toDiscard
+            }))
+            setItemCount(newItemCount)
+            setTotalValue(newTotalValue)
+
+        // if the api call has succeeded and one location has been selected
+        } else if (response?.length > 0) {
+
+            // filter down to that location only
+            const location = response.filter(loc => {
+                return loc.facility === view
+            })[0]
+
+            // list the items in all of its units
+            const items = location.units.reduce((itemList, unit) => {
+                itemList.push(...unit.items)
+                return itemList
+            }, [])
+            
+            // set its values to state
+            setDiscardItems(items)
+            setFilteredItems(items)
+            setTotalValue(location.totalValue)
+            setItemCount(location.itemCount)
+        }
+
+    // do this whole process when the api call completes and when the view changes
+    }, [ response, view ])
+
     // table rows for the upper table: list of categories and number of items in each
-    const displayCategories = response?.itemCount.sort((a, b) => {
+    const displayCategories = itemCount.sort((a, b) => {
         return a.count < b.count
     }).map(item => {
         return (
@@ -78,20 +154,6 @@ const Dashboard = () => {
     })
 
     // list of all items fetched, initially filtered to display items to be discarded only
-    const [ discardItems, setDiscardItems ] = useState([])
-    const [ filteredItems, setFilteredItems ] = useState([])
-    useEffect(() => {
-        if (response?.units) {
-            const totalDiscardItems = response.units.reduce((itemList, unit) => {
-                itemList.push(...unit.items)
-                return itemList
-            }, [])
-            setDiscardItems(totalDiscardItems)
-            setFilteredItems(totalDiscardItems.filter(item => {
-                return item.toDiscard
-            }))
-        }
-    }, [ response ])
 
     // possible filter criteria
     const [ unsaved, setUnsaved ] = useState(false)
@@ -102,9 +164,10 @@ const Dashboard = () => {
         discard: true
     })
 
+    // --CHANGES NEEDED HERE
     // when filters are updated, update the items listed
     useEffect(() => {
-        const newFilters = discardItems?.filter(item => {
+        const newFilters = discardItems.filter(item => { // discardItems -> filterItems when EoL is figured out
             return (
                 new Date(item.eol) > new Date(filters.startDate) &&
                 new Date(item.eol) < new Date(filters.endDate) &&
@@ -116,15 +179,58 @@ const Dashboard = () => {
     }, [ filters ])
 
     // render the filtered items as table rows for the lower table
-    const displayItems = filteredItems?.map(item => {
+    const displayItems = discardItems.map(item => {
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
-                {/* <td>{ capitalize(item.template.name) }</td> */}<td></td>
+                <td>{ capitalize(item.template) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.id }` } type="small" /></td>
                 <td>{ adminDate(item.eol) }</td>
             </tr>
         )
+    })
+
+    // open state of the dropdown menu (mouse)
+    const [ open, setOpen ] = useState(false)
+    const toggle = () => {
+        const newOpen = open ? false : true
+        setOpen(newOpen)
+    }
+
+    // open state of the dropdown menu (keyboard)
+    const keyboardMenuHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            const newOpen = open ? false : true
+            setOpen(newOpen)
+        }
+    }
+
+    // when an item is selected by keyboard navigation
+    const keyboardItemHandler = (event, item) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            navigate(`/restore/${ item }`)
+        }
+    }
+
+    // when keyboard focus leaves the dropdown menu, close it
+    const keyboardBlurHandler = (event) => {
+        if (event.target.parentElement.lastChild === event.target) {
+            setOpen(false)
+        }
+    }
+
+    const list = [ "items", "units", "locations", "categories", "users"]
+
+    // render the list, including all listeners
+    const dropdownList = list.map((item, index) => {
+        return <li 
+            key={ index } 
+            onClick={ () => { navigate(`/restore/${ item }`) } } 
+            tabIndex= { 0 }
+            onKeyUp={ (e) => { keyboardItemHandler(e, item) } }
+            onBlur={ (e) => keyboardBlurHandler(e) }
+            className="dropdown-item" 
+        >Deleted { capitalize(item) }</li>
     })
 
     // https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
@@ -141,6 +247,21 @@ const Dashboard = () => {
                     <Button text="Users" linkTo="/users" type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
+                    <div className="dropdown">
+                        <div 
+                            className="btn btn-outline-primary dropdown-toggle" 
+                            onClick={ toggle } 
+                            onKeyUp={ keyboardMenuHandler } 
+                            tabIndex={ 0 }
+                        >Restore Deleted</div>
+                        { open && (
+                            <ul className="dropdown-menu" id="restore">
+                                { dropdownList }
+                            </ul>
+                        )}
+                    </div>
+                </div>
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Locations" linkTo="/locations" type="nav" />
                 </div>
             </div>
@@ -155,13 +276,17 @@ const Dashboard = () => {
                                     Location
                                 </div>
                                 <div className="col-content">
-                                    { response.facility }
+                                    <Dropdown 
+                                        list={ viewOptions } 
+                                        current={ view } 
+                                        setCurrent={ setView }
+                                    />
                                 </div>
                                 <div className="col-head">
                                     Total Value
                                 </div>
                                 <div className="col-content">
-                                    $ { response.totalValue.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }
+                                    $ { totalValue.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }
                                 </div>
                                 <div className="col-head">
                                     CSV Exports

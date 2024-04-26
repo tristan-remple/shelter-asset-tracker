@@ -37,16 +37,10 @@ const ResetPassword = () => {
     // get the userId from the database
     const { userId } = resetRequest
 
-    // use it to find the user
-    const user = apiService.singleUser(userId)
-    if (!user || user.error) {
-        return <Error err="api" />
-    }
-    const { userName } = user
-
     // set up form controls
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
+        temp: "",
         password: "",
         retypePassword: ""
     })
@@ -73,6 +67,7 @@ const ResetPassword = () => {
         } else {
             const resetResponse = authService.resetPassword({
                 userId,
+                temporaryPassword: changes.temp,
                 password: changes.password
             })
             if (resetResponse?.status === 200) {
@@ -92,7 +87,7 @@ const ResetPassword = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Resetting Password for User { userName }</h2>
+                    <h2>Resetting Your Password</h2>
                 </div>
                 <div className="col-2">
                     <Button text="Return" linkTo="/" type="nav" />
@@ -102,6 +97,17 @@ const ResetPassword = () => {
                 { status && <div className="row row-info"><p>{ status }</p></div> }
                 <div className="row row-info">
                     <div className="col col-info">
+                        <div className="col-head">
+                            Temporary Password
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="password" 
+                                name="temp" 
+                                value={ changes.temp } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
                         <div className="col-head">
                             New Password
                         </div>
@@ -113,8 +119,6 @@ const ResetPassword = () => {
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
-                    <div className="col col-info">
                         <div className="col-head">
                             Retype New Password
                         </div>

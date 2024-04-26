@@ -50,7 +50,7 @@ const ItemDetails = () => {
     if (item) {
 
     // destructure the item object
-    const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments } = item
+    const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments, invoice, vendor } = item
 
     // if it has been deleted, throw an error
     // if (discardDate) {
@@ -78,6 +78,9 @@ const ItemDetails = () => {
                     <Button text="Return" linkTo={ `/unit/${ unit.id }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
+                    <Button  text="Inspect" linkTo={ `/item/${id}/inspect` } type="action" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
                     <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
                 </div>
             </div>
@@ -102,18 +105,18 @@ const ItemDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Inspected By
+                            Location
                         </div>
                         <div className="col-content">
-                            { inspected ? inspected.name : "No inspection recorded." }
+                            { unit.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Inspected At
+                            Unit
                         </div>
                         <div className="col-content">
-                            { inspected ? friendlyDate(inspected.date) : "No inspection recorded." }
+                            { unit.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -145,6 +148,22 @@ const ItemDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            Vendor
+                        </div>
+                        <div className="col-content">
+                            { vendor }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Invoice Number
+                        </div>
+                        <div className="col-content">
+                            { invoice }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Initial Value
                         </div>
                         <div className="col-content">
@@ -157,24 +176,6 @@ const ItemDetails = () => {
                         </div>
                         <div className="col-content">
                             ${ parseFloat(value.currentValue).toFixed(2) }
-                        </div>
-                    </div>
-                </div>
-                <div className="row row-info">
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Location
-                        </div>
-                        <div className="col-content">
-                            { unit.facility.name }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Unit
-                        </div>
-                        <div className="col-content">
-                            { unit.name }
                         </div>
                     </div>
                 </div>

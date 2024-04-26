@@ -61,49 +61,21 @@ const ItemEdit = () => {
         })()
     }, [])
 
-    const [ categoryList, setCategoryList ] = useState([])
-    const [ simpleCategories, setSimpleCategories ] = useState([])
-    useEffect(() => {
-        (async() => {
-            await apiService.listCategories((data) => {
-                if (data.error) {
-                    setErr(data.error)
-                } else {
-                    setCategoryList(data)
-
-                    // the Dropdown component later is expecting a list of strings
-                    const simpleList = data.map(cat => cat.name)
-                    simpleList.unshift("Select:")
-                    setSimpleCategories(simpleList)
-                }
-            })
-        })()
-    }, [])
-
     // set up some page functionality
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
 
-    // dangerMode toggles the editability of dangrous fields
-    const [ dangerMode, setDangerMode ] = useState(false)
-
-    // dangerLabel changes the text of the dangerMode toggle button
-    const [ dangerLabel, setDangerLabel ] = useState("Advanced Edit")
-
-    // object that defines fields that are safe to change
-    const [ safeChanges, setSafeChanges ] = useState({
+    // object (nested) that defines fields that are available to change
+    const [ changes, setChanges ] = useState({
         name: "",
         statusColor: flagColorOptions[0],
         statusText: flagTextOptions[0],
-        comment: ""
-    })
-
-    // object (nested) that defines fields that are dangerous to change
-    const [ dangerChanges, setDangerChanges ] = useState({
-        template: "",
-        unit: "",
+        comment: "",
+        invoice: "",
+        vendor: "",
         depreciationRate: 0,
-        initialValue: 0
+        initialValue: 0,
+        currentValue: 0
     })
 
     useEffect(() => {
@@ -120,18 +92,16 @@ const ItemEdit = () => {
                 flagText = flagTextOptions[1]
             }
             
-            setSafeChanges({
+            setChanges({
                 name: item.name,
                 statusColor: flagColor,
                 statusText: flagText,
-                comment: ""
-            })
-
-            setDangerChanges({
-                template: item.template,
-                unit: item.unit,
+                comment: "",
+                invoice: item.invoice,
+                vendor: item.vendor,
                 depreciationRate: item.value.depreciationRate,
-                initialValue: item.value.initialValue
+                initialValue: item.value.initialValue,
+                currentValue: item.value.currentValue
             })
         }
     }, [ item ])
@@ -140,62 +110,29 @@ const ItemEdit = () => {
     if (item) {
 
     // Note that the following fields are not available to edit:
-    // unitId, locationId, inspected (unhandled)
-    // categoryId, categoryIcon, itemId, discardDate (handled)
-    // added.userId, added.userName (shouldn't be changed) 
-    // These should all be handled programmatically and do not need to be available for users.
+    // Template, Location, Unit, Acquired Date
 
     // Most changes are handled by Services/handleChanges
 
     // handles flag dropdown state
     const handleFlag = (input) => {
-        const newChanges = {...safeChanges}
+        const newChanges = {...changes}
         const index = flagTextOptions.indexOf(input)
         if (index > -1) {
             newChanges.statusColor = flagColorOptions[index]
             newChanges.statusText = flagTextOptions[index]
         }
-        setSafeChanges(newChanges)
+        setChanges(newChanges)
         setUnsaved(true)
-    }
-
-    // handles the danger edit toggle
-    const toggleDanger = () => {
-        const newDanger = dangerMode ? false : true
-        setDangerMode(newDanger)
-        if (newDanger === true) {
-            setStatus("Altering advanced item details may not be necessary.")
-            setDangerLabel("Basic Edit")
-        } else {
-            setStatus("")
-            setDangerLabel("Advanced Edit")
-        }
-    }
-
-    // handles category change
-    // passed into Dropdown
-    const handleCategoryChange = (newCatName) => {
-        const newCatIndex = categoryList.map(cat => cat.name).indexOf(newCatName)
-        if (newCatIndex !== -1) {
-            const newChanges = {...dangerChanges}
-            newChanges.template = categoryList[newCatIndex]
-            setDangerChanges(newChanges)
-            setUnsaved(true)
-        } else {
-            setStatus("The category you have selected cannot be found.")
-        }
     }
 
     // sends the item object to the apiService
     const saveChanges = async() => {
-        const newItem = {}
-        newItem.id = id
-        newItem.unitId = dangerChanges.unit.id
-        newItem.name = safeChanges.name
-        newItem.initialValue = dangerChanges.initialValue
-        newItem.depreciationRate = dangerChanges.depreciationRate
-        newItem.toInspect = safeChanges.statusText === flagTextOptions[1]
-        newItem.toDiscard = safeChanges.statusText === flagTextOptions[2]
+        const newItem = {...changes}
+        newItem.id = item.id
+        newItem.unitId = item.unit.id
+        newItem.toInspect = changes.statusText === flagTextOptions[1]
+        newItem.toDiscard = changes.statusText === flagTextOptions[2]
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
@@ -237,9 +174,6 @@ const ItemEdit = () => {
                 <div className="col-2 d-flex justify-content-end p-0">
                     <Button text="Save Changes" linkTo={ saveChanges } type="action" />
                 </div>
-                <div className="col-2 d-flex justify-content-end p-0">
-                    <Button text={ dangerLabel } linkTo={ toggleDanger } type="danger" />
-                </div>
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p>{ status }</p></div> }
@@ -252,8 +186,8 @@ const ItemEdit = () => {
                             <input 
                                 type="text" 
                                 name="name" 
-                                value={ safeChanges.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
+                                value={ changes.name } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
@@ -262,29 +196,23 @@ const ItemEdit = () => {
                             Item Template
                         </div>
                         <div className="col-content">
-                            { 
-                            // dangerMode ? <Dropdown 
-                            //     list={ simpleCategories } 
-                            //     current={ dangerChanges.template.name } 
-                            //     setCurrent={ handleCategoryChange }
-                            // /> :
-                             item.template.name }
+                            { item.template.name }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Inspected By
+                            Location
                         </div>
                         <div className="col-content">
-                            { item.inspected ? item.inspected.name : "No inspection recorded." }
+                            { item.unit.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Inspected At
+                            Unit
                         </div>
                         <div className="col-content">
-                            { item.inspected ? friendlyDate(item.inspected.date) : "No inspection recorded." }
+                            { item.unit.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -292,10 +220,10 @@ const ItemEdit = () => {
                             Status
                         </div>
                         <div className="col-content">
-                            <Flag color={ safeChanges.statusColor } />
+                            <Flag color={ changes.statusColor } />
                             <Dropdown
                                 list={ flagTextOptions }
-                                current={ safeChanges.statusText }
+                                current={ changes.statusText }
                                 setCurrent={ handleFlag }
                             />
                         </div>
@@ -309,8 +237,8 @@ const ItemEdit = () => {
                         <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 
-                            value={ safeChanges.comment } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, safeChanges, setSafeChanges, setUnsaved) } 
+                            value={ changes.comment } 
+                            onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             className="comment-area" 
                         />
                         <CommentBox comments={ item.comments } />
@@ -327,65 +255,73 @@ const ItemEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            Invoice Number
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="text"
+                                name="invoice" 
+                                value={ changes.invoice } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Vendor
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="text"
+                                name="vendor" 
+                                value={ changes.vendor } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Initial Value
                         </div>
                         <div className="col-content">
-                            { dangerMode ? <input 
+                            <input 
                                 type="number" 
                                 step=".01"
                                 name="initialValue" 
-                                value={ dangerChanges.initialValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : `$${ parseFloat(item.value.initialValue).toFixed(2) }` }
+                                value={ changes.initialValue } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
+                    {/* <div className="col col-info">
+                        <div className="col-head">
+                            Current Value
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="number" 
+                                step=".01"
+                                name="currentValue" 
+                                value={ changes.currentValue } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Depreciation Rate
                         </div>
                         <div className="col-content">
-                            { dangerMode ? <input 
+                            <input 
                                 type="number" 
                                 name="depreciationRate" 
-                                value={ dangerChanges.depreciationRate } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            /> : item.value.depreciationRate }
+                                value={ changes.depreciationRate } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Location
-                        </div>
-                        <div className="col-content">
-                            {
-                            // dangerMode ? <input 
-                            //     type="text" 
-                            //     name="unit.facility.name" 
-                            //     value={ dangerChanges.unit.facility.name } 
-                            //     onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            // /> :
-                            item.unit.facility.name }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Unit
-                        </div>
-                        <div className="col-content">
-                            { 
-                            // dangerMode ? <input 
-                            //     type="text" 
-                            //     name="unit.name" 
-                            //     value={ dangerChanges.unit.name } 
-                            //     onChange={ (event) => handleChanges.handleTextChange(event, dangerChanges, setDangerChanges, setUnsaved) } 
-                            // /> : 
-                            item.unit.name }
-                        </div>
-                    </div>
-                </div>
-                { dangerMode && <Button text="Delete Item" linkTo={ deleteItem } type="danger" /> }
+                <Button text="Delete Item" linkTo={ deleteItem } type="danger" />
                 { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${id}` } locationId={ item.unit.locationId } /> }
             </div>
         </main>

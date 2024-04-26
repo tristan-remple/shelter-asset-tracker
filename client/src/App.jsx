@@ -39,6 +39,12 @@ import ResetPassword from './Auth/ResetPassword'
 import Error from './Reusables/Error'
 import CategoryCreate from './Categories/CategoryCreate'
 import FAQ from './Reusables/FAQ'
+import ItemInspect from './Items/ItemInspect'
+import ItemRecovery from './Items/ItemRecovery'
+import UnitRecovery from './Units/UnitRecovery'
+import LocationRecovery from './Locations/LocationRecovery'
+import CategoryRecovery from './Categories/CategoryRecovery'
+import UserRecovery from './Users/UserRecovery'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -73,6 +79,7 @@ function App() {
           <Route path="/reset/:hash" element={ <ResetPassword /> } />
           <Route element={<GeneralRoutes />}>
             <Route path="/item/:id" element={ <ItemDetails /> } />
+            <Route path="/item/:id/inspect" element={ <ItemInspect /> } />
             <Route path="/item/:id/edit" element={ <ItemEdit /> } />
             <Route path="/unit/:id/add" element={ <ItemCreate /> } />
             <Route path="/unit/:id" element={ <UnitDetails /> } />
@@ -100,6 +107,11 @@ function App() {
             <Route path="/user/:id" element={ <UserDetails /> } />
             <Route path="/users/add" element={ <UserCreate /> } />
             <Route path="/users/:id/delete" element={ <UserDelete /> } />
+            <Route path="/restore/items" element={ <ItemRecovery /> } />
+            <Route path="/restore/units" element={ <UserRecovery /> } />
+            <Route path="/restore/locations" element={ <LocationRecovery /> } />
+            <Route path="/restore/categories" element={ <CategoryRecovery /> } />
+            <Route path="/restore/users" element={ <UserRecovery /> } />
           </Route>
           <Route path="/*" element={ <Error err="unknown" /> } />
         </Routes>

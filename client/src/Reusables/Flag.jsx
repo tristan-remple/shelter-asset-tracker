@@ -4,7 +4,7 @@
 // Valid colors are red, yellow, and grey.
 // Imported by: ItemDetails, ItemEdit, UnitDetails
 
-export const flagTextOptions = [ "OK", "Assess", "Discard" ]
+export const flagTextOptions = [ "OK", "Inspect", "Discard" ]
 export const flagColorOptions = [ "grey", "yellow", "red" ]
 
 const Flag = ({ color }) => {

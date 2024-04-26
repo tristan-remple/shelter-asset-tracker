@@ -1,26 +1,42 @@
 # TASKS
-- user authentication
-    - set context on login
-    - navbar and protected routes call context
+
+## Auth
+- set session on login
+- navbar and protected routes call session
 - user set or reset password
-- test keyboard navigation
-- dashboard
-    - total value per location
-    - number of items per category per location
-    - list of replace items per location
-    - /admin -> numbers for all locations
-    - /admin/:id -> id of location, numbers for location
-- exports
-    - items (all)
-    - items (to replace soon)
+    - temp password is provided in email, use it
+- redirect and navbar inventory to single location or list depending on session array
+
+```js
+{
+    user: true,
+    admin: false,
+    facilityAuth: [
+        1, 3
+    ]
+}
+```
+
+## Dashboard
+- connect endpoints
+
+## Item Inspection
+- connect endpoints
+- CommentBox will need to be updated
+
+## Delete Recovery
+- connect endpoints
+
+## Other
 - delete body -> to remove
 - documentation
-- clean error handling
-- implement comments
+    - code commenting
+    - readme
+    - faq
 
-# PASSWORDS
-- password reset table
-    - userId
-    - password reset hash
-    - date requested
-    - date used
+# New Endpoints
+- post: inspection
+- post: unit mark all items for inspection
+- get: all deleted items, units, locations, categories, users
+- patch: undo delete item, unit, location, category, user
+- get: csv reports

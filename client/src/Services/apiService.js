@@ -447,6 +447,7 @@ class apiService {
         })
     }
 
+    // Called by: Dashboard
     globalReport = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/reports`, {
             withCredentials: true
@@ -463,8 +464,9 @@ class apiService {
         })
     }
 
-    singleReport = async(id, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ id }`, {
+    // Called by: Dashboard
+    csvReport = async(title, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ title }`, {
             withCredentials: true
         })
         .then(res => {
@@ -479,8 +481,162 @@ class apiService {
         })
     }
 
-    csvReport = async(title, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ title }`, {
+    // Called by: ItemRecovery
+    deletedItems = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/items`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: ItemRecovery
+    restoreItem = async(itemId, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/items/${ itemId }`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: UnitRecovery
+    deletedUnits = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: UnitRecovery
+    restoreUnit = async(unitId, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units/${ unitId }`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: LocationRecovery
+    deletedLocations = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: LocationRecovery
+    restoreLocation = async(locationId, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ locationId }`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: CategoryRecovery
+    deletedCategories = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/templates`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: CategoryRecovery
+    restoreCategory = async(categoryId, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/${ categoryId }`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: UserRecovery
+    deletedUsers = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: UserRecovery
+    restoreUser = async(userId, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/${ userId }`, {
             withCredentials: true
         })
         .then(res => {

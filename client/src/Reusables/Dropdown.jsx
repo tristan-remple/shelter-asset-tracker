@@ -13,12 +13,22 @@ const Dropdown = ({ list, current, setCurrent }) => {
 
     const id = `dropdown-${ list[0] }`
 
+    // open state of the dropdown menu (mouse)
     const [ open, setOpen ] = useState(false)
     const toggle = () => {
         const newOpen = open ? false : true
         setOpen(newOpen)
     }
 
+    // open state of the dropdown menu (keyboard)
+    const keyboardMenuHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            const newOpen = open ? false : true
+            setOpen(newOpen)
+        }
+    }
+
+    // when an item is selected by keyboard navigation
     const keyboardItemHandler = (event, item) => {
         if (event.code === "Enter" || event.code === "Space") {
             setOpen(false)
@@ -26,12 +36,14 @@ const Dropdown = ({ list, current, setCurrent }) => {
         }
     }
 
+    // when keyboard focus leaves the dropdown menu, close it
     const keyboardBlurHandler = (event) => {
         if (event.target.parentElement.lastChild === event.target) {
             setOpen(false)
         }
     }
 
+    // render the list, including all listeners
     const renderedList = list.map((item, index) => {
         return <li 
             key={ index } 
@@ -42,13 +54,6 @@ const Dropdown = ({ list, current, setCurrent }) => {
             className="dropdown-item" 
         >{ item }</li>
     })
-
-    const keyboardMenuHandler = (event) => {
-        if (event.code === "Enter" || event.code === "Space") {
-            const newOpen = open ? false : true
-            setOpen(newOpen)
-        }
-    }
 
     return (
         <div className="dropdown">
