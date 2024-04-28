@@ -24,9 +24,14 @@ exports.login = async (req, res, next) => {
         const facilityIds = facilityAuths.map(auth => auth.facilityId);
 
         const token = await createToken(user.id, user.isAdmin, facilityIds);
+        const userInfo = {
+            userId: user.id,
+            isAdmin: user.isAdmin,
+            facilityAuths: facilityIds
+        }
 
         res.cookie('authentication', token, { httpOnly: true, maxAge: 3600000 });
-        res.status(200).send();
+        res.status(200).json(userInfo);
 
     } catch (error) {
         console.error(error);
