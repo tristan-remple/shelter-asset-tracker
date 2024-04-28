@@ -89,7 +89,8 @@ const Dashboard = () => {
                                 return {
                                     id: newCat.id,
                                     name: newCat.name,
-                                    count: newCat.count + cat.count
+                                    count: newCat.count + cat.count,
+                                    icon: newCat.icon
                                 }
                             } else {
                                 return newCat
@@ -183,7 +184,7 @@ const Dashboard = () => {
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
-                <td>{ capitalize(item.template) }</td>
+                <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.id }` } type="small" /></td>
                 <td>{ adminDate(item.eol) }</td>
             </tr>

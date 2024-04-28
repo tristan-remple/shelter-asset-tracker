@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { errorCodes } from './errorCodes'
+
 //------ MODULE INFO
 // This module handles API interactions related to users.
 // Imported by: App, Header
@@ -71,10 +73,14 @@ class authService {
             }
         })
         .then(res => {
-            callback(res)
+            callback(res.data)
         })
         .catch(err => {
-            callback({ error: err })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -87,10 +93,14 @@ class authService {
             }
         })
         .then(res => {
-            callback(res)
+            callback(res.data)
         })
         .catch(err => {
-            callback({ error: err })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 

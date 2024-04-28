@@ -7,7 +7,7 @@ import apiService from "../Services/apiService"
 import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext, authContext, userContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
@@ -28,23 +28,15 @@ const LocationDetails = () => {
     const { id } = useParams()
     const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
-    
-    let urlId = id
-
-    // validate id
-    if (urlId === undefined) {
-        urlId = authService.userInfo().location.locationId
-        if (urlId === 0 || urlId === undefined) {
-            setErr("undefined")
-        }
-    }
+    const { userDetails } = useContext(userContext)
+    const { isAdmin } = userDetails
     
     // fetch unit data from the api
     const [ response, setResponse ] = useState()
     const [ filteredUnits, setFilteredUnits ] = useState([])
     useEffect(() => {
         (async()=>{
-            await apiService.singleLocation(urlId, function(data){
+            await apiService.singleLocation(id, function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
@@ -65,7 +57,7 @@ const LocationDetails = () => {
 
     // if the user is admin, populate admin buttons
     let adminButtons = ""
-    if (authService.checkAdmin()) {
+    if (isAdmin) {
         adminButtons = (
             <>
                 <div className="col-2 d-flex justify-content-end">

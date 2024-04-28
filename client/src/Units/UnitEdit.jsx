@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from 'react'
 import apiService from "../Services/apiService"
 import authService from '../Services/authService'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext, authContext, userContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 
 // components
@@ -29,6 +29,7 @@ const UnitEdit = () => {
     const [ err, setErr ] = useState("loading")
     const [ unsaved, setUnsaved ] = useState(false)
     const navigate = useNavigate()
+    const { userDetails } = useContext(userContext)
 
     // validate id
     if (id === undefined) {
@@ -85,7 +86,7 @@ const UnitEdit = () => {
         changes.facilityId = response.facility.id
 
         // verify user identity
-        if (authService.checkUser() && authService.checkAdmin()) {
+        if (userDetails.isAdmin) {
             // send api request and process api response
             await apiService.postUnitEdit(changes, (response) => {
                 if (response.error) {

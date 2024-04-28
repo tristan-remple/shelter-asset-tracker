@@ -1,7 +1,7 @@
 // external dependencies
 import { useContext, useState, useEffect } from "react"
-import { statusContext } from "../Services/Context"
-import { useNavigate, redirect } from "react-router-dom"
+import { statusContext, userContext } from "../Services/Context"
+import { useNavigate } from "react-router-dom"
 
 // internal dependencies
 import handleChanges from "../Services/handleChanges"
@@ -22,13 +22,30 @@ const LogIn = () => {
     // set up
     const navigate = useNavigate()
     const { status, setStatus } = useContext(statusContext)
+    const { userDetails, setUserDetails } = useContext(userContext)
 
-    // check if user is already logged in
-    // useEffect(() => {
-    //     if (authService.checkUser()) {
-    //         navigate("/location")
-    //     }
-    // }, [])
+    // if the user has a session but has somehow erased their context, reset context
+    useEffect(() => {
+        if (!userDetails.userId && sessionStorage.getItem("userId")) {
+            const userId = parseInt(sessionStorage.getItem("userId"))
+            const isAdmin = sessionStorage.getItem("isAdmin") === "true"
+            const facilityAuths = sessionStorage.getItem("facilityAuths").split(",").map(auth => parseInt(auth))
+            setUserDetails({
+                userId,
+                isAdmin,
+                facilityAuths
+            })
+        }
+    }, [])
+
+    // if the user is logged in, redirect them to their location(s)
+    useEffect(() => {
+        if (userDetails.userId && userDetails.facilityAuths.length === 1) {
+            navigate(`/location/${ userDetails.facilityAuths[0] }`)
+        } else if (userDetails.userId) {
+            navigate("/locations")
+        }
+    }, [ userDetails ])
     
     // form handling
     const [ changes, setChanges ] = useState({
@@ -42,18 +59,22 @@ const LogIn = () => {
 
         // validation
         if (changes.email === "" || changes.password === "") {
-            setStatus("Please enter your username and password.")
+            setStatus("Please enter your email and password.")
             return
         }
 
         // api call
         authService.login(changes, (response) => {
-            if (response?.status === 200) {
+            if (response.error) {
+                setStatus("We weren't able to validate your credentials.")
+            } else {
+                setUserDetails(response)
+                sessionStorage.setItem("userId", response.userId)
+                sessionStorage.setItem("isAdmin", response.isAdmin)
+                sessionStorage.setItem("facilityAuths", response.facilityAuths)
                 setStatus(`Welcome.`)
                 setUnsaved(false)
                 navigate("/location")
-            } else {
-                setStatus("We weren't able to validate your credentials.")
             }
         })   
     }

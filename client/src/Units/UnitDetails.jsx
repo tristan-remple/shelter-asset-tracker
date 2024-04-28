@@ -7,7 +7,7 @@ import apiService from "../Services/apiService"
 import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext, authContext, userContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
@@ -28,6 +28,7 @@ const UnitDetails = () => {
     const { id } = useParams()
     const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
+    const { userDetails } = useContext(userContext)
 
     // validate id
     if (id === undefined) {
@@ -64,7 +65,7 @@ const UnitDetails = () => {
 
     // if the user is admin, populate admin buttons
     let adminButtons = ""
-    if (authService.checkAdmin()) {
+    if (userDetails.isAdmin) {
         adminButtons = (
             <>
                 <div className="col-2 d-flex justify-content-end">

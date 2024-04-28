@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 
 // internal imports
 import './css/style.css'
-import { authContext, statusContext } from './Services/Context'
+import { userContext, statusContext } from './Services/Context'
 import authService from './Services/authService'
 import { GeneralRoutes, AdminRoutes } from './Services/ProtectedRoutes'
 
@@ -54,15 +54,14 @@ import UserRecovery from './Users/UserRecovery'
 
 function App() {
 
-  // check whether the user is an admin, set it to state
-  // this will be used throughout the app, so we will set it to context
-  const [ isAdmin, setIsAdmin ] = useState(false)
-  useEffect(() => {
-    // this function has not been implemented yet
-    // you can toggle its return value to check different user views
-    const adminCheck = authService.checkAdmin()
-    setIsAdmin(adminCheck)
-  }, [])
+  // User details state, to be set to context.
+  // Updated by LogIn and LogOut.
+  // Read by ProtectedRoutes and Header at a minimum.
+  const [ userDetails, setUserDetails ] = useState({
+    userId: null,
+    isAdmin: false,
+    facilityAuths: []
+  })
 
   // Sets a status message to update the user on site actions.
   // Some status messages persist for longer than they need to.
@@ -70,8 +69,8 @@ function App() {
 
   return (
     <>
-      <authContext.Provider value={ { isAdmin, setIsAdmin } }>
-      <statusContext.Provider value={ { status, setStatus } }>
+      <userContext.Provider value={{ userDetails, setUserDetails }}>
+      <statusContext.Provider value={{ status, setStatus }}>
         <Header />
         <Routes>
           <Route path="/" element={ <LogIn /> } />
@@ -117,7 +116,7 @@ function App() {
         </Routes>
         <Footer />
       </statusContext.Provider>
-      </authContext.Provider>
+      </userContext.Provider>
     </>
   )
 }

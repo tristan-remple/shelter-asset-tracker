@@ -39,7 +39,7 @@ exports.getFacilityById = async (req, res, next) => {
 
         const authorized = await checkAuth(req.cookies.authorization, facilityId);
         if (!authorized){
-            res.status(403).send({ message: 'Forbidden.'});
+            return res.status(403).send({ message: 'Forbidden.'});
         };
 
         const facility = await models.Facility.findOne({
