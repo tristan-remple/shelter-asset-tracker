@@ -45,7 +45,7 @@ exports.getItemById = async (req, res, next) => {
             },
             {
                 model: models.Template,
-                attributes: ['id', 'name']
+                attributes: ['id', 'name', 'icon']
             },
             {
                 model: models.Inspection,
@@ -129,7 +129,7 @@ exports.sendItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { unitId, name, invoice, vendor, initialValue, depreciationRate, toDiscard, toInspect } = req.body;
+        const { unitId, name, invoice, vendor, initialValue, depreciationRate, toDiscard, toInspect, comment } = req.body;
 
         item.set({
             unitId: unitId,
@@ -156,6 +156,15 @@ exports.updateItem = async (req, res, next) => {
         }
 
         await item.save();
+
+        const inspection = await models.Inspection.create({
+            comment: comment,
+            itemId: item.id,
+            userId: req.userId
+        });
+
+        await inspection.save();
+
         return res.status(200).json(updateResponse);
 
     } catch (err) {

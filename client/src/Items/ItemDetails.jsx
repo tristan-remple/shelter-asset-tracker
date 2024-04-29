@@ -50,7 +50,7 @@ const ItemDetails = () => {
     if (item) {
 
     // destructure the item object
-    const { unit, name, template, toInspect, toDiscard, value, addedBy, createdAt, inspected, comments, invoice, vendor } = item
+    const { unit, name, template, toInspect, toDiscard, value, createdAt, inspectionRecord, invoice, vendor } = item
 
     // if it has been deleted, throw an error
     // if (discardDate) {
@@ -134,7 +134,7 @@ const ItemDetails = () => {
                         <img className="img-fluid icon" src={ `/img/${ template.icon }.png` } alt={ template.name + " icon" } />
                     </div>
                     <div className="col-8 col-content">
-                        <CommentBox comments={ comments } />
+                        <CommentBox comments={ inspectionRecord } />
                     </div>
                 </div>
                 <div className="row row-info">

@@ -1,15 +1,19 @@
-import { useContext } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useContext } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 
 // internal dependencies
-import authService from '../Services/authService';
-import { authContext } from '../Services/Context';
+import { userContext } from '../Services/Context'
 
 const Header = () => {
-    const { isAdmin } = useContext(authContext);
-    const userInfo = authService.userInfo();
-    const { userId } = userInfo;
-    const location = useLocation();
+    const { userDetails } = useContext(userContext)
+    const { userId, isAdmin, facilityAuths } = userDetails
+
+    const location = useLocation()
+
+    let locationLink = "/locations"
+    if (facilityAuths.length === 1) {
+        locationLink = `/location/${ facilityAuths[0] }`
+    }
 
     return (
         <header className="navbar navbar-expand-lg">
@@ -35,7 +39,7 @@ const Header = () => {
                             <>
                                 <li className="nav-item">
                                     <NavLink
-                                        to="/location"
+                                        to={ locationLink }
                                         className={['/location', '/unit', '/item'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>
                                         Inventory
                                     </NavLink>

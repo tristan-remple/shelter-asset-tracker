@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 // internal dependencies
 import apiService from "../Services/apiService"
 import authService from '../Services/authService'
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext, authContext, userContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
@@ -19,13 +19,12 @@ const LocationList = () => {
 
     // get the status from context, set it to a warning
     const { status, setStatus } = useContext(statusContext)
+    const { userDetails } = useContext(userContext)
     const [ err, setErr ] = useState("loading")
 
-    useEffect(() => {
-        if (!authService.checkAdmin()) {
-            setStatus('You may not need to view or edit locations other than your assigned location.')
-        }
-    }, [])
+    if (userDetails.facilityAuths.length === 0) {
+        setStatus("You are not currently assigned to any locations. Please contact an admin.")
+    }
 
     // fetch data from the api
     const [ locations, setResponse ] = useState()
@@ -47,7 +46,7 @@ const LocationList = () => {
     
     // if the user is admin, populate admin buttons
     let adminButtons = ""
-    if (authService.checkAdmin()) {
+    if (userDetails.isAdmin) {
         adminButtons = (
             <div className="col-2 d-flex justify-content-end">
                 <Button text="Add Location" linkTo="/locations/add" type="admin"/>
@@ -56,7 +55,9 @@ const LocationList = () => {
     }
 
     // sort locations alphabetically
-    locations.sort((a, b) => {
+    locations.filter(loc => {
+        return userDetails.facilityAuths.some(id => id === loc.id)
+    }).sort((a, b) => {
         return a.name.localeCompare(b.name)
     })
 

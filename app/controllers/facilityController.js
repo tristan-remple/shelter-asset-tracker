@@ -98,6 +98,10 @@ exports.getFacilityById = async (req, res, next) => {
     }
 };
 
+exports.sendFacility = async (req, res, next) => {
+    res.status(200).json(req.data)
+}
+
 exports.createNewFacility = async (req, res, next) => {
     try {
         const { locationName, managerId, phone } = req.body;

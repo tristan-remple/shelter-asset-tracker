@@ -2,7 +2,7 @@
 import { useContext, useEffect } from "react"
 
 // internal dependencies
-import { statusContext } from "../Services/Context"
+import { statusContext, userContext } from "../Services/Context"
 import authService from "../Services/authService"
 
 //------ MODULE INFO
@@ -14,15 +14,24 @@ const LogOut = () => {
 
     // get status context
     const { status, setStatus } = useContext(statusContext)
+    const { userDetails, setUserDetails } = useContext(userContext)
 
     // perform the logout api call
     useEffect(() => {
         (async() => {
             await authService.logout((response) => {
-                if (response?.status === 200) {
-                    setStatus("You have been successfully logged out.")
-                } else {
+                if (response.error) {
                     setStatus("We weren't able to process your request.")
+                } else {
+                    setUserDetails({
+                        userId: null,
+                        isAdmin: false,
+                        facilityAuths: []
+                    })
+                    sessionStorage.removeItem("userId")
+                    sessionStorage.removeItem("isAdmin")
+                    sessionStorage.removeItem("facilityAuths")
+                    setStatus("You have been successfully logged out.")
                 }
             })
         })()

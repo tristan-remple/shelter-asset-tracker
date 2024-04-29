@@ -1,6 +1,8 @@
 // external dependencies
 import { Link } from "react-router-dom"
 import Button from "./Button"
+import { userContext } from "../Services/Context"
+import { useContext } from "react"
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -9,6 +11,8 @@ import Button from "./Button"
 // Imported by: ItemDetails, ItemEdit, ItemCreate, UnitDetails
 
 const Error = ({ err }) => {
+
+    const { userDetails, setUserDetails } = useContext(userContext)
 
     let errorText = ""
     switch(err) {
@@ -25,13 +29,21 @@ const Error = ({ err }) => {
             errorText = "You do not have permission to do the requested task."
             break
         case "unknown":
-            errorText = "The page you are looking for either does not exist, or is spelled incorrectly."
+            errorText = "The page you are looking for either does not exist, or has been entered incorrectly."
             break
         case "loading":
             errorText = "We are still trying to find the data you're looking for. Please be patient."
             break
         case "anonymous":
             errorText = "You are not logged in. Please log in to use this app."
+            // sessionStorage.removeItem("userId")
+            // sessionStorage.removeItem("isAdmin")
+            // sessionStorage.removeItem("facilityAuths")
+            // setUserDetails({
+            //     userId: null,
+            //     isAdmin: false,
+            //     facilityAuths: []
+            // })
             break
         case "duplicate":
             errorText = "The thing you are trying to create already exists."

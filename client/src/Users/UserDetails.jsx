@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { useContext, useState, useEffect } from "react"
 
 // internal dependencies
-import { statusContext } from "../Services/Context"
+import { statusContext, userContext } from "../Services/Context"
 import authService from "../Services/authService"
 import apiService from "../Services/apiService"
 
@@ -22,23 +22,23 @@ const UserDetails = () => {
     // get context information
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
+    const { userDetails } = useContext(userContext)
     const [ err, setErr ] = useState("loading")
 
     // validate id
-    const currentUser = authService.userInfo()
-    const currentUserId = currentUser.userId
-    let userId = null
-    if (id === undefined && currentUserId === null) {
+    const { userId, isAdmin, facilityAuths } = userDetails
+    let profileId = null
+    if (id === undefined && userId === null) {
         setErr("undefined")
     } else if (id) {
-        userId = id
+        profileId = id
     } else if ( id === undefined ) {
-        userId = currentUserId
+        profileId = userId
     } 
 
     // check permissions: only the user whose profile this is and admins should have access
     let permission = false
-    if (currentUser?.userId === userId || authService.checkAdmin()) {
+    if (userId === profileId || isAdmin) {
         permission = true
     }
 
@@ -50,7 +50,7 @@ const UserDetails = () => {
     const [ user, setUser ] = useState([])
     useEffect(() => {
         (async()=>{
-            await apiService.singleUser(userId, function(data){
+            await apiService.singleUser(profileId, function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
@@ -63,12 +63,12 @@ const UserDetails = () => {
 
     // send reset password request to the api
     const resetPassword = () => {
-        const resetResponse = authService.requestResetPassword(userId)
+        const resetResponse = authService.requestResetPassword(profileId)
         if (resetResponse.error) {
             setErr(resetResponse.error)
         } else {
-            let newStatus = `The password has been reset for ${ userName }. `
-            if (currentUser.userId === userId) {
+            let newStatus = `The password has been reset for ${ user.name }. `
+            if (currentUser.userId === profileId) {
                 newStatus += "Please check your email."
             } else {
                 newStatus += "Please have them check their email."
@@ -79,7 +79,7 @@ const UserDetails = () => {
 
     // if the user viewing the profile is the current user, allow them to reset their password
     let passwordLink
-    if (currentUser.userId === userId) {
+    if (userId === profileId) {
         passwordLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Reset Password" linkTo={ resetPassword } type="action" />
         </div>
@@ -87,9 +87,9 @@ const UserDetails = () => {
 
     // if the user viewing the profile is an admin, allow them to edit the user and reset the password
     let editLink
-    if (authService.checkAdmin()) {
+    if (isAdmin) {
         editLink = <div className="col-2 d-flex justify-content-end">
-            <Button text="Edit" linkTo={ `/user/${ userId }/edit` } type="admin" />
+            <Button text="Edit" linkTo={ `/user/${ profileId }/edit` } type="admin" />
         </div>
         passwordLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Reset Password" linkTo={ resetPassword } type="action" />
@@ -127,14 +127,14 @@ const UserDetails = () => {
                             { user?.isAdmin ? "Yes" : "No" }
                         </div>
                     </div>
-                    {/* <div className="col col-info">
+                    <div className="col col-info">
                         <div className="col-head">
                             Date Added
                         </div>
                         <div className="col-content">
-                            { adminDate(created) }
+                            { adminDate(user?.created) }
                         </div>
-                    </div> */}
+                    </div>
                     <div className="col col-info">
                         <div className="col-head">
                             Locations

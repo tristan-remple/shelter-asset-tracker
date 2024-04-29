@@ -1,11 +1,14 @@
 import axios from 'axios'
 
+import { errorCodes } from './errorCodes'
+
 //------ MODULE INFO
 // This module handles API interactions related to users.
 // Imported by: App, Header
 
 class authService {
 
+    // legacy?
     registerNewUser = async(user, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/register`, user, {
             withCredentials: true,
@@ -22,46 +25,6 @@ class authService {
         })
     }
 
-    // Check whether the current user is logged in.
-    // Called by: LogIn
-    checkUser() {
-        return true
-    }
-
-    // Check whether the currently logged in user is an admin.
-    // Called by: App
-    checkAdmin() {
-        return true
-    }
-
-    // Get information about the user who is currently signed in.
-    // Called by: Header, LocationDetails, ChangePanel
-    userInfo() {
-
-        const sampleData = {
-            userId: 1,
-            userName: "Sally Henson",
-            location: {
-                locationId: 1,
-                locationName: "The Hub"
-            }
-        }
-        return sampleData
-    }
-
-    // If the user is not currently or correctly signed in, return an object with falsy values.
-    badUserInfo() {
-        return {
-            userId: null,
-            userName: "",
-            location: {
-                locationId: 0,
-                locationName: ""
-            },
-            error: "<Whatever API error the user generated.>"
-        }
-    }
-
     // Called by: LogIn
     login = async(user, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/login`, user, {
@@ -71,10 +34,14 @@ class authService {
             }
         })
         .then(res => {
-            callback(res)
+            callback(res.data)
         })
         .catch(err => {
-            callback({ error: err })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 
@@ -87,10 +54,14 @@ class authService {
             }
         })
         .then(res => {
-            callback(res)
+            callback(res.data)
         })
         .catch(err => {
-            callback({ error: err })
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
         })
     }
 

@@ -98,11 +98,11 @@ exports.getAllUsers = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
     try {
         const userId = +req.params.id; 
-        const loggedInUser = await verifyToken(req.headers.authorization);
+        const loggedInUser = await verifyToken(req.cookies.Authorization);
 
         if (!loggedInUser) {
             return res.status(401).send({ message: 'Unauthorized.' });
-        } else if (!loggedInUser.isAdmin && loggedInUser !== userId) {
+        } else if (!loggedInUser.isAdmin && loggedInUser.id !== userId) {
             return res.status(403).send({ message: 'Forbidden.' })
         }
 

@@ -31,7 +31,8 @@ exports.login = async (req, res, next) => {
         }
 
         // Set the token in the Authorization header
-        return res.setHeader('Authorization', token).status(200).json(userInfo);
+        // return res.setHeader('Authorization', token).status(200).json(userInfo);
+        return res.cookie('Authorization', token, { maxAge: 60*1000*120, httpOnly: true }).status(200).json(userInfo);
 
     } catch (error) {
         console.error(error);

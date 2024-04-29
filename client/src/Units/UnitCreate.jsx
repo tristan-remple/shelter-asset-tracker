@@ -32,11 +32,6 @@ const UnitCreate = () => {
         setErr("undefined")
     }
 
-    // check that user is an admin
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
-
     // fetch data from the api
     const [ response, setResponse ] = useState({})
     useEffect(() => {

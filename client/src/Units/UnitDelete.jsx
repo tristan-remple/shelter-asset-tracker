@@ -26,10 +26,6 @@ const UnitDelete = () => {
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     
-    if (!authService.checkAdmin()) {
-        setErr("permission")
-    }
-
     // validate id
     if (id === undefined) {
         setErr("undefined")
