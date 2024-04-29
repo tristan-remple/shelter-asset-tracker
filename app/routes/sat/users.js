@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const admin = require('../../middleware/admin');
+const auth = require('../../middleware/auth');
 // Import user controller
 const userController = require('../../controllers/userController');
 
@@ -11,7 +12,7 @@ router.route('/')
 
 router.route('/:id')
   .get(userController.getUserById)
-  .put(userController.updateUser)
+  .put(userController.getUserById, auth, userController.updateUser)
   .delete(admin, userController.deleteUser);
 
 module.exports = router;
