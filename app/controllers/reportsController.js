@@ -122,11 +122,11 @@ exports.getSummary = async (req, res, next) => {
             }
         });
 
-        res.status(200).json(overview);
+        return res.status(200).json(overview);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.'})
+        return res.status(500).json({ error: 'Server error.'})
     }
 };
 

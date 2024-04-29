@@ -1,5 +1,5 @@
 const { comparePasswords, hashPassword } = require('../util/hash');
-const { createToken } = require('../util/auth');
+const { createToken } = require('../util/token');
 const { models } = require('../data');
 
 exports.login = async (req, res, next) => {
@@ -30,17 +30,17 @@ exports.login = async (req, res, next) => {
             facilityAuths: facilityIds
         }
 
-        res.cookie('authentication', token, { httpOnly: true, maxAge: 3600000 });
-        res.status(200).json(userInfo);
+        // Set the token in the Authorization header
+        return res.setHeader('Authorization', token).status(200).json(userInfo);
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
     }
 };
 
 exports.logout = async (req, res, next) => {
-    res.clearCookie('authentication').status(200).send()
+    return res.clearCookie('authentication').status(200).send()
 };
 
 exports.reset = async (req, res, next) => {
@@ -69,7 +69,7 @@ exports.reset = async (req, res, next) => {
         
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 

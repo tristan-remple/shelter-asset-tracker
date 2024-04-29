@@ -1,5 +1,5 @@
 const { models, Sequelize } = require('../data');
-const { checkAuth } = require('../util/auth');
+const { checkAuth } = require('../util/token');
 
 // Admin only function enforced by admin middleware
 exports.getAllFacilities = async (req, res, next) => {
@@ -25,11 +25,11 @@ exports.getAllFacilities = async (req, res, next) => {
             return res.status(404).json({ error: 'Facilities not found.'})
         }
 
-        res.status(200).json(facilities);
+        return res.status(200).json(facilities);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.'});
+        return res.status(500).json({ error: 'Server error.'});
     }
 };
 
@@ -37,11 +37,14 @@ exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id; 
 
+<<<<<<< HEAD
         const authorized = await checkAuth(req.cookies.authorization, facilityId);
         if (!authorized){
             return res.status(403).send({ message: 'Forbidden.'});
         };
 
+=======
+>>>>>>> 508dc1c9566192e183b83fe6a7e7815250681a65
         const facility = await models.Facility.findOne({
             attributes: [
                 'id', 
@@ -93,11 +96,13 @@ exports.getFacilityById = async (req, res, next) => {
             updated: facility.updatedAt,
         };
 
-        res.status(200).json(facilityDetails);
+        req.data = facilityDetails;
+        req.facility = facilityId;
+        next();
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -118,11 +123,11 @@ exports.createNewFacility = async (req, res, next) => {
             success: true
         };
 
-        res.status(201).json(createResponse);
+        return res.status(201).json(createResponse);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -152,11 +157,11 @@ exports.updateFacility = async (req, res, next) => {
         }
         
         await facility.save();
-        res.status(200).json(updateResponse);
+        return res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -180,9 +185,9 @@ exports.deleteFacility = async (req, res, next) => {
             success: true
         };
 
-        res.status(200).json(deleteResponse);
+        return res.status(200).json(deleteResponse);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
