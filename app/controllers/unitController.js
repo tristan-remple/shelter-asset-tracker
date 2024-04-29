@@ -33,39 +33,47 @@ exports.getUnitById = async (req, res, next) => {
             group: [] 
         });
 
-        if (!unit) {
-            return res.status(404).json({ error: 'Unit not found.' });
-        }
-
-        const unitListItems = {
-            id: unit.id,
-            name: unit.name,
-            type: unit.type,
-            facility: {
-                id: unit.Facility.id,
-                name: unit.Facility.name
-            },
-            items: unit.Items.map(item => ({
-                itemId: item.id,
-                itemName: item.name,
-                template: {
-                    id: item.Template.id,
-                    name: item.Template.name
-                },
-                toInspect: item.toInspect,
-                toDiscard: item.toDiscard
-            })),
-            createdAt: unit.createdAt,
-            updatedAt: unit.updatedAt
-        };
-
-        res.status(200).json(unitListItems);
+        req.data = unit;
+        req.facility = unit.Facility.id;
+        next();
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
+
+exports.sendUnit = async (req, res, next) => {
+    const unit = req.data;
+
+    if (!unit) {
+        return res.status(404).send({ message: "Unit not found." });
+    }
+
+    const unitListItems = {
+        id: unit.id,
+        name: unit.name,
+        type: unit.type,
+        facility: {
+            id: unit.Facility.id,
+            name: unit.Facility.name
+        },
+        items: unit.Items.map(item => ({
+            itemId: item.id,
+            itemName: item.name,
+            template: {
+                id: item.Template.id,
+                name: item.Template.name
+            },
+            toInspect: item.toInspect,
+            toDiscard: item.toDiscard
+        })),
+        createdAt: unit.createdAt,
+        updatedAt: unit.updatedAt
+    };
+
+    return res.status(200).json(unitListItems);
+}
 
 exports.createNewUnit = async (req, res, next) => {
     try {
@@ -89,7 +97,7 @@ exports.createNewUnit = async (req, res, next) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -119,11 +127,11 @@ exports.updateUnit = async (req, res, next) => {
 
         await unit.save();
 
-        res.status(200).json(updateResponse);
+        return res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -151,6 +159,6 @@ exports.deleteUnit = async (req, res, next) => {
         res.status(200).json(deleteResponse);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
