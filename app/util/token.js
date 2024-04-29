@@ -11,7 +11,12 @@ exports.createToken = async (id, isAdmin, facilities) => {
 
 exports.verifyToken = async (token) => {
     try {
-        return jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded.id || !decoded.facilities ) {
+            return false;
+        }
+        return decoded;
+        
     } catch (err) {
         console.error(err);
         return false;

@@ -15,6 +15,7 @@ const checkAdmin = async (req, res, next) => {
 
         // Verify token and find user
         const decoded = await verifyToken(token);
+        console.log(decoded)
         const admin = await models.User.findOne({ 
             attributes: ['isAdmin'],
             where: { id: decoded.id } 

@@ -1,23 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const admin = require('../../middleware/admin');
 
 // Import item controller
 const reportsController = require('../../controllers/reportsController');
 
 // Define routes for handling item operations
 router.route('/')
-    .get(reportsController.getSummary);
+    .get(admin, reportsController.getSummary);
 
 router.route('/csv')
-    .post(reportsController.exportAll);
+    .post(admin, reportsController.exportAll);
 
 router.route('/csv/financial')
-    .post(reportsController.exportFinancial);
+    .post(admin, reportsController.exportFinancial);
 
 router.route('/csv/inventory')
-    .post(reportsController.exportInventory);
+    .post(admin, reportsController.exportInventory);
 
 router.route('/csv/eol')
-    .post(reportsController.exportEOL);
+    .post(admin, reportsController.exportEOL);
 
 module.exports = router;
