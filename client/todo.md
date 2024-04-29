@@ -34,6 +34,13 @@
     - readme
     - faq
 
+## Units
+- button to flip a unit
+- button to delete all items marked to discard
+
+## Icons
+- icon table & interface?
+
 # New Endpoints
 - post: inspection
 - post: unit mark all items for inspection
