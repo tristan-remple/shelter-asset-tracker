@@ -3,8 +3,9 @@ const { verifyToken } = require('../util/token');
 
 const checkAuth = async (req, res, next) => {
     try {
-        const auth = await verifyToken(req.headers.authorization);
+        const auth = await verifyToken(req.cookies.Authorization);
         const facility = +req.facility;
+        req.userId = auth.id
 
         if (!auth) {
             return res.status(401).send({ message: 'Unauthorized.' });

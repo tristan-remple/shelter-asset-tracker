@@ -23,7 +23,7 @@ const CommentBox = ({ comments }) => {
     }
 
     // order the comments by date
-    comments.sort((a, b) => (new Date(b.commentDate) - new Date(a.commentDate) ))
+    comments.sort((a, b) => { return new Date(b.createdAt) - new Date(a.createdAt) })
 
     // grab the most recent comment and format it for display
     const latestComment = comments[0]
@@ -31,7 +31,7 @@ const CommentBox = ({ comments }) => {
 
     // format all the comments for display
     const displayOlderComments = comments.map(cmt => {
-        return <Comment key={ cmt.commentId } comment={ cmt } />
+        return <Comment key={ cmt.id } comment={ cmt } />
     })
 
     // remove the most recent from the second array

@@ -87,7 +87,7 @@ const UserDetails = () => {
 
     // if the user viewing the profile is an admin, allow them to edit the user and reset the password
     let editLink
-    if (authService.checkAdmin()) {
+    if (isAdmin) {
         editLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Edit" linkTo={ `/user/${ profileId }/edit` } type="admin" />
         </div>

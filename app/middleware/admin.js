@@ -7,7 +7,7 @@ const { verifyToken } = require('../util/token');
 const checkAdmin = async (req, res, next) => {
     try {
         // Check for auth token in cookies
-        const token = req.headers.authorization;
+        const token = req.cookies.Authorization;
 
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized.' });
@@ -15,7 +15,6 @@ const checkAdmin = async (req, res, next) => {
 
         // Verify token and find user
         const decoded = await verifyToken(token);
-        console.log(decoded)
         const admin = await models.User.findOne({ 
             attributes: ['isAdmin'],
             where: { id: decoded.id } 

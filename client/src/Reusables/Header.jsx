@@ -10,6 +10,11 @@ const Header = () => {
 
     const location = useLocation()
 
+    let locationLink = "/locations"
+    if (facilityAuths.length === 1) {
+        locationLink = `/location/${ facilityAuths[0] }`
+    }
+
     return (
         <header className="navbar navbar-expand-lg">
             <div className="container my-2">
@@ -34,7 +39,7 @@ const Header = () => {
                             <>
                                 <li className="nav-item">
                                     <NavLink
-                                        to="/location"
+                                        to={ locationLink }
                                         className={['/location', '/unit', '/item'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>
                                         Inventory
                                     </NavLink>

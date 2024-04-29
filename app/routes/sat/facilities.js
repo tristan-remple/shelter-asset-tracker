@@ -12,7 +12,7 @@ router.route('/')
     .post(admin, facilityController.createNewFacility);
 
 router.route('/:id')
-    .get(facilityController.getFacilityById, auth)
+    .get(facilityController.getFacilityById, auth, facilityController.sendFacility)
     .put(admin, facilityController.updateFacility)
     .delete(admin, facilityController.deleteFacility);
 

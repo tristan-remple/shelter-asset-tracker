@@ -37,14 +37,6 @@ exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id; 
 
-<<<<<<< HEAD
-        const authorized = await checkAuth(req.cookies.authorization, facilityId);
-        if (!authorized){
-            return res.status(403).send({ message: 'Forbidden.'});
-        };
-
-=======
->>>>>>> 508dc1c9566192e183b83fe6a7e7815250681a65
         const facility = await models.Facility.findOne({
             attributes: [
                 'id', 
@@ -105,6 +97,10 @@ exports.getFacilityById = async (req, res, next) => {
         return res.status(500).json({ error: 'Server error.' });
     }
 };
+
+exports.sendFacility = async (req, res, next) => {
+    res.status(200).json(req.data)
+}
 
 exports.createNewFacility = async (req, res, next) => {
     try {

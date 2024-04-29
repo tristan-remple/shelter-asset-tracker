@@ -8,6 +8,7 @@ import { errorCodes } from './errorCodes'
 
 class authService {
 
+    // legacy?
     registerNewUser = async(user, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/register`, user, {
             withCredentials: true,
@@ -22,46 +23,6 @@ class authService {
             console.log(err)
             callback({ error: err.response.data })
         })
-    }
-
-    // Check whether the current user is logged in.
-    // Called by: LogIn
-    checkUser() {
-        return true
-    }
-
-    // Check whether the currently logged in user is an admin.
-    // Called by: App
-    checkAdmin() {
-        return true
-    }
-
-    // Get information about the user who is currently signed in.
-    // Called by: Header, LocationDetails, ChangePanel
-    userInfo() {
-
-        const sampleData = {
-            userId: 1,
-            userName: "Sally Henson",
-            location: {
-                locationId: 1,
-                locationName: "The Hub"
-            }
-        }
-        return sampleData
-    }
-
-    // If the user is not currently or correctly signed in, return an object with falsy values.
-    badUserInfo() {
-        return {
-            userId: null,
-            userName: "",
-            location: {
-                locationId: 0,
-                locationName: ""
-            },
-            error: "<Whatever API error the user generated.>"
-        }
     }
 
     // Called by: LogIn

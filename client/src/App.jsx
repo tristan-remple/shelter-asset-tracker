@@ -86,7 +86,6 @@ function App() {
             <Route path="/location" element={ <LocationDetails /> } />
             <Route path="/locations" element={ <LocationList /> } />
             <Route path="/user" element={ <UserDetails /> } />
-            <Route path="/user/:id/edit" element={ <UserEdit /> } />
             <Route path="/faq" element={ <FAQ /> } />
           </Route>
           <Route element={<AdminRoutes />}>
@@ -104,6 +103,7 @@ function App() {
             <Route path="/admin" element={ <Dashboard /> } />
             <Route path="/users" element={ <UserList /> } />
             <Route path="/user/:id" element={ <UserDetails /> } />
+            <Route path="/user/:id/edit" element={ <UserEdit /> } />
             <Route path="/users/add" element={ <UserCreate /> } />
             <Route path="/users/:id/delete" element={ <UserDelete /> } />
             <Route path="/restore/items" element={ <ItemRecovery /> } />

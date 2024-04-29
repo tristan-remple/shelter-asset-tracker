@@ -74,7 +74,11 @@ const LogIn = () => {
                 sessionStorage.setItem("facilityAuths", response.facilityAuths)
                 setStatus(`Welcome.`)
                 setUnsaved(false)
-                navigate("/location")
+                if (response.facilityAuths.length === 1) {
+                    navigate(`/location/${ response.facilityAuths[0] }`)
+                } else {
+                    navigate("/locations")
+                }
             }
         })   
     }

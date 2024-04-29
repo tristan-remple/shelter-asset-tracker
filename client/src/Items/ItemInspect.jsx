@@ -119,8 +119,13 @@ const ItemInspect = () => {
         newItem.unitId = item.unit.id
         newItem.toInspect = changes.statusText === flagTextOptions[1]
         newItem.toDiscard = changes.statusText === flagTextOptions[2]
+        newItem.comment = changes.comment
 
         if (newItem.toInspect === item.toInspect && newItem.toDiscard === item.toDiscard && !confirm) {
+            if (newItem.comment === "") {
+                setStatus("You have not entered or changed anything.")
+                return
+            }
             setStatus("You have not changed the status flag of this item. To confirm that you'd like to submit anyway, click save again.")
             setConfirm(true)
             return
@@ -135,6 +140,7 @@ const ItemInspect = () => {
                 navigate(`/item/${response.id}`)
             }
         })
+
     }
 
     return err ? <Error err={ err } /> : (

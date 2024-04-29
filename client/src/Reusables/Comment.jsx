@@ -9,13 +9,13 @@ import { friendlyDate } from "../Services/dateHelper"
 
 const Comment = ({ comment: cmt }) => {
 
-    const { createdAt, userName, comment } = cmt
+    const { createdAt, inspectedBy, comment } = cmt
 
     return (
         <div className="comment">
             <p>{ comment }</p>
             <p className="comment-meta">
-                { userName } on { friendlyDate(createdAt) }
+                { inspectedBy.name } on { friendlyDate(createdAt) }
             </p>
             <hr />
         </div>
