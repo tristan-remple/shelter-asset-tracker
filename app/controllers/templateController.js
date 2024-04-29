@@ -21,7 +21,7 @@ exports.getAllTemplates = async (req, res, next) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
     } 
 };
 
@@ -53,11 +53,11 @@ exports.getTemplateById = async (req, res, next) => {
             return res.status(404).json({ error: 'Template not found.' });
         }
 
-        res.status(200).json(template);
+        return res.status(200).json(template);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -89,11 +89,11 @@ exports.createNewTemplate = async (req, res, next) => {
             success: true
         };
 
-        res.status(201).json(createResponse);
+        return res.status(201).json(createResponse);
         
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
     }
 };
 
@@ -128,11 +128,11 @@ exports.updateTemplate = async (req, res, next) => {
 
         await template.save();
 
-        res.status(200).json(updateResponse);
+        return res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -156,10 +156,10 @@ exports.deleteTemplate = async (req, res, next) => {
             success: true
         };
 
-        res.status(200).json(deleteResponse);
+        return res.status(200).json(deleteResponse);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };

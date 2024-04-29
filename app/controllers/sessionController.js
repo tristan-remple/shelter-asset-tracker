@@ -69,7 +69,7 @@ exports.reset = async (req, res, next) => {
         
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 

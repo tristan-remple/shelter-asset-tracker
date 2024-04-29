@@ -4,10 +4,10 @@ const { calculateCurrentValue } = require('../util/calc');
 exports.getAllItems = async (req, res, next) => {
     try {
         const items = await models.Item.findAll();
-        res.json(items);
+        return res.json(items);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
     }
 };
 
