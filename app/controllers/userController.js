@@ -1,5 +1,6 @@
 const { models } = require('../data');
 const { hashPassword } = require('../util/hash'); 
+const { verifyToken } = require('../util/token');
 
 exports.createNewUser = async (req, res, next) => {
     try {
@@ -43,10 +44,10 @@ exports.createNewUser = async (req, res, next) => {
             success: true
         };
 
-        res.status(201).json(createResponse);
+        return res.status(201).json(createResponse);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
     }
 };
 
@@ -90,13 +91,20 @@ exports.getAllUsers = async (req, res, next) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
     } 
 };
 
 exports.getUserById = async (req, res, next) => {
     try {
-        const userId = req.params.id; 
+        const userId = +req.params.id; 
+        const loggedInUser = await verifyToken(req.headers.authorization);
+
+        if (!loggedInUser) {
+            return res.status(401).send({ message: 'Unauthorized.' });
+        } else if (!loggedInUser.isAdmin && loggedInUser !== userId) {
+            return res.status(403).send({ message: 'Forbidden.' })
+        }
 
         const user = await models.User.findOne({
             attributes: [
@@ -135,11 +143,11 @@ exports.getUserById = async (req, res, next) => {
             }))
         };
 
-        res.status(200).json(userDetails);
+        return res.status(200).json(userDetails);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -169,11 +177,11 @@ exports.updateUser = async (req, res, next) => {
 
         await user.save();
 
-        res.status(200).json(updateResponse);
+        return res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -197,9 +205,9 @@ exports.deleteUser = async (req, res, next) => {
             success: true
         };
 
-        res.status(200).json(deleteResponse);
+        return res.status(200).json(deleteResponse);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Server error.' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
