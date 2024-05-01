@@ -3,7 +3,8 @@ const { verifyToken } = require('../util/token');
 
 const checkAuth = async (req, res, next) => {
     try {
-        const auth = await verifyToken(req.cookies.Authorization);
+        const auth = await verifyToken(req.cookies.authorization);
+        console.log(auth)
         const facility = +req.facility;
         req.userId = auth.id
 

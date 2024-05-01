@@ -27,12 +27,15 @@ exports.login = async (req, res, next) => {
         const userInfo = {
             userId: user.id,
             isAdmin: user.isAdmin,
-            facilityAuths: facilityIds
+            facilityAuths: facilityIds 
         }
 
-        // Set the token in the Authorization header
-        // return res.setHeader('Authorization', token).status(200).json(userInfo);
-        return res.cookie('Authorization', token, { maxAge: 60*1000*120, httpOnly: true }).status(200).json(userInfo);
+        res.cookie('authorization', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict'
+        })
+        return res.status(200).send({ userInfo });
 
     } catch (error) {
         console.error(error);
