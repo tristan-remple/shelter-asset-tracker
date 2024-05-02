@@ -32,42 +32,52 @@ const UserCreate = () => {
         name: "",
         isAdmin: false,
         createdAt: "",
-        location: {},
+        facilities: [],
         email: "",
         password: ""
     })
 
     // list of locations for dropdown
-    const [ locations, setLocations ] = useState([])
-    const [ locationTitles, setLocationTitles ] = useState([])
     useEffect(() => {
         (async()=>{
             await apiService.listLocations(function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    setLocations(data)
-                    const titles = data.map(loc => loc.name)
-                    setLocationTitles(titles)
+                    const newChanges = {...changes}
+                    const facilityList = data.map(loc => {
+                        loc.active = false
+                        return loc
+                    })
+                    newChanges.facilities = facilityList
+                    setChanges(newChanges)
                 }
             })
         })()
     }, [])
 
-    // handles location change
-    // passed into Dropdown
-    const handleLocationChange = (newLocName) => {
-        const newLocIndex = locations.map(loc => loc.name).indexOf(newLocName)
-        if (newLocIndex !== -1) {
-            const newChanges = {...changes}
-            newChanges.location = locations[newLocIndex]
-            setChanges(newChanges)
-            setUnsaved(true)
-            setStatus("")
-        } else {
-            setStatus("The location you have selected cannot be found.")
-        }
+    const handleLocations = (event, changes, setChanges, setUnsaved) => {
+        const fieldName = parseInt(event.target.name)
+        const newChanges = {...changes}
+        const currentIndex = newChanges.facilities.findIndex(loc => loc.id === fieldName)
+        newChanges.facilities[currentIndex].active = newChanges.facilities[currentIndex].active ? false : true
+        setChanges(newChanges)
+        setUnsaved(true)
     }
+
+    const locationSelector = changes.facilities?.map(loc => {
+        return (
+            <li key={ loc.id }>
+                <label htmlFor={ loc.id }>{ loc.name }</label>
+                <input 
+                    type="checkbox"
+                    name={ loc.id } 
+                    checked={ loc.active }
+                    onChange={ (event) => handleLocations(event, changes, setChanges, setUnsaved) } 
+                />
+            </li>
+        )
+    })
 
     // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
     const validateEmail = (email) => {
@@ -87,7 +97,11 @@ const UserCreate = () => {
             return
         }
 
-        apiService.postNewUser(changes, (response) => {
+        const newUser = {...changes}
+        newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
+        console.log(newUser)
+
+        apiService.postNewUser(newUser, (response) => {
             if (response.error) {
                 setErr(response.error)
             } else {
@@ -159,11 +173,9 @@ const UserCreate = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            <Dropdown 
-                                list={ locationTitles } 
-                                current={ changes.location.name } 
-                                setCurrent={ handleLocationChange }
-                            />
+                            <ul>
+                                { locationSelector }
+                            </ul>
                         </div>
                     </div>
                     <div className="col col-info">

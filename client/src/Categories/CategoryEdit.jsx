@@ -83,21 +83,15 @@ const CategoryEdit = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
         const editedCategory = {...changes}
-
-        if (authService.checkUser()) {
-            await apiService.postCategoryEdit(editedCategory, (res) => {
-                if (res.success) {
-                    setStatus(`You have successfully saved your changes to category ${ res.name }.`)
-                    setUnsaved(false)
-                    navigate(`/category/${ id }`)
-                } else {
-                    setStatus("We weren't able to process your edit category request.")
-                }
-            })
-            
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        await apiService.postCategoryEdit(editedCategory, (res) => {
+            if (res.success) {
+                setStatus(`You have successfully saved your changes to category ${ res.name }.`)
+                setUnsaved(false)
+                navigate(`/category/${ id }`)
+            } else {
+                setStatus("We weren't able to process your edit category request.")
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (

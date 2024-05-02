@@ -41,48 +41,64 @@ const UserEdit = () => {
         isAdmin: false,
         createdAt: "",
         updatedAt: "",
-        facilities: [],
-        locations: []
+        facilities: []
     })
 
+    // get the full array of locations
+    const getLocations = async(userData) => {
+        await apiService.listLocations(function(data){
+            if (data.error) {
+                setErr(data.error)
+            } else {
+                const newChanges = {...userData}
+                // add true or false to the location based on the user's permissions
+                const toggledLocations = data.map(loc => {
+                    loc.active = newChanges.facilities.some(fac => fac.facilityId === loc.id)
+                    return loc
+                })
+                newChanges.facilities = toggledLocations
+                setChanges(newChanges)
+            }
+        })
+    }
+
     // fetch user data from the api
-    const [ user, setUser ] = useState({})
     useEffect(() => {
         (async()=>{
+
+            // get the user
             await apiService.singleUser(id, function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    data.locations = []
-                    setUser(data),
-                    setChanges(data)
                     setErr(null)
+                    getLocations(data)
                 }
             })
         })()
     }, [])
 
-    // list of locations for dropdown
-    const [ locations, setLocations ] = useState([])
-    useEffect(() => {
-        (async()=>{
-            await apiService.listLocations(function(data){
-                if (data.error) {
-                    setErr(data.error)
-                } else {
-                    setLocations(data)
-                }
-            })
-        })()
-    }, [])
+    const handleLocations = (event, changes, setChanges, setUnsaved) => {
+        const fieldName = parseInt(event.target.name)
+        const newChanges = {...changes}
+        const currentIndex = newChanges.facilities.findIndex(loc => loc.id === fieldName)
+        newChanges.facilities[currentIndex].active = newChanges.facilities[currentIndex].active ? false : true
+        setChanges(newChanges)
+        setUnsaved(true)
+    }
 
-    const locationSelector = locations.map(loc => {
-        return <input 
-            type="checkbox"
-            name={ loc.name } 
-            checked={ true }
-            onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
-        />
+    const locationSelector = changes.facilities?.map(loc => {
+        return (
+            <li key={ loc.id }>
+                <label htmlFor={ loc.id }>{ loc.name }</label>
+                <input 
+                    type="checkbox"
+                    name={ loc.id } 
+                    checked={ loc.active }
+                    onChange={ (event) => handleLocations(event, changes, setChanges, setUnsaved) } 
+                />
+            </li>
+        )
     })
 
     // send data to the api
@@ -96,14 +112,15 @@ const UserEdit = () => {
 
         // convert the changes object into a valid user object
         const newUser = {...changes}
+        newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
 
         await apiService.postUserEdit(newUser, (response) => {
-            if (response.success) {
+            if (response.error) {
+                setStatus("We weren't able to process your edit user request.")
+            } else {
                 setStatus(`You have successfully updated user ${response.name}.`)
                 setUnsaved(false)
-                navigate(`/user/${ user.id }`)
-            } else {
-                setStatus("We weren't able to process your edit user request.")
+                navigate(`/user/${ changes.id }`)
             }
         })
         
@@ -114,16 +131,16 @@ const UserEdit = () => {
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Editing User { user.name }</h2>
+                    <h2>Editing User { changes.name }</h2>
                 </div>
                 <div className="col-2">
-                    <Button text="Return" linkTo={ `/user/${ user.id }` } type="nav" />
+                    <Button text="Return" linkTo={ `/user/${ changes.id }` } type="nav" />
                 </div>
                 <div className="col-2">
                     <Button text="Save" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2">
-                    <Button text="Delete" linkTo={ `/users/${ user.id }/delete` } type="danger" />
+                    <Button text="Delete" linkTo={ `/users/${ changes.id }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -168,20 +185,18 @@ const UserEdit = () => {
                             />
                         </div>
                     </div> */}
-                    {/* <div className="col col-info">
+                    <div className="col col-info">
                         <div className="col-head">
                             Locations
                         </div>
                         <div className="col-content">
-                            <Dropdown 
-                                list={ locationTitles } 
-                                current={ changes.location.locationName } 
-                                setCurrent={ handleLocationChange }
-                            />
+                            <ul>
+                                { locationSelector }
+                            </ul>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ user.id }` } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ changes.id }` } /> }
             </div>
         </main>
     )

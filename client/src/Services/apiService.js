@@ -240,6 +240,7 @@ class apiService {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
+                console.log(err)
                 callback({ error: errorCodes[err.response.status] })
             }
         })
@@ -288,7 +289,6 @@ class apiService {
             withCredentials: true
         })
         .then(res => {
-            console.log(res.data)
             callback(res.data)
         })
         .catch(err => {
