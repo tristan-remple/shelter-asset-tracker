@@ -120,6 +120,10 @@ exports.getUserById = async (req, res, next) => {
             },
         });
 
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
         req.data = user;
         next();
 
@@ -132,18 +136,14 @@ exports.getUserById = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
     try {
         const { name, email } = req.body;
-        const userId = req.params.id;
-
-        const user = await models.User.findByPk(userId);
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
-        }
+        const user = req.data;
 
         user.set({
             name: name,
             email: email
         });
+
+        await user.save();
 
         const updateResponse = {
             userId: user.id,
@@ -152,9 +152,37 @@ exports.updateUser = async (req, res, next) => {
             success: true
         }
 
+        return res.status(200).json(updateResponse);
+        
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.setAdmin = async (req, res, next) => {
+    try {
+        const user = req.data;
+        const { isAdmin } = req.body;
+        if (user.id === 1){
+            return res.status(403).send({ message: "Forbidden" });
+        }
+
+        user.set({
+            isAdmin: isAdmin
+        });
+        
         await user.save();
 
-        res.status(200).json(updateResponse);
+        const setAdminResponse = {
+            userId: user.id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            success: true
+        }
+
+        return res.status(200).json(setAdminResponse);
         
     } catch (err) {
         console.error(err);
