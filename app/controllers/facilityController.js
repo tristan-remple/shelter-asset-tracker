@@ -41,11 +41,8 @@ exports.getFacilityById = async (req, res, next) => {
             attributes: [
                 'id', 
                 'name', 
-                'phone', 
                 'createdAt', 
-                'updatedAt',
-                [Sequelize.fn('COUNT', Sequelize.literal('DISTINCT CASE WHEN `Units->Items`.`toInspect` = true THEN `Units`.`id` END')), 'inspectCount'],
-                [Sequelize.fn('COUNT', Sequelize.literal('DISTINCT CASE WHEN `Units->Items`.`toDiscard` = true THEN `Units`.`id` END')), 'discardCount']
+                'updatedAt'
             ],
             where: { id: facilityId },
             include: [{
@@ -59,10 +56,9 @@ exports.getFacilityById = async (req, res, next) => {
                     'type'],
                 include: {
                     model: models.Item,
-                    attributes: []
+                    attributes: ['id', 'status']
                 }
-            }],
-            group: ['Facility.id', 'Facility.name', 'Facility.phone', 'Facility.createdAt', 'Facility.updatedAt', 'User.id', 'User.name', 'Units.id', 'Units.name', 'Units.type']
+            }]
         });
 
         if (!facility) {
@@ -72,7 +68,6 @@ exports.getFacilityById = async (req, res, next) => {
         const facilityDetails = {
             facilityId: facility.id,
             name: facility.name,
-            phone: facility.phone,
             manager: {
                 id: facility.User.id,
                 name: facility.User.name
@@ -81,8 +76,8 @@ exports.getFacilityById = async (req, res, next) => {
                 unitId: unit.id,
                 name: unit.name,
                 type: unit.type,
-                inspectCount: unit.inspectCount || 0,
-                deleteCount: unit.discardCount || 0
+                inspectCount:  unit.Items.filter(item => item.status === 'inspect').length,
+                discardCount:  unit.Items.filter(item => item.status === 'discard').length
             })),
             created: facility.createdAt,
             updated: facility.updatedAt,
@@ -99,17 +94,16 @@ exports.getFacilityById = async (req, res, next) => {
 };
 
 exports.sendFacility = async (req, res, next) => {
-    res.status(200).json(req.data)
+    return res.status(200).json(req.data);
 }
 
 exports.createNewFacility = async (req, res, next) => {
     try {
-        const { locationName, managerId, phone } = req.body;
+        const { locationName, managerId } = req.body;
 
         const newFacility = await models.Facility.create({
             name: locationName,
-            managerId: managerId,
-            phone: phone
+            managerId: managerId
         });
 
         const createResponse = {
@@ -130,7 +124,7 @@ exports.createNewFacility = async (req, res, next) => {
 exports.updateFacility = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
-        const { name, managerId, phone } = req.body;
+        const { name, managerId } = req.body;
 
         const facility = await models.Facility.findByPk(facilityId);
 
@@ -140,15 +134,13 @@ exports.updateFacility = async (req, res, next) => {
 
         facility.set({
             name: name,
-            managerId: managerId,
-            phone: phone
+            managerId: managerId
         });
 
         const updateResponse = {
             id: facility.id,
             name: facility.name,
             managerId: facility.managerId,
-            phone: facility.phone,
             success: true
         }
         

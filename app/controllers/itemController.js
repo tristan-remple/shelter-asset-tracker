@@ -1,5 +1,5 @@
 const { models } = require('../data');
-const { calculateCurrentValue } = require('../util/calc');
+const { calculateCurrentValue, getEoL } = require('../util/calc');
 
 exports.getAllItems = async (req, res, next) => {
     try {
@@ -20,14 +20,13 @@ exports.getItemById = async (req, res, next) => {
                 'name',
                 'invoice',
                 'vendor',
+                'donated',
                 'initialValue',
-                'depreciationRate',
-                'toDiscard',
-                'toInspect',
+                'usefulLife',
+                'status',
                 'addedBy',
                 'createdAt',
-                'updatedAt',
-                'deletedAt'
+                'updatedAt'
             ],
             where: { id: itemId },
             include: [{
@@ -45,7 +44,20 @@ exports.getItemById = async (req, res, next) => {
             },
             {
                 model: models.Template,
-                attributes: ['id', 'name', 'icon']
+                attributes: [
+                    'id', 
+                    'name', 
+                    'depreciationRate',
+                ],
+                include: {
+                    model: models.Icon,
+                    attributes: [
+                        'id',
+                        'src',
+                        'name',
+                        'alt'
+                    ]
+                }
             },
             {
                 model: models.Inspection,
@@ -79,7 +91,7 @@ exports.getItemById = async (req, res, next) => {
 
 exports.sendItem = async (req, res, next) => {
     const item = req.data;
-    const currentValue = calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt);
+    const currentValue = calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt);
     const itemProfile = {
         id: item.id,
         name: item.name,
@@ -96,10 +108,13 @@ exports.sendItem = async (req, res, next) => {
         template: {
             id: item.Template.id,
             name: item.Template.name,
-            icon: item.Template.icon
+            icon: {
+                id: item.Template.Icon.id,
+                src: item.Template.Icon.src,
+                name: item.Template.Icon.name,
+                alt: item.Template.Icon.alt,
+            }
         },
-        toInspect: item.toInspect,
-        toDiscard: item.toDiscard,
         addedBy: {
             id: item.addedByUser.id,
             name: item.addedByUser.name,
@@ -116,9 +131,11 @@ exports.sendItem = async (req, res, next) => {
         value: {
             initialValue: item.initialValue,
             donated: item.donated,
-            depreciationRate: item.depreciationRate,
+            depreciationRate: item.Template.depreciationRate,
             currentValue: currentValue,
         },
+        usefulLife: item.usefulLife,
+        status: item.status,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt
     };
@@ -129,17 +146,23 @@ exports.sendItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { unitId, name, invoice, vendor, initialValue, depreciationRate, toDiscard, toInspect, comment } = req.body;
+        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
+
+        if (item.status == 'inspect' && status !== 'inspect'){
+            await models.Inspection.create({
+                comment: comment,
+                itemId: item.id,
+                userId: req.userId
+            });
+        };
 
         item.set({
-            unitId: unitId,
             name: name,
             invoice: invoice,
             vendor: vendor,
             initialValue: initialValue,
-            depreciationRate: depreciationRate,
-            toDiscard: toDiscard,
-            toInspect: toInspect
+            usefulLife: usefulLifeOffset ? getEoL(usefulLifeOffset, item.usefulLife) : item.usefulLife,
+            status: status
         });
 
         const updateResponse = {
@@ -147,23 +170,16 @@ exports.updateItem = async (req, res, next) => {
             name: item.name,
             invoice: item.invoice,
             vendor: item.vendor,
+            donates: item.donated,
             initialValue: item.initialValue,
-            depreciationRate: item.depreciationRate,
-            toAssess: item.toAssess,
-            toDiscard: item.toDiscard,
-            currentValue: calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt),
+            depreciationRate: item.Template.depreciationRate,
+            usefulLife: item.usefulLife,
+            status: item.status,
+            currentValue: calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt),
             success: true
         }
 
         await item.save();
-
-        const inspection = await models.Inspection.create({
-            comment: comment,
-            itemId: item.id,
-            userId: req.userId
-        });
-
-        await inspection.save();
 
         return res.status(200).json(updateResponse);
 
@@ -188,8 +204,8 @@ exports.checkFacility = async (req, res, next) => {
 
 exports.createNewItem = async (req, res, next) => {
     try {
-        const { name, invoice, vendor, unitId, templateId, donated, initialValue, depreciationRate, addedBy } = req.body;
-        if (!name || !invoice || !vendor || !unitId || !templateId || donated === undefined || initialValue === undefined || depreciationRate === undefined || !addedBy) {
+        const { name, invoice, vendor, unitId, templateId, donated, initialValue, usefulLifeOffset, addedBy } = req.body;
+        if (!name || !invoice || !vendor || !unitId || !templateId || donated === undefined || !initialValue || !usefulLifeOffset || !addedBy) {
             return res.status(400).json({ error: 'Bad request.' });
         }
 
@@ -201,23 +217,22 @@ exports.createNewItem = async (req, res, next) => {
             templateId: templateId,
             donated: donated,
             initialValue: initialValue,
-            depreciationRate: depreciationRate,
+            usefulLife: getEoL(usefulLifeOffset),
             addedBy: addedBy,
-            toInspect: false,
-            toDiscard: false
+            status: 'ok'
         });
 
         const createResponse = {
             itemId: newItem.id,
             name: newItem.name,
-            invoice: invoice,
-            vendor: vendor,
+            invoice: newItem.invoice,
+            vendor: newItem.vendor,
             unit: newItem.unitId,
             templateId: newItem.templateId,
             donated: newItem.donated,
             initialValue: newItem.initialValue,
-            depreciationRate: newItem.depreciationRate,
             addedBy: newItem.addedBy,
+            usefulLife: newItem.usefulLife,
             success: true
         };
 
@@ -241,6 +256,7 @@ exports.deleteItem = async (req, res, next) => {
             success: true
         }
 
+        console.log(deletedItem.deleted);
         return res.status(200).json(deleteResponse);
 
     } catch (error) {

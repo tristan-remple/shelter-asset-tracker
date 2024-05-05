@@ -18,8 +18,7 @@ exports.getUnitById = async (req, res, next) => {
                 attributes: [
                     'id',
                     'name', 
-                    'toInspect',
-                    'toDiscard'
+                    'status'
                 ],
                 include: {
                     model: models.Template,
@@ -65,8 +64,7 @@ exports.sendUnit = async (req, res, next) => {
                 id: item.Template.id,
                 name: item.Template.name
             },
-            toInspect: item.toInspect,
-            toDiscard: item.toDiscard
+            status: item.status
         })),
         createdAt: unit.createdAt,
         updatedAt: unit.updatedAt

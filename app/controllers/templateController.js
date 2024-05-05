@@ -2,15 +2,24 @@ const { models, Sequelize } = require('../data');
 
 exports.getAllTemplates = async (req, res, next) => {
     try {
-        const templates = await models.Template.findAll({
+        const templates = await models.Template.findAll({   
             attributes: [
                 'id', 
                 'name', 
                 'defaultValue', 
-                'defaultDepreciation', 
-                'icon', 
+                'depreciationRate', 
+                'defaultUsefulLife', 
                 'singleResident'
-            ]
+            ],
+            include: {
+                model: models.Icon,
+                attributes: [
+                    'id',
+                    'src',
+                    'name',
+                    'alt'
+                ]
+            }
         });
 
         if (!templates) {
@@ -35,18 +44,26 @@ exports.getTemplateById = async (req, res, next) => {
                 'id', 
                 'name', 
                 'defaultValue', 
-                'defaultDepreciation', 
-                'icon', 
+                'depreciationRate',
+                'defaultUsefulLife', 
                 'singleResident', 
                 'createdAt', 
                 'updatedAt',
                 [Sequelize.fn('COUNT', Sequelize.col('Items.id')), 'itemCount']],
             where: { id: templateId },
-            include: {
+            include: [{
                 model: models.Item,
                 attributes: [],
                 required: false
-            },
+            }, {
+                model: models.Icon,
+                attributes: [
+                    'id',
+                    'src',
+                    'name',
+                    'alt'
+                ]
+            }]
         });
 
         if (template.id === null) {
@@ -63,7 +80,7 @@ exports.getTemplateById = async (req, res, next) => {
 
 exports.createNewTemplate = async (req, res, next) => {
     try {
-        const { name, defaultValue, defaultDepreciation, icon, singleResident } = req.body;
+        const { name, defaultValue, depreciationRate, defaultUsefulLife, icon, singleResident } = req.body;
 
         const existingTemplate = await models.Template.findOne({ where: { name } });
         if (existingTemplate) {
@@ -71,18 +88,20 @@ exports.createNewTemplate = async (req, res, next) => {
         }
 
         const newTemplate = await models.Template.create({
-            name, 
-            defaultValue, 
-            defaultDepreciation,
-            icon,
-            singleResident
+            name: name, 
+            defaultValue: defaultValue, 
+            depreciationRate: depreciationRate,
+            defaultUsefulLife: defaultUsefulLife,
+            icon: icon,
+            singleResident: singleResident
         });
 
         const createResponse = {
             id: newTemplate.id,
             name: newTemplate.name,
             defaultValue: newTemplate.defaultValue,
-            defaultDepreciation: newTemplate.defaultDepreciation,
+            depreciationRate: newTemplate.depreciationRate,
+            defaultUsefulLife: newTemplate.defaultUsefulLife,
             icon: newTemplate.icon,
             singleResident: newTemplate.singleResident,
             createdAt: newTemplate.createdAt,
@@ -101,7 +120,7 @@ exports.createNewTemplate = async (req, res, next) => {
 exports.updateTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
-        const { name, defaultValue, defaultDepreciation, icon, singleResident } = req.body;
+        const { name, defaultValue, depreciationRate, defaultUsefulLife, icon, singleResident } = req.body;
 
         const template = await models.Template.findByPk(templateId);
 
@@ -112,7 +131,8 @@ exports.updateTemplate = async (req, res, next) => {
         template.set({
             name: name,
             defaultValue: defaultValue,
-            defaultDepreciation: defaultDepreciation,
+            defaultDepreciation: depreciationRate,
+            defaultUsefulLife: defaultUsefulLife,
             icon: icon,
             singleResident: singleResident
         })
@@ -120,7 +140,8 @@ exports.updateTemplate = async (req, res, next) => {
         const updateResponse = {
             name: template.name,
             defaultValue: template.defaultValue,
-            defaultDepreciation: template.defaultDepreciation,
+            depreciationRate: template.depreciationRate,
+            defaultUsefulLife: template.defaultUsefulLife,
             icon: template.icon,
             singleResident: template.singleResident,
             success: true

@@ -5,6 +5,10 @@ module.exports = (db, { DataTypes }) => {
             primaryKey: true,
             autoIncrement: true
         },
+        icon: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -14,13 +18,13 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        defaultDepreciation: {
+        depreciationRate: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        icon: {
-            type: DataTypes.STRING,
-            allowNull: true
+        defaultUsefulLife: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         singleResident: {
             type: DataTypes.BOOLEAN,
