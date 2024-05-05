@@ -12,6 +12,7 @@ dotenv.config();
 const models = [
     require('./models/facility.model'),
     require('./models/facilityAuth.model'),
+    require('./models/icon.model'),
     require('./models/inspection.model'),
     require('./models/item.model'),
     require('./models/template.model'),

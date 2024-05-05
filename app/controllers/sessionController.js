@@ -35,6 +35,7 @@ exports.login = async (req, res, next) => {
             secure: true,
             sameSite: 'strict'
         })
+        console.log(res.cookie);
         return res.status(200).send({ userInfo });
 
     } catch (error) {
@@ -44,7 +45,12 @@ exports.login = async (req, res, next) => {
 };
 
 exports.logout = async (req, res, next) => {
-    return res.clearCookie('authentication').status(200).send()
+    res.clearCookie('authorization', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict'
+    });
+    return res.status(200).send();
 };
 
 exports.reset = async (req, res, next) => {
