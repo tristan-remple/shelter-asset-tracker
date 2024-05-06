@@ -10,7 +10,7 @@ import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
+import Flag, { flagOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import CommentBox from '../Reusables/CommentBox'
 
@@ -50,7 +50,8 @@ const ItemDetails = () => {
     if (item) {
 
     // destructure the item object
-    const { unit, name, template, toInspect, toDiscard, value, createdAt, inspectionRecord, invoice, vendor } = item
+    const { unit, name, template, status: itemStatus, value, createdAt, inspectionRecord, invoice, vendor } = item
+    console.log(template)
 
     // if it has been deleted, throw an error
     // if (discardDate) {
@@ -58,15 +59,9 @@ const ItemDetails = () => {
     // }
 
     // flag options are defined in the flag module
-    let flagColor = flagColorOptions[0]
-    let flagText = flagTextOptions[0]
-    if ( toDiscard ) {
-        flagColor = flagColorOptions[2]
-        flagText = flagTextOptions[2]
-    } else if ( toInspect ) {
-        flagColor  = flagColorOptions[1]
-        flagText = flagTextOptions[1]
-    }
+    let currentFlag = flagOptions.filter(option => {
+        return option.text.toLowerCase() === itemStatus
+    })[0]
     
     return err ? <Error err={ err } /> : (
         <main className="container">
@@ -124,14 +119,14 @@ const ItemDetails = () => {
                             Status
                         </div>
                         <div className="col-content">
-                            <Flag color={ flagColor } />
-                            { flagText }
+                            <Flag color={ currentFlag.color } />
+                            { currentFlag.text }
                         </div>
                     </div>
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ template.icon }.png` } alt={ template.name + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ template.icon.src }` } alt={ template.icon.name + " icon" } />
                     </div>
                     <div className="col-8 col-content">
                         <CommentBox comments={ inspectionRecord } />

@@ -115,6 +115,12 @@ const Dashboard = () => {
             }))
             setItemCount(newItemCount)
             setTotalValue(newTotalValue)
+            setFilters({
+                startDate: `${new Date().getFullYear()}-01-01`,
+                endDate: `${new Date().getFullYear()}-12-31`,
+                inspect: false,
+                discard: true
+            })
 
         // if the api call has succeeded and one location has been selected
         } else if (response?.length > 0) {
@@ -135,6 +141,12 @@ const Dashboard = () => {
             setFilteredItems(items)
             setTotalValue(location.totalValue)
             setItemCount(location.itemCount)
+            setFilters({
+                startDate: `${new Date().getFullYear()}-01-01`,
+                endDate: `${new Date().getFullYear()}-12-31`,
+                inspect: false,
+                discard: true
+            })
         }
 
     // do this whole process when the api call completes and when the view changes
@@ -146,7 +158,9 @@ const Dashboard = () => {
     }).map(item => {
         return (
             <tr key={ item.id } >
-                <td className="col-icon"><img className="small-icon" src={ `/img/${ item.icon }.png` } /></td>
+                <td className="col-icon">
+                    <img className="small-icon" src={ `/img/${ item.icon.src }` } alt={ `${ item.icon.name } icon` } />
+                </td>
                 <td>{ item.name }</td>
                 <td className="col-right">{ item.count }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
@@ -168,25 +182,26 @@ const Dashboard = () => {
     // --CHANGES NEEDED HERE
     // when filters are updated, update the items listed
     useEffect(() => {
-        const newFilters = discardItems.filter(item => { // discardItems -> filterItems when EoL is figured out
+        const newFilters = discardItems.filter(item => { // discardItems -> filterItems when usefulLife is figured out
             return (
-                new Date(item.eol) > new Date(filters.startDate) &&
-                new Date(item.eol) < new Date(filters.endDate) &&
-                (filters.discard ? item.toDiscard : true) &&
-                (filters.inspect ? item.toInspect || item.toDiscard : true)
+                new Date(item.usefulLife) > new Date(filters.startDate) &&
+                new Date(item.usefulLife) < new Date(filters.endDate) &&
+                (filters.discard ? item.status === "discard" : true) &&
+                (filters.inspect ? item.status === "inspect" || item.status === "discard" : true)
             )
         })
         setFilteredItems(newFilters)
     }, [ filters ])
 
     // render the filtered items as table rows for the lower table
-    const displayItems = discardItems.map(item => {
+    const displayItems = filteredItems.map(item => {
+        console.log(item)
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
                 <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.id }` } type="small" /></td>
-                <td>{ adminDate(item.eol) }</td>
+                <td>{ adminDate(item.usefulLife) }</td>
             </tr>
         )
     })

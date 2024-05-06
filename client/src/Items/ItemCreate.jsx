@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import apiService from "../Services/apiService"
 import authService from '../Services/authService'
 import { formattedDate } from '../Services/dateHelper'
-import { statusContext } from '../Services/Context'
+import { statusContext, userContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 
 // components
@@ -29,11 +29,12 @@ import ChangePanel from '../Reusables/ChangePanel'
 
 const ItemCreate = () => {
 
-    // id from the url and status from the context
+    // page setup
     const { id } = useParams()
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
+    const { userDetails } = useContext(userContext)
 
     // redirect to the error page if no unit is specified or if the unit specified isn't found
     if (id === undefined) {
@@ -63,7 +64,7 @@ const ItemCreate = () => {
             categoryId: 0,
             categoryName: "Select:",
             defaultValue: 0,
-            icon: "icons8-room-100",
+            Icon: {},
             singleUse: false
         },
         added: {
@@ -119,7 +120,7 @@ const ItemCreate = () => {
         if (newCatIndex !== -1) {
             const newItemAdditions = {...newItem}
             newItemAdditions.template = categoryList[newCatIndex]
-            newItemAdditions.initialValue = categoryList[newCatIndex].defaultValue
+            newItemAdditions.initialValue = parseFloat(categoryList[newCatIndex].defaultValue)
             setNewItem(newItemAdditions)
             setUnsaved(true)
             setStatus("")
@@ -132,7 +133,7 @@ const ItemCreate = () => {
     const saveChanges = async() => {
 
         // check that fields have been filled in
-        if (newItem.label === "" || newItem.template.categoryName === "Select:" || newItem.initialValue === 0) {
+        if (newItem.name === "" || newItem.template.categoryName === "Select:" || newItem.initialValue === 0) {
             setStatus("A new item must have a label, a category, and an initial value.")
             return
         }
@@ -140,8 +141,11 @@ const ItemCreate = () => {
         const changes = {...newItem}
 
         changes.templateId = changes.template.id
-        changes.addedBy = 3
+        changes.addedBy = userDetails.userId
         changes.donated = newItem.donated ? 1 : 0
+        changes.usefulLifeOffset = 12
+
+        console.log(changes)
 
         // send api request and process api response
         await apiService.postNewItem(changes, (response => {
@@ -215,7 +219,7 @@ const ItemCreate = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ newItem.template.icon }.png` } alt={ newItem.template.name + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ newItem.template.Icon.src }` } alt={ newItem.template.Icon.name + " icon" } />
                     </div>
                     <div className="col-8 col-content">
                         <strong>Comments:</strong>

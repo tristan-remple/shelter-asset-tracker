@@ -12,7 +12,7 @@ import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
+import Flag, { flagOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
@@ -69,8 +69,9 @@ const ItemInspect = () => {
 
     // object that defines fields that are safe to change
     const [ changes, setChanges ] = useState({
-        statusColor: flagColorOptions[0],
-        statusText: flagTextOptions[0],
+        status: "ok",
+        flag: flagOptions[0],
+        usefulLifeOffset: null,
         comment: ""
     })
 
@@ -78,19 +79,14 @@ const ItemInspect = () => {
         if (item) {
 
             // flag options are defined in the flag module
-            let flagColor = flagColorOptions[0]
-            let flagText = flagTextOptions[0]
-            if ( item.toDiscard ) {
-                flagColor = flagColorOptions[2]
-                flagText = flagTextOptions[2]
-            } else if ( item.toInspect ) {
-                flagColor  = flagColorOptions[1]
-                flagText = flagTextOptions[1]
-            }
+            let currentFlag = flagOptions.filter(option => {
+                return option.text.toLowerCase() === item.status
+            })[0]
             
             setChanges({
-                statusColor: flagColor,
-                statusText: flagText,
+                status: item.status,
+                flag: currentFlag,
+                usefulLifeOffset: null,
                 comment: ""
             })
         }
@@ -99,15 +95,28 @@ const ItemInspect = () => {
     // Text changes are handled by Services/handleChanges
 
     // handles flag dropdown state
+    const flagTextOptions = flagOptions.map(option => option.text)
     const handleFlag = (input) => {
         const newChanges = {...changes}
-        const index = flagTextOptions.indexOf(input)
+        const index = flagOptions.findIndex(option => option.text === input)
         if (index > -1) {
-            newChanges.statusColor = flagColorOptions[index]
-            newChanges.statusText = flagTextOptions[index]
+            newChanges.status = flagOptions[index].text.toLowerCase()
+            newChanges.flag = flagOptions[index]
         }
         setChanges(newChanges)
         setUnsaved(true)
+    }
+
+    const [ snoozeYears, setSnoozeYears ] = useState(1)
+    const snooze = () => {
+        const newChanges = {...changes}
+        if (!newChanges.usefulLifeOffset) {
+            newChanges.usefulLifeOffset = 12
+        } else if (typeof newChanges.usefulLifeOffset === "number") {
+            newChanges.usefulLifeOffset += 12
+        }
+        setSnoozeYears(snoozeYears + 1)
+        setChanges(newChanges)
     }
 
     const [ confirm, setConfirm ] = useState(false)
@@ -117,11 +126,10 @@ const ItemInspect = () => {
 
         const newItem = {...item}
         newItem.unitId = item.unit.id
-        newItem.toInspect = changes.statusText === flagTextOptions[1]
-        newItem.toDiscard = changes.statusText === flagTextOptions[2]
+        newItem.status = changes.status
         newItem.comment = changes.comment
 
-        if (newItem.toInspect === item.toInspect && newItem.toDiscard === item.toDiscard && !confirm) {
+        if (newItem.status === item.status && !confirm) {
             if (newItem.comment === "") {
                 setStatus("You have not entered or changed anything.")
                 return
@@ -135,7 +143,7 @@ const ItemInspect = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully changed the status flag on ${ response.name }.`)
+                setStatus(`You have submitted an inspection on ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/item/${response.id}`)
             }
@@ -164,17 +172,25 @@ const ItemInspect = () => {
                             Status
                         </div>
                         <div className="col-content">
-                            <Flag color={ changes.statusColor } />
+                            <Flag color={ changes.flag.color } />
                             <Dropdown
                                 list={ flagTextOptions }
-                                current={ changes.statusText }
+                                current={ changes.flag.text }
                                 setCurrent={ handleFlag }
                             />
                         </div>
                     </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Snooze End of Life
+                        </div>
+                        <div className="col-content">
+                            <Button text={ `${ snoozeYears } year(s)` } type="action" linkTo={ snooze } />
+                        </div>
+                    </div>
                 </div>
                 <div className="row row-info">
-                    <div className="col-8 col-content">
+                    <div className="col col-content">
                         <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 

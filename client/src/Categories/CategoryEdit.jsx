@@ -34,6 +34,17 @@ const CategoryEdit = () => {
         setErr("undefined")
     }
 
+    // form controls
+    const [ unsaved, setUnsaved ] = useState(false)
+    const [ changes, setChanges ] = useState({
+        id: null,
+        name: null,
+        defaultValue: null,
+        depreciationRate: null,
+        icon: null,
+        singleResident: null
+    })
+
     // fetch data from the api
     const [ response, setResponse ] = useState()
     useEffect(() => {
@@ -42,23 +53,21 @@ const CategoryEdit = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
+                    console.log(data)
                     setResponse(data)
                     setErr(null)
+                    setChanges({
+                        id: id,
+                        name: data.name,
+                        defaultValue: parseFloat(data.defaultValue),
+                        depreciationRate: parseFloat(data.depreciationRate),
+                        icon: data.Icon,
+                        singleResident: data.singleResident
+                    })
                 }
             })
         })()
     }, [])
-
-    // form controls
-    const [ unsaved, setUnsaved ] = useState(false)
-    const [ changes, setChanges ] = useState({
-        id: null,
-        name: null,
-        defaultValue: null,
-        defaultDepreciation: null,
-        icon: null,
-        singleResident: null
-    })
 
     // open or close the icon selector menu
     const [ selector, setSelector ] = useState(false)
@@ -66,19 +75,6 @@ const CategoryEdit = () => {
         const newSelector = selector ? false : true
         setSelector(newSelector)
     }
-
-    useEffect(() => {
-        if (response) {
-            setChanges({
-                id: id,
-                name: response.name,
-                defaultValue: response.defaultValue,
-                defaultDepreciation: response.defaultDepreciation,
-                icon: response.icon,
-                singleResident: response.singleResident
-            })
-        }
-    }, [ response ])
 
     // sends the item object to the apiService
     const saveChanges = async() => {
@@ -179,8 +175,8 @@ const CategoryEdit = () => {
                         <div className="col-content mt-2">
                             <input 
                                 type="number" 
-                                name="defaultDepreciation" 
-                                value={ changes.defaultDepreciation } 
+                                name="depreciationRate" 
+                                value={ changes.depreciationRate } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
@@ -198,7 +194,7 @@ const CategoryEdit = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } alt={ response.name + " icon" } />
+                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
                             { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
                         </div>

@@ -94,7 +94,7 @@ VALUES
 (3, 1, '101-chair01', 0, 'IKEA', 'INV-LMN678', 50.00, '2029-07-17 11:20:00', 'ok', 3, '2024-07-17 11:20:00', '2024-07-17 11:20:00'),
 (3, 1, '101-chair02', 0, 'IKEA', 'INV-OPQ901', 50.00, '2029-07-17 11:20:00', 'ok', 3, '2024-07-17 11:20:00', '2024-07-17 11:20:00'),
 (3, 2, '101-table01', 0, 'The Brick', 'INV-RST234', 100.00, '2029-07-17 11:20:00', 'ok', 3, '2022-08-10 08:55:00', '2022-08-10 08:55:00'),
-(3, 4, '101-mattress01', 0, 'Leons', 'INV-UVW567', 250.00, '2033-06-01 17:00:00', 'ok', 3, '2023-06-01 17:00:00', '2023-06-01 17:00:00);
+(3, 4, '101-mattress01', 0, 'Leons', 'INV-UVW567', 250.00, '2033-06-01 17:00:00', 'ok', 3, '2023-06-01 17:00:00', '2023-06-01 17:00:00');
 
 -- Inserting items for UnitID 4
 INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
@@ -102,7 +102,7 @@ VALUES
 (4, 1, '102-chair01', 0, 'IKEA', 'INV-XYZ890', 50.00, '2028-10-19 13:30:00', 'ok', 3, '2022-10-19 13:30:00', '2022-10-19 13:30:00'),
 (4, 1, '102-chair02', 0, 'IKEA', 'INV-123ABC', 50.00, '2028-10-19 13:30:00', 'ok', 3, '2022-10-19 13:30:00', '2022-10-19 13:30:00'),
 (4, 2, '102-table01', 0, 'The Brick', 'INV-456DEF', 100.00, '2030-04-15 11:45:00', 'ok', 3, '2023-04-15 11:45:00', '2023-04-15 11:45:00'),
-(4, 4, '102-mattress01', 0, 'Leons', 'INV-789GHI', 250.00, '2027-12-22 16:20:00', 'ok', 3, '2022-12-22 16:20:00', '2022-12-22 16:20:00);
+(4, 4, '102-mattress01', 0, 'Leons', 'INV-789GHI', 250.00, '2027-12-22 16:20:00', 'ok', 3, '2022-12-22 16:20:00', '2022-12-22 16:20:00');
 
 -- Inserting items for UnitID 5
 INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)

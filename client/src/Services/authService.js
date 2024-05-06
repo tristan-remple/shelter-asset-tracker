@@ -34,13 +34,14 @@ class authService {
             }
         })
         .then(res => {
-            callback(res.data)
+            console.log(res.data)
+            callback(res.data.userInfo)
         })
         .catch(err => {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
-                callback({ error: errorCodes[err.response.status] })
+                callback({ error: errorCodes[err?.response?.status] })
             }
         })
     }

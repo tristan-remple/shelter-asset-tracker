@@ -127,7 +127,7 @@ const CategoryDetails = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ response.icon }.png` } alt={ response.name + " icon" } />
+                            <img className="img-fluid small-icon" src={ `/img/${ response.Icon.src }` } alt={ response.Icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                         </div>
                     </div>

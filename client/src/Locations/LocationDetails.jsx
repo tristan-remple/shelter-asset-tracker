@@ -11,10 +11,9 @@ import { statusContext, authContext, userContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
+import Flag, { flagOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
-import CommentBox from '../Reusables/CommentBox'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -79,21 +78,18 @@ const LocationDetails = () => {
     }).sort((a, b) => {
         return a.inspectCount < b.inspectCount ? 1 : 0
     }).sort((a, b) => {
-        return a.deleteCount < b.deleteCount ? 1 : 0
+        return a.discardCount < b.discardCount ? 1 : 0
     })
 
     // map the unit objects into table rows
     const displayItems = filteredUnits?.map(item => {
 
         // flag options are defined in the flag module
-        let flagColor = flagColorOptions[0]
-        let flagText = flagTextOptions[0]
-        if ( item.deleteCount > 0 ) {
-            flagColor = flagColorOptions[2]
-            flagText = flagTextOptions[2]
+        let flag = flagOptions[0]
+        if ( item.discardCount > 0 ) {
+            flag = flagOptions[2]
         } else if ( item.inspectCount > 0 ) {
-            flagColor  = flagColorOptions[1]
-            flagText = flagTextOptions[1]
+            flag = flagOptions [1]
         }
 
         return (
@@ -101,7 +97,7 @@ const LocationDetails = () => {
                 <td>{ item.name }</td>
                 <td>{ capitalize(item.type) }</td>
                 <td><Button text="Details" linkTo={ `/unit/${ item.unitId }` } type="small" /></td>
-                <td><Flag color={ flagColor } /> { flagText }</td>
+                <td><Flag color={ flag.color } /> { flag.text }</td>
             </tr>
         )
     })

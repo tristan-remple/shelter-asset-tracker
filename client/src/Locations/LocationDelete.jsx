@@ -50,18 +50,14 @@ const LocationDelete = () => {
     if (location) {
     // send delete api call
     const confirmDelete = async() => {
-        if (authService.checkUser() && authService.checkAdmin()) {
-            await apiService.deleteLocation(location, (response) => {
-                if (response.error) {
-                    setErr(response.error)
-                } else {
-                    setStatus(`You have successfully deleted location ${ response.name }.`)
-                    navigate(`/locations`)
-                }
-            })
-        } else {
-            return <Error err="permission" />
-        }
+        await apiService.deleteLocation(location, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully deleted location ${ response.name }.`)
+                navigate(`/locations`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (

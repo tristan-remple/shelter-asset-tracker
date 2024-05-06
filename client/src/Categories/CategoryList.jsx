@@ -48,7 +48,9 @@ const CategoryList = () => {
 
         return (
             <tr key={ item.id } >
-                <td className="col-icon"><img className="small-icon" src={ `/img/${ item.icon }.png` } /></td>
+                <td className="col-icon">
+                    <img className="small-icon" src={ `/img/${ item.Icon.src }` } alt={ `${ item.Icon.name } icon` } />
+                </td>
                 <td>{ item.name }</td>
                 <td className="col-right">${ item.defaultValue }</td>
                 <td>{ item.singleResident ? "Yes" : "No" }</td>

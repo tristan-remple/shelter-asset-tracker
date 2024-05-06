@@ -40,7 +40,6 @@ const UnitCreate = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    console.log(data)
                     setResponse(data)
                     setErr(null)
                 }
@@ -75,21 +74,16 @@ const UnitCreate = () => {
             return
         }
 
-        // verify user identity
-        if (authService.checkUser() && authService.checkAdmin()) {
-            // send api request and process api response
-            apiService.postNewUnit(changes, (response) => {
-                if (response.error) {
-                    setErr(response.error)
-                } else {
-                    setStatus(`You have successfully created unit ${ changes.name }.`)
-                    setUnsaved(false)
-                    navigate(`/unit/${ response.unitId }`)
-                }
-            })
-        } else {
-            setErr("permission")
-        }
+        // send api request and process api response
+        apiService.postNewUnit(changes, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully created unit ${ changes.name }.`)
+                setUnsaved(false)
+                navigate(`/unit/${ response.unitId }`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (
