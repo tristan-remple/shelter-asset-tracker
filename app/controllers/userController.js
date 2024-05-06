@@ -98,13 +98,6 @@ exports.getAllUsers = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
     try {
         const userId = +req.params.id; 
-        const loggedInUser = await verifyToken(req.cookies.Authorization);
-
-        if (!loggedInUser) {
-            return res.status(401).send({ message: 'Unauthorized.' });
-        } else if (!loggedInUser.isAdmin && loggedInUser.id !== userId) {
-            return res.status(403).send({ message: 'Forbidden.' })
-        }
 
         const user = await models.User.findOne({
             attributes: [
@@ -113,7 +106,8 @@ exports.getUserById = async (req, res, next) => {
                 'name', 
                 'isAdmin', 
                 'createdAt', 
-                'updatedAt'],
+                'updatedAt'
+            ],
             where: { id: userId },
             include: {
                 model: models.FacilityAuth,
@@ -126,6 +120,79 @@ exports.getUserById = async (req, res, next) => {
             },
         });
 
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        req.data = user;
+        next();
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.updateUser = async (req, res, next) => {
+    try {
+        const { name, email } = req.body;
+        const user = req.data;
+
+        user.set({
+            name: name,
+            email: email
+        });
+
+        await user.save();
+
+        const updateResponse = {
+            userId: user.id,
+            name: user.name,
+            email: user.email,
+            success: true
+        }
+
+        return res.status(200).json(updateResponse);
+        
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.setAdmin = async (req, res, next) => {
+    try {
+        const user = req.data;
+        const { isAdmin } = req.body;
+        if (user.id === 1){
+            return res.status(403).send({ message: "Forbidden" });
+        }
+
+        user.set({
+            isAdmin: isAdmin
+        });
+        
+        await user.save();
+
+        const setAdminResponse = {
+            userId: user.id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            success: true
+        }
+
+        return res.status(200).json(setAdminResponse);
+        
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.sendUser = async (req, res, next) => {
+    try {
+        let user = req.data;
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
         }
@@ -145,45 +212,11 @@ exports.getUserById = async (req, res, next) => {
 
         return res.status(200).json(userDetails);
 
-    } catch (err) {
+    } catch {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
     }
-};
-
-exports.updateUser = async (req, res, next) => {
-    try {
-        const userId = req.params.id;
-        const { name, email, isAdmin } = req.body;
-
-        const user = await models.User.findByPk(userId);
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
-        }
-
-        user.set({
-            name: name,
-            email: email,
-            isAdmin: isAdmin
-        })
-
-        const updateResponse = {
-            name: user.name,
-            email: user.email,
-            isAdmin: user.isAdmin,
-            success: true
-        }
-
-        await user.save();
-
-        return res.status(200).json(updateResponse);
-
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Server error.' });
-    }
-};
+}
 
 exports.deleteUser = async (req, res, next) => {
     try {

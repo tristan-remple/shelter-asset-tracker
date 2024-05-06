@@ -6,18 +6,46 @@ INSERT INTO Users (password, name, isAdmin, email, createdAt, updatedAt) VALUES
 ('$2a$12$08zXJFDmXJm1p7f1wP/9a.UXwHs1C1dfIhg6QS09xgQgIEE1cuqEW', 'Jane Smith', 0, 'test3@test.com', NOW(), NOW()),
 ('$2a$12$08zXJFDmXJm1p7f1wP/9a.UXwHs1C1dfIhg6QS09xgQgIEE1cuqEW', 'Michael Johnson', 0, 'test4@test.com', NOW(), NOW());
 
+-- Inserting Icons
+INSERT INTO Icons (src, name, alt, createdAt, updatedAt) VALUES
+('icons8-bathtub-100.png', 'bathtub', 'bathtub icon', NOW(), NOW()),
+('icons8-empty-bed-100.png', 'bed', 'bed icon', NOW(), NOW()),
+('icons8-chair-100.png', 'chair', 'chair icon', NOW(), NOW()),
+('icons8-coffee-table-100.png', 'coffee table', 'coffee table icon', NOW(), NOW()),
+('icons8-bureau-100.png', 'dresser', 'dresser icon', NOW(), NOW()),
+('icons8-console-table-100.png', 'end table icon', 'end table icon', NOW(), NOW()),
+('icons8-fire-alarm-100.png', 'fire alarm', 'fire alarm icon', NOW(), NOW()),
+('icons8-fridge-100.png', 'fridge', 'fridge icon', NOW(), NOW()),
+('icons8-garbage-disposal-100.png', 'garbage disposal', 'garbage disposal icon', NOW(), NOW()),
+('icons8-interior-mirror-100.png', 'mirror', 'mirror icon', NOW(), NOW()),
+('icons8-lamp-100.png', 'lamp', 'lamp icon', NOW(), NOW()),
+('icons8-lights-100.png', 'light', 'light icon', NOW(), NOW()),
+('icons8-microwave-100.png', 'microwave', 'microwave icon', NOW(), NOW()),
+('icons8-mosquito-net-100.png', 'mosquito net', 'mosquito net icon', NOW(), NOW()),
+('icons8-power-strip-100.png', 'power bar', 'power bar icon', NOW(), NOW()),
+('icons8-room-100.png', 'room', 'room icon', NOW(), NOW()),
+('icons8-sink-100.png', 'sink', 'sink icon', NOW(), NOW()),
+('icons8-smoke-detector-100.png', 'smoke detector', 'smoke detector icon', NOW(), NOW()),
+('icons8-sofa-100.png', 'sofa', 'sofa icon', NOW(), NOW()),
+('icons8-stove-100.png', 'stove', 'stove icon', NOW(), NOW()),
+('icons8-furniture-100.png', 'table', 'table icon', NOW(), NOW()),
+('icons8-trash-100.png', 'trash', 'trash icon', NOW(), NOW()),
+('icons8-television-100.png', 'television', 'television icon', NOW(), NOW()),
+('icons8-wc-100.png', 'toilet', 'toilet icon', NOW(), NOW()),
+('icons8-window-shade-100.png', 'blinds', 'blinds icon', NOW(), NOW());
+
 -- Inserting templates
-INSERT INTO Templates (name, defaultValue, defaultDepreciation, icon, singleResident, createdAt, updatedAt) VALUES
-('Chair', 50.00, 0.04, 'chair_icon.png', 0, NOW(), NOW()),
-('Table', 100.00, 0.04, 'table_icon.png', 0, NOW(), NOW()),
-('Desk', 150.00, 0.03, 'desk_icon.png', 0, NOW(), NOW()),
-('Mattress', 250.00, 0.05, 'mattress_icon.png', 1, NOW(), NOW());
+INSERT INTO Templates (name, defaultValue, depreciationRate, defaultUsefulLife, icon, singleResident, createdAt, updatedAt) VALUES
+('Chair', 50.00, 0.04, 60, 3, 0, NOW(), NOW()),
+('Table', 200.00, 0.04, 72, 21, 0, NOW(), NOW()),
+('Sofa', 500.00, 0.03, 84, 19, 0, NOW(), NOW()),
+('Mattress', 250.00, 0.05, 120, 2, 1, NOW(), NOW());
 
 -- Inserting facilities
-INSERT INTO Facilities (name, managerId, phone, createdAt, updatedAt) VALUES
-('Blank House', 2, '902-555-1234', NOW(), NOW()),
-('Elm Apartments', 3, '902-555-5678', NOW(), NOW()),
-('Shelter Centre', 4, '902-555-9012', NOW(), NOW());
+INSERT INTO Facilities (name, managerId, createdAt, updatedAt) VALUES
+('Blank House', 2, NOW(), NOW()),
+('Elm Apartments', 3, NOW(), NOW()),
+('Shelter Centre', 4,  NOW(), NOW());
 
 -- Inserting authorizations
 INSERT INTO FacilityAuths (userId, FacilityId, createdAt) VALUES
@@ -42,66 +70,65 @@ INSERT INTO Units (facilityId, name, type, createdAt, updatedAt) VALUES
 
 -- Inserting items
 -- Inserting items for UnitID 1
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(1, 1, 'chair A-01', 0, 'IKEA', 'INV-ABC123', 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
-(1, 1, 'chair A-02', 0, 'IKEA', 'INV-DEF456', 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
-(1, 1, 'chair A-03', 0, 'IKEA', 'INV-GHI789', 50.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()), 
-(1, 2, 'table A-01', 0, 'IKEA', 'INV-JKL012', 100.00, 0.04, 0, 2, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()), 
-(1, 3, 'desk A-01', 1, 'The Brick', 'INV-MNO345', 150.00, 0.03, 1, 2, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
-(1, 4, 'mattress A-01', 0, 'Leons', 'INV-PQR678', 250.00, 0.05, 0, 2, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW());  
+(1, 1, 'chair A-01', 0, 'IKEA', 'INV-ABC123', 50.00, '2029-04-17 08:30:00', 'ok', 2, '2024-04-17 08:30:00', '2024-04-17 08:30:00'),  
+(1, 1, 'chair A-02', 0, 'IKEA', 'INV-DEF456', 50.00, '2029-04-17 08:30:00', 'ok', 2, '2024-04-17 08:30:00', '2024-04-17 08:30:00'), 
+(1, 2, 'table A-01', 0, 'IKEA', 'INV-JKL012', 100.00, '2029-04-17 08:30:00', 'ok', 2, '2024-04-17 08:30:00', '2024-04-17 08:30:00'), 
+(1, 3, 'couch A-01', 1, 'The Brick', 'INV-MNO345', 500.00, '2029-04-17 08:30:00', 'ok', 2, '2023-01-22 15:45:00', '2023-01-22 15:45:00'),  
+(1, 4, 'mattress A-01', 0, 'Leons', 'INV-PQR678', 250.00, '2034-04-17 08:30:00', 'ok', 2, '2022-11-10 12:15:00', '2022-11-10 12:15:00');  
 
 -- Inserting items for UnitID 2
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(2, 1, 'chair B-01', 0, 'IKEA', 'INV-STU901', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),  
-(2, 1, 'chair B-02', 0, 'IKEA', 'INV-VWX234', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()), 
-(2, 1, 'chair B-03', 0, 'IKEA', 'INV-YZAB56', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(2, 1, 'chair B-04', 0, 'IKEA', 'INV-CDE789', 50.00, 0.04, 1, 1, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW()),
-(2, 2, 'table B-01', 0, 'IKEA', 'INV-FGH012', 100.00, 0.04, 0, 1, DATE_SUB(NOW(), INTERVAL 4 QUARTER), NOW()),  
-(2, 4, 'mattress B-01', 0, 'Leons', 'INV-IJK345', 250.00, 0.05, 0, 1, DATE_SUB(NOW(), INTERVAL 5 QUARTER), NOW()); 
+(2, 1, 'chair B-01', 0, 'IKEA', 'INV-STU901', 50.00, '2028-12-03 09:20:00', 'inspect', 1, '2022-12-03 09:20:00', '2022-12-03 09:20:00'),  
+(2, 1, 'chair B-02', 0, 'IKEA', 'INV-VWX234', 50.00, '2028-12-03 09:20:00', 'inspect', 1, '2022-12-03 09:20:00', '2022-12-03 09:20:00'), 
+(2, 1, 'chair B-03', 0, 'IKEA', 'INV-YZAB56', 50.00, '2028-12-03 09:20:00', 'inspect', 1, '2022-12-03 09:20:00', '2022-12-03 09:20:00'),
+(2, 1, 'chair B-04', 0, 'IKEA', 'INV-CDE789', 50.00, '2028-12-03 09:20:00', 'inspect', 1, '2022-12-03 09:20:00', '2022-12-03 09:20:00'),
+(2, 2, 'table B-01', 0, 'IKEA', 'INV-FGH012', 100.00, '2028-03-28 19:30:00', 'ok', 1, '2024-03-28 19:30:00', '2024-03-28 19:30:00'),  
+(2, 4, 'mattress B-01', 0, 'Leons', 'INV-IJK345', 250.00, '2032-09-25 14:45:00', 'ok', 1, '2022-09-25 14:45:00', '2022-09-25 14:45:00'); 
 
 -- Inserting items for UnitID 3
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(3, 1, '101-chair01', 0, 'IKEA', 'INV-LMN678', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
-(3, 1, '101-chair02', 0, 'IKEA', 'INV-OPQ901', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
-(3, 2, '101-table01', 0, 'The Brick', 'INV-RST234', 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(3, 4, '101-mattress01', 0, 'Leons', 'INV-UVW567', 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+(3, 1, '101-chair01', 0, 'IKEA', 'INV-LMN678', 50.00, '2029-07-17 11:20:00', 'ok', 3, '2024-07-17 11:20:00', '2024-07-17 11:20:00'),
+(3, 1, '101-chair02', 0, 'IKEA', 'INV-OPQ901', 50.00, '2029-07-17 11:20:00', 'ok', 3, '2024-07-17 11:20:00', '2024-07-17 11:20:00'),
+(3, 2, '101-table01', 0, 'The Brick', 'INV-RST234', 100.00, '2029-07-17 11:20:00', 'ok', 3, '2022-08-10 08:55:00', '2022-08-10 08:55:00'),
+(3, 4, '101-mattress01', 0, 'Leons', 'INV-UVW567', 250.00, '2033-06-01 17:00:00', 'ok', 3, '2023-06-01 17:00:00', '2023-06-01 17:00:00);
 
 -- Inserting items for UnitID 4
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(4, 1, '102-chair01', 0, 'IKEA', 'INV-XYZ890', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
-(4, 1, '102-chair02', 0, 'IKEA', 'INV-123ABC', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
-(4, 2, '102-table01', 0, 'The Brick', 'INV-456DEF', 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(4, 4, '102-mattress01', 0, 'Leons', 'INV-789GHI', 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+(4, 1, '102-chair01', 0, 'IKEA', 'INV-XYZ890', 50.00, '2028-10-19 13:30:00', 'ok', 3, '2022-10-19 13:30:00', '2022-10-19 13:30:00'),
+(4, 1, '102-chair02', 0, 'IKEA', 'INV-123ABC', 50.00, '2028-10-19 13:30:00', 'ok', 3, '2022-10-19 13:30:00', '2022-10-19 13:30:00'),
+(4, 2, '102-table01', 0, 'The Brick', 'INV-456DEF', 100.00, '2030-04-15 11:45:00', 'ok', 3, '2023-04-15 11:45:00', '2023-04-15 11:45:00'),
+(4, 4, '102-mattress01', 0, 'Leons', 'INV-789GHI', 250.00, '2027-12-22 16:20:00', 'ok', 3, '2022-12-22 16:20:00', '2022-12-22 16:20:00);
 
 -- Inserting items for UnitID 5
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(5, 1, '201-chair01', 0, 'IKEA', 'INV-JKL234', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW()),
-(5, 1, '201-chair02', 0, 'IKEA', 'INV-MNO567', 50.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 1 QUARTER), NOW()),
-(5, 2, '201-desk01', 0, 'The Brick', 'INV-PQR890', 100.00, 0.04, 0, 3, DATE_SUB(NOW(), INTERVAL 2 QUARTER), NOW()),
-(5, 4, '201-mattress01', 0, 'Leons', 'INV-STU123', 250.00, 0.05, 0, 3, DATE_SUB(NOW(), INTERVAL 3 QUARTER), NOW());
+(5, 1, '201-chair01', 0, 'IKEA', 'INV-JKL234', 50.00, '2028-02-08 10:00:00', 'ok', 3, '2023-02-08 10:00:00', '2023-02-08 10:00:00'),
+(5, 1, '201-chair02', 0, 'IKEA', 'INV-MNO567', 50.00, '2028-02-08 10:00:00', 'ok', 3, '2023-02-08 10:00:00', '2023-02-08 10:00:00'),
+(5, 3, '201-sofa01', 0, 'The Brick', 'INV-PQR890', 500.00, '2029-09-05 18:15:00', 'ok', 3, '2022-09-05 18:15:00', '2022-09-05 18:15:00'),
+(5, 4, '201-mattress01', 0, 'Leons', 'INV-STU123', 250.00, '2028-05-10 12:40:00', 'ok', 3, '2023-05-10 12:40:00', '2023-05-10 12:40:00');
 
 -- Inserting items for UnitID 6
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(6, 4, '101-m', 0, 'Leons', 'INV-VWX456', 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+(6, 4, '101-m', 0, 'Leons', 'INV-VWX456', 250.00, '2027-11-28 09:10:00', 'ok', 4, '2022-11-28 09:10:00', '2022-11-28 09:10:00');
 
 -- Inserting items for UnitID 7
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(7, 4, '102-m', 0, 'Leons', 'INV-YZ7890', 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+(7, 4, '102-m', 0, 'Leons', 'INV-YZ7890', 250.00, '2034-01-15 14:25:00', 'ok', 4, '2024-01-15 14:25:00', '2024-01-15 14:25:00');
 
 -- Inserting items for UnitID 8
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, depreciationRate, toInspect, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
 VALUES
-(8, 4, '201-m', 0, 'Leons', 'INV-123DEF', 250.00, 0.05, 0, 4, DATE_SUB(NOW(), INTERVAL 0 QUARTER), NOW());
+(8, 4, '201-m', 0, 'Leons', 'INV-123DEF', 250.00, '2027-08-30 09:50:00', 'ok', 4, '2022-08-30 09:50:00', '2022-08-30 09:50:00');
 
 -- Inserting inspections (single item test)
 INSERT INTO Inspections (userId, itemId, comment, createdAt)
 VALUES
 (1, 1, 'Great condition 10/10 would buy again', NOW() - INTERVAL 1 HOUR),
-(1, 1, 'Nonono the legs are actually snakes.', NOW())
+(1, 1, 'Nonono the legs are actually snakes.', NOW());

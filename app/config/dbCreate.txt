@@ -14,23 +14,34 @@ CREATE TABLE Users (
     deletedAt DATETIME NULL
 );
 
+CREATE TABLE Icons (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    src VARCHAR(255) UNIQUE,
+    name VARCHAR(255) UNIQUE,
+    alt TEXT,
+    createdAt DATETIME,
+    updatedAt DATETIME,
+    deletedAt DATETIME NULL
+);
+
 CREATE TABLE Templates (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
     defaultValue DECIMAL(10, 2),
-    defaultDepreciation DECIMAL(10, 2),
-    icon VARCHAR(255),
+    depreciationRate DECIMAL(10, 2),
+    defaultUsefulLife INT,
+    icon INT,
     singleResident BOOLEAN,
     createdAt DATETIME,
     updatedAt DATETIME,
-    deletedAt DATETIME NULL
+    deletedAt DATETIME NULL,
+    FOREIGN KEY (icon) REFERENCES Icons(id)
 );
 
 CREATE TABLE Facilities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
     managerId INT,
-    phone VARCHAR(20),
     createdAt DATETIME,
     updatedAt DATETIME,
     deletedAt DATETIME NULL,
@@ -52,9 +63,9 @@ CREATE TABLE FacilityAuths (
     id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT,
     facilityId INT,
+    authorizedBy INT,
     createdAt DATETIME,
     deletedAt DATETIME NULL,
-    authorizedBy INT,
     FOREIGN KEY (userId) REFERENCES Users(id),
     FOREIGN KEY (facilityId) REFERENCES Facilities(id),
     FOREIGN KEY (authorizedBy) REFERENCES Users(id)
@@ -69,21 +80,15 @@ CREATE TABLE Items (
     vendor VARCHAR(255),
     invoice VARCHAR(255),
     initialValue DECIMAL(10, 2),
-    depreciationRate DECIMAL(10, 2),
-    usefulLife VARCHAR(255),
-    toDiscard BOOLEAN DEFAULT false,
-    toInspect BOOLEAN DEFAULT false,
+    usefulLife DATETIME,
+    status ENUM('ok', 'inspect', 'discard'),
     addedBy INT,
-    lastInspected DATETIME,
-    inspectedBy INT,
-    inspectionRecord JSON,
     createdAt DATETIME,
     updatedAt DATETIME,
     deletedAt DATETIME NULL,
     FOREIGN KEY (unitId) REFERENCES Units(id),
     FOREIGN KEY (templateId) REFERENCES Templates(id),
-    FOREIGN KEY (addedBy) REFERENCES Users(id),
-    FOREIGN KEY (inspectedBy) REFERENCES Users(id)
+    FOREIGN KEY (addedBy) REFERENCES Users(id)
 );
 
 CREATE TABLE Inspections (
@@ -91,7 +96,8 @@ CREATE TABLE Inspections (
     userId INT,
     itemId INT,
     comment TEXT,
+    createdAt DATETIME,
+    deletedAt DATETIME,
     FOREIGN KEY (userId) REFERENCES Users(id),
-    FOREIGN KEY (itemId) REFERENCES Items(id),
-    createdAt DATETIME
+    FOREIGN KEY (itemId) REFERENCES Items(id)
 );

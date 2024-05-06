@@ -13,10 +13,6 @@ module.exports = (db, { DataTypes }) => {
         managerId: {
             type: DataTypes.INTEGER,
             allowNull: true
-        },
-        phone: {
-            type: DataTypes.STRING,
-            allowNull: true
         }
     }, {
         tableName: 'Facilities'

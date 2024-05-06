@@ -3,14 +3,21 @@ const { verifyToken } = require('../util/token');
 
 const checkAuth = async (req, res, next) => {
     try {
-        const auth = await verifyToken(req.cookies.Authorization);
-        const facility = +req.facility;
-        req.userId = auth.id
+        const auth = await verifyToken(req.cookies.authorization);
 
         if (!auth) {
             return res.status(401).send({ message: 'Unauthorized.' });
-        } else if (!auth.facilities || !Array.isArray(auth.facilities)  || !auth.facilities.includes(facility)) {
+        } else if (!auth.facilities || !Array.isArray(auth.facilities)) {
             return res.status(403).send({ message: 'Forbidden.' });
+        }
+
+        req.userId = auth.id;
+        req.facilities = auth.facilities;
+        req.isAdmin = auth.isAdmin;
+
+        if (req.isAdmin) {
+            next();
+            return;
         }
 
         next();

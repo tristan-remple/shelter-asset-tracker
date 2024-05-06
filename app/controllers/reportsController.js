@@ -18,9 +18,8 @@ exports.getSummary = async (req, res, next) => {
                             'initialValue',
                             'donated',
                             'vendor',
-                            'depreciationRate',
-                            'toDiscard',
-                            'toInspect',
+                            'usefulLife',
+                            'status',
                             'createdAt',
                             'updatedAt'
                         ],
@@ -29,8 +28,17 @@ exports.getSummary = async (req, res, next) => {
                             attributes: [
                                 'id', 
                                 'name', 
-                                'icon'
-                            ]
+                                'depreciationRate'
+                            ],
+                            include: {
+                                model: models.Icon,
+                                attributes: [
+                                    'id',
+                                    'src',
+                                    'name',
+                                    'alt'
+                                ]
+                            }
                         }, {
                             model: models.User,
                             attributes: ['id', 'name'],
@@ -52,20 +60,24 @@ exports.getSummary = async (req, res, next) => {
             ]
         });
 
-        
         const overview = data.map(facility => {
             let totalValue = 0;
             const itemCount = {};
 
             facility.Units.forEach(unit => {
                 unit.Items.forEach(item => {
-                    totalValue += +calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt);
+                    totalValue += +calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt);
 
                     if (!itemCount[item.templateId]) {
                         itemCount[item.templateId] = {
                             id: item.templateId,
                             name: item.Template.name,
-                            icon: item.Template.icon,
+                            icon: {
+                                id: item.Template.Icon.id,
+                                src: item.Template.Icon.src,
+                                name: item.Template.Icon.name,
+                                alt: item.Template.Icon.alt
+                            },
                             count: 1
                         };
                     } else {
@@ -85,10 +97,15 @@ exports.getSummary = async (req, res, next) => {
                     template: {
                         id: item.Template.id,
                         name: item.Template.name,
-                        icon: item.Template.icon
+                        icon: {
+                            id: item.Template.Icon.id,
+                            src: item.Template.Icon.src,
+                            name: item.Template.Icon.name,
+                            alt: item.Template.Icon.alt
+                        }
                     },
-                    toDiscard: item.toDiscard,
-                    toInspect: item.toInspect,
+                    usefulLife: item.usefulLife,
+                    status: item.status,
                     addedBy: {
                         id: item.addedByUser.id,
                         name: item.addedByUser.name
@@ -105,8 +122,8 @@ exports.getSummary = async (req, res, next) => {
                     value: {
                         initialValue: item.initialValue,
                         donated: item.donated,
-                        depreciationRate: item.depreciationRate,
-                        currentValue: calculateCurrentValue(item.initialValue, item.depreciationRate, item.createdAt),
+                        depreciationRate: item.Template.depreciationRate,
+                        currentValue: calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt),
                     },
                     createdAt: item.createdAt,
                     updatedAt: item.updatedAt
@@ -116,9 +133,9 @@ exports.getSummary = async (req, res, next) => {
             return {
                 id: facility.id,
                 facility: facility.name,
-                totalValue,
+                totalValue: totalValue,
                 itemCount: Object.values(itemCount),
-                units
+                units: units
             }
         });
 

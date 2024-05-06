@@ -34,24 +34,25 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: true
         },
-        depreciationRate: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: true
+        usefulLife: {
+            type: DataTypes.DATE,
+            allowNull: false
         },
-        toInspect: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            default: false
-        },
-        toDiscard: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            default: false
+        status: {
+            type: DataTypes.ENUM({
+                values: [
+                    'ok', 
+                    'inspect', 
+                    'discard'
+                ]
+            })
         },
         addedBy: {
             type: DataTypes.INTEGER,
             allowNull: false,
             field: 'addedBy'
-        },         
+        }         
+    }, {
+        tableName: 'Items'
     });
 };

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const admin = require('../../middleware/admin');
 const auth = require('../../middleware/auth');
+const facility = require('../../middleware/facility');
+
 // Import unit controller
 const unitController = require('../../controllers/unitController');
 
@@ -10,7 +12,7 @@ router.route('/')
     .post(admin, unitController.createNewUnit);
 
 router.route('/:id')
-    .get(unitController.getUnitById, auth, unitController.sendUnit)
+    .get(unitController.getUnitById, auth, facility, unitController.sendUnit)
     .put(admin, unitController.updateUnit)
     .delete(admin, unitController.deleteUnit);
 
