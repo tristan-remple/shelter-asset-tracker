@@ -650,6 +650,41 @@ class apiService {
             }
         })
     }
+
+    listIcons = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/icons`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    uploadIcon = async(icon, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
 }
 
 export default new apiService

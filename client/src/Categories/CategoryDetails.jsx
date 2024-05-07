@@ -82,6 +82,14 @@ const CategoryDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            # of Items
+                        </div>
+                        <div className="col-content">
+                            { response.itemCount }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Updated
                         </div>
                         <div className="col-content">
@@ -100,6 +108,14 @@ const CategoryDetails = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
+                            Default Useful Life
+                        </div>
+                        <div className="col-content">
+                            { response.defaultUsefulLife }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Default Value
                         </div>
                         <div className="col-content">
@@ -111,15 +127,7 @@ const CategoryDetails = () => {
                             Default Depreciation Rate
                         </div>
                         <div className="col-content">
-                            { response.defaultDepreciation }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            # of Items
-                        </div>
-                        <div className="col-content">
-                            { response.itemCount }
+                            { response.depreciationRate * 100 }% per year
                         </div>
                     </div>
                     <div className="col col-info">

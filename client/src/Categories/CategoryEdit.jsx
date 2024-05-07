@@ -41,12 +41,14 @@ const CategoryEdit = () => {
         name: null,
         defaultValue: null,
         depreciationRate: null,
+        defaultUsefulLife: null,
         icon: null,
         singleResident: null
     })
 
     // fetch data from the api
     const [ response, setResponse ] = useState()
+    const [ icons, setIcons ] = useState([])
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
@@ -60,10 +62,18 @@ const CategoryEdit = () => {
                         id: id,
                         name: data.name,
                         defaultValue: parseFloat(data.defaultValue),
-                        depreciationRate: parseFloat(data.depreciationRate),
+                        depreciationRate: parseFloat(data.depreciationRate) * 100,
+                        defaultUsefulLife: parseInt(data.defaultUsefulLife),
                         icon: data.Icon,
                         singleResident: data.singleResident
                     })
+                }
+            })
+            await apiService.listIcons((data) => {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setIcons(data)
                 }
             })
         })()
@@ -79,6 +89,8 @@ const CategoryEdit = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
         const editedCategory = {...changes}
+        editedCategory.icon = changes.icon.id
+        editedCategory.depreciationRate = changes.depreciationRate / 100
         await apiService.postCategoryEdit(editedCategory, (res) => {
             if (res.success) {
                 setStatus(`You have successfully saved your changes to category ${ res.name }.`)
@@ -138,6 +150,14 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            # of Items
+                        </div>
+                        <div className="col-content">
+                            { response.itemCount }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Updated
                         </div>
                         <div className="col-content">
@@ -156,6 +176,19 @@ const CategoryEdit = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
+                            Default Useful Life
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="number" 
+                                name="defaultUsefulLife"
+                                value={ changes.defaultUsefulLife } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Default Value
                         </div>
                         <div className="col-content mt-2">
@@ -170,7 +203,7 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Depreciation Rate
+                            Default Depreciation Rate<br />(Annual Percent)
                         </div>
                         <div className="col-content mt-2">
                             <input 
@@ -183,20 +216,12 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            # of Items
-                        </div>
-                        <div className="col-content">
-                            { response.itemCount }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
                             Icon
                         </div>
                         <div className="col-icon col-content">
                             <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
+                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
                         </div>
                     </div>
                 </div>
