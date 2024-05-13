@@ -73,7 +73,7 @@ const ItemEdit = () => {
         comment: "",
         invoice: "",
         vendor: "",
-        depreciationRate: 0,
+        usefulLife: "",
         initialValue: 0,
         currentValue: 0
     })
@@ -93,7 +93,7 @@ const ItemEdit = () => {
                 comment: "",
                 invoice: item.invoice,
                 vendor: item.vendor,
-                depreciationRate: item.value.depreciationRate,
+                usefulLife: item.usefulLife,
                 initialValue: item.value.initialValue,
                 currentValue: item.value.currentValue
             })
@@ -249,6 +249,19 @@ const ItemEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            Expected End of Life
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="date"
+                                name="usefulLife" 
+                                value={ changes.usefulLife.split("T")[0] } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
+                            />
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Invoice Number
                         </div>
                         <div className="col-content">
@@ -283,33 +296,6 @@ const ItemEdit = () => {
                                 step=".01"
                                 name="initialValue" 
                                 value={ changes.initialValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Current Value
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="number" 
-                                step=".01"
-                                name="currentValue" 
-                                value={ changes.currentValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Depreciation Rate
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="number" 
-                                name="depreciationRate" 
-                                value={ changes.depreciationRate } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

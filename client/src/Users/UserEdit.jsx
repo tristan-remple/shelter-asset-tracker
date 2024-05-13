@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { statusContext } from '../Services/Context'
+import { statusContext, userContext } from '../Services/Context'
 import authService from '../Services/authService'
 import apiService from '../Services/apiService'
 import { adminDate } from '../Services/dateHelper'
@@ -24,6 +24,8 @@ const UserEdit = () => {
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
+    const { userDetails } = useContext(userContext)
+    const { userId, isAdmin, facilityAuths } = userDetails
 
     // validate id
     if (id === undefined || id === "undefined") {
@@ -46,20 +48,24 @@ const UserEdit = () => {
 
     // get the full array of locations
     const getLocations = async(userData) => {
-        await apiService.listLocations(function(data){
-            if (data.error) {
-                setErr(data.error)
-            } else {
-                const newChanges = {...userData}
-                // add true or false to the location based on the user's permissions
-                const toggledLocations = data.map(loc => {
-                    loc.active = newChanges.facilities.some(fac => fac.facilityId === loc.id)
-                    return loc
-                })
-                newChanges.facilities = toggledLocations
-                setChanges(newChanges)
-            }
-        })
+        if (isAdmin) {
+            await apiService.listLocations(function(data){
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    const newChanges = {...userData}
+                    // add true or false to the location based on the user's permissions
+                    const toggledLocations = data.map(loc => {
+                        loc.active = newChanges.facilities.some(fac => fac.facilityId === loc.id)
+                        return loc
+                    })
+                    newChanges.facilities = toggledLocations
+                    setChanges(newChanges)
+                }
+            })
+        } else {
+            setChanges(userData)
+        }
     }
 
     // fetch user data from the api
@@ -113,6 +119,7 @@ const UserEdit = () => {
         // convert the changes object into a valid user object
         const newUser = {...changes}
         newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
+        console.log(newUser.auths)
 
         await apiService.postUserEdit(newUser, (response) => {
             if (response.error) {
@@ -161,30 +168,42 @@ const UserEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Admin?
+                            Email
                         </div>
                         <div className="col-content">
                             <input 
-                                type="checkbox"
-                                name="isAdmin" 
-                                checked={ changes.isAdmin }
-                                onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+                                type="email" 
+                                name="email" 
+                                value={ changes.email } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
-                    {/* <div className="col col-info">
+                </div>
+                { isAdmin && (
+                <div className="row row-info">
+                    <div className="col col-info">
                         <div className="col-head">
-                            Date Added
+                            Admin?
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="date" 
-                                name="createdAt" 
-                                value={ adminDate(changes.createdAt) } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            />
+                            <div className="row">
+                                <div className="col-2">
+                                    <input 
+                                        type="checkbox"
+                                        name="isAdmin" 
+                                        checked={ changes.isAdmin }
+                                        onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+                                    />
+                                </div>
+                                <div className="col">
+                                    Setting a user to admin allows them full access to everything. This includes the ability to edit other users and change the admin status of other users. It also includes the ability to view the dashboard and create, edit, and delete templates, locations, and units.
+                                    <br /><br />
+                                    Be careful who you grant this role to, and make sure at least one person is an admin.
+                                </div>
+                            </div>
                         </div>
-                    </div> */}
+                    </div>
                     <div className="col col-info">
                         <div className="col-head">
                             Locations
@@ -196,6 +215,7 @@ const UserEdit = () => {
                         </div>
                     </div>
                 </div>
+                )}
                 { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/user/${ changes.id }` } /> }
             </div>
         </main>

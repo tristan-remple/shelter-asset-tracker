@@ -71,7 +71,7 @@ const ItemInspect = () => {
     const [ changes, setChanges ] = useState({
         status: "ok",
         flag: flagOptions[0],
-        usefulLifeOffset: null,
+        usefulLife: "",
         comment: ""
     })
 
@@ -86,7 +86,7 @@ const ItemInspect = () => {
             setChanges({
                 status: item.status,
                 flag: currentFlag,
-                usefulLifeOffset: null,
+                usefulLife: item.usefulLife,
                 comment: ""
             })
         }
@@ -107,16 +107,29 @@ const ItemInspect = () => {
         setUnsaved(true)
     }
 
-    const [ snoozeYears, setSnoozeYears ] = useState(1)
+    const [ snoozeYears, setSnoozeYears ] = useState(0)
     const snooze = () => {
         const newChanges = {...changes}
-        if (!newChanges.usefulLifeOffset) {
-            newChanges.usefulLifeOffset = 12
-        } else if (typeof newChanges.usefulLifeOffset === "number") {
-            newChanges.usefulLifeOffset += 12
-        }
-        setSnoozeYears(snoozeYears + 1)
+        
+        const date = new Date(newChanges.usefulLife)
+        date.setFullYear(date.getFullYear() + 1)
+        newChanges.usefulLife = date.toISOString()
+        console.log(newChanges.usefulLife)
+
         setChanges(newChanges)
+        setSnoozeYears(snoozeYears + 1)
+    }
+
+    const unsnooze = () => {
+        const newChanges = {...changes}
+        
+        const date = new Date(newChanges.usefulLife)
+        date.setFullYear(date.getFullYear() - 1)
+        newChanges.usefulLife = date.toISOString()
+        console.log(newChanges.usefulLife)
+
+        setChanges(newChanges)
+        setSnoozeYears(snoozeYears - 1)
     }
 
     const [ confirm, setConfirm ] = useState(false)
@@ -128,9 +141,12 @@ const ItemInspect = () => {
         newItem.unitId = item.unit.id
         newItem.status = changes.status
         newItem.comment = changes.comment
+        newItem.usefulLife = changes.usefulLife
 
         if (newItem.status === item.status && !confirm) {
-            if (newItem.comment === "") {
+            console.log(newItem.usefulLife)
+            console.log(item.usefulLife)
+            if (newItem.comment === "" && newItem.usefulLife === item.usefulLife) {
                 setStatus("You have not entered or changed anything.")
                 return
             }
@@ -185,7 +201,11 @@ const ItemInspect = () => {
                             Snooze End of Life
                         </div>
                         <div className="col-content">
-                            <Button text={ `${ snoozeYears } year(s)` } type="action" linkTo={ snooze } />
+                            <div className="btn-group" role="group">
+                                <Button text="-" type="action" linkTo={ unsnooze } />
+                                <div className="btn btn-outline-primary">{ snoozeYears } year(s)</div>
+                                <Button text="+" type="action" linkTo={ snooze } />
+                            </div>
                         </div>
                     </div>
                 </div>

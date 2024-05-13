@@ -77,22 +77,15 @@ const UserDetails = () => {
         }
     }
 
-    // if the user viewing the profile is the current user, allow them to reset their password
+    // if the user viewing the profile is the current user or an admin, allow them to reset their password and edit their details
     let passwordLink
-    if (userId === profileId) {
+    let editLink
+    if (userId === profileId || isAdmin) {
         passwordLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Reset Password" linkTo={ resetPassword } type="action" />
         </div>
-    }
-
-    // if the user viewing the profile is an admin, allow them to edit the user and reset the password
-    let editLink
-    if (isAdmin) {
         editLink = <div className="col-2 d-flex justify-content-end">
             <Button text="Edit" linkTo={ `/user/${ profileId }/edit` } type="admin" />
-        </div>
-        passwordLink = <div className="col-2 d-flex justify-content-end">
-            <Button text="Reset Password" linkTo={ resetPassword } type="action" />
         </div>
     }
 
@@ -117,6 +110,14 @@ const UserDetails = () => {
                         </div>
                         <div className="col-content">
                             { user?.name }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Email
+                        </div>
+                        <div className="col-content">
+                            { user?.email }
                         </div>
                     </div>
                     <div className="col col-info">

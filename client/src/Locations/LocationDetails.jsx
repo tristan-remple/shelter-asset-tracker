@@ -126,14 +126,6 @@ const LocationDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Phone Number
-                        </div>
-                        <div className="col-content">
-                            { phone }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
                             Unit Types
                         </div>
                         <div className="col-content">

@@ -34,7 +34,6 @@ const LocationCreate = () => {
     // set possible changes
     const [ changes, setChanges ] = useState({
         locationName: "",
-        phone: "",
         added: {
             addedDate: formattedDate()
         },
@@ -89,14 +88,6 @@ const LocationCreate = () => {
             return
         }
 
-        // validate phone number
-        const validPhone = validatePhone(changes.phone)
-        if (validPhone.error) {
-            setStatus(validPhone.error)
-            return
-        }
-        changes.phone = validPhone.number
-
         changes.managerId = changes.user.userId
 
         // send api request and process api response
@@ -143,19 +134,6 @@ const LocationCreate = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Phone Number
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="phone" 
-                                value={ changes.phone } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
                             Primary User
                         </div>
                         <div className="col-content">
@@ -166,33 +144,7 @@ const LocationCreate = () => {
                             />
                         </div>
                     </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Added
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="date" 
-                                name="addedDate" 
-                                value={ changes.added.addedDate.split(" ")[0] } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
                 </div>
-                {/* <div className="row row-info">
-                    <div className="col-8 col-content">
-                        <p className="mb-2">
-                            <strong>Comments:</strong><br />
-                        </p>
-                        <textarea 
-                            name="comment" 
-                            value={ changes.comment } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            className="comment-area mb-5" 
-                        />
-                    </div>
-                </div> */}
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/locations` } locationId={ null } /> }
         </main>

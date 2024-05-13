@@ -78,7 +78,6 @@ const LocationEdit = () => {
                 name,
                 created,
                 types,
-                phone: phone ? phone : "xxx-xxx-xxxx",
                 user: {
                     name: manager.name,
                     userId: manager.id
@@ -190,19 +189,6 @@ const LocationEdit = () => {
                                 type="text" 
                                 name="name" 
                                 value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Phone Number
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="phone" 
-                                value={ changes.phone } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

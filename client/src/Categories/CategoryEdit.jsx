@@ -176,7 +176,7 @@ const CategoryEdit = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life
+                            Default Useful Life<br />(In Months)
                         </div>
                         <div className="col-content">
                             <input 
