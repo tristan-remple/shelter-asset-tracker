@@ -184,7 +184,8 @@ const CategoryEdit = () => {
                                 name="defaultUsefulLife"
                                 value={ changes.defaultUsefulLife } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
+                            /><br />
+                            Equivalent to { (changes.defaultUsefulLife / 12).toFixed(1) } years
                         </div>
                     </div>
                     <div className="col col-info">

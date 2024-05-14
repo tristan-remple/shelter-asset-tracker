@@ -111,7 +111,8 @@ const CategoryDetails = () => {
                             Default Useful Life
                         </div>
                         <div className="col-content">
-                            { response.defaultUsefulLife }
+                            { response.defaultUsefulLife } months<br />
+                            Equivalent to { (response.defaultUsefulLife / 12).toFixed(1) } years
                         </div>
                     </div>
                     <div className="col col-info">
