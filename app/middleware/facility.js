@@ -5,7 +5,7 @@ const checkFacility = async (req, res, next) => {
             return;
         }
 
-        if (!req.facilities.includes(req.facility)) {
+        if (!req.facilities.includes(+req.facility)) {
             return res.status(403).send({ message: 'Forbidden.' });
         }
     

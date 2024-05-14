@@ -36,7 +36,6 @@ exports.getAllFacilities = async (req, res, next) => {
 exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id; 
-        req.facility = facilityId;
 
         const facility = await models.Facility.findOne({
             attributes: [
