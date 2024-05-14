@@ -7,7 +7,7 @@ const checkAuth = async (req, res, next) => {
 
         if (!auth) {
             return res.status(401).send({ message: 'Unauthorized.' });
-        } else if (!auth.facilities || !Array.isArray(auth.facilities)) {
+        } else if (!auth.facilities) {
             return res.status(403).send({ message: 'Forbidden.' });
         }
 

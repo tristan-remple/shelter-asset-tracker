@@ -23,7 +23,7 @@ exports.getAllFacilities = async (req, res, next) => {
 
         if (!facilities) {
             return res.status(404).json({ error: 'Facilities not found.'})
-        }
+        };
 
         return res.status(200).json(facilities);
 
@@ -36,6 +36,7 @@ exports.getAllFacilities = async (req, res, next) => {
 exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id; 
+        req.facility = facilityId;
 
         const facility = await models.Facility.findOne({
             attributes: [

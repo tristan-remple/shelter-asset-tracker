@@ -5,8 +5,6 @@ const { verifyToken } = require('../util/token');
 
 const checkAdmin = async (req, res, next) => {
     try {
-        // Check for auth token in cookies
-        console.log(req.cookies)
         const token = req.cookies.authorization;
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized.' });
