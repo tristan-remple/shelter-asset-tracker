@@ -35,12 +35,12 @@ exports.login = async (req, res, next) => {
             secure: true,
             sameSite: 'strict'
         })
-        console.log(res.cookie);
+
         return res.status(200).send({ userInfo });
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 

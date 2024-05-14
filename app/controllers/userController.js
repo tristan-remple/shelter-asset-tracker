@@ -23,7 +23,7 @@ exports.createNewUser = async (req, res, next) => {
             isAdmin: isAdmin
         });
 
-        
+        console.log(auths);
         if (Array.isArray(auths)) {
             const facilityAuths = auths.map(async facilityId => {
                 await models.FacilityAuth.create({
