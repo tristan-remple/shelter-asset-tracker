@@ -47,9 +47,6 @@ exports.updateAuthorization = async (req, res, next) => {
         const addedAuths = facilityAuths.filter(facilityId => !currentAuths.includes(facilityId));
         const removedAuths = currentAuths.filter(facilityId => !facilityAuths.includes(facilityId));
 
-        const auth = await verifyToken(req.cookies.authorization);
-        const authorizedBy = auth.id;
-
         for (const facilityId of addedAuths) {
             await models.FacilityAuth.create({
                 userId: userId,
@@ -71,7 +68,7 @@ exports.updateAuthorization = async (req, res, next) => {
             addedAuths: addedAuths,
             removedAuths: removedAuths,
             userId: userId,
-            authorizedBy: authorizedBy,
+            authorizedBy: req.userId,
             success: true
         }
 
