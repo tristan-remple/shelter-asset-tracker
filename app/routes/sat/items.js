@@ -12,6 +12,12 @@ router.route('/')
     .get(admin, itemController.getAllItems)
     .post(itemController.checkFacility, auth, facility, itemController.createNewItem);
 
+router.route('/deleted')
+    .get(admin, itemController.getDeleted);
+
+router.route('/:id/restore')
+    .get(admin, itemController.restoreDeleted);
+
 router.route('/:id')
     .get(itemController.getItemById, auth, facility, itemController.sendItem)
     .put(itemController.getItemById, auth, facility, itemController.updateItem)

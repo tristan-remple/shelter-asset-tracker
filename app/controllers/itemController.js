@@ -1,4 +1,4 @@
-const { models } = require('../data');
+const { models, Sequelize } = require('../data');
 const { calculateCurrentValue, getEoL } = require('../util/calc');
 
 exports.getAllItems = async (req, res, next) => {
@@ -261,6 +261,67 @@ exports.deleteItem = async (req, res, next) => {
 
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.getDeleted = async (req, res, next) => {
+    try {
+        const deletedItems = await models.Item.findAll({
+            where: Sequelize.where(Sequelize.col('Item.deletedAt'), 'IS NOT', null),
+            include: {
+                model: models.Unit,
+                attributes: ['name'],
+                include: {
+                    model: models.Facility,
+                    attributes: ['name']
+                }
+            },
+            paranoid: false
+        });
+
+        return res.status(200).json(deletedItems);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.restoreDeleted = async (req, res, next) => {
+    try {
+        const itemId = req.params.id;
+
+        const deletedItem = await models.Item.findOne({
+            where: {id: itemId},
+            include: [{
+                model: models.Unit,
+                attributes: ['name'],
+                include: {
+                    model: models.Facility,
+                    attributes: ['name']
+                }
+            },{
+                model: models.Template,
+                attributes: ['name']
+            }],
+            paranoid: false 
+        });
+
+        if (!deletedItem) {
+            return res.status(404).json({ error: 'Deleted item not found.' });
+        }
+
+        await deletedItem.restore();
+
+        const restoreResponse = {
+            item: deletedItem,
+            success: true
+        };
+
+        return res.status(200).json(restoreResponse);
+
+    } catch (err) {
+        console.error(err);
         return res.status(500).json({ error: 'Server error.' });
     }
 };

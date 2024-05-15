@@ -184,3 +184,45 @@ exports.deleteTemplate = async (req, res, next) => {
         return res.status(500).json({ error: 'Server error.' });
     }
 };
+
+exports.getDeleted = async (req, res, next) => {
+    try {
+        const deletedTemplates = await models.Template.findAll({
+            where: Sequelize.where(Sequelize.col('Template.deletedAt'), 'IS NOT', null),
+            paranoid: false
+        });
+
+        return res.status(200).json(deletedTemplates);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.restoreDeleted = async (req, res, next) => {
+    try {
+        const templateId = req.params.id;
+
+        const deletedTemplate = await models.Template.findOne({
+            where: {id: templateId},
+            paranoid: false 
+        });
+
+        if (!deletedTemplate) {
+            return res.status(404).json({ error: 'Deleted template not found.' });
+        }
+
+        await deletedTemplate.restore();
+
+        const restoreResponse = {
+            template: deletedTemplate,
+            success: true
+        };
+
+        return res.status(200).json(restoreResponse);
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};

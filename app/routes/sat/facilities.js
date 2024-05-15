@@ -12,6 +12,12 @@ router.route('/')
     .get(admin, facilityController.getAllFacilities)
     .post(admin, facilityController.createNewFacility);
 
+router.route('/deleted')
+    .get(admin, facilityController.getDeleted);
+
+router.route('/:id/restore')
+    .get(admin, facilityController.restoreDeleted);
+    
 router.route('/:id')
     .get(facilityController.getFacilityById, auth, facility, facilityController.sendFacility)
     .put(admin, facilityController.updateFacility)

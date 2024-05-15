@@ -11,6 +11,12 @@ const unitController = require('../../controllers/unitController');
 router.route('/')
     .post(admin, unitController.createNewUnit);
 
+router.route('/deleted')
+    .get(admin, unitController.getDeleted);
+
+router.route('/:id/restore')
+    .get(admin, unitController.restoreDeleted);
+
 router.route('/:id')
     .get(unitController.getUnitById, auth, facility, unitController.sendUnit)
     .put(admin, unitController.updateUnit)
