@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
 
-const Button = ({ text, linkTo, type, className, id }) => {
+const Button = ({ text, linkTo, type, id }) => {
 
     let buttonClass = "btn ";
     switch (type) {

@@ -126,7 +126,6 @@ const ItemInspect = () => {
         const date = new Date(newChanges.usefulLife)
         date.setFullYear(date.getFullYear() - 1)
         newChanges.usefulLife = date.toISOString()
-        console.log(newChanges.usefulLife)
 
         setChanges(newChanges)
         setSnoozeYears(snoozeYears - 1)
@@ -144,8 +143,6 @@ const ItemInspect = () => {
         newItem.usefulLife = changes.usefulLife
 
         if (newItem.status === item.status && !confirm) {
-            console.log(newItem.usefulLife)
-            console.log(item.usefulLife)
             if (newItem.comment === "" && newItem.usefulLife === item.usefulLife) {
                 setStatus("You have not entered or changed anything.")
                 return

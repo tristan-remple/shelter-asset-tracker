@@ -464,8 +464,10 @@ class apiService {
     }
 
     // Called by: Dashboard
-    csvReport = async(title, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ title }`, {
+    csvReport = async(title, id, callback) => {
+        let url = `${ import.meta.env.VITE_API_URL }/csv/${ title }`
+        if (id) { url += "/" + id }
+        await axios.get(url, {
             withCredentials: true
         })
         .then(res => {
@@ -668,6 +670,44 @@ class apiService {
 
     uploadIcon = async(icon, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    uploadLogo = async(logoSrc, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/logo`, logoSrc, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    postSettings = async(settings, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/settings`, settings, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"

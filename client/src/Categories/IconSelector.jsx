@@ -89,7 +89,7 @@ const IconSelector = ({ iconList, changes, setChanges, toggle }) => {
                         File
                     </div>
                     <div className="col-content">
-                        <input type="file" id="uploader" accept="image/png" />
+                        <input type="file" id="uploader" accept="image/png,image/jpg,image/jpeg" />
                     </div>
                 </div>
                 <div className="col col-info">

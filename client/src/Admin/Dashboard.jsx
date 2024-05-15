@@ -1,6 +1,7 @@
 // external dependencies
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
+import { CSVLink } from "react-csv"
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -24,7 +25,7 @@ import Dropdown from '../Reusables/Dropdown'
 const Dashboard = () => {
 
     // get context information
-    const { status } = useContext(statusContext)
+    const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const navigate = useNavigate()
 
@@ -195,7 +196,6 @@ const Dashboard = () => {
 
     // render the filtered items as table rows for the lower table
     const displayItems = filteredItems.map(item => {
-        console.log(item)
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
@@ -235,7 +235,7 @@ const Dashboard = () => {
         }
     }
 
-    const list = [ "items", "units", "locations", "categories", "users"]
+    const list = [ "items", "units", "locations", "categories"]
 
     // render the list, including all listeners
     const dropdownList = list.map((item, index) => {
@@ -249,12 +249,33 @@ const Dashboard = () => {
         >Deleted { capitalize(item) }</li>
     })
 
+    const downloadCSV = async(report) => {
+        let id = null
+        if (view !== "All Locations" && response?.length > 0) {
+            id = response.filter(loc => {
+                return loc.facility === view
+            })[0].id
+        }
+        apiService.csvReport(report, id, (data) => {
+            if (data.error) {
+                setErr(data.error)
+                return
+            }
+            const download = <CSVLink data={ data } />
+            download.click()
+            setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+        })
+    }
+
     // https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Admin Dashboard</h2>
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Settings" linkTo="/admin/settings" type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Categories" linkTo="/categories" type="admin" />
@@ -308,13 +329,13 @@ const Dashboard = () => {
                                     CSV Exports
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Financial Report" linkTo={ `/item` } type="small" />
+                                    <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="small" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Detailed Report" linkTo={ `/item` } type="small" />
+                                    <Button text="Inventory Report" linkTo={ () => downloadCSV("inventory") } type="small" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Replacements Report" linkTo={ `/item` } type="small" />
+                                    <Button text="End of Life Report" linkTo={ () => downloadCSV("eol") } type="small" />
                                 </div>
                             </div>
                         </div>

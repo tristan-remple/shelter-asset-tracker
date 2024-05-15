@@ -45,6 +45,7 @@ import UnitRecovery from './Units/UnitRecovery'
 import LocationRecovery from './Locations/LocationRecovery'
 import CategoryRecovery from './Categories/CategoryRecovery'
 import UserRecovery from './Users/UserRecovery'
+import Settings from './Admin/Settings'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.
@@ -102,15 +103,15 @@ function App() {
             <Route path="/category/:id/edit" element={ <CategoryEdit /> } />
             <Route path="/category/:id/delete" element={ <CategoryDelete /> } />
             <Route path="/admin" element={ <Dashboard /> } />
+            <Route path="/admin/settings" element={ <Settings /> } />
             <Route path="/users" element={ <UserList /> } />
             <Route path="/user/:id" element={ <UserDetails /> } />
             <Route path="/users/add" element={ <UserCreate /> } />
             <Route path="/users/:id/delete" element={ <UserDelete /> } />
             <Route path="/restore/items" element={ <ItemRecovery /> } />
-            <Route path="/restore/units" element={ <UserRecovery /> } />
+            <Route path="/restore/units" element={ <UnitRecovery /> } />
             <Route path="/restore/locations" element={ <LocationRecovery /> } />
             <Route path="/restore/categories" element={ <CategoryRecovery /> } />
-            <Route path="/restore/users" element={ <UserRecovery /> } />
           </Route>
           <Route path="/*" element={ <Error err="unknown" /> } />
         </Routes>
