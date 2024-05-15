@@ -34,7 +34,7 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: true
         },
-        usefulLife: {
+        eol: {
             type: DataTypes.DATE,
             allowNull: false
         },

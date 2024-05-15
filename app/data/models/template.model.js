@@ -18,10 +18,6 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        depreciationRate: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false
-        },
         defaultUsefulLife: {
             type: DataTypes.INTEGER,
             allowNull: false

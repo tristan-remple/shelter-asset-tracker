@@ -18,18 +18,14 @@ exports.getSummary = async (req, res, next) => {
                             'initialValue',
                             'donated',
                             'vendor',
-                            'usefulLife',
+                            'eol',
                             'status',
                             'createdAt',
                             'updatedAt'
                         ],
                         include: [{
                             model: models.Template,
-                            attributes: [
-                                'id', 
-                                'name', 
-                                'depreciationRate'
-                            ],
+                            attributes: ['id', 'name'],
                             include: {
                                 model: models.Icon,
                                 attributes: [
@@ -66,7 +62,7 @@ exports.getSummary = async (req, res, next) => {
 
             facility.Units.forEach(unit => {
                 unit.Items.forEach(item => {
-                    totalValue += +calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt);
+                    totalValue += +calculateCurrentValue(item.initialValue, item.createdAt);
 
                     if (!itemCount[item.templateId]) {
                         itemCount[item.templateId] = {
@@ -104,7 +100,7 @@ exports.getSummary = async (req, res, next) => {
                             alt: item.Template.Icon.alt
                         }
                     },
-                    usefulLife: item.usefulLife,
+                    eol: item.eol,
                     status: item.status,
                     addedBy: {
                         id: item.addedByUser.id,
@@ -122,8 +118,7 @@ exports.getSummary = async (req, res, next) => {
                     value: {
                         initialValue: item.initialValue,
                         donated: item.donated,
-                        depreciationRate: item.Template.depreciationRate,
-                        currentValue: calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt),
+                        currentValue: calculateCurrentValue(item.initialValue, item.createdAt),
                     },
                     createdAt: item.createdAt,
                     updatedAt: item.updatedAt
