@@ -51,12 +51,14 @@ exports.getFacilityById = async (req, res, next) => {
                 model: models.Unit,
                 attributes: [
                     'id', 
-                    'name', 
-                    'type'],
-                include: {
+                    'name'],
+                include: [{
                     model: models.Item,
                     attributes: ['id', 'status']
-                }
+                }, {
+                    model: models.UnitType,
+                    attributes: ['name']
+                }]
             }]
         });
 
@@ -74,7 +76,7 @@ exports.getFacilityById = async (req, res, next) => {
             units: facility.Units.map(unit => ({
                 unitId: unit.id,
                 name: unit.name,
-                type: unit.type,
+                type: unit.UnitType.name,
                 inspectCount:  unit.Items.filter(item => item.status === 'inspect').length,
                 discardCount:  unit.Items.filter(item => item.status === 'discard').length
             })),

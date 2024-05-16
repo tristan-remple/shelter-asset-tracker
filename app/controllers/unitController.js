@@ -8,7 +8,6 @@ exports.getUnitById = async (req, res, next) => {
             attributes: [
                 'id', 
                 'name', 
-                'type',
                 'createdAt',
                 'updatedAt'
             ],
@@ -28,6 +27,9 @@ exports.getUnitById = async (req, res, next) => {
             }, {
                 model: models.Facility,
                 attributes: ['id','name']
+            }, {
+                model: models.UnitTypes,
+                attributes: ['name']
             }],
             group: [] 
         });
@@ -52,7 +54,7 @@ exports.sendUnit = async (req, res, next) => {
     const unitListItems = {
         id: unit.id,
         name: unit.name,
-        type: unit.type,
+        type: unit.UnitType.name,
         facility: {
             id: unit.Facility.id,
             name: unit.Facility.name

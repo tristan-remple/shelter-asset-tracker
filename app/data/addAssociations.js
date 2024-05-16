@@ -2,7 +2,7 @@
     Define associations between Sequelize models.
  */
     module.exports = (sequelize) => {
-        const { Facility, FacilityAuth, Icon, Inspection, Item, Template, Unit, User } = sequelize.models;
+        const { Facility, FacilityAuth, Icon, Inspection, Item, Template, Unit, UnitType, User } = sequelize.models;
     
         // User to Facility
         User.hasMany(Facility, { foreignKey: 'managerId', onDelete: 'RESTRICT' });
@@ -29,19 +29,22 @@
         Item.belongsTo(Template, { foreignKey: 'templateId', onDelete: 'SET NULL' });
     
         // User to Item (addedBy)
-        User.hasMany(Item, { foreignKey: 'addedBy', as: 'addedByUser', onDelete: 'RESTRICT' });
+        User.hasMany(Item, { foreignKey: 'addedBy', as: 'addedByUser', onDelete: 'SET NULL' });
         Item.belongsTo(User, { foreignKey: 'addedBy', as: 'addedByUser', onDelete: 'SET NULL' });
     
         // User to Inspection
-        User.hasMany(Inspection, { foreignKey: 'userId', onDelete: 'RESTRICT' });
+        User.hasMany(Inspection, { foreignKey: 'userId', onDelete: 'SET NULL' });
         Inspection.belongsTo(User, { foreignKey: 'userId', onDelete: 'SET NULL' });
     
         // Item to Inspection
-        Item.hasMany(Inspection, { foreignKey: 'itemId', onDelete: 'RESTRICT' });
+        Item.hasMany(Inspection, { foreignKey: 'itemId', onDelete: 'CASCADE' });
         Inspection.belongsTo(Item, { foreignKey: 'itemId', onDelete: 'CASCADE' });
     
         // Icon to Template
-        Icon.hasMany(Template, { foreignKey: 'icon', onDelete: 'RESTRICT' });
+        Icon.hasMany(Template, { foreignKey: 'icon', onDelete: 'SET NULL' });
         Template.belongsTo(Icon, { foreignKey: 'icon', onDelete: 'SET NULL' });
+
+        UnitType.hasMany(Unit, { foreignKey: 'type', onDelete: 'RESTRICT' });
+        Unit.belonsTo(UnitType, { foreignKey: 'type', onDelete: 'CASCADE' });
     };
     

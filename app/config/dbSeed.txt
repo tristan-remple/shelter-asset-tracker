@@ -56,17 +56,25 @@ INSERT INTO FacilityAuths (userId, FacilityId, createdAt) VALUES
 (3, 2, NOW()),
 (4, 3, NOW());
 
+
+-- Inserting UnitTypes
+INSERT INTO UnitTypes (name) VALUES
+('Common'),
+('Office'),
+('Cubicle'),
+('Utility');
+
 -- Inserting units
 INSERT INTO Units (facilityId, name, type, createdAt, updatedAt) VALUES
-(1, 'Unit A', 'Apartment', NOW(), NOW()),
-(1, 'Unit B', 'Apartment', NOW(), NOW()),
-(2, '101', 'Apartment', NOW(), NOW()),
-(2, '102', 'Apartment', NOW(), NOW()),
-(2, '201', 'Apartment', NOW(), NOW()),
-(3, '1-01', 'Room', NOW(), NOW()),
-(3, '1-02', 'Room', NOW(), NOW()),
-(3, '2-01', 'Room', NOW(), NOW()),
-(3, '2-02', 'Room', NOW(), NOW());
+(1, 'Unit A', 2, NOW(), NOW()),
+(1, 'Unit B', 2, NOW(), NOW()),
+(2, '101', 2, NOW(), NOW()),
+(2, '102', 2, NOW(), NOW()),
+(2, '201', 2, NOW(), NOW()),
+(3, '1-01', 3, NOW(), NOW()),
+(3, '1-02', 3, NOW(), NOW()),
+(3, '2-01', 3, NOW(), NOW()),
+(3, '2-02', 3, NOW(), NOW());
 
 -- Inserting items
 -- Inserting items for UnitID 1
