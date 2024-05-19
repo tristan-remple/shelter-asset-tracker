@@ -1,4 +1,4 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import Button from "../Reusables/Button"
 import capitalize from "../Services/capitalize"
 import handleChanges from "../Services/handleChanges"
@@ -10,9 +10,23 @@ import apiService from "../Services/apiService"
 // Displays a modal that allows the user to select a new icon for a category
 // Imported by: CategoryEdit
 
-const IconSelector = ({ iconList, changes, setChanges, toggle, setNewIcons }) => {
+const IconSelector = ({ changes, setChanges, toggle }) => {
 
     const { setStatus } = useContext(statusContext)
+
+    const [ iconList, setIconList ] = useState([])
+    const [ newIcons, setNewIcons ] = useState("")
+    useEffect(() => {
+        (async() => {
+            await apiService.listIcons((data) => {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setIconList(data)
+                }
+            })
+        })()
+    }, [ newIcons ])
 
     const pickIcon = (event) => {
         const target = parseInt(event.target.id)
@@ -77,12 +91,66 @@ const IconSelector = ({ iconList, changes, setChanges, toggle, setNewIcons }) =>
         name: ""
     })
 
+    const [ deleteMode, setDeleteMode ] = useState(false)
+    const toggleDeleteMode = () => {
+        const newDeleteMode = deleteMode ? false : true
+        setDeleteMode(newDeleteMode)
+    }
+
+    const [ iconsToDelete, setIconsToDelete ] = useState([])
+    const toggleIconForDelete = (event) => {
+        const id = parseInt(event.target.id)
+        const newIconsToDelete = [...iconsToDelete]
+        if (event.target.getAttribute("data-checked") === "true") {
+            const index = newIconsToDelete.findIndex(iconId => iconId === id)
+            newIconsToDelete.splice(index, 1)
+        } else {
+            newIconsToDelete.push(id)
+        }
+        setIconsToDelete(newIconsToDelete)
+    }
+
+    const keyboardDeleteHandler = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            toggleIconForDelete()
+        }
+    }
+
+    const displayDeletableIcons = iconList.map(icon => {
+        return <img
+            className={ "icon-pick " + (iconsToDelete.filter(id => id === icon.id).length > 0 ? "btn-danger" : "btn-secondary") }
+            key={ icon.id }
+            id={ icon.id } 
+            alt={ icon.alt }
+            title={ capitalize(icon.name) }
+            src={ `/img/${ icon.src }` } 
+            onClick={ toggleIconForDelete }
+            onKeyUp={ keyboardDeleteHandler }
+            data-checked={ (iconsToDelete.filter(id => id === icon.id).length > 0).toString() }
+        />
+    })
+
+    const confirmDelete = () => {
+        const count = iconsToDelete.length
+        apiService.deleteIcons(iconsToDelete, data => {
+            if (data.error) {
+                setStatus("We weren't able to delete the icons you selected.")
+            } else {
+                setStatus(`You have deleted ${ count } icons.`)
+                setIconsToDelete([])
+                setDeleteMode(false)
+            }
+        })
+    }
+
     return (
         <div id="icon-selector-box">
             <div className="icon-selector">
-                { displayIcons }
+                { deleteMode ? displayDeletableIcons : displayIcons }
             </div>
             <Button text="Upload New Icon" linkTo={ toggleUpload } type="nav" />
+            <Button text={ deleteMode ? "Cancel Delete" : "Delete Icons" } linkTo={ toggleDeleteMode } type="nav" />
+            { deleteMode && <Button text={ `Delete ${ iconsToDelete.length } icons` } linkTo={ confirmDelete } type="danger" /> }
             { uploadForm && (
             <div className="row row-info">
                 <div className="col col-info">

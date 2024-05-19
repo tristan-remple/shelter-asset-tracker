@@ -173,6 +173,8 @@ const CategoryCreate = () => {
                             />
                         </div>
                     </div>
+                </div>
+                <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Icon
