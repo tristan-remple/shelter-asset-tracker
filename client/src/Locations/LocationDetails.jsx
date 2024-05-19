@@ -65,9 +65,6 @@ const LocationDetails = () => {
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Location" linkTo={ `/location/${ facilityId }/edit` } type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete Location" linkTo={ `/location/${ facilityId }/delete` } type="admin" />
-                </div>
             </>
         )
     }

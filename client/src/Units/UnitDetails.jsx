@@ -71,9 +71,6 @@ const UnitDetails = () => {
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Unit" linkTo={ `/unit/${ id }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="admin" />
-                </div>
             </>
         )
     }

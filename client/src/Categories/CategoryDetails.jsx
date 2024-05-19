@@ -56,9 +56,6 @@ const CategoryDetails = () => {
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete" linkTo={ `/category/${ response.id }/delete` } type="danger" />
-                </div>
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
@@ -125,7 +122,7 @@ const CategoryDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Depreciation Rate
+                            Depreciation Rate
                         </div>
                         <div className="col-content">
                             { response.depreciationRate * 100 }% per year

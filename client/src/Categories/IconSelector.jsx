@@ -10,7 +10,7 @@ import apiService from "../Services/apiService"
 // Displays a modal that allows the user to select a new icon for a category
 // Imported by: CategoryEdit
 
-const IconSelector = ({ iconList, changes, setChanges, toggle }) => {
+const IconSelector = ({ iconList, changes, setChanges, toggle, setNewIcons }) => {
 
     const { setStatus } = useContext(statusContext)
 
@@ -66,6 +66,7 @@ const IconSelector = ({ iconList, changes, setChanges, toggle }) => {
                     setStatus("We were not able to upload your icon.")
                 } else {
                     setStatus(`The icon ${ res.name } has been created.`)
+                    setNewIcons(res.name)
                 }
             })
         }

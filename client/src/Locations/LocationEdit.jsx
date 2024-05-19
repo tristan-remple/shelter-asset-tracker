@@ -171,9 +171,6 @@ const LocationEdit = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Add Unit" linkTo={ `/location/${ changes.facilityId }/add` } type="admin" />
-                </div>
-                <div className="col-2 d-flex justify-content-end">
                     <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="admin" />
                 </div>
             </div>

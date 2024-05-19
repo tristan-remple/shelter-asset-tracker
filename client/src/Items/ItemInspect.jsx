@@ -198,6 +198,7 @@ const ItemInspect = () => {
                             Snooze End of Life
                         </div>
                         <div className="col-content">
+                            <p>{ friendlyDate(changes.usefulLife) }</p>
                             <div className="btn-group" role="group">
                                 <Button text="-" type="action" linkTo={ unsnooze } />
                                 <div className="btn btn-outline-primary">{ snoozeYears } year(s)</div>
