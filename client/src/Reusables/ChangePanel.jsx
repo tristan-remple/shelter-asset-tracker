@@ -29,19 +29,15 @@ const ChangePanel = ({ save, linkOut, locationId }) => {
     }
 
     return (
-        <div className="row row-info">
+        <div className="row row-info my-3">
             <div className="col-3 d-flex justify-content-center align-items-center">
-                <img src="/img/warningTriangle.jpg" alt="Warning triangle icon" className="triangle"/>
+                <img src="/img/warningTriangle.jpg" alt="Warning triangle icon" className="triangle my-3"/>
             </div>
-            <div className="col">
+            <div className="col mt-3">
                 <h3>Do you want to save your changes?</h3>
-                <div className="row">
-                    <div className="col">
+                <div className="row d-flex" >
                         <Button text="Save" linkTo={ clickSave } type="action" />
-                    </div>
-                    <div className="col">
-                        <Button text="Don't Save" linkTo={ linkOut } type="danger" />
-                    </div>
+                        <Button text="Don't Save"  linkTo={ linkOut } type="danger" />
                 </div>
             </div>
         </div>

@@ -238,7 +238,7 @@ const ItemEdit = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="action" />
                 </div>
                 <div className="col-2 d-flex justify-content-end p-0">
-                    <Button text={ dangerLabel } linkTo={ toggleDanger } type="danger" />
+                    <Button text={ dangerLabel } id="advanced-button" linkTo={ toggleDanger } type="action" />
                 </div>
             </div>
             <div className="page-content">

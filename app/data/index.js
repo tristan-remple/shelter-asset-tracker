@@ -28,13 +28,13 @@ models.forEach(model => {
 addAssociations(sequelize);
 
 // Used to sync db - only enable if needed
-// sequelize.sync({ alter: true })
-//   .then(() => {
-//     console.log('Database synced successfully');
-//   })
-//   .catch((error) => {
-//     console.error('Error syncing database:', error);
-//   });
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('Database synced successfully');
+  })
+  .catch((error) => {
+    console.error('Error syncing database:', error);
+  });
 
 // Export initialized Sequelize instance
 module.exports = sequelize;

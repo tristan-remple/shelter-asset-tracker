@@ -115,7 +115,7 @@ const LocationDetails = () => {
     })
     
     return err ? <Error err={ err } /> : (
-        <main className="container mt-3">
+        <main className="container">
             <div className="row title-row mt-3 mb-2">        
                 <div className="col">
                     <h2>{ name }</h2>

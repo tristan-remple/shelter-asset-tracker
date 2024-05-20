@@ -91,8 +91,9 @@ main {
 }
 
 .triangle {
-    width: 50%;
+    width: 40%;
     height: auto;
+    
 }
 
 .dropdown-menu {
@@ -145,7 +146,7 @@ header, footer {
 #app-title {
     width: 500px;
     font-size: 2rem;
-    color:$fontColour;
+    color:$midbrown;
     font-weight: 500;
     font-family: $fontaccent;
 }
@@ -170,12 +171,12 @@ header, footer {
 
 .nav-link.active {
     color:#332114;
-    border: 1px solid white;
+    border: 3px solid white;
 }
 
 .nav-link.active:hover {
     color:$olivegreen;
-    border: 1px solid white;
+    border: 3px solid white;
 }
    
 /* Login */
@@ -201,8 +202,6 @@ header, footer {
 .icon {
     margin: 0.5rem;
 }
-
-/* Titles */
 
 
 /* Flag Styles */
@@ -235,6 +234,11 @@ header, footer {
     fill: var(--bs-secondary);
     stroke: var(--bs-secondary);
 }
+
+.statusColor {
+    color: $accentGreen;
+}
+
 
 
 /* Buttons */
@@ -301,10 +305,20 @@ header, footer {
     background-color: $brightgreen;
 }
 
+.btn-outline-primary:active:focus {
+    border-color: $accentGreen;
+    box-shadow: 0 0 0 0.25rem rgba(21, 115, 71, 0.5);
+}
+
+.btn-outline-primary:focus {
+    border-color: $accentGreen;
+    box-shadow: 0 0 0 0.25rem rgba(21, 115, 71, 0.5);
+}
+
 .btn-danger {
     color: #fff;
-    border-color: $accentGreen;
-    background-color: $brightgreen;
+    background-color: $ltbrown;
+    border-color: $ltbrown;
     width: 150px;
 }
 
@@ -313,6 +327,18 @@ header, footer {
     background-color:$accentGreen;
     border-color: $brightgreen;
 }
+
+#advanced-button {
+    background-color: $accentGreen;
+}
+
+#advanced-button:hover {
+    background-color: $brightgreen;
+    color: $olivegreen;
+}
+
+
+/* Change Panel */
 
 
 /* Dropdown */
@@ -371,4 +397,15 @@ footer a {
 footer a:hover {
     color: $olivegreen;
     font-weight: bold;
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+
+    .triangle {
+        width: 55%;
+        height: auto;
+    }
+
 }

@@ -9832,7 +9832,7 @@ main {
 }
 
 .triangle {
-  width: 50%;
+  width: 40%;
   height: auto;
 }
 
@@ -9886,7 +9886,7 @@ header, footer {
 #app-title {
   width: 500px;
   font-size: 2rem;
-  color: #332114;
+  color: #563219;
   font-weight: 500;
   font-family: "Libre Caslon Text";
 }
@@ -9911,12 +9911,12 @@ header, footer {
 
 .nav-link.active {
   color: #332114;
-  border: 1px solid white;
+  border: 3px solid white;
 }
 
 .nav-link.active:hover {
   color: #515a2d;
-  border: 1px solid white;
+  border: 3px solid white;
 }
 
 /* Login */
@@ -9942,7 +9942,6 @@ header, footer {
   margin: 0.5rem;
 }
 
-/* Titles */
 /* Flag Styles */
 .flag-box {
   width: 2rem;
@@ -9972,6 +9971,10 @@ header, footer {
 .flag-grey {
   fill: var(--bs-secondary);
   stroke: var(--bs-secondary);
+}
+
+.statusColor {
+  color: #157347;
 }
 
 /* Buttons */
@@ -10037,10 +10040,20 @@ header, footer {
   background-color: #9cc76d;
 }
 
+.btn-outline-primary:active:focus {
+  border-color: #157347;
+  box-shadow: 0 0 0 0.25rem rgba(21, 115, 71, 0.5);
+}
+
+.btn-outline-primary:focus {
+  border-color: #157347;
+  box-shadow: 0 0 0 0.25rem rgba(21, 115, 71, 0.5);
+}
+
 .btn-danger {
   color: #fff;
-  border-color: #157347;
-  background-color: #9cc76d;
+  background-color: #977c6a;
+  border-color: #977c6a;
   width: 150px;
 }
 
@@ -10050,6 +10063,16 @@ header, footer {
   border-color: #9cc76d;
 }
 
+#advanced-button {
+  background-color: #157347;
+}
+
+#advanced-button:hover {
+  background-color: #9cc76d;
+  color: #515a2d;
+}
+
+/* Change Panel */
 /* Dropdown */
 .dropdown-toggle {
   color: #157347;
@@ -10104,4 +10127,11 @@ footer a {
 footer a:hover {
   color: #515a2d;
   font-weight: bold;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .triangle {
+    width: 55%;
+    height: auto;
+  }
 }

@@ -70,8 +70,8 @@ const UnitDetails = () => {
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Unit" linkTo={ `/unit/${ id }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="admin" />
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="danger" />
                 </div>
             </>
         )
@@ -121,7 +121,7 @@ const UnitDetails = () => {
 
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Unit { name } in { facility.name }</h2>
                 </div>

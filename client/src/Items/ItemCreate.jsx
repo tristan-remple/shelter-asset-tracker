@@ -163,7 +163,7 @@ const ItemCreate = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="action" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Cancel New Item" linkTo={ `/unit/${ unit.id }` } type="nav" />
+                    <Button text="Cancel New Item" id="cancel-item-button" linkTo={ `/unit/${ unit.id }` } type="nav" />
                 </div>
             </div>
             <div className="page-content">
