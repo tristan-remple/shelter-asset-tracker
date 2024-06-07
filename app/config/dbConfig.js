@@ -11,6 +11,7 @@ const dbConfig = new Sequelize(
     process.env.DB_PASSWORD,
     {   
         host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: 'mysql',
         define: {
             paranoid: true,     // Enables soft deletion for all models

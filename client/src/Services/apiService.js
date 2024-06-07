@@ -288,7 +288,6 @@ class apiService {
             withCredentials: true
         })
         .then(res => {
-            console.log(res.data)
             callback(res.data)
         })
         .catch(err => {
@@ -429,6 +428,27 @@ class apiService {
         })
     }
 
+    // Called by: UnitEdit
+    postUserAuths = async(user, callback) => {
+        const id = user.id
+        await axios.post(`${ import.meta.env.VITE_API_URL }/users/authorize/${ id }`, user, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
     // Called by: UserDelete
     deleteUser = async(user, callback) => {
         const id = user.id
@@ -465,8 +485,10 @@ class apiService {
     }
 
     // Called by: Dashboard
-    csvReport = async(title, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/reports/${ title }`, {
+    csvReport = async(title, id, callback) => {
+        let url = `${ import.meta.env.VITE_API_URL }/csv/${ title }`
+        if (id) { url += "/" + id }
+        await axios.get(url, {
             withCredentials: true
         })
         .then(res => {
@@ -483,7 +505,7 @@ class apiService {
 
     // Called by: ItemRecovery
     deletedItems = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/items`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/items/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -500,7 +522,7 @@ class apiService {
 
     // Called by: ItemRecovery
     restoreItem = async(itemId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/items/${ itemId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/items/${ itemId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -517,7 +539,7 @@ class apiService {
 
     // Called by: UnitRecovery
     deletedUnits = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/units`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -534,7 +556,7 @@ class apiService {
 
     // Called by: UnitRecovery
     restoreUnit = async(unitId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/units/${ unitId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units/${ unitId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -551,7 +573,7 @@ class apiService {
 
     // Called by: LocationRecovery
     deletedLocations = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -568,7 +590,7 @@ class apiService {
 
     // Called by: LocationRecovery
     restoreLocation = async(locationId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ locationId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ locationId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -585,7 +607,7 @@ class apiService {
 
     // Called by: CategoryRecovery
     deletedCategories = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/templates`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -602,7 +624,7 @@ class apiService {
 
     // Called by: CategoryRecovery
     restoreCategory = async(categoryId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/${ categoryId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/${ categoryId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -619,7 +641,7 @@ class apiService {
 
     // Called by: UserRecovery
     deletedUsers = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/users`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -636,8 +658,116 @@ class apiService {
 
     // Called by: UserRecovery
     restoreUser = async(userId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/users/${ userId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/${ userId }/restore`, {
             withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    listIcons = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/icons`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    uploadIcon = async(icon, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    uploadLogo = async(logoSrc, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/logo`, logoSrc, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    getSettings = async(callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/settings`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    postSettings = async(settings, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/settings`, settings, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    deleteIcons = async(iconList, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/icons/delete`, iconList, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
         })
         .then(res => {
             callback(res.data)

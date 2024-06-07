@@ -20,7 +20,6 @@ class authService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
             callback({ error: err.response.data })
         })
     }
@@ -34,13 +33,13 @@ class authService {
             }
         })
         .then(res => {
-            callback(res.data)
+            callback(res.data.userInfo)
         })
         .catch(err => {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
-                callback({ error: errorCodes[err.response.status] })
+                callback({ error: errorCodes[err?.response?.status] })
             }
         })
     }
@@ -80,7 +79,6 @@ class authService {
     }
 
     resetPassword(request) {
-        console.log(request)
         request.success = true
         return request
     }

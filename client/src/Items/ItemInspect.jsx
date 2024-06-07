@@ -12,7 +12,7 @@ import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
+import Flag, { flagOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
@@ -69,8 +69,9 @@ const ItemInspect = () => {
 
     // object that defines fields that are safe to change
     const [ changes, setChanges ] = useState({
-        statusColor: flagColorOptions[0],
-        statusText: flagTextOptions[0],
+        status: "ok",
+        flag: flagOptions[0],
+        usefulLife: "",
         comment: ""
     })
 
@@ -78,19 +79,14 @@ const ItemInspect = () => {
         if (item) {
 
             // flag options are defined in the flag module
-            let flagColor = flagColorOptions[0]
-            let flagText = flagTextOptions[0]
-            if ( item.toDiscard ) {
-                flagColor = flagColorOptions[2]
-                flagText = flagTextOptions[2]
-            } else if ( item.toInspect ) {
-                flagColor  = flagColorOptions[1]
-                flagText = flagTextOptions[1]
-            }
+            let currentFlag = flagOptions.filter(option => {
+                return option.text.toLowerCase() === item.status
+            })[0]
             
             setChanges({
-                statusColor: flagColor,
-                statusText: flagText,
+                status: item.status,
+                flag: currentFlag,
+                usefulLife: item.usefulLife,
                 comment: ""
             })
         }
@@ -99,15 +95,40 @@ const ItemInspect = () => {
     // Text changes are handled by Services/handleChanges
 
     // handles flag dropdown state
+    const flagTextOptions = flagOptions.map(option => option.text)
     const handleFlag = (input) => {
         const newChanges = {...changes}
-        const index = flagTextOptions.indexOf(input)
+        const index = flagOptions.findIndex(option => option.text === input)
         if (index > -1) {
-            newChanges.statusColor = flagColorOptions[index]
-            newChanges.statusText = flagTextOptions[index]
+            newChanges.status = flagOptions[index].text.toLowerCase()
+            newChanges.flag = flagOptions[index]
         }
         setChanges(newChanges)
         setUnsaved(true)
+    }
+
+    const [ snoozeYears, setSnoozeYears ] = useState(0)
+    const snooze = () => {
+        const newChanges = {...changes}
+        
+        const date = new Date(newChanges.usefulLife)
+        date.setFullYear(date.getFullYear() + 1)
+        newChanges.usefulLife = date.toISOString()
+        console.log(newChanges.usefulLife)
+
+        setChanges(newChanges)
+        setSnoozeYears(snoozeYears + 1)
+    }
+
+    const unsnooze = () => {
+        const newChanges = {...changes}
+        
+        const date = new Date(newChanges.usefulLife)
+        date.setFullYear(date.getFullYear() - 1)
+        newChanges.usefulLife = date.toISOString()
+
+        setChanges(newChanges)
+        setSnoozeYears(snoozeYears - 1)
     }
 
     const [ confirm, setConfirm ] = useState(false)
@@ -117,12 +138,12 @@ const ItemInspect = () => {
 
         const newItem = {...item}
         newItem.unitId = item.unit.id
-        newItem.toInspect = changes.statusText === flagTextOptions[1]
-        newItem.toDiscard = changes.statusText === flagTextOptions[2]
+        newItem.status = changes.status
         newItem.comment = changes.comment
+        newItem.usefulLife = changes.usefulLife
 
-        if (newItem.toInspect === item.toInspect && newItem.toDiscard === item.toDiscard && !confirm) {
-            if (newItem.comment === "") {
+        if (newItem.status === item.status && !confirm) {
+            if (newItem.comment === "" && newItem.usefulLife === item.usefulLife) {
                 setStatus("You have not entered or changed anything.")
                 return
             }
@@ -135,7 +156,7 @@ const ItemInspect = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully changed the status flag on ${ response.name }.`)
+                setStatus(`You have submitted an inspection on ${ response.name }.`)
                 setUnsaved(false)
                 navigate(`/item/${response.id}`)
             }
@@ -164,17 +185,30 @@ const ItemInspect = () => {
                             Status
                         </div>
                         <div className="col-content">
-                            <Flag color={ changes.statusColor } />
+                            <Flag color={ changes.flag.color } />
                             <Dropdown
                                 list={ flagTextOptions }
-                                current={ changes.statusText }
+                                current={ changes.flag.text }
                                 setCurrent={ handleFlag }
                             />
                         </div>
                     </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Snooze End of Life
+                        </div>
+                        <div className="col-content">
+                            <p>{ friendlyDate(changes.usefulLife) }</p>
+                            <div className="btn-group" role="group">
+                                <Button text="-" type="action" linkTo={ unsnooze } />
+                                <div className="btn btn-outline-primary">{ snoozeYears } year(s)</div>
+                                <Button text="+" type="action" linkTo={ snooze } />
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="row row-info">
-                    <div className="col-8 col-content">
+                    <div className="col col-content">
                         <strong>New Comment: </strong><br />
                         <textarea 
                             name="comment" 

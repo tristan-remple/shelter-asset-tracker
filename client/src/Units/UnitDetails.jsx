@@ -11,7 +11,7 @@ import { statusContext, authContext, userContext } from '../Services/Context'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
+import Flag, { flagOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Search from '../Reusables/Search'
 import CommentBox from '../Reusables/CommentBox'
@@ -71,9 +71,6 @@ const UnitDetails = () => {
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit Unit" linkTo={ `/unit/${ id }/edit` } type="admin" />
                 </div>
-                <div className="col-2">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="admin" />
-                </div>
             </>
         )
     }
@@ -91,24 +88,18 @@ const UnitDetails = () => {
     filteredItems?.sort((a, b) => {
         return new Date(b.inspectedDate) - new Date(a.inspectedDate)
     }).sort((a, b) => {
-        return a.toInspect < b.toInspect ? 1 : 0
+        return a.status === "inspect"
     }).sort((a, b) => {
-        return a.toDiscard < b.toDiscard ? 1 : 0
+        return a.status === "discard" ? 0 : 1
     })
 
     // map the item objects into table rows
     const displayItems = filteredItems?.map(item => {
 
         // flag options are defined in the flag module
-        let flagColor = flagColorOptions[0]
-        let flagText = flagTextOptions[0]
-        if ( item.toDiscard ) {
-            flagColor = flagColorOptions[2]
-            flagText = flagTextOptions[2]
-        } else if ( item.toInspect ) {
-            flagColor  = flagColorOptions[1]
-            flagText = flagTextOptions[1]
-        }
+        let currentFlag = flagOptions.filter(option => {
+            return option.text.toLowerCase() === item.status
+        })[0]
 
         return (
             <tr key={ item.itemId } >
@@ -116,7 +107,7 @@ const UnitDetails = () => {
                 <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
                 <td><Button text="Inspect" linkTo={ `/item/${ item.itemId }/inspect` } type="small" /></td>
-                <td><Flag color={ flagColor } /> { flagText }</td>
+                <td><Flag color={ currentFlag.color } /> { currentFlag.text }</td>
             </tr>
         )
     })

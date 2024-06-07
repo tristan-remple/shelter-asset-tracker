@@ -51,7 +51,7 @@ exports.updateAuthorization = async (req, res, next) => {
             await models.FacilityAuth.create({
                 userId: userId,
                 facilityId: facilityId,
-                authorizedBy: authorizedBy
+                authorizedBy: 1
             });
         }
 
@@ -68,7 +68,7 @@ exports.updateAuthorization = async (req, res, next) => {
             addedAuths: addedAuths,
             removedAuths: removedAuths,
             userId: userId,
-            authorizedBy: req.userId,
+            // authorizedBy: req.userId,
             success: true
         }
 

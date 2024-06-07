@@ -1,6 +1,7 @@
 // external dependencies
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
+import { CSVLink } from "react-csv"
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -24,7 +25,7 @@ import Dropdown from '../Reusables/Dropdown'
 const Dashboard = () => {
 
     // get context information
-    const { status } = useContext(statusContext)
+    const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const navigate = useNavigate()
 
@@ -53,8 +54,8 @@ const Dashboard = () => {
     }, [])
 
     // state to hold the information about the currently selected view
-    const [ discardItems, setDiscardItems ] = useState([])
-    const [ filteredItems, setFilteredItems ] = useState([])
+    const [ items, setItems ] = useState([]) // all items in all facilities
+    const [ filteredItems, setFilteredItems ] = useState([]) // items that meet the current filter criteria
     const [ totalValue, setTotalValue ] = useState(0)
     const [ itemCount, setItemCount ] = useState([])
 
@@ -109,12 +110,18 @@ const Dashboard = () => {
             })
 
             // set all the totals to state
-            setDiscardItems(newItemList)
+            setItems(newItemList)
             setFilteredItems(newItemList.filter(item => {
-                return item.toDiscard
+                return item.status === "discard"
             }))
             setItemCount(newItemCount)
             setTotalValue(newTotalValue)
+            setFilters({
+                startDate: `${new Date().getFullYear()}-01-01`,
+                endDate: `${new Date().getFullYear()}-12-31`,
+                inspect: false,
+                discard: true
+            })
 
         // if the api call has succeeded and one location has been selected
         } else if (response?.length > 0) {
@@ -131,10 +138,18 @@ const Dashboard = () => {
             }, [])
             
             // set its values to state
-            setDiscardItems(items)
-            setFilteredItems(items)
+            setItems(items)
+            setFilteredItems(items.filter(item => {
+                return item.status === "discard"
+            }))
             setTotalValue(location.totalValue)
             setItemCount(location.itemCount)
+            setFilters({
+                startDate: `${new Date().getFullYear()}-01-01`,
+                endDate: `${new Date().getFullYear()}-12-31`,
+                inspect: false,
+                discard: true
+            })
         }
 
     // do this whole process when the api call completes and when the view changes
@@ -146,7 +161,9 @@ const Dashboard = () => {
     }).map(item => {
         return (
             <tr key={ item.id } >
-                <td className="col-icon"><img className="small-icon" src={ `/img/${ item.icon }.png` } /></td>
+                <td className="col-icon">
+                    <img className="small-icon" src={ `/img/${ item.icon.src }` } alt={ `${ item.icon.name } icon` } />
+                </td>
                 <td>{ item.name }</td>
                 <td className="col-right">{ item.count }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
@@ -165,22 +182,21 @@ const Dashboard = () => {
         discard: true
     })
 
-    // --CHANGES NEEDED HERE
     // when filters are updated, update the items listed
     useEffect(() => {
-        const newFilters = discardItems.filter(item => { // discardItems -> filterItems when EoL is figured out
+        const newFilters = items?.filter(item => {
             return (
-                new Date(item.eol) > new Date(filters.startDate) &&
-                new Date(item.eol) < new Date(filters.endDate) &&
-                (filters.discard ? item.toDiscard : true) &&
-                (filters.inspect ? item.toInspect || item.toDiscard : true)
+                new Date(item.eol).getTime() > new Date(filters.startDate).getTime() &&
+                new Date(item.eol).getTime() < new Date(filters.endDate).getTime() &&
+                (filters.discard ? item.status === "discard" : true) &&
+                (filters.inspect ? item.status === "inspect" || item.status === "discard" : true)
             )
         })
         setFilteredItems(newFilters)
-    }, [ filters ])
+    }, [ items, filters ])
 
     // render the filtered items as table rows for the lower table
-    const displayItems = discardItems.map(item => {
+    const displayItems = filteredItems.map(item => {
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
@@ -220,7 +236,7 @@ const Dashboard = () => {
         }
     }
 
-    const list = [ "items", "units", "locations", "categories", "users"]
+    const list = [ "items", "units", "locations", "categories"]
 
     // render the list, including all listeners
     const dropdownList = list.map((item, index) => {
@@ -234,12 +250,33 @@ const Dashboard = () => {
         >Deleted { capitalize(item) }</li>
     })
 
+    const downloadCSV = async(report) => {
+        let id = null
+        if (view !== "All Locations" && response?.length > 0) {
+            id = response.filter(loc => {
+                return loc.facility === view
+            })[0].id
+        }
+        apiService.csvReport(report, id, (data) => {
+            if (data.error) {
+                setErr(data.error)
+                return
+            }
+            const download = <CSVLink data={ data } />
+            download.click()
+            setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+        })
+    }
+
     // https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Admin Dashboard</h2>
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Settings" linkTo="/admin/settings" type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Categories" linkTo="/categories" type="admin" />
@@ -293,13 +330,13 @@ const Dashboard = () => {
                                     CSV Exports
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Financial Report" linkTo={ `/item` } type="small" />
+                                    <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="small" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Detailed Report" linkTo={ `/item` } type="small" />
+                                    <Button text="Inventory Report" linkTo={ () => downloadCSV("inventory") } type="small" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Replacements Report" linkTo={ `/item` } type="small" />
+                                    <Button text="End of Life Report" linkTo={ () => downloadCSV("eol") } type="small" />
                                 </div>
                             </div>
                         </div>
@@ -376,7 +413,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <Search data={ discardItems } setData={ setFilteredItems } />
+                <Search data={ items } setData={ setFilteredItems } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
@@ -387,7 +424,7 @@ const Dashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
+                        { displayItems && displayItems.length > 0 ? displayItems : <tr><td colSpan={ 4 }>No items yet.</td></tr> }
                     </tbody>
                 </table>
             </div> {/* page content */}

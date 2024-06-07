@@ -40,7 +40,7 @@ const LogIn = () => {
 
     // if the user is logged in, redirect them to their location(s)
     useEffect(() => {
-        if (userDetails.userId && userDetails.facilityAuths.length === 1) {
+        if (userDetails.userId && !userDetails.isAdmin && userDetails.facilityAuths.length === 1) {
             navigate(`/location/${ userDetails.facilityAuths[0] }`)
         } else if (userDetails.userId) {
             navigate("/locations")
@@ -74,7 +74,7 @@ const LogIn = () => {
                 sessionStorage.setItem("facilityAuths", response.facilityAuths)
                 setStatus(`Welcome.`)
                 setUnsaved(false)
-                if (response.facilityAuths.length === 1) {
+                if (response.facilityAuths.length === 1 && !userDetails.isAdmin) {
                     navigate(`/location/${ response.facilityAuths[0] }`)
                 } else {
                     navigate("/locations")

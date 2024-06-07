@@ -78,7 +78,6 @@ const LocationEdit = () => {
                 name,
                 created,
                 types,
-                phone: phone ? phone : "xxx-xxx-xxxx",
                 user: {
                     name: manager.name,
                     userId: manager.id
@@ -172,9 +171,6 @@ const LocationEdit = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Add Unit" linkTo={ `/location/${ changes.facilityId }/add` } type="admin" />
-                </div>
-                <div className="col-2 d-flex justify-content-end">
                     <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="admin" />
                 </div>
             </div>
@@ -190,19 +186,6 @@ const LocationEdit = () => {
                                 type="text" 
                                 name="name" 
                                 value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Phone Number
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="phone" 
-                                value={ changes.phone } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

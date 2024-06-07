@@ -109,7 +109,7 @@ const UnitEdit = () => {
                     <h2>Unit { name } in (Location)</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/location/${ response.facility.id }` } type="nav" />
+                    <Button text="Return" linkTo={ `/unit/${ id }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />

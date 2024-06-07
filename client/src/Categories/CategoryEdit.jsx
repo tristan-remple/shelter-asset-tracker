@@ -34,8 +34,22 @@ const CategoryEdit = () => {
         setErr("undefined")
     }
 
+    // form controls
+    const [ unsaved, setUnsaved ] = useState(false)
+    const [ changes, setChanges ] = useState({
+        id: null,
+        name: null,
+        defaultValue: null,
+        depreciationRate: null,
+        defaultUsefulLife: null,
+        icon: null,
+        singleResident: null
+    })
+
     // fetch data from the api
     const [ response, setResponse ] = useState()
+    const [ icons, setIcons ] = useState([])
+    const [ newIcons, setNewIcons ] = useState("")
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
@@ -44,21 +58,26 @@ const CategoryEdit = () => {
                 } else {
                     setResponse(data)
                     setErr(null)
+                    setChanges({
+                        id: id,
+                        name: data.name,
+                        defaultValue: parseFloat(data.defaultValue),
+                        depreciationRate: parseFloat(data.depreciationRate) * 100,
+                        defaultUsefulLife: parseInt(data.defaultUsefulLife),
+                        icon: data.Icon,
+                        singleResident: data.singleResident
+                    })
+                }
+            })
+            await apiService.listIcons((data) => {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setIcons(data)
                 }
             })
         })()
-    }, [])
-
-    // form controls
-    const [ unsaved, setUnsaved ] = useState(false)
-    const [ changes, setChanges ] = useState({
-        id: null,
-        name: null,
-        defaultValue: null,
-        defaultDepreciation: null,
-        icon: null,
-        singleResident: null
-    })
+    }, [ newIcons ])
 
     // open or close the icon selector menu
     const [ selector, setSelector ] = useState(false)
@@ -67,37 +86,20 @@ const CategoryEdit = () => {
         setSelector(newSelector)
     }
 
-    useEffect(() => {
-        if (response) {
-            setChanges({
-                id: id,
-                name: response.name,
-                defaultValue: response.defaultValue,
-                defaultDepreciation: response.defaultDepreciation,
-                icon: response.icon,
-                singleResident: response.singleResident
-            })
-        }
-    }, [ response ])
-
     // sends the item object to the apiService
     const saveChanges = async() => {
         const editedCategory = {...changes}
-
-        if (authService.checkUser()) {
-            await apiService.postCategoryEdit(editedCategory, (res) => {
-                if (res.success) {
-                    setStatus(`You have successfully saved your changes to category ${ res.name }.`)
-                    setUnsaved(false)
-                    navigate(`/category/${ id }`)
-                } else {
-                    setStatus("We weren't able to process your edit category request.")
-                }
-            })
-            
-        } else {
-            setStatus("Your log in credentials could not be validated.")
-        }
+        editedCategory.icon = changes.icon.id
+        editedCategory.depreciationRate = changes.depreciationRate / 100
+        await apiService.postCategoryEdit(editedCategory, (res) => {
+            if (res.success) {
+                setStatus(`You have successfully saved your changes to category ${ res.name }.`)
+                setUnsaved(false)
+                navigate(`/category/${ id }`)
+            } else {
+                setStatus("We weren't able to process your edit category request.")
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (
@@ -148,6 +150,14 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            # of Items
+                        </div>
+                        <div className="col-content">
+                            { response.itemCount }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Updated
                         </div>
                         <div className="col-content">
@@ -166,6 +176,20 @@ const CategoryEdit = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
+                            Default Useful Life<br />(In Months)
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="number" 
+                                name="defaultUsefulLife"
+                                value={ changes.defaultUsefulLife } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            /><br />
+                            Equivalent to { (changes.defaultUsefulLife / 12).toFixed(1) } years
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Default Value
                         </div>
                         <div className="col-content mt-2">
@@ -180,23 +204,15 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Depreciation Rate
+                            Depreciation Rate<br />(Annual Percent)
                         </div>
                         <div className="col-content mt-2">
                             <input 
                                 type="number" 
-                                name="defaultDepreciation" 
-                                value={ changes.defaultDepreciation } 
+                                name="depreciationRate" 
+                                value={ changes.depreciationRate } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            # of Items
-                        </div>
-                        <div className="col-content">
-                            { response.itemCount }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -204,9 +220,9 @@ const CategoryEdit = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } alt={ response.name + " icon" } />
+                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
+                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } /> }
                         </div>
                     </div>
                 </div>

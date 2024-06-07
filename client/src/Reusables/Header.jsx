@@ -11,7 +11,7 @@ const Header = () => {
     const location = useLocation()
 
     let locationLink = "/locations"
-    if (facilityAuths.length === 1) {
+    if (facilityAuths?.length === 1 && !isAdmin) {
         locationLink = `/location/${ facilityAuths[0] }`
     }
 

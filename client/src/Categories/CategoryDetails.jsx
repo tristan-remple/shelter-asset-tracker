@@ -56,9 +56,6 @@ const CategoryDetails = () => {
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Edit" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete" linkTo={ `/category/${ response.id }/delete` } type="danger" />
-                </div>
             </div>
             <div className="page-content">
                 { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
@@ -82,6 +79,14 @@ const CategoryDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
+                            # of Items
+                        </div>
+                        <div className="col-content">
+                            { response.itemCount }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Updated
                         </div>
                         <div className="col-content">
@@ -100,6 +105,15 @@ const CategoryDetails = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
+                            Default Useful Life
+                        </div>
+                        <div className="col-content">
+                            { response.defaultUsefulLife } months<br />
+                            Equivalent to { (response.defaultUsefulLife / 12).toFixed(1) } years
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Default Value
                         </div>
                         <div className="col-content">
@@ -108,18 +122,10 @@ const CategoryDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Depreciation Rate
+                            Depreciation Rate
                         </div>
                         <div className="col-content">
-                            { response.defaultDepreciation }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            # of Items
-                        </div>
-                        <div className="col-content">
-                            { response.itemCount }
+                            { response.depreciationRate * 100 }% per year
                         </div>
                     </div>
                     <div className="col col-info">
@@ -127,7 +133,7 @@ const CategoryDetails = () => {
                             Icon
                         </div>
                         <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ response.icon }.png` } alt={ response.name + " icon" } />
+                            <img className="img-fluid small-icon" src={ `/img/${ response.Icon.src }` } alt={ response.Icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ `/category/${ response.id }/edit` } type="admin" />
                         </div>
                     </div>

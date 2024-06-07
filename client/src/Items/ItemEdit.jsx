@@ -12,7 +12,7 @@ import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Reusables/Button"
-import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
+import Flag, { flagOptions } from "../Reusables/Flag"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
@@ -68,12 +68,12 @@ const ItemEdit = () => {
     // object (nested) that defines fields that are available to change
     const [ changes, setChanges ] = useState({
         name: "",
-        statusColor: flagColorOptions[0],
-        statusText: flagTextOptions[0],
+        status: "",
+        flag: {},
         comment: "",
         invoice: "",
         vendor: "",
-        depreciationRate: 0,
+        usefulLife: "",
         initialValue: 0,
         currentValue: 0
     })
@@ -82,24 +82,18 @@ const ItemEdit = () => {
         if (item) {
 
             // flag options are defined in the flag module
-            let flagColor = flagColorOptions[0]
-            let flagText = flagTextOptions[0]
-            if ( item.toDiscard ) {
-                flagColor = flagColorOptions[2]
-                flagText = flagTextOptions[2]
-            } else if ( item.toInspect ) {
-                flagColor  = flagColorOptions[1]
-                flagText = flagTextOptions[1]
-            }
+            let currentFlag = flagOptions.filter(option => {
+                return option.text.toLowerCase() === item.status
+            })[0]
             
             setChanges({
                 name: item.name,
-                statusColor: flagColor,
-                statusText: flagText,
+                status: item.status,
+                flag: currentFlag,
                 comment: "",
                 invoice: item.invoice,
                 vendor: item.vendor,
-                depreciationRate: item.value.depreciationRate,
+                usefulLife: item.usefulLife,
                 initialValue: item.value.initialValue,
                 currentValue: item.value.currentValue
             })
@@ -114,13 +108,15 @@ const ItemEdit = () => {
 
     // Most changes are handled by Services/handleChanges
 
+    const flagTextOptions = flagOptions.map(option => option.text)
+
     // handles flag dropdown state
     const handleFlag = (input) => {
         const newChanges = {...changes}
-        const index = flagTextOptions.indexOf(input)
+        const index = flagOptions.findIndex(option => option.text === input)
         if (index > -1) {
-            newChanges.statusColor = flagColorOptions[index]
-            newChanges.statusText = flagTextOptions[index]
+            newChanges.status = flagOptions[index].text.toLowerCase()
+            newChanges.flag = flagOptions[index]
         }
         setChanges(newChanges)
         setUnsaved(true)
@@ -131,8 +127,6 @@ const ItemEdit = () => {
         const newItem = {...changes}
         newItem.id = item.id
         newItem.unitId = item.unit.id
-        newItem.toInspect = changes.statusText === flagTextOptions[1]
-        newItem.toDiscard = changes.statusText === flagTextOptions[2]
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
@@ -220,10 +214,10 @@ const ItemEdit = () => {
                             Status
                         </div>
                         <div className="col-content">
-                            <Flag color={ changes.statusColor } />
+                            <Flag color={ changes.flag.color } />
                             <Dropdown
                                 list={ flagTextOptions }
-                                current={ changes.statusText }
+                                current={ changes.flag.text }
                                 setCurrent={ handleFlag }
                             />
                         </div>
@@ -231,7 +225,7 @@ const ItemEdit = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ item.template.icon }.png` } alt={ item.template.name + " icon" } />
+                        <img className="img-fluid icon" src={ `/img/${ item.template.icon.src }` } alt={ item.template.icon.name + " icon" } />
                     </div>
                     <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />
@@ -251,6 +245,19 @@ const ItemEdit = () => {
                         </div>
                         <div className="col-content">
                             { friendlyDate(item.createdAt) }
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Expected End of Life
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="date"
+                                name="usefulLife" 
+                                value={ changes.usefulLife.split("T")[0] } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -289,33 +296,6 @@ const ItemEdit = () => {
                                 step=".01"
                                 name="initialValue" 
                                 value={ changes.initialValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Current Value
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="number" 
-                                step=".01"
-                                name="currentValue" 
-                                value={ changes.currentValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Depreciation Rate
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="number" 
-                                name="depreciationRate" 
-                                value={ changes.depreciationRate } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

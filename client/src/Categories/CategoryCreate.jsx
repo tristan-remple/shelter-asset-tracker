@@ -31,8 +31,9 @@ const CategoryCreate = () => {
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
         name: "",
+        defaultUsefulLife: 0,
         defaultValue: 0,
-        defaultDepreciation: 0,
+        depreciationRate: 0,
         icon: "",
         singleResident: false
     })
@@ -44,17 +45,35 @@ const CategoryCreate = () => {
         setSelector(newSelector)
     }
 
+    const [ icons, setIcons ] = useState([])
+    const [ newIcons, setNewIcons ] = useState("")
+    useEffect(() => {
+        (async() => {
+            await apiService.listIcons((data) => {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    setIcons(data)
+                }
+            })
+        })()
+    }, [ newIcons ])
+
     // sends the item object to the apiService
     const saveChanges = async() => {
 
         // validation
-        if (changes.name === "" || changes.defaultValue < 1 || changes.defaultDepreciation <= 0 || changes.icon === "") {
+        if (changes.name === "" || changes.defaultValue <= 0 || changes.depreciationRate <= 0 || changes.icon === "") {
             setStatus("Please fill in all category fields.")
             return
         }
 
+        const newChanges = {...changes}
+        newChanges.depreciationRate = parseInt(changes.depreciationRate) / 100
+        newChanges.icon = changes.icon.id
+
         // api call
-        await apiService.postNewCategory(changes, (response) => {
+        await apiService.postNewCategory(newChanges, (response) => {
             if (response.error) {
                 setErr(response.error)
             } else {
@@ -113,6 +132,21 @@ const CategoryCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
+                            Default Useful Life<br />
+                            (In Months)
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="number" 
+                                name="defaultUsefulLife"
+                                value={ changes.defaultUsefulLife } 
+                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            /><br />
+                            Equivalent to { (changes.defaultUsefulLife / 12).toFixed(1) } years
+                        </div>
+                    </div>
+                    <div className="col col-info">
+                        <div className="col-head">
                             Default Value
                         </div>
                         <div className="col-content">
@@ -127,25 +161,28 @@ const CategoryCreate = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Depreciation Rate
+                            Depreciation Rate<br />
+                            (Annual Percent)
                         </div>
                         <div className="col-content">
                             <input 
                                 type="number" 
-                                name="defaultDepreciation" 
-                                value={ changes.defaultDepreciation } 
+                                name="depreciationRate" 
+                                value={ changes.depreciationRate } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
                     </div>
+                </div>
+                <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Icon
                         </div>
                         <div className="col-icon col-content d-flex justify-content-start">
-                            { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon }.png` } /> }
+                            { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.alt } /> }
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } /> }
+                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } /> }
                         </div>
                     </div>
                 </div>

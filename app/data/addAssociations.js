@@ -45,6 +45,6 @@
         Template.belongsTo(Icon, { foreignKey: 'icon', onDelete: 'SET NULL' });
 
         UnitType.hasMany(Unit, { foreignKey: 'type', onDelete: 'RESTRICT' });
-        Unit.belonsTo(UnitType, { foreignKey: 'type', onDelete: 'CASCADE' });
+        Unit.belongsTo(UnitType, { foreignKey: 'type', onDelete: 'CASCADE' });
     };
     

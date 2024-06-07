@@ -6,6 +6,20 @@
 
 export const flagTextOptions = [ "OK", "Inspect", "Discard" ]
 export const flagColorOptions = [ "grey", "yellow", "red" ]
+export const flagOptions = [
+    {
+        text: "OK",
+        color: "grey"
+    },
+    {
+        text: "Inspect",
+        color: "yellow"
+    },
+    {
+        text: "Discard",
+        color: "red"
+    }
+]
 
 const Flag = ({ color }) => {
 

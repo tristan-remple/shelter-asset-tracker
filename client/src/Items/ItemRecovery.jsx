@@ -31,6 +31,7 @@ const ItemRecovery = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
+                    console.log(data)
                     setItems(data)
                     setFilteredItems(data)
                     setErr(null)
@@ -39,7 +40,28 @@ const ItemRecovery = () => {
         })()
     }, [])
 
+    // map the item objects into table rows
+    const [ displayItems, setDisplayItems ] = useState([])
+    useEffect(() => {
+        if (filteredItems && filteredItems.length > 0) {
+            const display = filteredItems?.map(item => {
+                return (
+                    <tr key={ item.id } >
+                        <td>{ item.name }</td>
+                        <td>{ capitalize(item.template) }</td>
+                        <td>{ item.Unit?.name }</td>
+                        <td>{ item.Unit?.Facility.name }</td>
+                        <td>{ adminDate(item.deletedAt) }</td>
+                        <td><Button text="Restore" linkTo={ () => restoreItem(item.id) } type="small" /></td>
+                    </tr>
+                )
+            })
+            setDisplayItems(display)
+        }
+    }, [ items, filteredItems ])
+
     if (err) { return <Error err={ err } /> }
+
     if (items) {
 
     // order the items by most recently deleted first
@@ -59,21 +81,7 @@ const ItemRecovery = () => {
                 setStatus(`You have successfully restored item ${response.name}.`)
             }
         })
-    } 
-
-    // map the item objects into table rows
-    const displayItems = filteredItems?.map(item => {
-        return (
-            <tr key={ item.id } >
-                <td>{ item.name }</td>
-                <td>{ capitalize(item.template) }</td>
-                <td>{ item.unit }</td>
-                <td>{ item.facility }</td>
-                <td>{ adminDate(item.deletedAt) }</td>
-                <td><Button text="Restore" linkTo={ () => restoreItem(item.id) } type="small" /></td>
-            </tr>
-        )
-    })
+    }
 
     return err ? <Error err={ err } /> : (
         <main className="container">
