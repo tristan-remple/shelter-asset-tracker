@@ -1,5 +1,4 @@
 const { models, Sequelize } = require('../data');
-const { checkAuth } = require('../util/token');
 
 // Admin only function enforced by admin middleware
 exports.getAllFacilities = async (req, res, next) => {
@@ -52,12 +51,14 @@ exports.getFacilityById = async (req, res, next) => {
                 model: models.Unit,
                 attributes: [
                     'id', 
-                    'name', 
-                    'type'],
-                include: {
+                    'name'],
+                include: [{
                     model: models.Item,
                     attributes: ['id', 'status']
-                }
+                }, {
+                    model: models.UnitType,
+                    attributes: ['name']
+                }]
             }]
         });
 
@@ -75,7 +76,7 @@ exports.getFacilityById = async (req, res, next) => {
             units: facility.Units.map(unit => ({
                 unitId: unit.id,
                 name: unit.name,
-                type: unit.type,
+                type: unit.UnitType.name,
                 inspectCount:  unit.Items.filter(item => item.status === 'inspect').length,
                 discardCount:  unit.Items.filter(item => item.status === 'discard').length
             })),
@@ -174,6 +175,48 @@ exports.deleteFacility = async (req, res, next) => {
         };
 
         return res.status(200).json(deleteResponse);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.getDeleted = async (req, res, next) => {
+    try {
+        const deletedFacilities = await models.Facility.findAll({
+            where: Sequelize.where(Sequelize.col('deletedAt'), 'IS NOT', null),
+            paranoid: false
+        });
+
+        return res.status(200).json(deletedFacilities);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.restoreDeleted = async (req, res, next) => {
+    try {
+        const facilityId = req.params.id;
+
+        const deletedFacility = await models.Facility.findOne({
+            where: {id: facilityId},
+            paranoid: false 
+        });
+
+        if (!deletedFacility) {
+            return res.status(404).json({ error: 'Deleted facility not found.' });
+        }
+
+        await deletedFacility.restore();
+
+        const restoreResponse = {
+            facility: deletedFacility,
+            success: true
+        };
+
+        return res.status(200).json(restoreResponse);
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });

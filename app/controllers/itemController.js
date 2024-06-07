@@ -1,4 +1,4 @@
-const { models } = require('../data');
+const { models, Sequelize } = require('../data');
 const { calculateCurrentValue, getEoL } = require('../util/calc');
 
 exports.getAllItems = async (req, res, next) => {
@@ -22,7 +22,7 @@ exports.getItemById = async (req, res, next) => {
                 'vendor',
                 'donated',
                 'initialValue',
-                'usefulLife',
+                'eol',
                 'status',
                 'addedBy',
                 'createdAt',
@@ -44,11 +44,7 @@ exports.getItemById = async (req, res, next) => {
             },
             {
                 model: models.Template,
-                attributes: [
-                    'id', 
-                    'name', 
-                    'depreciationRate',
-                ],
+                attributes: ['id', 'name'],
                 include: {
                     model: models.Icon,
                     attributes: [
@@ -91,7 +87,7 @@ exports.getItemById = async (req, res, next) => {
 
 exports.sendItem = async (req, res, next) => {
     const item = req.data;
-    const currentValue = calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt);
+    const currentValue = calculateCurrentValue(item.initialValue, item.createdAt);
     const itemProfile = {
         id: item.id,
         name: item.name,
@@ -131,10 +127,9 @@ exports.sendItem = async (req, res, next) => {
         value: {
             initialValue: item.initialValue,
             donated: item.donated,
-            depreciationRate: item.Template.depreciationRate,
             currentValue: currentValue,
         },
-        usefulLife: item.usefulLife,
+        eol: item.eol,
         status: item.status,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt
@@ -161,7 +156,7 @@ exports.updateItem = async (req, res, next) => {
             invoice: invoice,
             vendor: vendor,
             initialValue: initialValue,
-            usefulLife: usefulLifeOffset ? getEoL(usefulLifeOffset, item.usefulLife) : item.usefulLife,
+            eol: usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol,
             status: status
         });
 
@@ -172,10 +167,9 @@ exports.updateItem = async (req, res, next) => {
             vendor: item.vendor,
             donates: item.donated,
             initialValue: item.initialValue,
-            depreciationRate: item.Template.depreciationRate,
-            usefulLife: item.usefulLife,
+            eol: item.eol,
             status: item.status,
-            currentValue: calculateCurrentValue(item.initialValue, item.Template.depreciationRate, item.createdAt),
+            currentValue: calculateCurrentValue(item.initialValue, item.createdAt),
             success: true
         }
 
@@ -217,7 +211,7 @@ exports.createNewItem = async (req, res, next) => {
             templateId: templateId,
             donated: donated,
             initialValue: initialValue,
-            usefulLife: getEoL(usefulLifeOffset),
+            eol: getEoL(usefulLifeOffset),
             addedBy: addedBy,
             status: 'ok'
         });
@@ -232,7 +226,7 @@ exports.createNewItem = async (req, res, next) => {
             donated: newItem.donated,
             initialValue: newItem.initialValue,
             addedBy: newItem.addedBy,
-            usefulLife: newItem.usefulLife,
+            eol: newItem.eol,
             success: true
         };
 
@@ -261,6 +255,67 @@ exports.deleteItem = async (req, res, next) => {
 
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.getDeleted = async (req, res, next) => {
+    try {
+        const deletedItems = await models.Item.findAll({
+            where: Sequelize.where(Sequelize.col('Item.deletedAt'), 'IS NOT', null),
+            include: {
+                model: models.Unit,
+                attributes: ['name'],
+                include: {
+                    model: models.Facility,
+                    attributes: ['name']
+                }
+            },
+            paranoid: false
+        });
+
+        return res.status(200).json(deletedItems);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.restoreDeleted = async (req, res, next) => {
+    try {
+        const itemId = req.params.id;
+
+        const deletedItem = await models.Item.findOne({
+            where: {id: itemId},
+            include: [{
+                model: models.Unit,
+                attributes: ['name'],
+                include: {
+                    model: models.Facility,
+                    attributes: ['name']
+                }
+            },{
+                model: models.Template,
+                attributes: ['name']
+            }],
+            paranoid: false 
+        });
+
+        if (!deletedItem) {
+            return res.status(404).json({ error: 'Deleted item not found.' });
+        }
+
+        await deletedItem.restore();
+
+        const restoreResponse = {
+            item: deletedItem,
+            success: true
+        };
+
+        return res.status(200).json(restoreResponse);
+
+    } catch (err) {
+        console.error(err);
         return res.status(500).json({ error: 'Server error.' });
     }
 };

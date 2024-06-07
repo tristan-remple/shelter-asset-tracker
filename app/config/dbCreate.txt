@@ -14,6 +14,12 @@ CREATE TABLE Users (
     deletedAt DATETIME NULL
 );
 
+CREATE TABLE Globals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE,
+    value VARCHAR(255)
+)
+
 CREATE TABLE Icons (
     id INT AUTO_INCREMENT PRIMARY KEY,
     src VARCHAR(255) UNIQUE,
@@ -28,7 +34,6 @@ CREATE TABLE Templates (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
     defaultValue DECIMAL(10, 2),
-    depreciationRate DECIMAL(10, 2),
     defaultUsefulLife INT,
     icon INT,
     singleResident BOOLEAN,
@@ -41,22 +46,28 @@ CREATE TABLE Templates (
 CREATE TABLE Facilities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
-    managerId INT,
+    managerId INT NULL,
     createdAt DATETIME,
     updatedAt DATETIME,
     deletedAt DATETIME NULL,
     FOREIGN KEY (managerId) REFERENCES Users(id)
 );
 
+CREATE TABLE UnitTypes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
 CREATE TABLE Units (
     id INT AUTO_INCREMENT PRIMARY KEY,
     facilityId INT,
     name VARCHAR(255) UNIQUE,
-    type VARCHAR(255),
+    type INT,
     createdAt DATETIME,
     updatedAt DATETIME,
     deletedAt DATETIME NULL,
-    FOREIGN KEY (facilityId) REFERENCES Facilities(id)
+    FOREIGN KEY (facilityId) REFERENCES Facilities(id),
+    FOREIGN KEY (type) REFERENCES UnitTypes(id)
 );
 
 CREATE TABLE FacilityAuths (
@@ -80,7 +91,7 @@ CREATE TABLE Items (
     vendor VARCHAR(255),
     invoice VARCHAR(255),
     initialValue DECIMAL(10, 2),
-    usefulLife DATETIME,
+    eol DATETIME,
     status ENUM('ok', 'inspect', 'discard'),
     addedBy INT,
     createdAt DATETIME,

@@ -8,7 +8,6 @@ exports.getUnitById = async (req, res, next) => {
             attributes: [
                 'id', 
                 'name', 
-                'type',
                 'createdAt',
                 'updatedAt'
             ],
@@ -28,6 +27,9 @@ exports.getUnitById = async (req, res, next) => {
             }, {
                 model: models.Facility,
                 attributes: ['id','name']
+            }, {
+                model: models.UnitTypes,
+                attributes: ['name']
             }],
             group: [] 
         });
@@ -52,7 +54,7 @@ exports.sendUnit = async (req, res, next) => {
     const unitListItems = {
         id: unit.id,
         name: unit.name,
-        type: unit.type,
+        type: unit.UnitType.name,
         facility: {
             id: unit.Facility.id,
             name: unit.Facility.name
@@ -155,6 +157,57 @@ exports.deleteUnit = async (req, res, next) => {
         };
 
         res.status(200).json(deleteResponse);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.getDeleted = async (req, res, next) => {
+    try {
+        const deletedUnits = await models.Unite.findAll({
+            where: Sequelize.where(Sequelize.col('Unit.deletedAt'), 'IS NOT', null),
+            include: {
+                model: models.Facility,
+                attributes: ['name']
+            },
+            paranoid: false
+        });
+
+        return res.status(200).json(deletedUnits);
+        
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.restoreDeleted = async (req, res, next) => {
+    try {
+        const unitId = req.params.id;
+
+        const deletedUnit = await models.Unit.findOne({
+            where: {id: unitId},
+            include: {
+                model: models.Facility,
+                attributes: ['name']
+            },
+            paranoid: false 
+        });
+
+        if (!deletedUnit) {
+            return res.status(404).json({ error: 'Deleted unit not found.' });
+        }
+
+        await deletedUnit.restore();
+
+        const restoreResponse = {
+            unit: deletedUnit,
+            success: true
+        };
+
+        return res.status(200).json(restoreResponse);
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });

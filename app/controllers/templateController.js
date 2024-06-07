@@ -7,7 +7,6 @@ exports.getAllTemplates = async (req, res, next) => {
                 'id', 
                 'name', 
                 'defaultValue', 
-                'depreciationRate', 
                 'defaultUsefulLife', 
                 'singleResident'
             ],
@@ -44,7 +43,6 @@ exports.getTemplateById = async (req, res, next) => {
                 'id', 
                 'name', 
                 'defaultValue', 
-                'depreciationRate',
                 'defaultUsefulLife', 
                 'singleResident', 
                 'createdAt', 
@@ -80,7 +78,7 @@ exports.getTemplateById = async (req, res, next) => {
 
 exports.createNewTemplate = async (req, res, next) => {
     try {
-        const { name, defaultValue, depreciationRate, defaultUsefulLife, icon, singleResident } = req.body;
+        const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
 
         const existingTemplate = await models.Template.findOne({ where: { name } });
         if (existingTemplate) {
@@ -90,7 +88,6 @@ exports.createNewTemplate = async (req, res, next) => {
         const newTemplate = await models.Template.create({
             name: name, 
             defaultValue: defaultValue, 
-            depreciationRate: depreciationRate,
             defaultUsefulLife: defaultUsefulLife,
             icon: icon,
             singleResident: singleResident
@@ -100,7 +97,6 @@ exports.createNewTemplate = async (req, res, next) => {
             id: newTemplate.id,
             name: newTemplate.name,
             defaultValue: newTemplate.defaultValue,
-            depreciationRate: newTemplate.depreciationRate,
             defaultUsefulLife: newTemplate.defaultUsefulLife,
             icon: newTemplate.icon,
             singleResident: newTemplate.singleResident,
@@ -120,7 +116,7 @@ exports.createNewTemplate = async (req, res, next) => {
 exports.updateTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
-        const { name, defaultValue, depreciationRate, defaultUsefulLife, icon, singleResident } = req.body;
+        const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
 
         const template = await models.Template.findByPk(templateId);
 
@@ -131,7 +127,6 @@ exports.updateTemplate = async (req, res, next) => {
         template.set({
             name: name,
             defaultValue: defaultValue,
-            defaultDepreciation: depreciationRate,
             defaultUsefulLife: defaultUsefulLife,
             icon: icon,
             singleResident: singleResident
@@ -140,7 +135,6 @@ exports.updateTemplate = async (req, res, next) => {
         const updateResponse = {
             name: template.name,
             defaultValue: template.defaultValue,
-            depreciationRate: template.depreciationRate,
             defaultUsefulLife: template.defaultUsefulLife,
             icon: template.icon,
             singleResident: template.singleResident,
@@ -178,6 +172,48 @@ exports.deleteTemplate = async (req, res, next) => {
         };
 
         return res.status(200).json(deleteResponse);
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.getDeleted = async (req, res, next) => {
+    try {
+        const deletedTemplates = await models.Template.findAll({
+            where: Sequelize.where(Sequelize.col('Template.deletedAt'), 'IS NOT', null),
+            paranoid: false
+        });
+
+        return res.status(200).json(deletedTemplates);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.restoreDeleted = async (req, res, next) => {
+    try {
+        const templateId = req.params.id;
+
+        const deletedTemplate = await models.Template.findOne({
+            where: {id: templateId},
+            paranoid: false 
+        });
+
+        if (!deletedTemplate) {
+            return res.status(404).json({ error: 'Deleted template not found.' });
+        }
+
+        await deletedTemplate.restore();
+
+        const restoreResponse = {
+            template: deletedTemplate,
+            success: true
+        };
+
+        return res.status(200).json(restoreResponse);
 
     } catch (err) {
         console.error(err);

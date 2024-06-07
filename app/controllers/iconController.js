@@ -135,7 +135,9 @@ exports.deleteIcon = async (req, res, next) => {
             return res.status(404).json({ error: 'Icon not found.' });
         }
 
-        const deletedIcon = await icon.destroy();
+        const deletedIcon = await icon.destroy({
+            force: true     // No soft deletes on Icons
+        });
 
         const deleteResponse = {
             iconId: deletedIcon.id,

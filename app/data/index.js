@@ -17,6 +17,7 @@ const models = [
     require('./models/item.model'),
     require('./models/template.model'),
     require('./models/unit.model'),
+    require('./models/unitTypes.model'),
     require('./models/user.model')
 ];
 

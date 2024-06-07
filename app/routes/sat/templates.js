@@ -9,6 +9,12 @@ router.route('/')
     .get(templateController.getAllTemplates)
     .post(admin, templateController.createNewTemplate);
 
+router.route('/deleted')
+    .get(admin, templateController.getDeleted);
+
+router.route('/:id/restore')
+    .get(admin, templateController.restoreDeleted);
+
 router.route('/:id')
     .get(templateController.getTemplateById)
     .put(admin, templateController.updateTemplate)

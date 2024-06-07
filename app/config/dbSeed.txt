@@ -35,11 +35,11 @@ INSERT INTO Icons (src, name, alt, createdAt, updatedAt) VALUES
 ('icons8-window-shade-100.png', 'blinds', 'blinds icon', NOW(), NOW());
 
 -- Inserting templates
-INSERT INTO Templates (name, defaultValue, depreciationRate, defaultUsefulLife, icon, singleResident, createdAt, updatedAt) VALUES
-('Chair', 50.00, 0.04, 60, 3, 0, NOW(), NOW()),
-('Table', 200.00, 0.04, 72, 21, 0, NOW(), NOW()),
-('Sofa', 500.00, 0.03, 84, 19, 0, NOW(), NOW()),
-('Mattress', 250.00, 0.05, 120, 2, 1, NOW(), NOW());
+INSERT INTO Templates (name, defaultValue, defaultUsefulLife, icon, singleResident, createdAt, updatedAt) VALUES
+('Chair', 50.00, 60, 3, 0, NOW(), NOW()),
+('Table', 200.00, 72, 21, 0, NOW(), NOW()),
+('Sofa', 500.00, 84, 19, 0, NOW(), NOW()),
+('Mattress', 250.00, 120, 2, 1, NOW(), NOW());
 
 -- Inserting facilities
 INSERT INTO Facilities (name, managerId, createdAt, updatedAt) VALUES
@@ -56,21 +56,29 @@ INSERT INTO FacilityAuths (userId, FacilityId, createdAt) VALUES
 (3, 2, NOW()),
 (4, 3, NOW());
 
+
+-- Inserting UnitTypes
+INSERT INTO UnitTypes (name) VALUES
+('Common'),
+('Office'),
+('Cubicle'),
+('Utility');
+
 -- Inserting units
 INSERT INTO Units (facilityId, name, type, createdAt, updatedAt) VALUES
-(1, 'Unit A', 'Apartment', NOW(), NOW()),
-(1, 'Unit B', 'Apartment', NOW(), NOW()),
-(2, '101', 'Apartment', NOW(), NOW()),
-(2, '102', 'Apartment', NOW(), NOW()),
-(2, '201', 'Apartment', NOW(), NOW()),
-(3, '1-01', 'Room', NOW(), NOW()),
-(3, '1-02', 'Room', NOW(), NOW()),
-(3, '2-01', 'Room', NOW(), NOW()),
-(3, '2-02', 'Room', NOW(), NOW());
+(1, 'Unit A', 2, NOW(), NOW()),
+(1, 'Unit B', 2, NOW(), NOW()),
+(2, '101', 2, NOW(), NOW()),
+(2, '102', 2, NOW(), NOW()),
+(2, '201', 2, NOW(), NOW()),
+(3, '1-01', 3, NOW(), NOW()),
+(3, '1-02', 3, NOW(), NOW()),
+(3, '2-01', 3, NOW(), NOW()),
+(3, '2-02', 3, NOW(), NOW());
 
 -- Inserting items
 -- Inserting items for UnitID 1
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (1, 1, 'chair A-01', 0, 'IKEA', 'INV-ABC123', 50.00, '2029-04-17 08:30:00', 'ok', 2, '2024-04-17 08:30:00', '2024-04-17 08:30:00'),  
 (1, 1, 'chair A-02', 0, 'IKEA', 'INV-DEF456', 50.00, '2029-04-17 08:30:00', 'ok', 2, '2024-04-17 08:30:00', '2024-04-17 08:30:00'), 
@@ -79,7 +87,7 @@ VALUES
 (1, 4, 'mattress A-01', 0, 'Leons', 'INV-PQR678', 250.00, '2034-04-17 08:30:00', 'ok', 2, '2022-11-10 12:15:00', '2022-11-10 12:15:00');  
 
 -- Inserting items for UnitID 2
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (2, 1, 'chair B-01', 0, 'IKEA', 'INV-STU901', 50.00, '2028-12-03 09:20:00', 'inspect', 1, '2022-12-03 09:20:00', '2022-12-03 09:20:00'),  
 (2, 1, 'chair B-02', 0, 'IKEA', 'INV-VWX234', 50.00, '2028-12-03 09:20:00', 'inspect', 1, '2022-12-03 09:20:00', '2022-12-03 09:20:00'), 
@@ -89,7 +97,7 @@ VALUES
 (2, 4, 'mattress B-01', 0, 'Leons', 'INV-IJK345', 250.00, '2032-09-25 14:45:00', 'ok', 1, '2022-09-25 14:45:00', '2022-09-25 14:45:00'); 
 
 -- Inserting items for UnitID 3
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (3, 1, '101-chair01', 0, 'IKEA', 'INV-LMN678', 50.00, '2029-07-17 11:20:00', 'ok', 3, '2024-07-17 11:20:00', '2024-07-17 11:20:00'),
 (3, 1, '101-chair02', 0, 'IKEA', 'INV-OPQ901', 50.00, '2029-07-17 11:20:00', 'ok', 3, '2024-07-17 11:20:00', '2024-07-17 11:20:00'),
@@ -97,7 +105,7 @@ VALUES
 (3, 4, '101-mattress01', 0, 'Leons', 'INV-UVW567', 250.00, '2033-06-01 17:00:00', 'ok', 3, '2023-06-01 17:00:00', '2023-06-01 17:00:00');
 
 -- Inserting items for UnitID 4
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (4, 1, '102-chair01', 0, 'IKEA', 'INV-XYZ890', 50.00, '2028-10-19 13:30:00', 'ok', 3, '2022-10-19 13:30:00', '2022-10-19 13:30:00'),
 (4, 1, '102-chair02', 0, 'IKEA', 'INV-123ABC', 50.00, '2028-10-19 13:30:00', 'ok', 3, '2022-10-19 13:30:00', '2022-10-19 13:30:00'),
@@ -105,7 +113,7 @@ VALUES
 (4, 4, '102-mattress01', 0, 'Leons', 'INV-789GHI', 250.00, '2027-12-22 16:20:00', 'ok', 3, '2022-12-22 16:20:00', '2022-12-22 16:20:00');
 
 -- Inserting items for UnitID 5
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (5, 1, '201-chair01', 0, 'IKEA', 'INV-JKL234', 50.00, '2028-02-08 10:00:00', 'ok', 3, '2023-02-08 10:00:00', '2023-02-08 10:00:00'),
 (5, 1, '201-chair02', 0, 'IKEA', 'INV-MNO567', 50.00, '2028-02-08 10:00:00', 'ok', 3, '2023-02-08 10:00:00', '2023-02-08 10:00:00'),
@@ -113,17 +121,17 @@ VALUES
 (5, 4, '201-mattress01', 0, 'Leons', 'INV-STU123', 250.00, '2028-05-10 12:40:00', 'ok', 3, '2023-05-10 12:40:00', '2023-05-10 12:40:00');
 
 -- Inserting items for UnitID 6
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (6, 4, '101-m', 0, 'Leons', 'INV-VWX456', 250.00, '2027-11-28 09:10:00', 'ok', 4, '2022-11-28 09:10:00', '2022-11-28 09:10:00');
 
 -- Inserting items for UnitID 7
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (7, 4, '102-m', 0, 'Leons', 'INV-YZ7890', 250.00, '2034-01-15 14:25:00', 'ok', 4, '2024-01-15 14:25:00', '2024-01-15 14:25:00');
 
 -- Inserting items for UnitID 8
-INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, usefulLife, status, addedBy, createdAt, updatedAt)
+INSERT INTO Items (unitId, templateId, name, donated, vendor, invoice, initialValue, eol, status, addedBy, createdAt, updatedAt)
 VALUES
 (8, 4, '201-m', 0, 'Leons', 'INV-123DEF', 250.00, '2027-08-30 09:50:00', 'ok', 4, '2022-08-30 09:50:00', '2022-08-30 09:50:00');
 
