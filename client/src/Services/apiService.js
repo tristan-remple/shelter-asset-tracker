@@ -428,6 +428,27 @@ class apiService {
         })
     }
 
+    // Called by: UnitEdit
+    postUserAuths = async(user, callback) => {
+        const id = user.id
+        await axios.post(`${ import.meta.env.VITE_API_URL }/users/authorize/${ id }`, user, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
     // Called by: UserDelete
     deleteUser = async(user, callback) => {
         const id = user.id
@@ -484,7 +505,7 @@ class apiService {
 
     // Called by: ItemRecovery
     deletedItems = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/items`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/items/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -501,7 +522,7 @@ class apiService {
 
     // Called by: ItemRecovery
     restoreItem = async(itemId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/items/${ itemId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/items/${ itemId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -518,7 +539,7 @@ class apiService {
 
     // Called by: UnitRecovery
     deletedUnits = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/units`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -535,7 +556,7 @@ class apiService {
 
     // Called by: UnitRecovery
     restoreUnit = async(unitId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/units/${ unitId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units/${ unitId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -552,7 +573,7 @@ class apiService {
 
     // Called by: LocationRecovery
     deletedLocations = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -569,7 +590,7 @@ class apiService {
 
     // Called by: LocationRecovery
     restoreLocation = async(locationId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ locationId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ locationId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -586,7 +607,7 @@ class apiService {
 
     // Called by: CategoryRecovery
     deletedCategories = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/templates`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -603,7 +624,7 @@ class apiService {
 
     // Called by: CategoryRecovery
     restoreCategory = async(categoryId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/${ categoryId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/templates/${ categoryId }/restore`, {
             withCredentials: true
         })
         .then(res => {
@@ -620,7 +641,7 @@ class apiService {
 
     // Called by: UserRecovery
     deletedUsers = async(callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/users`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/deleted`, {
             withCredentials: true
         })
         .then(res => {
@@ -637,7 +658,7 @@ class apiService {
 
     // Called by: UserRecovery
     restoreUser = async(userId, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/users/${ userId }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/${ userId }/restore`, {
             withCredentials: true
         })
         .then(res => {

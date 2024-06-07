@@ -54,8 +54,8 @@ const Dashboard = () => {
     }, [])
 
     // state to hold the information about the currently selected view
-    const [ discardItems, setDiscardItems ] = useState([])
-    const [ filteredItems, setFilteredItems ] = useState([])
+    const [ items, setItems ] = useState([]) // all items in all facilities
+    const [ filteredItems, setFilteredItems ] = useState([]) // items that meet the current filter criteria
     const [ totalValue, setTotalValue ] = useState(0)
     const [ itemCount, setItemCount ] = useState([])
 
@@ -110,9 +110,9 @@ const Dashboard = () => {
             })
 
             // set all the totals to state
-            setDiscardItems(newItemList)
+            setItems(newItemList)
             setFilteredItems(newItemList.filter(item => {
-                return item.toDiscard
+                return item.status === "discard"
             }))
             setItemCount(newItemCount)
             setTotalValue(newTotalValue)
@@ -138,8 +138,10 @@ const Dashboard = () => {
             }, [])
             
             // set its values to state
-            setDiscardItems(items)
-            setFilteredItems(items)
+            setItems(items)
+            setFilteredItems(items.filter(item => {
+                return item.status === "discard"
+            }))
             setTotalValue(location.totalValue)
             setItemCount(location.itemCount)
             setFilters({
@@ -180,19 +182,18 @@ const Dashboard = () => {
         discard: true
     })
 
-    // --CHANGES NEEDED HERE
     // when filters are updated, update the items listed
     useEffect(() => {
-        const newFilters = discardItems.filter(item => { // discardItems -> filterItems when usefulLife is figured out
+        const newFilters = items?.filter(item => {
             return (
-                new Date(item.usefulLife) > new Date(filters.startDate) &&
-                new Date(item.usefulLife) < new Date(filters.endDate) &&
+                new Date(item.eol).getTime() > new Date(filters.startDate).getTime() &&
+                new Date(item.eol).getTime() < new Date(filters.endDate).getTime() &&
                 (filters.discard ? item.status === "discard" : true) &&
                 (filters.inspect ? item.status === "inspect" || item.status === "discard" : true)
             )
         })
         setFilteredItems(newFilters)
-    }, [ filters ])
+    }, [ items, filters ])
 
     // render the filtered items as table rows for the lower table
     const displayItems = filteredItems.map(item => {
@@ -201,7 +202,7 @@ const Dashboard = () => {
                 <td>{ item.name }</td>
                 <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.id }` } type="small" /></td>
-                <td>{ adminDate(item.usefulLife) }</td>
+                <td>{ adminDate(item.eol) }</td>
             </tr>
         )
     })
@@ -412,7 +413,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <Search data={ discardItems } setData={ setFilteredItems } />
+                <Search data={ items } setData={ setFilteredItems } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
@@ -423,7 +424,7 @@ const Dashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
+                        { displayItems && displayItems.length > 0 ? displayItems : <tr><td colSpan={ 4 }>No items yet.</td></tr> }
                     </tbody>
                 </table>
             </div> {/* page content */}

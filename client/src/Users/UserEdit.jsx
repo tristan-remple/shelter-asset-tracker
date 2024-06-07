@@ -46,6 +46,17 @@ const UserEdit = () => {
         facilities: []
     })
 
+    // state that holds original data to check if an api call needs to be made
+    const [ originalData, setOriginalData ] = useState({
+        id: 0,
+        name: "",
+        email: "",
+        isAdmin: false,
+        createdAt: "",
+        updatedAt: "",
+        facilities: []
+    })
+
     // get the full array of locations
     const getLocations = async(userData) => {
         if (isAdmin) {
@@ -57,10 +68,12 @@ const UserEdit = () => {
                     // add true or false to the location based on the user's permissions
                     const toggledLocations = data.map(loc => {
                         loc.active = newChanges.facilities.some(fac => fac.facilityId === loc.id)
+                        loc.original = newChanges.facilities.some(fac => fac.facilityId === loc.id)
                         return loc
                     })
                     newChanges.facilities = toggledLocations
                     setChanges(newChanges)
+                    setOriginalData(newChanges)
                 }
             })
         } else {
@@ -71,7 +84,6 @@ const UserEdit = () => {
     // fetch user data from the api
     useEffect(() => {
         (async()=>{
-
             // get the user
             await apiService.singleUser(id, function(data){
                 if (data.error) {
@@ -84,6 +96,7 @@ const UserEdit = () => {
         })()
     }, [])
 
+    // handle toggles to the location auth checkboxes
     const handleLocations = (event, changes, setChanges, setUnsaved) => {
         const fieldName = parseInt(event.target.name)
         const newChanges = {...changes}
@@ -93,6 +106,7 @@ const UserEdit = () => {
         setUnsaved(true)
     }
 
+    // create list of checkboxes for location auths
     const locationSelector = changes.facilities?.map(loc => {
         return (
             <li key={ loc.id }>
@@ -112,24 +126,43 @@ const UserEdit = () => {
 
         // validation
         if (changes.name === "") {
-            setStatus("Please enter a username.")
+            setStatus("Please enter a name.")
             return
         }
 
-        // convert the changes object into a valid user object
+        // convert the changes locations array into a facility auths array of ids only and only for active locations
         const newUser = {...changes}
-        newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
-        console.log(newUser.auths)
+        newUser.facilityAuths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
 
-        await apiService.postUserEdit(newUser, (response) => {
-            if (response.error) {
-                setStatus("We weren't able to process your edit user request.")
-            } else {
-                setStatus(`You have successfully updated user ${response.name}.`)
-                setUnsaved(false)
-                navigate(`/user/${ changes.id }`)
-            }
-        })
+        // if the users name or email have changed, send changes to the api
+        if (newUser.name !== originalData.name || newUser.email !== originalData.email) {
+            await apiService.postUserEdit(newUser, (response) => {
+                if (response.error) {
+                    setStatus("We weren't able to process your edit user request.")
+                    return
+                } else {
+                    setStatus(`You have successfully updated user ${newUser.name}.`)
+                    setUnsaved(false)
+                }
+            })
+        }
+
+        // if the user's facility auths have changed, send new list to the api
+        if (!newUser.facilities.every(fac => fac.active === fac.original)) {
+            await apiService.postUserAuths(newUser, (response => {
+                if (response.error) {
+                    setStatus("We weren't able to process your request to update user location assignments.")
+                    return
+                } else {
+                    setStatus(`You have successfully updated user ${newUser.name}'s location assignments.`)
+                    setUnsaved(false)
+                    navigate(`/user/${ changes.id }`)
+                }
+            }))
+        }
+
+        // return to the user details page
+        navigate(`/user/${ changes.id }`)
         
     }
 

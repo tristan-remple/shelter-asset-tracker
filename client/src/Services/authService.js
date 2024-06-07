@@ -20,7 +20,6 @@ class authService {
             callback(res.data)
         })
         .catch(err => {
-            console.log(err)
             callback({ error: err.response.data })
         })
     }
@@ -34,7 +33,6 @@ class authService {
             }
         })
         .then(res => {
-            console.log(res.data)
             callback(res.data.userInfo)
         })
         .catch(err => {
@@ -81,7 +79,6 @@ class authService {
     }
 
     resetPassword(request) {
-        console.log(request)
         request.success = true
         return request
     }
