@@ -62,8 +62,20 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         setUploadForm(newForm)
     }
 
+    const [ file, setFile ] = useState(null)
+    const [ preview, setPreview ] = useState(null)
+
+    useEffect(() => {
+        if (!file) {
+            setPreview(null)
+            return
+        }
+        const filepath = URL.createObjectURL(file)
+        setPreview(filepath)
+        return () => URL.revokeObjectURL(filepath)
+    }, [ file ])
+
     const handleUpload = () => {
-        const file = document.getElementById("uploader").files[0]
         if (file) {
             if (uploaderChanges.name === "") {
                 setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
@@ -73,7 +85,8 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             const iconSubmission = {
                 name: uploaderChanges.name.toLowerCase(),
                 alt: uploaderChanges.name.toLowerCase() + " icon",
-                src: filepath
+                src: filepath,
+                file: file
             }
             apiService.uploadIcon(iconSubmission, (res) => {
                 if (res.error) {
@@ -158,7 +171,16 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                         File
                     </div>
                     <div className="col-content">
-                        <input type="file" id="uploader" accept="image/png,image/jpg,image/jpeg" />
+                        <input type="file" id="uploader" accept="image/png,image/jpg,image/jpeg" onChange={ (e) => setFile(e.target.files[0]) } />
+                    </div>
+                </div>
+                <div className="col col-info">
+                    <div className="col-head">
+                        Icon Preview
+                    </div>
+                    <div className="col-content">
+                        { preview ? <img className="icon-pick" src={ preview } style={{ maxWidth: 100 + "px", maxHeight: 100 + "px" }} /> :
+                        "Awaiting file..." }
                     </div>
                 </div>
                 <div className="col col-info">

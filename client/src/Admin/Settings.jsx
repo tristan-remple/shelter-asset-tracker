@@ -75,7 +75,7 @@ const Settings = () => {
         if (changes.depreciationRate <= 0) {
             setStatus("The global depreciation rate must be a positive number.")
             return
-        } else if (changes.name === "" || changes.url === "" || changes.logoSrc === "") {
+        } else if (changes.name === "" || changes.url === "") {
             setStatus("Please set your organization's identity.")
             return
         } else if (changes.unitTypes.length === 0) {
