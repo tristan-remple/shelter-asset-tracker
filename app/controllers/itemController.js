@@ -109,12 +109,12 @@ exports.sendItem = async (req, res, next) => {
         template: {
             id: item.Template.id,
             name: item.Template.name,
-            icon: {
+            icon: item.Template.icon ? {
                 id: item.Template.Icon.id,
                 src: item.Template.Icon.src,
                 name: item.Template.Icon.name,
                 alt: item.Template.Icon.alt,
-            }
+            } : null
         },
         addedBy: {
             id: item.addedByUser.id,
