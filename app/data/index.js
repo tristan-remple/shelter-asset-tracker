@@ -15,9 +15,10 @@ const models = [
     require('./models/icon.model'),
     require('./models/inspection.model'),
     require('./models/item.model'),
+    require('./models/setting.model'),
     require('./models/template.model'),
     require('./models/unit.model'),
-    require('./models/unitTypes.model'),
+    require('./models/unitType.model'),
     require('./models/user.model')
 ];
 

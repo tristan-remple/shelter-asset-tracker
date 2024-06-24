@@ -10,6 +10,8 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false
         }
     }, {
-        tableName: 'UnitTypes'
+        tableName: 'UnitTypes',
+        updatedAt: false,
+        paranoid: false
     });
 };

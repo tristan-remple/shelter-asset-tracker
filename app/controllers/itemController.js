@@ -87,7 +87,12 @@ exports.getItemById = async (req, res, next) => {
 
 exports.sendItem = async (req, res, next) => {
     const item = req.data;
-    const currentValue = calculateCurrentValue(item.initialValue, item.createdAt);
+    const depreciationRate = await models.Setting.findOne({
+        attributes: ['value'],
+        where: { name: 'depreciationRate'}
+    });
+    const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+
     const itemProfile = {
         id: item.id,
         name: item.name,
@@ -160,6 +165,11 @@ exports.updateItem = async (req, res, next) => {
             status: status
         });
 
+        const depreciationRate = await models.Setting.findOne({
+            attributes: ['value'],
+            where: { name: 'depreciationRate'}
+        });
+
         const updateResponse = {
             id: item.id,
             name: item.name,
@@ -169,7 +179,7 @@ exports.updateItem = async (req, res, next) => {
             initialValue: item.initialValue,
             eol: item.eol,
             status: item.status,
-            currentValue: calculateCurrentValue(item.initialValue, item.createdAt),
+            currentValue: calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate),
             success: true
         }
 
@@ -250,7 +260,6 @@ exports.deleteItem = async (req, res, next) => {
             success: true
         }
 
-        console.log(deletedItem.deleted);
         return res.status(200).json(deleteResponse);
 
     } catch (error) {

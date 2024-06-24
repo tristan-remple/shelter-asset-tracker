@@ -56,13 +56,18 @@ exports.getSummary = async (req, res, next) => {
             ]
         });
 
+        const depreciationRate = await models.Setting.findOne({
+            attributes: ['value'],
+            where: { name: 'depreciationRate'}
+        });
+
         const overview = data.map(facility => {
             let totalValue = 0;
             const itemCount = {};
 
             facility.Units.forEach(unit => {
                 unit.Items.forEach(item => {
-                    totalValue += +calculateCurrentValue(item.initialValue, item.createdAt);
+                    totalValue += +calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
 
                     if (!itemCount[item.templateId]) {
                         itemCount[item.templateId] = {
@@ -118,7 +123,7 @@ exports.getSummary = async (req, res, next) => {
                     value: {
                         initialValue: item.initialValue,
                         donated: item.donated,
-                        currentValue: calculateCurrentValue(item.initialValue, item.createdAt),
+                        currentValue: calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate),
                     },
                     createdAt: item.createdAt,
                     updatedAt: item.updatedAt

@@ -47,11 +47,13 @@ exports.getFacilityById = async (req, res, next) => {
             include: [{
                 model: models.User,
                 attributes: ['id', 'name'],
+                required: false
             }, {
                 model: models.Unit,
                 attributes: [
                     'id', 
-                    'name'],
+                    'name'
+                ],
                 include: [{
                     model: models.Item,
                     attributes: ['id', 'status']
@@ -69,10 +71,10 @@ exports.getFacilityById = async (req, res, next) => {
         const facilityDetails = {
             facilityId: facility.id,
             name: facility.name,
-            manager: {
+            manager: facility.User ? {
                 id: facility.User.id,
                 name: facility.User.name
-            },
+            } : null,
             units: facility.Units.map(unit => ({
                 unitId: unit.id,
                 name: unit.name,

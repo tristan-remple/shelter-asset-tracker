@@ -4,7 +4,6 @@ const { verifyToken } = require('../util/token');
 exports.updateIsAdmin = async (req, res, next) => {
     const { userId, isAdmin } = req.body;
     if (!userId || isAdmin == null || userId == 1){
-        console.log(userId, isAdmin);
         return res.status(400).json({ message: 'Bad request.'});
     }
 

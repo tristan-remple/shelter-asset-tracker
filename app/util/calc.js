@@ -1,7 +1,9 @@
-exports.calculateCurrentValue = (initialValue, createdAt) => {
-    const currentDate = new Date();
-    const creationDate = new Date(createdAt);
-  return 0;
+exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
+  try {
+
+  } catch(err) {
+
+  }
 }
 
 exports.getEoL = (months, startDate) => {

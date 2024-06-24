@@ -11,8 +11,9 @@ const templateRouter = require('./templates');
 const unitsRouter = require('./units');
 const usersRouter = require('./users');
 const reportsRouter = require('./reports');
+const settingsRouter = require('./settings');
 
-// Middleware for SAT routes
+// Middleware for SAT CRUD routes
 
 router.use('/facilities', facilitiesRouter);
 router.use('/icons', iconsRouter);
@@ -29,6 +30,8 @@ router.put('/reset/:id', reset);
 
 /*Report Routes*/
 router.use('/reports', reportsRouter);
+/*Settings*/
+router.use('/settings', settingsRouter);
 
 /*SAT API Index*/
 router.get('/', (req, res) => {

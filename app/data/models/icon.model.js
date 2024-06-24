@@ -18,6 +18,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false
         }
     }, {
-        tableName: 'Icons'
+        tableName: 'Icons',
+        updatedAt: false
     });
 };
