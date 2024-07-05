@@ -38,7 +38,8 @@ exports.getSummary = async (req, res, next) => {
                         }, {
                             model: models.User,
                             attributes: ['id', 'name'],
-                            as: 'addedByUser'
+                            as: 'addedByUser',
+                            paranoid: false
                         }, {
                             model: models.Inspection,
                             attributes: [
@@ -48,7 +49,8 @@ exports.getSummary = async (req, res, next) => {
                             ],
                             include: {
                                 model: models.User,
-                                attributes: ['id', 'name']
+                                attributes: ['id', 'name'],
+                                paranoid: false
                             }
                         }]
                     }

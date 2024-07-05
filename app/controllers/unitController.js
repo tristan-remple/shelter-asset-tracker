@@ -21,7 +21,8 @@ exports.getUnitById = async (req, res, next) => {
                 ],
                 include: {
                     model: models.Template,
-                    attributes: ['id', 'name']
+                    attributes: ['id', 'name'],
+                    paranoid: false
                 },
                 required: false
             }, {
@@ -29,7 +30,8 @@ exports.getUnitById = async (req, res, next) => {
                 attributes: ['id','name']
             }, {
                 model: models.UnitType,
-                attributes: ['name']
+                attributes: ['name'],
+                paranoid: false
             }],
             group: [] 
         });
