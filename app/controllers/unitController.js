@@ -165,11 +165,12 @@ exports.deleteUnit = async (req, res, next) => {
 
 exports.getDeleted = async (req, res, next) => {
     try {
-        const deletedUnits = await models.Unite.findAll({
+        const deletedUnits = await models.Unit.findAll({
             where: Sequelize.where(Sequelize.col('Unit.deletedAt'), 'IS NOT', null),
             include: {
                 model: models.Facility,
-                attributes: ['name']
+                attributes: ['name'],
+                as: 'facility'
             },
             paranoid: false
         });
