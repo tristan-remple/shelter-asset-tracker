@@ -81,6 +81,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
                 return
             }
+            console.log(file)
             const filepath = URL.createObjectURL(file)
             const iconSubmission = {
                 name: uploaderChanges.name.toLowerCase(),

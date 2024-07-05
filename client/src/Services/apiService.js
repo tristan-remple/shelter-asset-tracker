@@ -673,6 +673,7 @@ class apiService {
         })
     }
 
+    // Called by: IconSelector
     listIcons = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/icons`, {
             withCredentials: true
@@ -689,11 +690,19 @@ class apiService {
         })
     }
 
+    // Called by: IconSelector
     uploadIcon = async(icon, callback) => {
-        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
+
+        const formData = new FormData()
+        formData.append('file', icon.file)
+        // formData.append('name', icon.name)
+        // formData.append('alt', icon.alt)
+        console.log(formData)
+
+        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, formData, {
             withCredentials: true,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         })
         .then(res => {
@@ -708,6 +717,7 @@ class apiService {
         })
     }
 
+    // Called by: Settings
     uploadLogo = async(logoSrc, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/logo`, logoSrc, {
             withCredentials: true,
@@ -727,6 +737,7 @@ class apiService {
         })
     }
 
+    // Called by: Settings, UnitCreate, UnitEdit
     getSettings = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/settings`, {
             withCredentials: true
@@ -743,6 +754,7 @@ class apiService {
         })
     }
 
+    // Called by: Settings
     postSettings = async(settings, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/settings`, settings, {
             withCredentials: true,
@@ -762,6 +774,7 @@ class apiService {
         })
     }
 
+    // Called by: IconSelector
     deleteIcons = async(iconList, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons/delete`, iconList, {
             withCredentials: true,

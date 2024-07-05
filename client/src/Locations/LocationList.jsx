@@ -22,7 +22,7 @@ const LocationList = () => {
     const { userDetails } = useContext(userContext)
     const [ err, setErr ] = useState("loading")
 
-    if (userDetails.facilityAuths.length === 0) {
+    if (userDetails.facilityAuths.length === 0 && !userDetails.isAdmin) {
         setStatus("You are not currently assigned to any locations. Please contact an admin.")
     }
 
