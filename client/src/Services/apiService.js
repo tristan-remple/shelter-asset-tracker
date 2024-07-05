@@ -692,10 +692,17 @@ class apiService {
 
     // Called by: IconSelector
     uploadIcon = async(icon, callback) => {
-        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
+
+        const formData = new FormData()
+        formData.append('file', icon.file)
+        // formData.append('name', icon.name)
+        // formData.append('alt', icon.alt)
+        console.log(formData)
+
+        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, formData, {
             withCredentials: true,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         })
         .then(res => {

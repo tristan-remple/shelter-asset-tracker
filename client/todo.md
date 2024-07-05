@@ -21,3 +21,6 @@
     - use getSettings to fetch it
     - dropdown on edit and create
 - settings is fine as-in
+- disallow deleting units and locations with children
+
+icon extension

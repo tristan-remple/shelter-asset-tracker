@@ -30,6 +30,7 @@ const Settings = () => {
                     setErr(data.error)
                 } else {
                     data.depreciationRate = +data.depreciationRate
+                    console.log(data)
                     setChanges(data)
                 }
             })
