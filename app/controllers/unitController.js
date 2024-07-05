@@ -28,7 +28,7 @@ exports.getUnitById = async (req, res, next) => {
                 model: models.Facility,
                 attributes: ['id','name']
             }, {
-                model: models.UnitTypes,
+                model: models.UnitType,
                 attributes: ['name']
             }],
             group: [] 
