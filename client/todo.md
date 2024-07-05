@@ -15,3 +15,9 @@
 
 ## Dashboard
 - make sure CSV export endpoints are receiving the information they need
+
+## Units
+- unit type is a different table now
+    - use getSettings to fetch it
+    - dropdown on edit and create
+- settings is fine as-in

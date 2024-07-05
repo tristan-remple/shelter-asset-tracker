@@ -673,6 +673,7 @@ class apiService {
         })
     }
 
+    // Called by: IconSelector
     listIcons = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/icons`, {
             withCredentials: true
@@ -689,6 +690,7 @@ class apiService {
         })
     }
 
+    // Called by: IconSelector
     uploadIcon = async(icon, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
             withCredentials: true,
@@ -708,6 +710,7 @@ class apiService {
         })
     }
 
+    // Called by: Settings
     uploadLogo = async(logoSrc, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/logo`, logoSrc, {
             withCredentials: true,
@@ -727,6 +730,7 @@ class apiService {
         })
     }
 
+    // Called by: Settings, UnitCreate, UnitEdit
     getSettings = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/settings`, {
             withCredentials: true
@@ -743,6 +747,7 @@ class apiService {
         })
     }
 
+    // Called by: Settings
     postSettings = async(settings, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/settings`, settings, {
             withCredentials: true,
@@ -762,6 +767,7 @@ class apiService {
         })
     }
 
+    // Called by: IconSelector
     deleteIcons = async(iconList, callback) => {
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons/delete`, iconList, {
             withCredentials: true,

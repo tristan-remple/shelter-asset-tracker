@@ -23,17 +23,18 @@ const Settings = () => {
         logoSrc: ""
     })
 
-    // useEffect(() => {
-    //     (async()=> {
-    //         await apiService.getSettings(data => {
-    //             if (data.error) {
-    //                 setErr(data.error)
-    //             } else {
-    //                 setChanges(data)
-    //             }
-    //         })
-    //     })()
-    // }, [])
+    useEffect(() => {
+        (async()=> {
+            await apiService.getSettings(data => {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    data.depreciationRate = +data.depreciationRate
+                    setChanges(data)
+                }
+            })
+        })()
+    }, [])
 
     const [ tagField, setTagField ] = useState("")
     const handleTagField = (event) => {
