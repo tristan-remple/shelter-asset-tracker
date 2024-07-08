@@ -23,4 +23,15 @@
 - settings is fine as-in
 - disallow deleting units and locations with children
 
-icon extension
+- icon extension?
+- icon object:
+```ts
+interface Icon {
+    file: blob,
+    name: string, // .toLowerCase() before sending
+    date: number,
+    ext: string
+}
+```
+- fix edit category
+- remove depreciation rate from category pages

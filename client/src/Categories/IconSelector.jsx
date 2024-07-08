@@ -81,13 +81,15 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
                 return
             }
-            console.log(file)
-            const filepath = URL.createObjectURL(file)
+
+            const ext = file.type.split("/")[1]
+            const date = new Date().getTime()
+
             const iconSubmission = {
                 name: uploaderChanges.name.toLowerCase(),
-                alt: uploaderChanges.name.toLowerCase() + " icon",
-                src: filepath,
-                file: file
+                file,
+                date,
+                ext
             }
             apiService.uploadIcon(iconSubmission, (res) => {
                 if (res.error) {
