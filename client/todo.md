@@ -4,7 +4,7 @@
 - interface update to delete icons
 
 ## Settings
-- tag-like list of unit types
+- ✅ tag-like list of unit types
 
 ## Users
 - check user edit endpoints
@@ -24,7 +24,7 @@
 - disallow deleting units and locations with children
 
 - icon extension?
-- icon object:
+- ✅ icon object:
 ```ts
 interface Icon {
     file: blob,
@@ -35,3 +35,4 @@ interface Icon {
 ```
 - fix edit category
 - remove depreciation rate from category pages
+- item/unit type autofill
