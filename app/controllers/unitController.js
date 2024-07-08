@@ -17,7 +17,8 @@ exports.getUnitById = async (req, res, next) => {
                 attributes: [
                     'id',
                     'name', 
-                    'status'
+                    'status',
+                    'eol'
                 ],
                 include: {
                     model: models.Template,
@@ -35,6 +36,20 @@ exports.getUnitById = async (req, res, next) => {
             }],
             group: [] 
         });
+
+        if (!unit) {
+            return res.status(404).json({ message: 'Unit not found.' });
+        }
+
+        const currentDate = new Date();
+
+        if (unit.Items) {
+            unit.Items.forEach(async (item) => {
+                if (item.status === 'ok' && item.eol && currentDate > new Date(item.eol)) {
+                    await models.Item.update({ status: 'inspect' }, { where: { id: item.id } });
+                }
+            });
+        }
 
         req.data = unit;
         req.facility = unit.Facility.id;
