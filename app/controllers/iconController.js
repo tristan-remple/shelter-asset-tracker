@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
         callback(null, 'client/public/img');
     },
     filename: function (req, file, callback) {
-        callback(null, file.originalname);
+        callback(null, req.fileName);
     }
 });
 
@@ -89,6 +89,14 @@ exports.sendIcon = async (req, res, next) => {
 
 exports.createNewIcon = async (req, res, next) => {
     try {
+        const { file, name, date, ext } = req.body;
+        req.fileName = `${date}${name}.${ext}`;
+        const src = `/client/public/img/${req.fileName}`;
+        
+        const existingIcon = await models.Icon.findOne({ where: { name } });
+        if (existingIcon) {
+            return res.status(400).json({ error: 'Icon already exists.' });
+        }
 
         // call the multer upload function
         // note that this will overwrite files if overlap occurs
@@ -105,40 +113,24 @@ exports.createNewIcon = async (req, res, next) => {
 
             // no error: file upload success
             } else {
-
-                // put database stuff here
-                res.status(201).send();
+                // put database stuff 
+                const newIcon = models.Icon.create({
+                    src: src,
+                    name: name, 
+                    alt: `${name} logo`
+                });
+                
+                const createResponse = {
+                    id: newIcon.id,
+                    src: newIcon.src,
+                    name: newIcon.name,
+                    alt: newIcon.alt,
+                    createdAt: newIcon.createdAt,
+                    success: true
+                };
+                return res.status(201).json(createResponse);
             }
         });
-
-        // const { src, name, alt } = req.body;
-
-        // const existingIcon = await models.Icon.findOne({ where: { name } });
-        // if (existingIcon) {
-        //     return res.status(400).json({ error: 'Icon already exists.' });
-        // }
-
-        // const date = new Date().getTime();
-        // const filepath = `${date}-${ name }.png`;
-
-        // fs.writeFileSync(`./client/public/img/${ filepath }`, src, { encoding: 'base64' });
-
-        // const newIcon = await models.Icon.create({
-        //     src: filepath,
-        //     name: name, 
-        //     alt: alt
-        // });
-
-        // const createResponse = {
-        //     id: newIcon.id,
-        //     src: newIcon.src,
-        //     name: newIcon.name,
-        //     alt: newIcon.alt,
-        //     createdAt: newIcon.createdAt,
-        //     success: true
-        // };
-
-        // return res.status(201).json(createResponse);
         
     } catch (err) {
         console.error(err);
