@@ -71,7 +71,8 @@ const ItemInspect = () => {
     const [ changes, setChanges ] = useState({
         status: "ok",
         flag: flagOptions[0],
-        usefulLife: "",
+        eol: "",
+        usefulLifeOffset: 0,
         comment: ""
     })
 
@@ -86,9 +87,12 @@ const ItemInspect = () => {
             setChanges({
                 status: item.status,
                 flag: currentFlag,
-                usefulLife: item.usefulLife,
+                eol: item.eol,
+                usefulLifeOffset: 0,
                 comment: ""
             })
+
+            console.log(item)
         }
     }, [ item ])
 
@@ -111,10 +115,12 @@ const ItemInspect = () => {
     const snooze = () => {
         const newChanges = {...changes}
         
-        const date = new Date(newChanges.usefulLife)
+        const date = new Date(newChanges.eol)
         date.setFullYear(date.getFullYear() + 1)
-        newChanges.usefulLife = date.toISOString()
-        console.log(newChanges.usefulLife)
+        newChanges.eol = date.toISOString()
+        newChanges.usefulLifeOffset += 12
+
+        console.log(newChanges)
 
         setChanges(newChanges)
         setSnoozeYears(snoozeYears + 1)
@@ -123,9 +129,10 @@ const ItemInspect = () => {
     const unsnooze = () => {
         const newChanges = {...changes}
         
-        const date = new Date(newChanges.usefulLife)
+        const date = new Date(newChanges.eol)
         date.setFullYear(date.getFullYear() - 1)
-        newChanges.usefulLife = date.toISOString()
+        newChanges.eol = date.toISOString()
+        newChanges.usefulLifeOffset += -12
 
         setChanges(newChanges)
         setSnoozeYears(snoozeYears - 1)
@@ -198,7 +205,7 @@ const ItemInspect = () => {
                             Snooze End of Life
                         </div>
                         <div className="col-content">
-                            <p>{ friendlyDate(changes.usefulLife) }</p>
+                            <p>{ friendlyDate(changes.eol) }</p>
                             <div className="btn-group" role="group">
                                 <Button text="-" type="action" linkTo={ unsnooze } />
                                 <div className="btn btn-outline-primary">{ snoozeYears } year(s)</div>
