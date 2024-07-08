@@ -8,11 +8,15 @@ const months = [
 // This function takes a date in any JS-readable format and returns a date that is easy for humans to read.
 // Imported by: UnitDetails, LocationDetails, UnitDetails, Comment
 export function friendlyDate(dateString) {
-    const date = new Date(dateString)
-    const day = date.getDate()
-    const month = months[date.getMonth()]
-    const year = date.getFullYear()
-    return `${day} ${month}, ${year}`
+    try {
+        const date = new Date(dateString)
+        const day = date.getDate()
+        const month = months[date.getMonth()]
+        const year = date.getFullYear()
+        return `${day} ${month}, ${year}`
+    } catch(err) {
+        return "Invalid Date"
+    }
 }
 
 // This function takes a date in any JS-readable format and returns a date that is formatted the way administrative staff are used to.

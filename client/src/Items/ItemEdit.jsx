@@ -73,7 +73,7 @@ const ItemEdit = () => {
         comment: "",
         invoice: "",
         vendor: "",
-        usefulLife: "",
+        eol: "",
         initialValue: 0,
         currentValue: 0
     })
@@ -93,7 +93,7 @@ const ItemEdit = () => {
                 comment: "",
                 invoice: item.invoice,
                 vendor: item.vendor,
-                usefulLife: item.usefulLife,
+                eol: item.eol,
                 initialValue: item.value.initialValue,
                 currentValue: item.value.currentValue
             })
@@ -254,8 +254,8 @@ const ItemEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="date"
-                                name="usefulLife" 
-                                value={ changes.usefulLife.split("T")[0] } 
+                                name="eol" 
+                                value={ changes.eol.split("T")[0] } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>

@@ -50,7 +50,7 @@ const ItemDetails = () => {
     if (item) {
 
     // destructure the item object
-    const { unit, name, template, status: itemStatus, value, createdAt, usefulLife, inspectionRecord, invoice, vendor } = item
+    const { unit, name, template, status: itemStatus, value, createdAt, eol, inspectionRecord, invoice, vendor } = item
 
     // if it has been deleted, throw an error
     // if (discardDate) {
@@ -125,7 +125,8 @@ const ItemDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ template.icon.src }` } alt={ template.icon.name + " icon" } />
+                        { template.icon ? <img className="img-fluid icon" src={ `/img/${ template.icon.src }` } alt={ template.icon.name + " icon" } /> : "No Icon" }
+                        
                     </div>
                     <div className="col-8 col-content">
                         <CommentBox comments={ inspectionRecord } />
@@ -145,7 +146,7 @@ const ItemDetails = () => {
                             Expected End of Life
                         </div>
                         <div className="col-content">
-                            { friendlyDate(usefulLife) }
+                            { friendlyDate(eol) }
                         </div>
                     </div>
                     <div className="col col-info">
