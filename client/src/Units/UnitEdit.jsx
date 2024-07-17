@@ -14,6 +14,8 @@ import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import CommentBox from '../Reusables/CommentBox'
 import ChangePanel from '../Reusables/ChangePanel'
+import Dropdown from '../Reusables/Dropdown'
+import capitalize from '../Services/capitalize'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -36,26 +38,36 @@ const UnitEdit = () => {
         setErr("undefined")
     }
 
-    // fetch unit data from the api
-    const [ response, setResponse ] = useState()
+    // fetch data from the api
+    const [ unitTypes, setUnitTypes ] = useState([])
+    const [ simpleTypes, setSimpleTypes ] = useState([])
+    const fetchTypes = async() => {
+        await apiService.getSettings((data) => {
+            if (data.error) {
+                setErr(data.error)
+            } else {
+                setUnitTypes(data.unitTypes)
+                const simple = data.unitTypes.map(type => capitalize(type.name))
+                simple.unshift("Select:")
+                setSimpleTypes(simple)
+                setErr(null)
+            }
+        })
+    }
+
+    const [ unit, setUnit ] = useState()
     useEffect(() => {
         (async()=>{
             await apiService.singleUnit(id, function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    setResponse(data)
-                    setErr(null)
+                    setUnit(data)
+                    fetchTypes()
                 }
             })
         })()
     }, [])
-
-    // set delete label
-    const [ deletedLabel, setDeletedLabel ] = useState("Delete Unit")
-    // if (deleteDate) {
-    //     setDeletedLabel("Restore Unit")
-    // }
 
     // set possible changes
     const [ changes, setChanges ] = useState({
@@ -65,41 +77,54 @@ const UnitEdit = () => {
     })
 
     useEffect(() => {
-        if (response) {
+        if (unit) {
+            const newTypeIndex = unitTypes.map(type => capitalize(type.name)).indexOf(capitalize(unit.type))
             setChanges({
-                name: response.name,
-                type: response.type,
-                createdAt: response.createdAt
+                name: unit.name,
+                type: unitTypes[newTypeIndex]
             })
         }
-    }, [ response ])
+    }, [ unit, simpleTypes ])
 
     if (err) { return <Error err={ err } /> }
-    if (response) {
+    if (unit) {
     // destructure api response
-    const { id, name } = response   
+    const { id, name } = unit
+
+    // handles type change
+    // passed into Dropdown
+    const handleTypeChange = (newTypeName) => {
+        const newTypeIndex = unitTypes.map(type => capitalize(type.name)).indexOf(newTypeName)
+        if (newTypeIndex !== -1) {
+            const newChanges = {...changes}
+            newChanges.type = unitTypes[newTypeIndex]
+            setChanges(newChanges)
+            setUnsaved(true)
+            setStatus("")
+        } else {
+            setStatus("The type you selected cannot be found.")
+        }
+    }
 
     // sends the item object to the apiService
     const saveChanges = async() => {
 
-        changes.id = id
-        changes.facilityId = response.facility.id
+        // shape data for api
+        const newChanges = {...changes}
+        newChanges.id = id
+        newChanges.facilityId = unit.facility.id
+        newChanges.type = changes.type.id
 
-        // verify user identity
-        if (userDetails.isAdmin) {
-            // send api request and process api response
-            await apiService.postUnitEdit(changes, (response) => {
-                if (response.error) {
-                    setErr(response.error)
-                } else {
-                    setStatus(`You have successfully updated ${ response.name }.`)
-                    setUnsaved(false)
-                    navigate(`/unit/${ id }`)
-                }
-            })
-        } else {
-            setErr("permission")
-        }
+        // send api request and process api response
+        await apiService.postUnitEdit(newChanges, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully updated ${ response.name }.`)
+                setUnsaved(false)
+                navigate(`/unit/${ id }`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (
@@ -115,7 +140,7 @@ const UnitEdit = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text={ deletedLabel } linkTo={ `/unit/${ id }/delete` } type="danger" />
+                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -126,7 +151,7 @@ const UnitEdit = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { response.facility.name }
+                            { unit.facility.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -147,12 +172,7 @@ const UnitEdit = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="type" 
-                                value={ changes.type } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
+                            <Dropdown list={ simpleTypes } current={ capitalize(changes.type?.name) } setCurrent={ handleTypeChange } />
                         </div>
                     </div>
                     {/* <div className="col col-info">
@@ -186,7 +206,7 @@ const UnitEdit = () => {
                     </div> */}
                 </div>
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ id }` } locationId={ response.facility.id } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ id }` } locationId={ unit.facility.id } /> }
         </main>
     )
 }

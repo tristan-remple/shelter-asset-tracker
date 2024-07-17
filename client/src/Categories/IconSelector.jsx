@@ -147,6 +147,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
     })
 
     const confirmDelete = () => {
+        console.log(iconsToDelete)
         const count = iconsToDelete.length
         apiService.deleteIcons(iconsToDelete, data => {
             if (data.error) {

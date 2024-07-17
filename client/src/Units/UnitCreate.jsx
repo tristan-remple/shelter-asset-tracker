@@ -13,6 +13,8 @@ import handleChanges from '../Services/handleChanges'
 import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import ChangePanel from '../Reusables/ChangePanel'
+import Dropdown from '../Reusables/Dropdown'
+import capitalize from '../Services/capitalize'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -33,15 +35,31 @@ const UnitCreate = () => {
     }
 
     // fetch data from the api
-    const [ response, setResponse ] = useState({})
+    const [ unitTypes, setUnitTypes ] = useState([])
+    const [ simpleTypes, setSimpleTypes ] = useState([])
+    const fetchTypes = async() => {
+        await apiService.getSettings((data) => {
+            if (data.error) {
+                setErr(data.error)
+            } else {
+                setUnitTypes(data.unitTypes)
+                const simple = data.unitTypes.map(type => capitalize(type.name))
+                simple.unshift("Select:")
+                setSimpleTypes(simple)
+                setErr(null)
+            }
+        })
+    }
+
+    const [ location, setLocation ] = useState({})
     useEffect(() => {
         (async() => {
             await apiService.singleLocation(id, (data) => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    setResponse(data)
-                    setErr(null)
+                    setLocation(data)
+                    fetchTypes()
                 }
             })
         })()
@@ -57,25 +75,46 @@ const UnitCreate = () => {
         facilityId: undefined
     })
 
+    // assign fetched location to new unit
     useEffect(() => {
-        if (response) {
+        if (location) {
             setChanges({
-                facilityId: response.facilityId
+                name: "",
+                type: "Select:",
+                facilityId: location.facilityId
             })
         }
-    }, [ response ])
+    }, [ location ])
 
-    // sends the item object to the apiService
+    // handles type change
+    // passed into Dropdown
+    const handleTypeChange = (newTypeName) => {
+        const newTypeIndex = unitTypes.map(type => capitalize(type.name)).indexOf(newTypeName)
+        if (newTypeIndex !== -1) {
+            const newChanges = {...changes}
+            newChanges.type = unitTypes[newTypeIndex]
+            setChanges(newChanges)
+            setUnsaved(true)
+            setStatus("")
+        } else {
+            setStatus("The type you selected cannot be found.")
+        }
+    }
+
+    // send the unit object to apiService
     const saveChanges = () => {
 
         // light validation
-        if (changes.name == "" || changes.type == "") {
+        if (changes.name == "" || changes.type == "" || changes.type == "Select:") {
             setStatus("A new unit must have a name and a type.")
             return
         }
 
+        const newChanges = {...changes}
+        newChanges.type = changes.type.id
+
         // send api request and process api response
-        apiService.postNewUnit(changes, (response) => {
+        apiService.postNewUnit(newChanges, (response) => {
             if (response.error) {
                 setErr(response.error)
             } else {
@@ -90,10 +129,10 @@ const UnitCreate = () => {
         <main className="container">
             <div className="row title-row my-3">
                 <div className="col">
-                    <h2>New Unit in { response.name }</h2>
+                    <h2>New Unit in { location.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/location/${ response.facilityId }` } type="nav" />
+                    <Button text="Return" linkTo={ `/location/${ location.facilityId }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
@@ -107,7 +146,7 @@ const UnitCreate = () => {
                             Location
                         </div>
                         <div className="col-content">
-                            { response.name }
+                            { location.name }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -129,17 +168,12 @@ const UnitCreate = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="type" 
-                                value={ changes.type } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
+                            <Dropdown list={ simpleTypes } current={ capitalize(changes.type.name) } setCurrent={ handleTypeChange } />
                         </div>
                     </div>
                 </div>
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ response.facilityId }` } locationId={ response.facilityId } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ location.facilityId }` } locationId={ location.facilityId } /> }
         </main>
     )
 }

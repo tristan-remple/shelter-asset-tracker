@@ -39,27 +39,28 @@ const UnitDelete = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    setStatus(`Click Save to delete unit ${ data.name }.`)
                     setResponse(data)
-                    setErr(null)
+                    if (data.items.length > 0) {
+                        setStatus("You cannot delete a unit that contains items.")
+                        navigate(`/unit/${ id }`)
+                    } else {
+                        setStatus(`Click Save to delete unit ${ data.name }.`)
+                        setErr(null)
+                    }
                 }
             })
         })()
     }, [])
 
     const confirmDelete = async() => {
-        if (authService.checkUser() && authService.checkAdmin()) {
-            await apiService.deleteUnit(response, (delres) => {
-                if (delres.error) {
-                    setErr(delres.error)
-                } else {
-                    setStatus(`You have successfully deleted unit ${ delres.name }.`)
-                    navigate(`/location/${ delres.facilityId }`)
-                }
-            })
-        } else {
-            return <Error err="permission" />
-        }
+        await apiService.deleteUnit(response, (delres) => {
+            if (delres.error) {
+                setErr(delres.error)
+            } else {
+                setStatus(`You have successfully deleted unit ${ delres.name }.`)
+                navigate(`/location/${ delres.facilityId }`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (
