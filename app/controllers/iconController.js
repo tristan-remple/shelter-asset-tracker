@@ -62,22 +62,21 @@ exports.sendIcon = async (req, res, next) => {
 exports.createNewIcon = async (req, res, next) => {
     console.log('create function');
     try {
-            console.log(req.file);
-            console.log(req.body);
 
-            // const newIcon = await models.Icon.create({
-            //     name: name,
-            //     alt: `${name} icon`,
-            //     src: `${date}-${name}.${ext}`
-            // });
+            const { name, date, ext } = req.body;
+            const newIcon = await models.Icon.create({
+                name: name,
+                alt: `${name} icon`,
+                src: `${date}-${name}.${ext}`
+            });
 
-            // const createResponse = {
-            //     id: newIcon.id,
-            //     name: newIcon.name,
-            //     alt: newIcon.alt,
-            //     src: newIcon.src, 
-            //     success: true
-            // }
+            const createResponse = {
+                id: newIcon.id,
+                name: newIcon.name,
+                alt: newIcon.alt,
+                src: newIcon.src, 
+                success: true
+            }
             return res.status(201).json(createResponse);
 
     } catch (err) {
