@@ -204,19 +204,6 @@ const CategoryEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Depreciation Rate<br />(Annual Percent)
-                        </div>
-                        <div className="col-content mt-2">
-                            <input 
-                                type="number" 
-                                name="depreciationRate" 
-                                value={ changes.depreciationRate } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
                             Icon
                         </div>
                         <div className="col-icon col-content">

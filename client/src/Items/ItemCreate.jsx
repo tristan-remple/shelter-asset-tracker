@@ -14,6 +14,7 @@ import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
+import Autofill from '../Reusables/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -193,12 +194,15 @@ const ItemCreate = () => {
                             Item Category
                         </div>
                         <div className="col-content">
-                            <Dropdown 
+                            <Autofill
                                 list={ simpleCategories } 
                                 current={ newItem.template.name } 
                                 setCurrent={ handleCategoryChange }
                             />
                         </div>
+                    </div>
+                    <div className="col-2 col-content col-icon">
+                        { newItem.template.Icon.src ? <img className="img-fluid icon" src={ `/img/${ newItem.template.Icon.src }` } alt={ newItem.template.Icon.name + " icon" } /> : "Select category to view icon." }
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
@@ -218,33 +222,6 @@ const ItemCreate = () => {
                     </div>
                 </div>
                 <div className="row row-info">
-                    <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ newItem.template.Icon.src }` } alt={ newItem.template.Icon.name + " icon" } />
-                    </div>
-                    <div className="col-8 col-content">
-                        <strong>Comments:</strong>
-                        <textarea 
-                            name="comment" 
-                            value={ newItem.comment } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            className="comment-area" 
-                        />
-                    </div>
-                </div>
-                <div className="row row-info">
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Acquired Date
-                        </div>
-                        <div className="col-content">
-                            { <input 
-                                type="date" 
-                                name="createdAt" 
-                                value={ newItem.createdAt.split("T")[0] } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
-                        </div>
-                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Vendor

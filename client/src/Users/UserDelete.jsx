@@ -48,19 +48,14 @@ const UserDelete = () => {
 
     // send delete api call
     const confirmDelete = async() => {
-        if (authService.checkUser() && authService.checkAdmin()) {
-            await apiService.deleteUser(user, (response) => {
-                if (response.error) {
-                    setErr(response.error)
-                } else {
-                    setStatus(`You have successfully deleted user ${ response.name }.`)
-                    navigate(`/users`)
-                }
-            })
-            
-        } else {
-            setErr("permission")
-        }
+        await apiService.deleteUser(user, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully deleted user ${ response.name }.`)
+                navigate(`/users`)
+            }
+        })
     }
 
     return err ? <Error err={ err } /> : (

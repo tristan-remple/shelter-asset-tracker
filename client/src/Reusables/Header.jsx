@@ -2,23 +2,28 @@ import { useContext } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
 // internal dependencies
-import { userContext } from '../Services/Context'
+import { userContext, statusContext } from '../Services/Context'
 
 const Header = () => {
     const { userDetails } = useContext(userContext)
     const { userId, isAdmin, facilityAuths } = userDetails
 
     const location = useLocation()
+    const { setStatus } = useContext(statusContext)
 
     let locationLink = "/locations"
     if (facilityAuths?.length === 1 && !isAdmin) {
         locationLink = `/location/${ facilityAuths[0] }`
     }
 
+    const clearStatus = () => {
+        setStatus("")
+    }
+
     return (
         <header className="navbar navbar-expand-lg">
             <div className="container my-2">
-                <Link className="navbar-brand" to="/">
+                <Link className="navbar-brand" to="/" onClick={ clearStatus } >
                     <img src="/img/logo.png" alt="Shelter Nova Scotia Logo" className='logo-image' />
                 </Link>
                 <div className="col-2">
@@ -31,29 +36,48 @@ const Header = () => {
                     <ul className="navbar-nav my-2">
                         {userId && isAdmin && (
                             <li className="nav-item">
-                                <NavLink to="/admin"
-                                        className={['/categories', '/users', '/category'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>Dashboard</NavLink>
+                                <NavLink
+                                    to="/admin"
+                                    onClick={ clearStatus } 
+                                    className={['/categories', '/users', '/category'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>
+                                    Dashboard</NavLink>
                             </li>
                         )}
                         {userId ? (
                             <>
                                 <li className="nav-item">
                                     <NavLink
+                                        onClick={ clearStatus } 
                                         to={ locationLink }
                                         className={['/location', '/unit', '/item'].some(path => location.pathname.startsWith(path)) ? "nav-link active" : "nav-link"}>
                                         Inventory
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/user">Profile</NavLink>
+                                    <NavLink 
+                                        onClick={ clearStatus } 
+                                        className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+                                        to="/user">
+                                        Profile
+                                    </NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} to="/logout">Log Out</NavLink>
+                                    <NavLink 
+                                        onClick={ clearStatus } 
+                                        className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+                                        to="/logout">
+                                        Log Out
+                                    </NavLink>
                                 </li>
                             </>
                         ) : (
                             <li className="nav-item">
-                                <Link className="nav-link" to="/">Log In</Link>
+                                <Link 
+                                    onClick={ clearStatus } 
+                                    className="nav-link"
+                                    to="/">
+                                    Log In
+                                </Link>
                             </li>
                         )}
                     </ul>

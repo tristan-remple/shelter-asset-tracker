@@ -29,8 +29,8 @@ const Settings = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    data.depreciationRate = +data.depreciationRate
-                    console.log(data)
+                    data.depreciationRate = +data.depreciationRate * 100
+                    data.unitTypes = data.unitTypes.map(type => type.name)
                     setChanges(data)
                 }
             })
@@ -53,7 +53,7 @@ const Settings = () => {
 
     const removeTag = (word) => {
         const newChanges = {...changes}
-        const index = newChanges.unitTypes.findIndex(unitType => unitType === word.toLowerCase())
+        const index = newChanges.unitTypes.findIndex(unitType => unitType.toLowerCase() === word.toLowerCase())
         newChanges.unitTypes.splice(index, 1)
         setChanges(newChanges)
         setUnsaved(true)
@@ -85,12 +85,15 @@ const Settings = () => {
             return
         }
 
-        await apiService.postSettings(changes, (res) => {
-            if (res.success) {
+        const newChanges = {...changes}
+        newChanges.depreciationRate = newChanges.depreciationRate / 100
+
+        await apiService.postSettings(newChanges, (res) => {
+            if (res.error) {
+                setErr(res.error)
+            } else {
                 setStatus(`You have successfully saved your changes to the settings.`)
                 setUnsaved(false)
-            } else {
-                setStatus("We weren't able to process the changes to the settings.")
             }
         })
     }

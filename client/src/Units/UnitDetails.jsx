@@ -26,7 +26,7 @@ const UnitDetails = () => {
 
     // get context information
     const { id } = useParams()
-    const { status } = useContext(statusContext)
+    const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
 
@@ -35,7 +35,7 @@ const UnitDetails = () => {
         setErr("undefined")
     }
 
-    const [ response, setResponse ] = useState({})
+    const [ unit, setUnit ] = useState({})
     const [ filteredItems, setFilteredItems ] = useState([])
     // fetch unit data from the api
     useEffect(() => {
@@ -44,7 +44,7 @@ const UnitDetails = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    setResponse(data)
+                    setUnit(data)
                     setFilteredItems(data.items)
                     setErr(null)
                 }
@@ -53,9 +53,9 @@ const UnitDetails = () => {
     }, [])
 
     if (err) { return <Error err={ err } /> }
-    if (response) {
+    if (unit) {
     // destructure api response
-    const { id, name, type, facility, createdAt, updatedAt, items } = response
+    const { id, name, type, facility, createdAt, updatedAt, items } = unit
     // const { unitId, unitName, locationId, locationName, unitType, added, inspected, deleteDate } = unit
 
     // if it has been deleted, throw an error
@@ -112,6 +112,21 @@ const UnitDetails = () => {
         )
     })
 
+    const flipUnit = async() => {
+        if (!confirm("Flipping a unit will flag all of its items as needing inspection. Are you sure?")) {
+            return
+        }
+        await apiService.flipUnit(id, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`Unit ${ name } has been flipped. Its items are now marked for inspection.`)
+                setUnsaved(false)
+                navigate(`/unit/${ id }`)
+            }
+        })
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row">
@@ -123,6 +138,9 @@ const UnitDetails = () => {
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Item" linkTo={ `/unit/${ id }/add` } type="action" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
+                    <Button text="Flip Unit" linkTo={ flipUnit } type="action" />
                 </div>
                 { adminButtons }
             </div>

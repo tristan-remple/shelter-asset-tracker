@@ -40,7 +40,13 @@ const LocationDelete = () => {
                     setErr(data.error)
                 } else {
                     setResponse(data)
-                    setErr(null)
+                    if (data.units.length > 0) {
+                        setStatus("You cannot delete a location that contains units.")
+                        navigate(`/location/${ id }`)
+                    } else {
+                        setStatus(`Click Save to delete location ${ data.name }.`)
+                        setErr(null)
+                    }
                 }
             })
         })()

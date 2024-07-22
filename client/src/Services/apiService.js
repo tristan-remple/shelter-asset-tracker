@@ -122,6 +122,23 @@ class apiService {
         })
     }
 
+    // Called by: UnitDetails
+    flipUnit = async(id, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/units/${ id }/flip`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
     // Called by: UnitEdit
     postUnitEdit= async(unit, callback) => {
         const id = unit.id
@@ -407,7 +424,7 @@ class apiService {
         })
     }
 
-    // Called by: UnitEdit
+    // Called by: UserEdit
     postUserEdit= async(user, callback) => {
         const id = user.id
         await axios.put(`${ import.meta.env.VITE_API_URL }/users/${ id }`, user, {
@@ -428,10 +445,31 @@ class apiService {
         })
     }
 
-    // Called by: UnitEdit
+    // Called by: UserEdit
     postUserAuths = async(user, callback) => {
         const id = user.id
         await axios.post(`${ import.meta.env.VITE_API_URL }/users/authorize/${ id }`, user, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
+    // Called by: UserEdit
+    postAdminEdit = async(user, callback) => {
+        const id = user.id
+        await axios.post(`${ import.meta.env.VITE_API_URL }/users/${ id }`, user, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -694,15 +732,10 @@ class apiService {
     uploadIcon = async(icon, callback) => {
 
         const formData = new FormData()
-        formData.append('file', icon.file)
-        icon.file = formData
-
-        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        });
+        formData.append('image', icon.file)
+        formData.append('name', icon.name)
+        formData.append('ext', icon.ext)
+        formData.append('date', icon.date)
 
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, formData, {
             withCredentials: true,
