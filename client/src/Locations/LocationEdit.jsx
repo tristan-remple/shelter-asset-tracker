@@ -59,28 +59,26 @@ const LocationEdit = () => {
     // set possible changes
     const [ changes, setChanges ] = useState({
         name: "",
-        // phone: "",
         user: {
             name: "",
             userId: 0
         },
         created: "",
         types: []
-        // comment: ""
     })
 
     // destructure api response
     useEffect(() => {
         if (location) {
-            const { name, facilityId, created, types, phone, manager } = location
+            const { name, facilityId, created, types, manager } = location
             setChanges({
                 facilityId,
                 name,
                 created,
                 types,
                 user: {
-                    name: manager.name,
-                    userId: manager.id
+                    name: manager?.name,
+                    userId: manager?.id
                 }
             })
         }
@@ -135,15 +133,7 @@ const LocationEdit = () => {
             return
         }
 
-        // validate phone number
-        const validPhone = validatePhone(changes.phone)
-        if (validPhone.error) {
-            setStatus(validPhone.error)
-            return
-        }
-
         // shape object for api
-        changes.phone = validPhone.number
         changes.managerId = changes.user.userId
 
         // send api request and process api response
@@ -171,7 +161,7 @@ const LocationEdit = () => {
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="admin" />
+                    <Button text={ deletedLabel } linkTo={ `/location/${ changes.facilityId }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -192,7 +182,7 @@ const LocationEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Primary User
+                            Manager
                         </div>
                         <div className="col-content">
                             <Dropdown 
@@ -210,19 +200,6 @@ const LocationEdit = () => {
                             { changes.types.length > 0 ? capitalize( changes.types.join(", ") ) : "No units yet" }
                         </div>
                     </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Added
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="date" 
-                                name="created" 
-                                value={ changes.created.split("T")[0] } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
                 </div>
             </div>
             { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/location/${ changes.facilityId }` } locationId={ changes.facilityId } /> }

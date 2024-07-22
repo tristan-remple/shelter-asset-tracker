@@ -32,9 +32,10 @@ const UserCreate = () => {
         name: "",
         isAdmin: false,
         createdAt: "",
-        facilities: [],
+        auths: [],
         email: "",
-        password: ""
+        password: "test",
+        authorizedBy: 1
     })
 
     // list of locations for dropdown
@@ -49,7 +50,7 @@ const UserCreate = () => {
                         loc.active = false
                         return loc
                     })
-                    newChanges.facilities = facilityList
+                    newChanges.auths = facilityList
                     setChanges(newChanges)
                 }
             })
@@ -59,13 +60,13 @@ const UserCreate = () => {
     const handleLocations = (event, changes, setChanges, setUnsaved) => {
         const fieldName = parseInt(event.target.name)
         const newChanges = {...changes}
-        const currentIndex = newChanges.facilities.findIndex(loc => loc.id === fieldName)
-        newChanges.facilities[currentIndex].active = newChanges.facilities[currentIndex].active ? false : true
+        const currentIndex = newChanges.auths.findIndex(loc => loc.id === fieldName)
+        newChanges.auths[currentIndex].active = newChanges.auths[currentIndex].active ? false : true
         setChanges(newChanges)
         setUnsaved(true)
     }
 
-    const locationSelector = changes.facilities?.map(loc => {
+    const locationSelector = changes.auths?.map(loc => {
         return (
             <li key={ loc.id }>
                 <label htmlFor={ loc.id }>{ loc.name }</label>
@@ -89,16 +90,16 @@ const UserCreate = () => {
     }
 
     const saveChanges = () => {
-        if (changes.name === "" || changes.email === "") {
-            setStatus("Please enter a username and email.")
+        if (changes.name === "") {
+            setStatus("Please enter a name.")
             return
-        } else if (!validateEmail(changes.email)) {
+        } else if (changes.email === "" || !validateEmail(changes.email)) {
             setStatus("Please provide a valid email.")
             return
         }
 
         const newUser = {...changes}
-        newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
+        newUser.auths = newUser.auths.filter(loc => loc.active).map(loc => loc.id)
         console.log(newUser)
 
         apiService.postNewUser(newUser, (response) => {
@@ -155,19 +156,6 @@ const UserCreate = () => {
                             />
                         </div>
                     </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Date Added
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="date" 
-                                name="addedDate" 
-                                value={ changes.added.addedDate } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
                     <div className="col col-info">
                         <div className="col-head">
                             Location
@@ -191,7 +179,7 @@ const UserCreate = () => {
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Password
                         </div>
@@ -203,7 +191,7 @@ const UserCreate = () => {
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut="/users" /> }
             </div>

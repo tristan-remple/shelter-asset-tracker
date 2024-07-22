@@ -122,14 +122,6 @@ const CategoryDetails = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Depreciation Rate
-                        </div>
-                        <div className="col-content">
-                            { response.depreciationRate * 100 }% per year
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
                             Icon
                         </div>
                         <div className="col-icon col-content">

@@ -7,7 +7,7 @@ import { useState } from "react"
 // list is a list of items to appear in the dropdown
 // current is a state variable that is one of those items, which is currently selected
 // setCurrent is the setter for the current state variable
-// Imported by: ItemEdit, ItemCreate
+// Imported by: Dashboard
 
 const Dropdown = ({ list, current, setCurrent }) => {
 

@@ -121,12 +121,24 @@ const UserEdit = () => {
         )
     })
 
+    // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )
+    }
+
     // send data to the api
     const saveChanges = async() => {
 
         // validation
         if (changes.name === "") {
             setStatus("Please enter a name.")
+            return
+        } else if (changes.email === "" || !validateEmail(changes.email)) {
+            setStatus("Please provide a valid email.")
             return
         }
 
@@ -166,12 +178,34 @@ const UserEdit = () => {
         
     }
 
+    const changeAdmin = async() => {
+        if (!confirm("Changing the admin status of a user is a serious action. Are you sure?")) {
+            return
+        }
+        if (originalData.id === 1) {
+            setStatus("You cannot change the admin status of user 1.")
+            return
+        }
+        const newUser = {...changes}
+        newUser.isAdmin = originalData.isAdmin ? false : true
+        await apiService.postAdminEdit(newUser, (response) => {
+            if (response.error) {
+                setStatus("We weren't able to process your edit admin request.")
+                return
+            } else {
+                const newStatus = newUser.isAdmin ? `User ${ newUser.name } has been promoted to admin.` : `User ${ newUser.name } is no longer an admin.`
+                setStatus(newStatus)
+                navigate(`/user/${ changes.id }`)
+            }
+        })
+    }
+
     if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
             <div className="row title-row">
                 <div className="col">
-                    <h2>Editing User { changes.name }</h2>
+                    <h2>Editing User { originalData.name }</h2>
                 </div>
                 <div className="col-2">
                     <Button text="Return" linkTo={ `/user/${ changes.id }` } type="nav" />
@@ -221,13 +255,8 @@ const UserEdit = () => {
                         </div>
                         <div className="col-content">
                             <div className="row">
-                                <div className="col-2">
-                                    <input 
-                                        type="checkbox"
-                                        name="isAdmin" 
-                                        checked={ changes.isAdmin }
-                                        onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
-                                    />
+                                <div className="col-4">
+                                    <Button text={ originalData.isAdmin ? "Remove Admin" : "Grant Admin" } linkTo={ changeAdmin } type="admin" />
                                 </div>
                                 <div className="col">
                                     Setting a user to admin allows them full access to everything. This includes the ability to edit other users and change the admin status of other users. It also includes the ability to view the dashboard and create, edit, and delete templates, locations, and units.

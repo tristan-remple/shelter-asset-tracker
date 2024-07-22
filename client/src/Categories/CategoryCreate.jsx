@@ -159,20 +159,6 @@ const CategoryCreate = () => {
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Depreciation Rate<br />
-                            (Annual Percent)
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="number" 
-                                name="depreciationRate" 
-                                value={ changes.depreciationRate } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div>
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">
