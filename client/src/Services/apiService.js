@@ -695,9 +695,14 @@ class apiService {
 
         const formData = new FormData()
         formData.append('file', icon.file)
-        formData.append('name', icon.name)
-        formData.append('ext', icon.ext)
-        formData.append('date', icon.date)
+        icon.file = formData
+
+        await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, icon, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
 
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons`, formData, {
             withCredentials: true,
