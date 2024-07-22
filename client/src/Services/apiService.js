@@ -732,7 +732,7 @@ class apiService {
     uploadIcon = async(icon, callback) => {
 
         const formData = new FormData()
-        formData.append('file', icon.file)
+        formData.append('image', icon.file)
         formData.append('name', icon.name)
         formData.append('ext', icon.ext)
         formData.append('date', icon.date)

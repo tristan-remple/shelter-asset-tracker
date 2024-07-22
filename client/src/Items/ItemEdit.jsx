@@ -17,6 +17,7 @@ import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
 import CommentBox from '../Reusables/CommentBox'
+import Autofill from '../Reusables/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -215,7 +216,7 @@ const ItemEdit = () => {
                         </div>
                         <div className="col-content">
                             <Flag color={ changes.flag.color } />
-                            <Dropdown
+                            <Autofill
                                 list={ flagTextOptions }
                                 current={ changes.flag.text }
                                 setCurrent={ handleFlag }

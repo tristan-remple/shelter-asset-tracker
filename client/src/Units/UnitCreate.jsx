@@ -15,6 +15,7 @@ import Error from '../Reusables/Error'
 import ChangePanel from '../Reusables/ChangePanel'
 import Dropdown from '../Reusables/Dropdown'
 import capitalize from '../Services/capitalize'
+import Autofill from '../Reusables/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -168,7 +169,11 @@ const UnitCreate = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            <Dropdown list={ simpleTypes } current={ capitalize(changes.type.name) } setCurrent={ handleTypeChange } />
+                            <Autofill
+                                list={ simpleTypes }
+                                current={ capitalize(changes.type.name) }
+                                setCurrent={ handleTypeChange }
+                            />
                         </div>
                     </div>
                 </div>

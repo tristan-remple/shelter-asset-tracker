@@ -16,6 +16,7 @@ import CommentBox from '../Reusables/CommentBox'
 import ChangePanel from '../Reusables/ChangePanel'
 import Dropdown from '../Reusables/Dropdown'
 import capitalize from '../Services/capitalize'
+import Autofill from '../Reusables/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -48,7 +49,6 @@ const UnitEdit = () => {
             } else {
                 setUnitTypes(data.unitTypes)
                 const simple = data.unitTypes.map(type => capitalize(type.name))
-                simple.unshift("Select:")
                 setSimpleTypes(simple)
                 setErr(null)
             }
@@ -86,13 +86,16 @@ const UnitEdit = () => {
         }
     }, [ unit, simpleTypes ])
 
+    // validate autofill input
+    const [ validOption, setValidOption ] = useState(true)
+
     if (err) { return <Error err={ err } /> }
     if (unit) {
     // destructure api response
     const { id, name } = unit
 
     // handles type change
-    // passed into Dropdown
+    // passed into Autofill
     const handleTypeChange = (newTypeName) => {
         const newTypeIndex = unitTypes.map(type => capitalize(type.name)).indexOf(newTypeName)
         if (newTypeIndex !== -1) {
@@ -101,13 +104,19 @@ const UnitEdit = () => {
             setChanges(newChanges)
             setUnsaved(true)
             setStatus("")
+            setValidOption(true)
         } else {
             setStatus("The type you selected cannot be found.")
+            setValidOption(false)
         }
     }
 
     // sends the item object to the apiService
     const saveChanges = async() => {
+
+        if (!validOption) {
+            return
+        }
 
         // shape data for api
         const newChanges = {...changes}
@@ -172,7 +181,11 @@ const UnitEdit = () => {
                             Unit Type
                         </div>
                         <div className="col-content">
-                            <Dropdown list={ simpleTypes } current={ capitalize(changes.type?.name) } setCurrent={ handleTypeChange } />
+                            <Autofill
+                                list={ simpleTypes }
+                                current={ capitalize(changes.type?.name) }
+                                setCurrent={ handleTypeChange }
+                            />
                         </div>
                     </div>
                     {/* <div className="col col-info">

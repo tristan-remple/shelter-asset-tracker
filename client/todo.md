@@ -1,8 +1,8 @@
 # TASKS
 
 ## Icons
-- interface update to delete icons
-- disallow deleting icons with children
+- ✅ interface update to delete icons
+- ✅ disallow deleting icons with children
 - ✅ icon object:
 ```ts
 interface Icon {

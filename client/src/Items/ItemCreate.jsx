@@ -14,6 +14,7 @@ import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
+import Autofill from '../Reusables/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -193,7 +194,7 @@ const ItemCreate = () => {
                             Item Category
                         </div>
                         <div className="col-content">
-                            <Dropdown 
+                            <Autofill
                                 list={ simpleCategories } 
                                 current={ newItem.template.name } 
                                 setCurrent={ handleCategoryChange }

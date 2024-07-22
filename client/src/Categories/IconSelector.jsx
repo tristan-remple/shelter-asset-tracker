@@ -80,6 +80,9 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             if (uploaderChanges.name === "") {
                 setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
                 return
+            } else if (iconList.map(icon => icon.name).includes(uploaderChanges.name)) {
+                setStatus("An icon with that name already exists. If you're sure you want to upload this icon, give it a different name.")
+                return
             }
 
             const ext = file.type.split("/")[1]
@@ -91,6 +94,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 date,
                 ext
             }
+            
             apiService.uploadIcon(iconSubmission, (res) => {
                 if (res.error) {
                     setStatus("We were not able to upload your icon.")
