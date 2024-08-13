@@ -35,8 +35,14 @@ const Button = ({ text, linkTo, type, id }) => {
         }
     }
 
+    const trap = (event) => {
+        if (text === "Close Selector" && event.code === "Tab" && event.shiftKey === false) {
+            event.preventDefault()
+        }
+    }
+
     if (typeof linkTo === "function") {
-        return <div className={ buttonClass } onClick={ linkTo } onKeyUp={ keyboardHandler } id={ id } tabIndex={ 0 }>{ text }</div>
+        return <div className={ buttonClass } onClick={ linkTo } onKeyUp={ keyboardHandler } id={ id } tabIndex={ 0 } onKeyDown={ trap } >{ text }</div>
     } else if (linkTo === null) {
         return <div className={ buttonClass } id={ id }>{ text }</div>
     } else if (linkTo.includes("#")) {

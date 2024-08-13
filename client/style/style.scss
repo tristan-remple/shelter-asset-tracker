@@ -219,12 +219,14 @@ header, footer {
     justify-content: space-around;
     max-height: 85%;
     overflow: auto;
-    border: 1px solid $ltgreen;
     border-radius: 0.5rem;
+    @include border;
+    margin: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .icon-pick {
-    border: 1px solid $ltgreen;
+    @include border;
     border-radius: 0.5rem;
     width: 5.25rem;
     height: 5.25rem;
@@ -258,6 +260,20 @@ header, footer {
     background-color: $white;
     bottom: 5rem;
     box-shadow: 0 0 2rem 1rem $ltbrown !important;
+}
+
+.btn-row {
+    width: 50%;
+    flex-grow: 1;
+    flex-flow: row wrap;
+}
+
+.keyboard-helper {
+    opacity: 0;
+    border-radius: 0.5rem;
+    &:focus {
+        opacity: 1;
+    }
 }
 
 .icon {

@@ -12,7 +12,7 @@ import apiService from "../Services/apiService"
 
 const IconSelector = ({ changes, setChanges, toggle }) => {
 
-    const { setStatus } = useContext(statusContext)
+    const { status, setStatus } = useContext(statusContext)
 
     const [ iconList, setIconList ] = useState([])
     const [ newIcons, setNewIcons ] = useState("")
@@ -40,6 +40,8 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
     const keyboardHandler = (event) => {
         if (event.code === "Enter" || event.code === "Space") {
             pickIcon()
+        } else if (event.code === "ArrowDown") {
+            document.getElementById("upload-icon-btn").focus()
         }
     }
 
@@ -108,6 +110,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 } else {
                     setStatus(`The icon ${ res.name } has been created.`)
                     setNewIcons(res.name)
+                    setUploadForm(false)
                 }
             })
         }
@@ -172,19 +175,30 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         })
     }
 
+    const trap = (event) => {
+        console.log(event)
+        if (event.code === "Tab" && event.shiftKey === true) {
+            event.preventDefault()
+        }
+    }
+
     return (
         <div id="icon-selector-box">
-            <div className="icon-selector">
-                { deleteMode ? displayDeletableIcons : displayIcons }
-            </div>
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Icon Selector</h2>
                 </div>
+                <div className="col keyboard-helper" tabIndex={ 0 } onKeyDown={ trap } >
+                    Keyboard naviagtion is trapped on this modal until it closes.
+                </div>
             </div>
-            <div className="row title-row mt-3 mb-2">
+            { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+            <div className="icon-selector">
+                { deleteMode ? displayDeletableIcons : displayIcons }
+            </div>
+            <div className="row col-content">
                 <div className="col d-flex justify-content-center">
-                    <Button text="Upload New Icon" linkTo={ toggleUpload } type="nav" />
+                    <Button text="Upload New Icon" linkTo={ toggleUpload } type="nav" id="upload-icon-btn" />
                 </div>
                 <div className="col d-flex justify-content-center">
                     <Button text={ deleteMode ? "Cancel Delete" : "Delete Icons" } linkTo={ toggleDeleteMode } type="nav" />
@@ -228,9 +242,12 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                         />
                     </div>
                 </div>
-                <div className="col col-info">
-                    <div className="col-content">
+                <div className="row col-content btn-row">
+                    <div className="col d-flex justify-content-center">
                         <Button text="Upload Icon" linkTo={ handleUpload } type="action" />
+                    </div>
+                    <div className="col d-flex justify-content-center">
+                        <Button text="Close Uploader" linkTo={ toggleUpload } type="nav" />
                     </div>
                 </div>
             </div>

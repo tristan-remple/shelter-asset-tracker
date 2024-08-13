@@ -63,13 +63,12 @@ const CategoryCreate = () => {
     const saveChanges = async() => {
 
         // validation
-        if (changes.name === "" || changes.defaultValue <= 0 || changes.depreciationRate <= 0 || changes.icon === "") {
+        if (changes.name === "" || changes.defaultValue <= 0 || changes.defaultUsefulLife <= 0 || changes.icon === "") {
             setStatus("Please fill in all category fields.")
             return
         }
 
         const newChanges = {...changes}
-        newChanges.depreciationRate = parseInt(changes.depreciationRate) / 100
         newChanges.icon = changes.icon.id
 
         // api call
@@ -172,11 +171,11 @@ const CategoryCreate = () => {
                         <div className="col-icon col-content d-flex justify-content-start">
                             { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.alt } /> }
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } /> }
+                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut="/categories" locationId="0" tabIndex={ selector ? -1 : 0 } /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut="/categories" locationId="0" /> }
             </div>
         </main>
     )
