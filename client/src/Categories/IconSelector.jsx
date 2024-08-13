@@ -43,6 +43,12 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         }
     }
 
+    const [ uploadForm, setUploadForm ] = useState(false)
+    const toggleUpload = () => {
+        const newForm = uploadForm ? false : true
+        setUploadForm(newForm)
+    }
+
     const displayIcons = iconList.map(icon => {
         return <img
             className="icon-pick" 
@@ -53,14 +59,15 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             src={ `/img/${ icon.src }` } 
             onClick={ pickIcon }
             onKeyUp={ keyboardHandler }
+            tabIndex={ uploadForm ? -1 : 0 }
         />
     })
 
-    const [ uploadForm, setUploadForm ] = useState(false)
-    const toggleUpload = () => {
-        const newForm = uploadForm ? false : true
-        setUploadForm(newForm)
-    }
+    useEffect(() => {
+        if (uploadForm) {
+            document.getElementById("uploader").focus()
+        }
+    }, [ uploadForm ])
 
     const [ file, setFile ] = useState(null)
     const [ preview, setPreview ] = useState(null)
@@ -138,12 +145,13 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
 
     const displayDeletableIcons = iconList.map(icon => {
         return <img
-            className={ "icon-pick " + (iconsToDelete.filter(id => id === icon.id).length > 0 ? "btn-danger" : "btn-secondary") }
+            className={ "icon-pick " + (iconsToDelete.filter(id => id === icon.id).length > 0 ? "being-deleted" : "can-delete") }
             key={ icon.id }
             id={ icon.id } 
             alt={ icon.alt }
             title={ capitalize(icon.name) }
             src={ `/img/${ icon.src }` } 
+            tabIndex={ uploadForm ? -1 : 0 }
             onClick={ toggleIconForDelete }
             onKeyUp={ keyboardDeleteHandler }
             data-checked={ (iconsToDelete.filter(id => id === icon.id).length > 0).toString() }
@@ -169,11 +177,27 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             <div className="icon-selector">
                 { deleteMode ? displayDeletableIcons : displayIcons }
             </div>
-            <Button text="Upload New Icon" linkTo={ toggleUpload } type="nav" />
-            <Button text={ deleteMode ? "Cancel Delete" : "Delete Icons" } linkTo={ toggleDeleteMode } type="nav" />
-            { deleteMode && <Button text={ `Delete ${ iconsToDelete.length } icons` } linkTo={ confirmDelete } type="danger" /> }
+            <div className="row title-row mt-3 mb-2">
+                <div className="col">
+                    <h2>Icon Selector</h2>
+                </div>
+            </div>
+            <div className="row title-row mt-3 mb-2">
+                <div className="col d-flex justify-content-center">
+                    <Button text="Upload New Icon" linkTo={ toggleUpload } type="nav" />
+                </div>
+                <div className="col d-flex justify-content-center">
+                    <Button text={ deleteMode ? "Cancel Delete" : "Delete Icons" } linkTo={ toggleDeleteMode } type="nav" />
+                </div>
+                { deleteMode && (<div className="col d-flex justify-content-center">
+                    <Button text={ `Delete ${ iconsToDelete.length } icons` } linkTo={ confirmDelete } type="danger" />
+                </div> )}
+                <div className="col d-flex justify-content-center">
+                    <Button text="Close Selector" linkTo={ toggle } type="nav" />
+                </div>
+            </div>
             { uploadForm && (
-            <div className="row row-info">
+            <div id="icon-uploader" className="row row-info">
                 <div className="col col-info">
                     <div className="col-head">
                         File

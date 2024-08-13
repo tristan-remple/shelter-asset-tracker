@@ -9,9 +9,18 @@ $midbrown: #563219;
 $palegreen: #d9e4cd;
 $fontColour: #332114;
 $accentGreen: #157347;
+$white: #FFFFFF;
 $fontmain: "Inter";
 $fontaccent: "Libre Caslon Text";
 
+* {
+    box-sizing: border-box;
+    box-shadow: none !important;
+}
+
+:focus {
+    outline: 4px solid $ltgreen !important;
+}
 
 @mixin border {
     border: 2px solid $palegreen !important;
@@ -27,8 +36,6 @@ body {
 main {
     min-height: 100vh;
 }
-
-
 
 /* Layout Styles */
 .page-content {
@@ -122,14 +129,6 @@ td, th {
     padding: 0.125rem 0.75rem !important;
 }
 
-#icon-selector {
-    position: fixed;
-    width: 80%;
-    height: 80%;
-    margin: auto;
-    z-index: 5;
-}
-
 /* Header Styles */
 
 .logo-image {
@@ -158,24 +157,23 @@ header, footer {
     width: 7rem;
     text-align: center;
     border-radius: .3rem;
-    border: 1px solid $brightgreen;
+    border: 2px solid $brightgreen;
     margin-top: .5rem;
-}
-
-.nav-link:hover {
-    color: $olivegreen;
-    background-color: #c4de9b;
-    border: 1px solid white;
-}
-
-.nav-link.active {
-    color:#332114;
-    border: 1px solid white;
-}
-
-.nav-link.active:hover {
-    color:$olivegreen;
-    border: 1px solid white;
+    &:hover, &:focus {
+        color: $olivegreen;
+        background-color: $ltgreen;
+        border-color: $white;
+    }
+    &:focus {
+        outline-color: $brightgreen !important;
+    }
+    &.active {
+        color: $fontColour;
+        border-color: $white;
+        &:hover, &:focus {
+            color:$olivegreen;
+        }
+    }
 }
    
 /* Login */
@@ -198,6 +196,70 @@ header, footer {
 
 
 /* Icon Styles */
+
+#icon-selector-box {
+    position: absolute;
+    width: 60vw;
+    background-color: $white;
+    border-style: solid;
+    border-radius: 0.5rem;
+    border-width: 2px;
+    padding: 0.5rem;
+    border-color: $brightgreen;
+    z-index: 5;
+    left: calc(150px + 1rem);
+    top: 3rem;
+    height: 80vh;
+    box-shadow: 0 0 2rem 1rem $ltbrown !important;
+}
+
+.icon-selector {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    max-height: 85%;
+    overflow: auto;
+    border: 1px solid $ltgreen;
+    border-radius: 0.5rem;
+}
+
+.icon-pick {
+    border: 1px solid $ltgreen;
+    border-radius: 0.5rem;
+    width: 5.25rem;
+    height: 5.25rem;
+    padding: 0.25rem;
+    margin: 0.25rem;
+    &:hover, &:focus {
+        background-color: $ltgreen;
+        border-color: $accentGreen;
+    }
+}
+
+.can-delete {
+    background-color: $ltgreen;
+    border-color: $accentGreen;
+    &:hover, &:focus {
+        background-color: $brightgreen;
+    }
+}
+
+.being-deleted {
+    background-color: $ltbrown;
+    border-color: $accentGreen;
+    &:hover, &:focus {
+        background-color: $olivegreen;
+        border-color: $fontColour;
+    }
+}
+
+#icon-uploader {
+    position: absolute;
+    background-color: $white;
+    bottom: 5rem;
+    box-shadow: 0 0 2rem 1rem $ltbrown !important;
+}
+
 .icon {
     margin: 0.5rem;
 }
@@ -240,6 +302,11 @@ header, footer {
 /* Buttons */
 .btn {
     margin: 0.5rem;
+    border-width: 1px;
+    border-style: solid;
+    &:focus {
+        border-color: $accentGreen;
+    }
 }
 
 .btn-small {
@@ -247,45 +314,48 @@ header, footer {
     padding: 0.125rem 0.75rem;
     background-color: $ltgreen;
     color: $olivegreen;
-    border: 1px solid $brightgreen;
+    border-color: $brightgreen;
     width: 150px;
-}
-
-.btn-small:hover {
-    background-color: $brightgreen;
-    color: white;
+    &:hover, &:focus {
+        background-color: $brightgreen;
+        color: $white;
+    }
 }
 
 .btn-admin {
     background-color: $brightgreen;
-    color: white;
+    color: $white;
     width: 150px;
-}
-
-.btn-admin:hover {
-    border: 1px solid $olivegreen;
+    border-color: $brightgreen;
+    &:hover, &:focus {
+        border-color: $olivegreen;
+    }
 }
 
 .btn-secondary {
     background-color: $palegreen;
     color: $olivegreen;  
     width: 150px;
-
-}
-
-.btn-secondary:hover {
-    background-color: $brightgreen;
-    color: white;
+    &:hover, &:focus {
+        background-color: $brightgreen;
+        color: $white;
+        border-color: $accentGreen;
+    }
 }
 
 .btn-primary {
-    color: white;
+    color: $white;
     background-color: $brightgreen;
     border-color: $brightgreen;
     width: 150px;
+    &:hover, &:focus {
+        color: $olivegreen;
+        background-color: $brightgreen;
+        border-color: $olivegreen;
+    }
 }
 
-.btn-primary:hover, .btn-danger:hover {
+.btn-primary:hover, .btn-primary:focus, .btn-danger:hover, .btn-danger:focus {
     color: $olivegreen;
     background-color: $brightgreen;
     border-color: $olivegreen;
@@ -293,27 +363,23 @@ header, footer {
 
 .btn-outline-primary {
     border-color: $accentGreen;
-}
-
-.btn-outline-primary:hover {
-    color: #fff;
-    border-color: $accentGreen;
-    background-color: $brightgreen;
+    &:hover, &:focus {
+        color: $white;
+        border-color: $accentGreen;
+        background-color: $brightgreen;
+    }
 }
 
 .btn-danger {
-    color: #fff;
+    color: $white;
     border-color: $accentGreen;
-    background-color: $brightgreen;
+    background-color: $ltbrown;
     width: 150px;
+    &:hover, &:focus {
+        background-color: $midbrown;
+        border-color: $brightgreen;
+    }
 }
-
-.btn-danger:hover {
-    color: #fff;
-    background-color:$accentGreen;
-    border-color: $brightgreen;
-}
-
 
 /* Dropdown */
 .dropdown-toggle {
@@ -325,10 +391,10 @@ header, footer {
 }
 
 .dropdown-item.active, .dropdown-item:active {
-    color: #fff;
+    color: $white;
     text-decoration: none;
     background-color: $accentGreen;
-  }
+}
 
 
 /* Label/Content */
@@ -357,18 +423,9 @@ footer {
 footer a {
     text-decoration: none;
     color: $fontColour;
-}
-
-footer a:hover {
-    text-decoration: none;
-    color: #e1f9df;
-}
-
-footer a {
     color: $accentGreen;
-}
-
-footer a:hover {
-    color: $olivegreen;
-    font-weight: bold;
+    &:hover, &:focus {
+        color: $olivegreen;
+        font-weight: bold;
+    }
 }

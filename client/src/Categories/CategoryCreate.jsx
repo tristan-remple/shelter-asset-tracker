@@ -92,10 +92,10 @@ const CategoryCreate = () => {
                     <h2>Create New Category</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo="/categories" type="nav" />
+                    <Button text="Return" linkTo="/categories" type="nav" tabIndex={ selector ? -1 : 0 } />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Save" linkTo={ saveChanges } type="admin" />
+                    <Button text="Save" linkTo={ saveChanges } type="admin" tabIndex={ selector ? -1 : 0 } />
                 </div>
             </div>
             <div className="page-content">
@@ -111,6 +111,7 @@ const CategoryCreate = () => {
                                 name="name" 
                                 value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             />
                         </div>
                     </div>
@@ -125,6 +126,7 @@ const CategoryCreate = () => {
                                 name="singleResident" 
                                 checked={ changes.singleResident }
                                 onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             />
                         </div>
                     </div>
@@ -141,6 +143,7 @@ const CategoryCreate = () => {
                                 name="defaultUsefulLife"
                                 value={ changes.defaultUsefulLife } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             /><br />
                             Equivalent to { (changes.defaultUsefulLife / 12).toFixed(1) } years
                         </div>
@@ -156,6 +159,7 @@ const CategoryCreate = () => {
                                 step=".01"
                                 value={ changes.defaultValue } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             />
                         </div>
                     </div>
@@ -172,7 +176,7 @@ const CategoryCreate = () => {
                         </div>
                     </div>
                 </div>
-                { unsaved && <ChangePanel save={ saveChanges } linkOut="/categories" locationId="0" /> }
+                { unsaved && <ChangePanel save={ saveChanges } linkOut="/categories" locationId="0" tabIndex={ selector ? -1 : 0 } /> }
             </div>
         </main>
     )
