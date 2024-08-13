@@ -80,9 +80,13 @@ exports.createNewTemplate = async (req, res, next) => {
     try {
         const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
 
+        if ( !name || !defaultValue || !defaultUsefulLife || !icon || !singleResident ) {
+            return res.status(400).json({ error: 'Bad request.' });
+        }
+        
         const existingTemplate = await models.Template.findOne({ where: { name } });
         if (existingTemplate) {
-            return res.status(400).json({ error: 'Template already exists' });
+            return res.status(400).json({ error: 'Template already exists.' });
         }
 
         const newTemplate = await models.Template.create({

@@ -59,7 +59,8 @@ exports.getFacilityById = async (req, res, next) => {
                     attributes: ['id', 'status']
                 }, {
                     model: models.UnitType,
-                    attributes: ['name']
+                    attributes: ['name'],
+                    paranoid: false
                 }]
             }]
         });

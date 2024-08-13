@@ -40,7 +40,8 @@ exports.getItemById = async (req, res, next) => {
             {
                 model: models.User,
                 attributes: ['id', 'name'],
-                as: 'addedByUser'
+                as: 'addedByUser',
+                paranoid: false
             },
             {
                 model: models.Template,
@@ -53,7 +54,8 @@ exports.getItemById = async (req, res, next) => {
                         'name',
                         'alt'
                     ]
-                }
+                },
+                paranoid: false
             },
             {
                 model: models.Inspection,
@@ -64,7 +66,8 @@ exports.getItemById = async (req, res, next) => {
                 ],
                 include: {
                     model: models.User,
-                    attributes: ['id', 'name']
+                    attributes: ['id', 'name'],
+                    paranoid: false,
                 },
                 order: [['createdAt', 'DESC']]
             }
@@ -305,7 +308,8 @@ exports.restoreDeleted = async (req, res, next) => {
                 }
             },{
                 model: models.Template,
-                attributes: ['name']
+                attributes: ['name'],
+                paranoid: false
             }],
             paranoid: false 
         });

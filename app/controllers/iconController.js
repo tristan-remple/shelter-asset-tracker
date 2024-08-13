@@ -1,34 +1,6 @@
 const { models, Sequelize } = require('../data');
 const fs = require("fs");
-
-// using multer for files
-const multer = require('multer');
-
-// set multer to store the images in the img folder
-// and keep the original filename
-const storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, 'client/public/img');
-    },
-    filename: function (req, file, callback) {
-        callback(null, file.originalname);
-    }
-});
-
-// set multer to only accept images
-const imageOnly = (req, file, cb) => {
-    if (file.mimetype.includes('image')) {
-        cb(null, true);
-    } else {
-        cb("Photo must be an image.", false);
-    }
-}
-
-// apply settings to multer, which can now be used as a function/middleware
-const upload = multer({
-    storage: storage,
-    fileFilter: imageOnly
-}).single('file');
+const { upload, extractFields } = require('../util/upload')
 
 exports.getAllIcons = async (req, res, next) => {
     try {
@@ -88,92 +60,24 @@ exports.sendIcon = async (req, res, next) => {
 };
 
 exports.createNewIcon = async (req, res, next) => {
+    console.log('create function');
     try {
 
-        // call the multer upload function
-        // note that this will overwrite files if overlap occurs
-        upload(req, res, function(err) {
-            // this error was set in the fileFilter for invalid mimetypes
-            if (err === "Photo must be an image.") { 
-                console.log(err)
-                res.status(401).send(err);
+            const { name, date, ext } = req.body;
+            const newIcon = await models.Icon.create({
+                name: name,
+                alt: `${name} icon`,
+                src: `${date}-${name}.${ext}`
+            });
 
-            // errors other than the one we sent might be on our end
-            } else if (err) {
-                console.log(err)
-                res.status(500).send(err);
-
-            // no error: file upload success
-            } else {
-
-                // put database stuff here
-                res.status(201).send();
+            const createResponse = {
+                id: newIcon.id,
+                name: newIcon.name,
+                alt: newIcon.alt,
+                src: newIcon.src, 
+                success: true
             }
-        });
-
-        // const { src, name, alt } = req.body;
-
-        // const existingIcon = await models.Icon.findOne({ where: { name } });
-        // if (existingIcon) {
-        //     return res.status(400).json({ error: 'Icon already exists.' });
-        // }
-
-        // const date = new Date().getTime();
-        // const filepath = `${date}-${ name }.png`;
-
-        // fs.writeFileSync(`./client/public/img/${ filepath }`, src, { encoding: 'base64' });
-
-        // const newIcon = await models.Icon.create({
-        //     src: filepath,
-        //     name: name, 
-        //     alt: alt
-        // });
-
-        // const createResponse = {
-        //     id: newIcon.id,
-        //     src: newIcon.src,
-        //     name: newIcon.name,
-        //     alt: newIcon.alt,
-        //     createdAt: newIcon.createdAt,
-        //     success: true
-        // };
-
-        // return res.status(201).json(createResponse);
-        
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Server error' });
-    }
-};
-
-
-exports.updateIcon = async (req, res, next) => {
-    try {
-        const iconId = req.params.id;
-        const { src, name, alt } = req.body;
-
-        const icon = await models.Icon.findByPk(iconId);
-
-        if (!icon) {
-            return res.status(404).json({ error: 'Icon not found.' });
-        }
-
-        icon.set({
-            src: src,
-            name: name,
-            alt: alt
-        });
-
-        const updateResponse = {
-            src: icon.src,
-            name: icon.name,
-            alt: icon.alt,
-            success: true
-        }
-
-        await icon.save();
-
-        return res.status(200).json(updateResponse);
+            return res.status(201).json(createResponse);
 
     } catch (err) {
         console.error(err);
@@ -181,7 +85,7 @@ exports.updateIcon = async (req, res, next) => {
     }
 };
 
-exports.deleteIcon = async (req, res, next) => {
+exports.deleteIcon = async (req, res, next) => { 
     try {
         const iconId = req.params.id;
         const { name } = req.body;
