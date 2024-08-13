@@ -36,7 +36,31 @@ interface Icon {
 - ✅ flip unit button
 
 ## Items
-- item type autofill
+- ✅ item type autofill
 
 ## Misc
-- purge real data from github
+- ✅ purge real data from github
+
+## Styling
+- ✅ icon selector interface
+- header highlight color
+- ✅ danger color
+- checkboxes
+
+## Keyboard
+- ✅ down arrow on icons to skip
+- ✅ cancel actions
+- ✅ keyboard trap
+
+## Big Stuff
+- test deployment
+- funding proposal
+- documentation
+    - end user
+    - admin user
+    - maintenance
+    - continued development
+    - copyright
+    - contact
+- real deployment
+- schedule training

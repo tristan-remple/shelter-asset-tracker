@@ -191,6 +191,10 @@ const Dashboard = () => {
                 (filters.discard ? item.status === "discard" : true) &&
                 (filters.inspect ? item.status === "inspect" || item.status === "discard" : true)
             )
+        }).sort((a, b) => {
+            return new Date(a.eol).getTime() > new Date(b.eol).getTime()
+        }).sort((a, b) => {
+            return +(a.status === "discard") < +(b.status === "discard")
         })
         setFilteredItems(newFilters)
     }, [ items, filters ])

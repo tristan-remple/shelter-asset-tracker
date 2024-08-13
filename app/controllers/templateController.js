@@ -80,7 +80,7 @@ exports.createNewTemplate = async (req, res, next) => {
     try {
         const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
 
-        if ( !name || !defaultValue || !defaultUsefulLife || !icon || !singleResident ) {
+        if ( !name || !defaultValue || !defaultUsefulLife || !icon ) {
             return res.status(400).json({ error: 'Bad request.' });
         }
         
@@ -94,7 +94,7 @@ exports.createNewTemplate = async (req, res, next) => {
             defaultValue: defaultValue, 
             defaultUsefulLife: defaultUsefulLife,
             icon: icon,
-            singleResident: singleResident
+            singleResident: singleResident ? true : false
         });
 
         const createResponse = {
@@ -133,7 +133,7 @@ exports.updateTemplate = async (req, res, next) => {
             defaultValue: defaultValue,
             defaultUsefulLife: defaultUsefulLife,
             icon: icon,
-            singleResident: singleResident
+            singleResident: singleResident ? true : false
         })
 
         const updateResponse = {

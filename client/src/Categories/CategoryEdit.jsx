@@ -109,13 +109,13 @@ const CategoryEdit = () => {
                     <h2>Edit { capitalize(response.name) } Category</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/category/${ id }` } type="nav" />
+                    <Button text="Return" linkTo={ `/category/${ id }` } type="nav" tabIndex={ selector ? -1 : 0 } />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Save" linkTo={ saveChanges } type="admin" />
+                    <Button text="Save" linkTo={ saveChanges } type="admin" tabIndex={ selector ? -1 : 0 } />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete" linkTo={ `/category/${ id }/delete` } type="danger" />
+                    <Button text="Delete" linkTo={ `/category/${ id }/delete` } type="danger" tabIndex={ selector ? -1 : 0 } />
                 </div>
             </div>
             <div className="page-content">
@@ -131,6 +131,7 @@ const CategoryEdit = () => {
                                 name="name" 
                                 value={ changes.name } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             />
                         </div>
                     </div>
@@ -145,6 +146,7 @@ const CategoryEdit = () => {
                                 name="singleResident" 
                                 checked={ changes.singleResident }
                                 onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             />
                         </div>
                     </div>
@@ -184,6 +186,7 @@ const CategoryEdit = () => {
                                 name="defaultUsefulLife"
                                 value={ changes.defaultUsefulLife } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             /><br />
                             Equivalent to { (changes.defaultUsefulLife / 12).toFixed(1) } years
                         </div>
@@ -199,6 +202,7 @@ const CategoryEdit = () => {
                                 step=".01"
                                 value={ changes.defaultValue } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                tabIndex={ selector ? -1 : 0 }
                             />
                         </div>
                     </div>
@@ -209,7 +213,7 @@ const CategoryEdit = () => {
                         <div className="col-icon col-content">
                             <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } /> }
+                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>
                 </div>
