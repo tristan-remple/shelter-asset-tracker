@@ -17,6 +17,9 @@ router.route('/deleted')
 router.route('/:id/restore')
     .get(admin, unitController.restoreDeleted);
 
+router.route('/:id/flip')
+    .get(unitController.getUnitById, auth, facility, unitController.flipUnit);
+
 router.route('/:id')
     .get(unitController.getUnitById, auth, facility, unitController.sendUnit)
     .put(admin, unitController.updateUnit)

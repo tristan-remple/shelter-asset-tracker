@@ -22,7 +22,11 @@ exports.getUnitById = async (req, res, next) => {
                 ],
                 include: {
                     model: models.Template,
-                    attributes: ['id', 'name'],
+                    attributes: [
+                        'id', 
+                        'name',
+                        'singleResident'
+                    ],
                     paranoid: false
                 },
                 required: false
@@ -225,6 +229,40 @@ exports.restoreDeleted = async (req, res, next) => {
         };
 
         return res.status(200).json(restoreResponse);
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+exports.flipUnit = async (req, res, next) => {
+    try {
+        const unit = req.data;
+
+        const currentDate = new Date();
+        const inspectItems = [];
+        const discardItems = [];
+
+        if (unit.Items) {
+            unit.Items.forEach(async (item) => {
+                if (item.Template.singleResident === true) {
+                    discardItems.push(item.id);
+                    await models.Item.update({ status: 'discard' }, { where: { id: item.id } });
+                } else if (item.status === 'ok') {
+                    inspectItems.push(item.id);
+                    await models.Item.update({ status: 'inspect' }, { where: { id: item.id }});
+                }
+            });
+        };
+
+        const response = {
+            inspect: inspectItems,
+            discard: discardItems,
+            success: true
+        };
+
+        return res.status(200).json(response);
 
     } catch (err) {
         console.error(err);
