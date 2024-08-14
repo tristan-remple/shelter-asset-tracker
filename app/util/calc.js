@@ -8,11 +8,21 @@ exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
       const now = new Date();
       const created = new Date(createdAt);
 
-      depreciationRate = parseFloat(depreciationRate.value);
-
+      // Calculate the age of the asset in years
       const age = (now - created) / (1000 * 60 * 60 * 24 * 365);
 
-      const currentValue = initialValue * Math.pow((1 - depreciationRate), age);
+      // Ensure depreciationRate is a float
+      depreciationRate = parseFloat(depreciationRate.value);
+
+      // Double the straight-line depreciation rate
+      const doubleDepreciationRate = depreciationRate * 2;
+
+      let currentValue = initialValue;
+
+      // Apply the double-declining balance method
+      for (let year = 0; year < age; year++) {
+          currentValue -= currentValue * doubleDepreciationRate;
+      }
 
       return currentValue.toFixed(2);
   } catch (err) {
@@ -20,7 +30,6 @@ exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
       return null;
   }
 };
-
 
 exports.getEoL = (months, startDate) => {
     // Check if passed valid startDate
