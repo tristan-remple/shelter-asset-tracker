@@ -11,6 +11,7 @@ import Error from '../Reusables/Error'
 import Button from '../Reusables/Button'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
+import Checkbox from '../Reusables/Checkbox'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -97,8 +98,8 @@ const UserEdit = () => {
     }, [])
 
     // handle toggles to the location auth checkboxes
-    const handleLocations = (event, changes, setChanges, setUnsaved) => {
-        const fieldName = parseInt(event.target.name)
+    const handleLocations = (event) => {
+        const fieldName = event.target.id ? parseInt(event.target.id) : parseInt(event.target.parentNode.id)
         const newChanges = {...changes}
         const currentIndex = newChanges.facilities.findIndex(loc => loc.id === fieldName)
         newChanges.facilities[currentIndex].active = newChanges.facilities[currentIndex].active ? false : true
@@ -110,12 +111,11 @@ const UserEdit = () => {
     const locationSelector = changes.facilities?.map(loc => {
         return (
             <li key={ loc.id }>
-                <label htmlFor={ loc.id }>{ loc.name }</label>
-                <input 
-                    type="checkbox"
-                    name={ loc.id } 
+                <Checkbox 
+                    id={ loc.id }
+                    name={ loc.name }
                     checked={ loc.active }
-                    onChange={ (event) => handleLocations(event, changes, setChanges, setUnsaved) } 
+                    changeHandler={ (event) => handleLocations(event, changes, setChanges, setUnsaved) }
                 />
             </li>
         )

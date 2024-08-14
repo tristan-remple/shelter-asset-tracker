@@ -45,7 +45,7 @@ interface Icon {
 - ✅ icon selector interface
 - header highlight color
 - ✅ danger color
-- checkboxes
+- ✅ checkboxes
 
 ## Keyboard
 - ✅ down arrow on icons to skip
@@ -53,7 +53,8 @@ interface Icon {
 - ✅ keyboard trap
 
 ## Big Stuff
-- test deployment
+- ✅ test deployment
+- fix test database
 - funding proposal
 - documentation
     - end user
@@ -64,3 +65,14 @@ interface Icon {
     - contact
 - real deployment
 - schedule training
+
+## Reports
+- send data to api
+```js
+const postData = {
+    facilityId: 1, // if omitted, returns all facilities
+    startDate: "2029-12-31", // only needed for EoL
+    endDate: "2029-12-31" // only needed for EoL
+}
+```
+- find how to convert json -> csv and download
