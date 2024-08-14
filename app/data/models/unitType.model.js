@@ -11,6 +11,7 @@ module.exports = (db, { DataTypes }) => {
         }
     }, {
         tableName: 'UnitTypes',
+        deletedAt: false,
         updatedAt: false
     });
 };
