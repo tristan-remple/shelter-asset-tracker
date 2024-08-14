@@ -65,4 +65,4 @@ typings/
 *.docx
 
 # build
-public/
+dist/
