@@ -24,10 +24,6 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // app.use('/', indexRouter);
 app.use('/sat', satRouter);
 
-app.get('/favicon.png', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'favicon.png'));
-})
-
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
