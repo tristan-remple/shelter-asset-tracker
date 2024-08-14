@@ -63,3 +63,6 @@ typings/
 
 # Instruction files for the assignment
 *.docx
+
+# build
+public/
