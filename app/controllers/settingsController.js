@@ -75,28 +75,13 @@ exports.sendSettings = async (req, res, next) => {
     const settings = req.data.settings;
     const unitTypes = req.data.unitTypes;
 
-    const settingsResponse = {};
-
-    settings.forEach(setting => {
-        switch (setting.name) {
-            case 'depreciationRate':
-                settingsResponse.depreciationRate = setting.value;
-                break;
-            case 'name':
-                settingsResponse.name = setting.value;
-                break;
-            case 'url':
-                settingsResponse.url = setting.value;
-                break;
-            case 'logoSrc':
-                settingsResponse.logoSrc = setting.value;
-                break;
-            default:
-                break;
-        }
-    });
-
-    settingsResponse.unitTypes = unitTypes;
+    const settingsResponse = {
+        depreciationRate: settings.depreciationRate,
+        name: settings.name,
+        url: settings.url,
+        logoSrc: settings.logoSrc,
+        unitTypes: unitTypes
+    };
 
     return res.status(200).json(settingsResponse);
 }
