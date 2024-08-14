@@ -8,12 +8,12 @@ const checkFacility = async (req, res, next) => {
         if (!req.facilities.includes(+req.facility)) {
             return res.status(403).send({ message: 'Forbidden.' });
         }
-    
+
         next();
     } catch {
         console.error(error);
-        return res.status(500).send({ message: 'Server Error.'});
+        return res.status(500).send({ message: 'Server Error.' });
     }
 }
 
-module.exports=checkFacility;
+module.exports = checkFacility;

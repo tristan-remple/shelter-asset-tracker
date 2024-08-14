@@ -1,5 +1,5 @@
 const { models } = require('../data');
-const { hashPassword } = require('../util/hash'); 
+const { hashPassword } = require('../util/hash');
 const { verifyToken } = require('../util/token');
 
 exports.createNewUser = async (req, res, next) => {
@@ -17,7 +17,7 @@ exports.createNewUser = async (req, res, next) => {
         const hashedPassword = await hashPassword(password);
 
         const newUser = await models.User.create({
-            email: email,      
+            email: email,
             password: hashedPassword,
             name: name,
             isAdmin: isAdmin
@@ -54,8 +54,8 @@ exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await models.User.findAll({
             attributes: [
-                'id', 
-                'email', 
+                'id',
+                'email',
                 'name',
                 'createdAt'
             ],
@@ -74,7 +74,7 @@ exports.getAllUsers = async (req, res, next) => {
         if (!users) {
             return res.status(404).json({ error: 'Users not found' });
         }
-        
+
         const usersInfo = users.map(user => ({
             userId: user.id,
             email: user.email,
@@ -91,20 +91,20 @@ exports.getAllUsers = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    } 
+    }
 };
 
 exports.getUserById = async (req, res, next) => {
     try {
-        const userId = +req.params.id; 
+        const userId = +req.params.id;
 
         const user = await models.User.findOne({
             attributes: [
-                'id', 
-                'email', 
-                'name', 
-                'isAdmin', 
-                'createdAt', 
+                'id',
+                'email',
+                'name',
+                'isAdmin',
+                'createdAt',
                 'updatedAt'
             ],
             where: { id: userId },
@@ -152,7 +152,7 @@ exports.updateUser = async (req, res, next) => {
         }
 
         return res.status(200).json(updateResponse);
-        
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
@@ -163,14 +163,14 @@ exports.setAdmin = async (req, res, next) => {
     try {
         const user = req.data;
         const { isAdmin } = req.body;
-        if (user.id === 1){
+        if (user.id === 1) {
             return res.status(403).send({ message: "Forbidden" });
         }
 
         user.set({
             isAdmin: isAdmin
         });
-        
+
         await user.save();
 
         const setAdminResponse = {
@@ -182,7 +182,7 @@ exports.setAdmin = async (req, res, next) => {
         }
 
         return res.status(200).json(setAdminResponse);
-        
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });

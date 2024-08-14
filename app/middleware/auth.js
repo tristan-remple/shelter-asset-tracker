@@ -24,8 +24,8 @@ const checkAuth = async (req, res, next) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).send({ message: 'Server Error.'});
+        return res.status(500).send({ message: 'Server Error.' });
     }
 }
 
-module.exports=checkAuth;
+module.exports = checkAuth;

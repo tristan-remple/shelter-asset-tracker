@@ -6,7 +6,7 @@ exports.getSettings = async (req, res, next) => {
         const unitTypes = await models.UnitType.findAll();
 
         if (!settings || !unitTypes) {
-            return res.status(404).json({ message: 'Settings not found.'});
+            return res.status(404).json({ message: 'Settings not found.' });
         };
 
         req.data = {
@@ -24,12 +24,12 @@ exports.getSettings = async (req, res, next) => {
 
 exports.updateSettings = async (req, res, next) => {
     try {
-        const { depreciationRate, unitTypes, name, url, logoSrc } =  req.body;
+        const { depreciationRate, unitTypes, name, url, logoSrc } = req.body;
         const settings = req.data.settings;
         const currentUnitTypes = req.data.unitTypes.map(type => type.name);
 
         if (!depreciationRate || !unitTypes || !name || !url || !logoSrc) {
-            return res.status(400).json({ error: 'Bad request.'})
+            return res.status(400).json({ error: 'Bad request.' })
         }
 
         const settingsMap = {

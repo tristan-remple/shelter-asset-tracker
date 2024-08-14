@@ -92,7 +92,7 @@ exports.sendItem = async (req, res, next) => {
     const item = req.data;
     const depreciationRate = await models.Setting.findOne({
         attributes: ['value'],
-        where: { name: 'depreciationRate'}
+        where: { name: 'depreciationRate' }
     });
     const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
 
@@ -142,7 +142,7 @@ exports.sendItem = async (req, res, next) => {
         createdAt: item.createdAt,
         updatedAt: item.updatedAt
     };
-    
+
     return res.status(200).json(itemProfile);
 }
 
@@ -151,7 +151,7 @@ exports.updateItem = async (req, res, next) => {
         const item = req.data;
         const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
 
-        if (item.status == 'inspect' && status !== 'inspect'){
+        if (item.status == 'inspect' && status !== 'inspect') {
             await models.Inspection.create({
                 comment: comment,
                 itemId: item.id,
@@ -170,7 +170,7 @@ exports.updateItem = async (req, res, next) => {
 
         const depreciationRate = await models.Setting.findOne({
             attributes: ['value'],
-            where: { name: 'depreciationRate'}
+            where: { name: 'depreciationRate' }
         });
 
         const updateResponse = {
@@ -298,7 +298,7 @@ exports.restoreDeleted = async (req, res, next) => {
         const itemId = req.params.id;
 
         const deletedItem = await models.Item.findOne({
-            where: {id: itemId},
+            where: { id: itemId },
             include: [{
                 model: models.Unit,
                 attributes: ['name'],
@@ -306,12 +306,12 @@ exports.restoreDeleted = async (req, res, next) => {
                     model: models.Facility,
                     attributes: ['name']
                 }
-            },{
+            }, {
                 model: models.Template,
                 attributes: ['name'],
                 paranoid: false
             }],
-            paranoid: false 
+            paranoid: false
         });
 
         if (!deletedItem) {

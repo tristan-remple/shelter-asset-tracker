@@ -16,5 +16,5 @@ module.exports = (db, { DataTypes }) => {
         }
     }, {
         tableName: 'Facilities'
-    });  
+    });
 };

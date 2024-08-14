@@ -41,8 +41,8 @@ module.exports = (db, { DataTypes }) => {
         status: {
             type: DataTypes.ENUM({
                 values: [
-                    'ok', 
-                    'inspect', 
+                    'ok',
+                    'inspect',
                     'discard'
                 ]
             })
@@ -51,7 +51,7 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             field: 'addedBy'
-        }         
+        }
     }, {
         tableName: 'Items'
     });

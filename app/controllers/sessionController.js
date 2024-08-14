@@ -5,8 +5,8 @@ const { models } = require('../data');
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
-    if (!email || !password){
-        return res.status(401).json({ error: 'Invalid login.'});
+    if (!email || !password) {
+        return res.status(401).json({ error: 'Invalid login.' });
     }
 
     try {
@@ -27,7 +27,7 @@ exports.login = async (req, res, next) => {
         const userInfo = {
             userId: user.id,
             isAdmin: user.isAdmin,
-            facilityAuths: facilityIds 
+            facilityAuths: facilityIds
         }
 
         res.cookie('authorization', token, {
@@ -76,7 +76,7 @@ exports.reset = async (req, res, next) => {
         } else {
             return res.status(401).json({ error: 'Invalid request' });
         }
-        
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });

@@ -13,16 +13,16 @@ const checkAdmin = async (req, res, next) => {
         // Verify token
         const decoded = await verifyToken(token);
         // If user is admin, proceed
-        if (!decoded.isAdmin){
-            return res.status(403).json({ error: 'Forbidden.'});
-        } 
-           
+        if (!decoded.isAdmin) {
+            return res.status(403).json({ error: 'Forbidden.' });
+        }
+
         next();
-         
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Server error.' });
     }
 };
 
-module.exports=checkAdmin;
+module.exports = checkAdmin;

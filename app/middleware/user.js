@@ -4,12 +4,12 @@ const checkUser = async (req, res, next) => {
             next();
             return;
         }
-    
-        return res.status(403).send({ message: 'Forbidden.'});
+
+        return res.status(403).send({ message: 'Forbidden.' });
     } catch {
         console.error(error);
-        return res.status(500).send({ message: 'Server Error.'});
+        return res.status(500).send({ message: 'Server Error.' });
     }
 }
 
-module.exports=checkUser;
+module.exports = checkUser;

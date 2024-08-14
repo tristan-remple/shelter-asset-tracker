@@ -2,12 +2,12 @@ const { models, Sequelize } = require('../data');
 
 exports.getUnitById = async (req, res, next) => {
     try {
-        const unitId = req.params.id; 
+        const unitId = req.params.id;
 
         const unit = await models.Unit.findOne({
             attributes: [
-                'id', 
-                'name', 
+                'id',
+                'name',
                 'createdAt',
                 'updatedAt'
             ],
@@ -16,14 +16,14 @@ exports.getUnitById = async (req, res, next) => {
                 model: models.Item,
                 attributes: [
                     'id',
-                    'name', 
+                    'name',
                     'status',
                     'eol'
                 ],
                 include: {
                     model: models.Template,
                     attributes: [
-                        'id', 
+                        'id',
                         'name',
                         'singleResident'
                     ],
@@ -32,13 +32,13 @@ exports.getUnitById = async (req, res, next) => {
                 required: false
             }, {
                 model: models.Facility,
-                attributes: ['id','name']
+                attributes: ['id', 'name']
             }, {
                 model: models.UnitType,
                 attributes: ['name'],
                 paranoid: false
             }],
-            group: [] 
+            group: []
         });
 
         if (!unit) {
@@ -163,7 +163,7 @@ exports.deleteUnit = async (req, res, next) => {
 
         const unit = await models.Unit.findByPk(unitId);
 
-        if (!unit || unit.name !== name || unit.facilityId != facilityId ) {
+        if (!unit || unit.name !== name || unit.facilityId != facilityId) {
             return res.status(404).json({ error: 'Unit not found.' });
         }
 
@@ -197,7 +197,7 @@ exports.getDeleted = async (req, res, next) => {
         });
 
         return res.status(200).json(deletedUnits);
-        
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
@@ -209,12 +209,12 @@ exports.restoreDeleted = async (req, res, next) => {
         const unitId = req.params.id;
 
         const deletedUnit = await models.Unit.findOne({
-            where: {id: unitId},
+            where: { id: unitId },
             include: {
                 model: models.Facility,
                 attributes: ['name']
             },
-            paranoid: false 
+            paranoid: false
         });
 
         if (!deletedUnit) {
@@ -251,7 +251,7 @@ exports.flipUnit = async (req, res, next) => {
                     await models.Item.update({ status: 'discard' }, { where: { id: item.id } });
                 } else if (item.status === 'ok') {
                     inspectItems.push(item.id);
-                    await models.Item.update({ status: 'inspect' }, { where: { id: item.id }});
+                    await models.Item.update({ status: 'inspect' }, { where: { id: item.id } });
                 }
             });
         };

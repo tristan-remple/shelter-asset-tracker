@@ -2,12 +2,12 @@
     Functions for uploading and saving images.
  */
 const multer = require('multer');
-    
+
 // Create a multer instance to handle both file upload and form fields
 exports.upload = async (req, file) => {
     console.log('upload')
 
-    
+
     // Set multer to store the images in the img folder
     const storage = multer.diskStorage({
         destination: function (req, file, callback) {
@@ -19,7 +19,7 @@ exports.upload = async (req, file) => {
             callback(null, `${file.date}-${file.name}.${file.ext}`);
         }
     });
-    
+
     // Set multer to only accept images
     const imageOnly = (req, file, cb) => {
 
@@ -34,7 +34,7 @@ exports.upload = async (req, file) => {
         storage: storage,
         fileFilter: imageOnly
     }).single('file')
-    
+
     multer().fields([
         { name: 'name' },
         { name: 'date' },

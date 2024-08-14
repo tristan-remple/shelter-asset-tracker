@@ -5,42 +5,42 @@ exports.getAllFacilities = async (req, res, next) => {
     try {
         const facilities = await models.Facility.findAll({
             attributes: [
-                'id', 
-                'name', 
-                [Sequelize.fn('COUNT', Sequelize.col('Units.id')), 
-                'units'
-            ]],
+                'id',
+                'name',
+                [Sequelize.fn('COUNT', Sequelize.col('Units.id')),
+                    'units'
+                ]],
             include: [
                 {
                     model: models.Unit,
-                    attributes: [], 
-                    required: false 
+                    attributes: [],
+                    required: false
                 }
             ],
-            group: ['Facility.id', 'Facility.name'] 
+            group: ['Facility.id', 'Facility.name']
         });
 
         if (!facilities) {
-            return res.status(404).json({ error: 'Facilities not found.'})
+            return res.status(404).json({ error: 'Facilities not found.' })
         };
 
         return res.status(200).json(facilities);
 
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Server error.'});
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
 exports.getFacilityById = async (req, res, next) => {
     try {
-        const facilityId = req.params.id; 
+        const facilityId = req.params.id;
 
         const facility = await models.Facility.findOne({
             attributes: [
-                'id', 
-                'name', 
-                'createdAt', 
+                'id',
+                'name',
+                'createdAt',
                 'updatedAt'
             ],
             where: { id: facilityId },
@@ -51,7 +51,7 @@ exports.getFacilityById = async (req, res, next) => {
             }, {
                 model: models.Unit,
                 attributes: [
-                    'id', 
+                    'id',
                     'name'
                 ],
                 include: [{
@@ -80,8 +80,8 @@ exports.getFacilityById = async (req, res, next) => {
                 unitId: unit.id,
                 name: unit.name,
                 type: unit.UnitType.name,
-                inspectCount:  unit.Items.filter(item => item.status === 'inspect').length,
-                discardCount:  unit.Items.filter(item => item.status === 'discard').length
+                inspectCount: unit.Items.filter(item => item.status === 'inspect').length,
+                discardCount: unit.Items.filter(item => item.status === 'discard').length
             })),
             created: facility.createdAt,
             updated: facility.updatedAt,
@@ -147,7 +147,7 @@ exports.updateFacility = async (req, res, next) => {
             managerId: facility.managerId,
             success: true
         }
-        
+
         await facility.save();
         return res.status(200).json(updateResponse);
 
@@ -203,8 +203,8 @@ exports.restoreDeleted = async (req, res, next) => {
         const facilityId = req.params.id;
 
         const deletedFacility = await models.Facility.findOne({
-            where: {id: facilityId},
-            paranoid: false 
+            where: { id: facilityId },
+            paranoid: false
         });
 
         if (!deletedFacility) {

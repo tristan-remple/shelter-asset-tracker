@@ -17,7 +17,7 @@ router.route('/deleted')
 
 router.route('/:id/restore')
     .get(admin, facilityController.restoreDeleted);
-    
+
 router.route('/:id')
     .get(facilityController.getFacilityById, auth, facility, facilityController.sendFacility)
     .put(admin, facilityController.updateFacility)

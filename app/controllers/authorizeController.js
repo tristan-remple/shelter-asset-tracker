@@ -3,14 +3,14 @@ const { verifyToken } = require('../util/token');
 
 exports.updateIsAdmin = async (req, res, next) => {
     const { userId, isAdmin } = req.body;
-    if (!userId || isAdmin == null || userId == 1){
-        return res.status(400).json({ message: 'Bad request.'});
+    if (!userId || isAdmin == null || userId == 1) {
+        return res.status(400).json({ message: 'Bad request.' });
     }
 
     try {
-        const user = await models.User.findOne({ where: { id: userId }});
-        if (!user){
-            return res.status(404).json({ message: 'User not found.'})
+        const user = await models.User.findOne({ where: { id: userId } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' })
         }
 
         user.set({ isAdmin: isAdmin });
@@ -32,13 +32,13 @@ exports.updateAuthorization = async (req, res, next) => {
     const { facilityAuths } = req.body;
     const userId = +req.params.id;
 
-    if (!userId || !facilityAuths){
-        return res.status(400).json({ message: 'Bad request.'});
+    if (!userId || !facilityAuths) {
+        return res.status(400).json({ message: 'Bad request.' });
     }
 
     try {
         const facilities = await models.FacilityAuth.findAll({
-            attributes: ['userId', 'facilityId' ], 
+            attributes: ['userId', 'facilityId'],
             where: { userId: userId }
         });
 

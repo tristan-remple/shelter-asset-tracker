@@ -3,67 +3,67 @@ const { calculateCurrentValue } = require('../util/calc');
 
 const getFinancial = async (facility) => {
 
-        const depreciationRate = await models.Setting.findOne({
-            attributes: ['value'],
-            where: { name: 'depreciationRate' }
-        });
+    const depreciationRate = await models.Setting.findOne({
+        attributes: ['value'],
+        where: { name: 'depreciationRate' }
+    });
 
-        const queryOptions = {
-            attributes: [
-                'id',
-                'name',
-                'vendor',
-                'invoice',
-                'donated',
-                'initialValue',
-                'eol',
-                'createdAt',
-                'updatedAt'
-            ],
-            include: [
-                {
-                    model: models.Unit,
-                    attributes: ['id', 'name'],
-                    include: {
-                        model: models.Facility,
-                        attributes: ['id', 'name']
-                    }
-                },
-                {
-                    model: models.Template,
-                    attributes: ['name']
+    const queryOptions = {
+        attributes: [
+            'id',
+            'name',
+            'vendor',
+            'invoice',
+            'donated',
+            'initialValue',
+            'eol',
+            'createdAt',
+            'updatedAt'
+        ],
+        include: [
+            {
+                model: models.Unit,
+                attributes: ['id', 'name'],
+                include: {
+                    model: models.Facility,
+                    attributes: ['id', 'name']
                 }
-            ]
+            },
+            {
+                model: models.Template,
+                attributes: ['name']
+            }
+        ]
+    };
+
+    if (facility) {
+        queryOptions.include[0].where = { id: facility }
+    };
+
+    const items = await models.Item.findAll(queryOptions);
+
+    const report = items.map(item => {
+        const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+
+        return {
+            id: item.id,
+            name: item.name,
+            facilityId: item.Unit.Facility.id,
+            facilityName: item.Unit.Facility.name,
+            unitId: item.Unit.id,
+            unitName: item.Unit.name,
+            templateName: item.Template.name,
+            vendor: item.vendor,
+            invoice: item.invoice,
+            donated: item.donated,
+            currentValue: currentValue,
+            eol: item.eol,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt
         };
+    });
 
-        if (facility) {
-            queryOptions.include[0].where = { id: facility }
-        };
-
-        const items = await models.Item.findAll(queryOptions);
-
-        const report = items.map(item => {
-            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
-
-            return {
-                id: item.id,
-                name: item.name,
-                facilityId: item.Unit.Facility.id,
-                facilityName: item.Unit.Facility.name,
-                unitId: item.Unit.id,
-                unitName: item.Unit.name,
-                templateName: item.Template.name,
-                vendor: item.vendor,
-                invoice: item.invoice,
-                donated: item.donated,
-                currentValue: currentValue,
-                eol: item.eol,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
-            };
-        });
-
-        return report;
+    return report;
 }
 
 const getInventory = async (facility) => {

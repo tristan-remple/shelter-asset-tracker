@@ -4,11 +4,11 @@ const { upload, extractFields } = require('../util/upload')
 
 exports.getAllIcons = async (req, res, next) => {
     try {
-        const icons = await models.Icon.findAll({   
+        const icons = await models.Icon.findAll({
             attributes: [
-                'id', 
+                'id',
                 'src',
-                'name', 
+                'name',
                 'alt'
             ]
         });
@@ -22,21 +22,21 @@ exports.getAllIcons = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    } 
+    }
 };
 
 
 exports.getIconById = async (req, res, next) => {
     try {
-        const iconId = req.params.id; 
+        const iconId = req.params.id;
 
         const icon = await models.Icon.findOne({
             attributes: [
-                'id', 
+                'id',
                 'src',
-                'name', 
+                'name',
                 'alt',
-                'createdAt', 
+                'createdAt',
                 'updatedAt'
             ],
             where: { id: iconId }
@@ -63,21 +63,21 @@ exports.createNewIcon = async (req, res, next) => {
     console.log('create function');
     try {
 
-            const { name, date, ext } = req.body;
-            const newIcon = await models.Icon.create({
-                name: name,
-                alt: `${name} icon`,
-                src: `${date}-${name}.${ext}`
-            });
+        const { name, date, ext } = req.body;
+        const newIcon = await models.Icon.create({
+            name: name,
+            alt: `${name} icon`,
+            src: `${date}-${name}.${ext}`
+        });
 
-            const createResponse = {
-                id: newIcon.id,
-                name: newIcon.name,
-                alt: newIcon.alt,
-                src: newIcon.src, 
-                success: true
-            }
-            return res.status(201).json(createResponse);
+        const createResponse = {
+            id: newIcon.id,
+            name: newIcon.name,
+            alt: newIcon.alt,
+            src: newIcon.src,
+            success: true
+        }
+        return res.status(201).json(createResponse);
 
     } catch (err) {
         console.error(err);
@@ -85,14 +85,14 @@ exports.createNewIcon = async (req, res, next) => {
     }
 };
 
-exports.deleteIcon = async (req, res, next) => { 
+exports.deleteIcon = async (req, res, next) => {
     try {
         const iconId = req.params.id;
         const { name } = req.body;
 
         const icon = await models.Icon.findByPk(iconId);
 
-        if (!icon || icon.name !== name ) {
+        if (!icon || icon.name !== name) {
             return res.status(404).json({ error: 'Icon not found.' });
         }
 
