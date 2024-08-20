@@ -24,7 +24,7 @@ const LocationRecovery = () => {
     const [ locations, setLocations ] = useState({})
     useEffect(() => {
         (async()=>{
-            await apiService.deletedUnits(function(data){
+            await apiService.deletedLocations(function(data){
                 if (data.error) {
                     setErr(data.error)
                 } else {
@@ -49,7 +49,8 @@ const LocationRecovery = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully restored location ${response.name}.`)
+                console.response
+                setStatus(`You have successfully restored location ${ response.name }.`)
             }
         })
     } 

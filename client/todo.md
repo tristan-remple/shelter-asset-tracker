@@ -12,9 +12,11 @@ interface Icon {
     ext: string
 }
 ```
+- icons not uploading live
 
 ## Settings
 - ✅ tag-like list of unit types
+- make sure this is working with endpoints
 
 ## Users
 - ✅ check user edit endpoints
@@ -37,6 +39,8 @@ interface Icon {
 
 ## Items
 - ✅ item type autofill
+- comments don't upload
+- template icon error
 
 ## Misc
 - ✅ purge real data from github
@@ -54,7 +58,10 @@ interface Icon {
 
 ## Big Stuff
 - ✅ test deployment
-- fix test database
+- ✅ fix test database
+- ✅ create new users with better passwords
+- set up an email for this test deployment
+- get a from email set up for shelter
 - funding proposal
 - documentation
     - end user
@@ -76,3 +83,6 @@ const postData = {
 }
 ```
 - find how to convert json -> csv and download
+
+## Passwords
+- how are passwords set and reset?

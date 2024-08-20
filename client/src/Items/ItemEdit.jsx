@@ -17,7 +17,6 @@ import Error from '../Reusables/Error'
 import Dropdown from '../Reusables/Dropdown'
 import ChangePanel from '../Reusables/ChangePanel'
 import CommentBox from '../Reusables/CommentBox'
-import Autofill from '../Reusables/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -216,7 +215,7 @@ const ItemEdit = () => {
                         </div>
                         <div className="col-content">
                             <Flag color={ changes.flag.color } />
-                            <Autofill
+                            <Dropdown
                                 list={ flagTextOptions }
                                 current={ changes.flag.text }
                                 setCurrent={ handleFlag }
@@ -226,7 +225,7 @@ const ItemEdit = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        <img className="img-fluid icon" src={ `/img/${ item.template.icon.src }` } alt={ item.template.icon.name + " icon" } />
+                        { item.template.icon ? <img className="img-fluid icon" src={ `/img/${ item.template.icon.src }` } alt={ item.template.icon.name + " icon" } /> : "No Icon" }
                     </div>
                     <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />

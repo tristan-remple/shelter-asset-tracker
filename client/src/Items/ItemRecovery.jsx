@@ -38,7 +38,18 @@ const ItemRecovery = () => {
                 }
             })
         })()
-    }, [])
+    }, [ status ])
+
+    // send an api call to restore the item
+    const restoreItem = async(itemId) => {
+        await apiService.restoreItem(itemId, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus(`You have successfully restored item ${response.item.name}.`)
+            }
+        })
+    }
 
     // map the item objects into table rows
     const [ displayItems, setDisplayItems ] = useState([])
@@ -58,7 +69,7 @@ const ItemRecovery = () => {
             })
             setDisplayItems(display)
         }
-    }, [ items, filteredItems ])
+    }, [ items, filteredItems, status ])
 
     if (err) { return <Error err={ err } /> }
 
@@ -71,17 +82,6 @@ const ItemRecovery = () => {
     filteredItems?.sort((a, b) => {
         return new Date(b.deletedAt) - new Date(a.deletedAt)
     })
-
-    // send an api call to restore the item
-    const restoreItem = async(itemId) => {
-        await apiService.restoreItem(itemId, (response) => {
-            if (response.error) {
-                setErr(response.error)
-            } else {
-                setStatus(`You have successfully restored item ${response.name}.`)
-            }
-        })
-    }
 
     return err ? <Error err={ err } /> : (
         <main className="container">
@@ -108,7 +108,7 @@ const ItemRecovery = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems ? displayItems : <td colSpan={ 6 }>No items yet.</td> }
+                        { displayItems.length > 0 ? displayItems : <tr><td colSpan={ 6 }>No items yet.</td></tr> }
                     </tbody>
                 </table>
             </div>

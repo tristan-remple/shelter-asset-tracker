@@ -62,8 +62,8 @@ const ItemCreate = () => {
         name: "",
         unitId: 0,
         template: {
-            categoryId: 0,
-            categoryName: "Select:",
+            id: 0,
+            name: "Select:",
             defaultValue: 0,
             Icon: {},
             singleUse: false

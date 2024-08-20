@@ -282,11 +282,8 @@ class apiService {
     // Called by: LocationDelete
     deleteLocation = async(location, callback) => {
         const id = location.facilityId
-        await axios.delete(`${ import.meta.env.VITE_API_URL }/facilities/${id}`, location, {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "application/json"
-            }
+        await axios.delete(`${ import.meta.env.VITE_API_URL }/facilities/${id}`, {
+            withCredentials: true
         })
         .then(res => {
             callback(res.data)
