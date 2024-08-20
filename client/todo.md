@@ -23,7 +23,7 @@ interface Icon {
 - ✅ remove password field from User Create
 
 ## Deletions
-- check updated delete endpoints
+- ✅ check updated delete endpoints
 
 ## Dashboard
 - make sure CSV export endpoints are receiving the information they need
@@ -40,7 +40,7 @@ interface Icon {
 ## Items
 - ✅ item type autofill
 - comments don't upload
-- template icon error
+- ✅ template icon error
 
 ## Misc
 - ✅ purge real data from github
