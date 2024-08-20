@@ -91,7 +91,7 @@ exports.deleteIcon = async (req, res, next) => {
 
         const icon = await models.Icon.findByPk(iconId);
 
-        if (!icon || icon.name !== name) {
+        if (!icon) {
             return res.status(404).json({ error: 'Icon not found.' });
         }
 

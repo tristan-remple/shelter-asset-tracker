@@ -161,7 +161,7 @@ exports.deleteTemplate = async (req, res, next) => {
 
         const template = await models.Template.findByPk(templateId);
 
-        if (!template || template.name !== name) {
+        if (!template) {
             return res.status(404).json({ error: 'Template not found.' });
         }
 

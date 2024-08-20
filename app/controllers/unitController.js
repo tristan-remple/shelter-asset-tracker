@@ -162,7 +162,7 @@ exports.deleteUnit = async (req, res, next) => {
 
         const unit = await models.Unit.findByPk(unitId);
 
-        if (!unit || unit.name !== name || unit.facilityId != facilityId) {
+        if (!unit) {
             return res.status(404).json({ error: 'Unit not found.' });
         }
 

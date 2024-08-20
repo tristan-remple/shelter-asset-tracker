@@ -163,7 +163,7 @@ exports.deleteFacility = async (req, res, next) => {
 
         const facility = await models.Facility.findByPk(facilityId);
 
-        if (!facility || facility.name != name) {
+        if (!facility) {
             return res.status(404).json({ error: 'Facility not found.' });
         }
 

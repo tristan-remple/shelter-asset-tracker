@@ -223,7 +223,7 @@ exports.deleteUser = async (req, res, next) => {
 
         const user = await models.User.findByPk(userId);
 
-        if (!user || user.email != email) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found.' });
         }
 
