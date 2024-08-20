@@ -220,7 +220,6 @@ exports.sendUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
-        const { email } = req.body;
 
         const user = await models.User.findByPk(userId);
 

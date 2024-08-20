@@ -112,7 +112,7 @@ exports.sendItem = async (req, res, next) => {
         template: {
             id: item.Template.id,
             name: item.Template.name,
-            icon: item.Template.icon ? {
+            icon: item.Template.Icon ? {
                 id: item.Template.Icon.id,
                 src: item.Template.Icon.src,
                 name: item.Template.Icon.name,
@@ -151,7 +151,7 @@ exports.updateItem = async (req, res, next) => {
         const item = req.data;
         const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
 
-        if (item.status == 'inspect' && status !== 'inspect') {
+        if (item.status !== 'ok' && status !== item.status) {
             await models.Inspection.create({
                 comment: comment,
                 itemId: item.id,

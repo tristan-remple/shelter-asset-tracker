@@ -159,7 +159,6 @@ exports.updateUnit = async (req, res, next) => {
 exports.deleteUnit = async (req, res, next) => {
     try {
         const unitId = req.params.id;
-        const { facilityId, name } = req.body;
 
         const unit = await models.Unit.findByPk(unitId);
 

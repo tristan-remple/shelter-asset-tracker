@@ -158,7 +158,6 @@ exports.updateTemplate = async (req, res, next) => {
 exports.deleteTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
-        const { name } = req.body;
 
         const template = await models.Template.findByPk(templateId);
 

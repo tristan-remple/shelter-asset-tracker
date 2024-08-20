@@ -160,7 +160,6 @@ exports.updateFacility = async (req, res, next) => {
 exports.deleteFacility = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
-        const { name } = req.body;
 
         const facility = await models.Facility.findByPk(facilityId);
 

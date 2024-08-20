@@ -13,7 +13,7 @@ router.route('/')
     .post(admin, facilityController.createNewFacility);
 
 router.route('/deleted')
-    .get(admin, facilityController.getDeleted);
+    .get(admin, facilityController.getDeleted); 
 
 router.route('/:id/restore')
     .get(admin, facilityController.restoreDeleted);

@@ -88,7 +88,6 @@ exports.createNewIcon = async (req, res, next) => {
 exports.deleteIcon = async (req, res, next) => {
     try {
         const iconId = req.params.id;
-        const { name } = req.body;
 
         const icon = await models.Icon.findByPk(iconId);
 
