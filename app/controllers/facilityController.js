@@ -227,7 +227,7 @@ exports.restoreDeleted = async (req, res, next) => {
         await deletedFacility.restore();
 
         const restoreResponse = {
-            facility: deletedFacility.name,
+            facility: deletedFacility,
             success: true
         };
 
