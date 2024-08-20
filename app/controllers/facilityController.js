@@ -105,10 +105,20 @@ exports.createNewFacility = async (req, res, next) => {
     try {
         const { locationName, managerId } = req.body;
 
+        const authUser = await models.User.findOne({ where: { id: managerId } });
+        if (!authUser) {
+            return res.status(404).json({ error: "Manager not found." });
+        }
+
         const newFacility = await models.Facility.create({
             name: locationName,
             managerId: managerId
         });
+
+        await models.FacilityAuth.create({
+            userId: managerId,
+            facilityId: newFacility.id
+        })
 
         const createResponse = {
             facilityId: newFacility.id,
@@ -166,6 +176,10 @@ exports.deleteFacility = async (req, res, next) => {
         if (!facility) {
             return res.status(404).json({ error: 'Facility not found.' });
         }
+
+        await models.FacilityAuth.destroy({
+            where: { facilityId }
+        });
 
         const deletedFacility = await facility.destroy();
 
