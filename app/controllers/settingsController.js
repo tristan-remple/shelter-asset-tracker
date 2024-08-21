@@ -51,20 +51,15 @@ exports.updateSettings = async (req, res, next) => {
         req.data.unitTypes = currentUnitTypes;
 
         const settings = currentSettings.map(setting => {
-            return {name: setting.name, value: setting.value}
+            return { name: setting.name, value: setting.value }
         });
-
-        settings.map(setting => {
-            console.log(currentSettings[setting.name] + '' + setting.value)
-            console.log(currentSettings[setting.name] + '' + setting.value)
-        })
 
         next();
 
     } catch (err) {
         console.error(err);
-        if(err.name = 'SequelizeForeignKeyConstraintError'){
-            return res.status(405).json({ error: 'Removed unitType has dependent Unit(s).'})
+        if (err.name = 'SequelizeForeignKeyConstraintError') {
+            return res.status(405).json({ error: 'Dependency error.' })
         }
         return res.status(500).json({ error: 'Server error.' });
     }
@@ -75,7 +70,7 @@ exports.sendSettings = async (req, res, next) => {
     const unitTypes = req.data.unitTypes;
 
     const settings = settingsData.map(setting => {
-        return {name: setting.name, value: setting.value}
+        return { name: setting.name, value: setting.value }
     });
 
     const settingsResponse = {
