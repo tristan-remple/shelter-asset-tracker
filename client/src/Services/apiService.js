@@ -778,7 +778,7 @@ class apiService {
         })
     }
 
-    // Called by: Settings, UnitCreate, UnitEdit
+    // Called by: Settings, UnitCreate, UnitEdit, Header, Footer
     getSettings = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/settings`, {
             withCredentials: true

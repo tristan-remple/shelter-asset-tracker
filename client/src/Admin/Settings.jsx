@@ -113,8 +113,6 @@ const Settings = () => {
         const newChanges = {...changes}
         newChanges.depreciationRate = newChanges.depreciationRate / 100
 
-        console.log(newChanges)
-
         await apiService.postSettings(newChanges, (res) => {
             if (res.error) {
                 setErr(res.error)
