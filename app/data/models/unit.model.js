@@ -15,7 +15,7 @@ module.exports = (db, { DataTypes }) => {
         },
         type: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         }
     }, {
         tableName: 'Units'
