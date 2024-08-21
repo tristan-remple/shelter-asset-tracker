@@ -90,9 +90,6 @@ const UnitEdit = () => {
     const [ validOption, setValidOption ] = useState(true)
 
     if (err) { return <Error err={ err } /> }
-    if (unit) {
-    // destructure api response
-    const { id, name } = unit
 
     // handles type change
     // passed into Autofill
@@ -120,7 +117,7 @@ const UnitEdit = () => {
 
         // shape data for api
         const newChanges = {...changes}
-        newChanges.id = id
+        newChanges.id = unit.id
         newChanges.facilityId = unit.facility.id
         newChanges.type = changes.type.id
 
@@ -131,7 +128,7 @@ const UnitEdit = () => {
             } else {
                 setStatus(`You have successfully updated ${ response.name }.`)
                 setUnsaved(false)
-                navigate(`/unit/${ id }`)
+                navigate(`/unit/${ unit.id }`)
             }
         })
     }
@@ -140,16 +137,16 @@ const UnitEdit = () => {
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Unit { name } in (Location)</h2>
+                    <h2>Unit { unit.name } in { unit.facility.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/unit/${ id }` } type="nav" />
+                    <Button text="Return" linkTo={ `/unit/${ unit.id }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
                     <Button text="Save Changes" linkTo={ saveChanges } type="admin" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete Unit" linkTo={ `/unit/${ id }/delete` } type="danger" />
+                    <Button text="Delete Unit" linkTo={ `/unit/${ unit.id }/delete` } type="danger" />
                 </div>
             </div>
             <div className="page-content">
@@ -188,41 +185,11 @@ const UnitEdit = () => {
                             />
                         </div>
                     </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Updated By
-                        </div>
-                        <div className="col-content">
-                            { inspected.userName }
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Updated At
-                        </div>
-                        <div className="col-content">
-                            { friendlyDate(inspected.inspectedDate) }
-                        </div>
-                    </div> */}
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Added
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="date" 
-                                name="createdAt" 
-                                value={ changes.createdAt.split("T")[0] } 
-                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
                 </div>
             </div>
-            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ id }` } locationId={ unit.facility.id } /> }
+            { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unit.id }` } locationId={ unit.facility.id } /> }
         </main>
     )
-}
 }
 
 export default UnitEdit

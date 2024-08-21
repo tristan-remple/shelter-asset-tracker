@@ -85,7 +85,7 @@ const Autofill = ({ list, current, setCurrent }) => {
             onBlur={ (e) => kbBlurHandler(e) }
             className="dropdown-item" 
         >{ item }</li>
-    }) : <li className="danger" >No matches!</li>
+    }) : <li className="danger" >No matches</li>
 
     return (
         <div className="dropdown">
@@ -97,6 +97,7 @@ const Autofill = ({ list, current, setCurrent }) => {
                 onKeyDown={ kbInputChange }
                 onFocus={ focusEmptyInput }
                 onBlur={ () => { setCurrent(userInput) } }
+                type="text"
             />
             { open && (
                 <ul className="dropdown-menu" id={ id }>

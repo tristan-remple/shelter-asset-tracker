@@ -10,7 +10,7 @@ const Tag = ({ word, remove }) => {
     }
 
     return (
-        <div className="btn btn-small btn-secondary" id={ word } >
+        <div className="btn btn-small btn-secondary tag" id={ word } >
             { capitalize(word) }
             <span 
                 className="remove" 

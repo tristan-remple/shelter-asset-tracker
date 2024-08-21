@@ -27,7 +27,7 @@ const ChangePanel = ({ save, linkOut, locationId }) => {
             </div>
             <div className="col">
                 <h3>Do you want to save your changes?</h3>
-                <div className="row">
+                <div className="row change-btnrow">
                     <div className="col">
                         <Button text="Save" linkTo={ clickSave } type="action" />
                     </div>

@@ -753,11 +753,17 @@ class apiService {
     }
 
     // Called by: Settings
-    uploadLogo = async(logoSrc, callback) => {
-        await axios.post(`${ import.meta.env.VITE_API_URL }/logo`, logoSrc, {
+    uploadLogo = async(logo, callback) => {
+
+        const formData = new FormData()
+        formData.append('image', logo.file)
+        formData.append('ext', logo.ext)
+        formData.append('date', logo.date)
+
+        await axios.post(`${ import.meta.env.VITE_API_URL }/logo`, formData, {
             withCredentials: true,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         })
         .then(res => {

@@ -133,7 +133,7 @@ const UnitDetails = () => {
                 <div className="col">
                     <h2>Unit { name } in { facility.name }</h2>
                 </div>
-                <div className="col-1 d-flex justify-content-end">
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/location/${ facility.id }` } type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">

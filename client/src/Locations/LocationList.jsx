@@ -76,7 +76,7 @@ const LocationList = () => {
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2 className='mt-2'>All Shelter NS Locations</h2>
+                    <h2 className='mt-2'>All Locations</h2>
                 </div>
                 { adminButtons }
             </div>

@@ -1,8 +1,9 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
 // internal dependencies
 import { userContext, statusContext } from '../Services/Context'
+import apiService from '../Services/apiService'
 
 const Header = () => {
     const { userDetails } = useContext(userContext)
@@ -20,14 +21,35 @@ const Header = () => {
         setStatus("")
     }
 
+    const [ branding, setBranding ] = useState({
+        name: "Shelter Asset Tracker",
+        logo: "icons8-room-100.png"
+    })
+
+    useEffect(() => {
+        (async()=> {
+            await apiService.getSettings(data => {
+                if (data.error) {
+                    setErr(data.error)
+                } else {
+                    const newBranding = {
+                        name: data.settings.filter(sett => sett.name === "name")[0].value,
+                        logo: data.settings.filter(sett => sett.name === "logoSrc")[0].value
+                    }
+                    setBranding(newBranding)
+                }
+            })
+        })()
+    }, [])
+
     return (
         <header className="navbar navbar-expand-lg">
             <div className="container my-2">
                 <Link className="navbar-brand" to="/" onClick={ clearStatus } >
-                    <img src="/img/logo.png" alt="Shelter Nova Scotia Logo" className='logo-image' />
+                    <img src={ `/img/${ branding.logo }` } alt={ `${ branding.name } logo` } className='logo-image' />
                 </Link>
                 <div className="col-2">
-                    <h1 id="app-title" className='mt-4'>Shelter Asset Tracker</h1>
+                    <h1 id="app-title" className='mt-4'>Shelter Asset Tracker for { branding.name }</h1>
                 </div>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>

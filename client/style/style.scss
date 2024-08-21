@@ -105,6 +105,8 @@ main {
 .dropdown-menu {
     display: inline-block;
     top: 100%;
+    max-height: 40vh;
+    overflow: auto;
 }
 
 .dropdown-toggle, .dropdown {
@@ -350,7 +352,8 @@ header, footer {
 
 .btn-secondary {
     background-color: $palegreen;
-    color: $olivegreen;  
+    color: $olivegreen;
+    border-color: $brightgreen; 
     width: 150px;
     &:hover, &:focus {
         background-color: $brightgreen;
@@ -446,7 +449,7 @@ footer a {
     }
 }
 
-input[type=text], input[type=number], input[type=date], input[type=email], input[type=password], textarea, .checkbox {
+input[type=text], input[type=number], input[type=date], input[type=email], input[type=password], input[type=search], textarea, .checkbox, .dropdown-toggle {
     color: $fontColour;
     background-color: $palegreen;
     border: 2px solid $brightgreen;
@@ -455,6 +458,7 @@ input[type=text], input[type=number], input[type=date], input[type=email], input
     margin: 5px;
     padding: 0.5rem;
     display: inline-block;
+    width: 100%;
 }
 
 .checkbox {
@@ -471,4 +475,132 @@ input[type=text], input[type=number], input[type=date], input[type=email], input
 
 textarea {
     height: auto;
+}
+
+.btn-report {
+    width: 100% !important;
+}
+
+.title-row .dropdown {
+    flex-grow: 0;
+}
+
+#dashboard h4 {
+    margin-left: 0.5rem;
+}
+
+.comment-box {
+    width: 100%;
+    padding: 0.5rem;
+}
+
+#submit-tag {
+    width:100%;
+}
+
+// Tablet
+@media screen and (max-width: 992px) {
+
+    .row, .navbar-nav {
+        display: flex;
+        flex-flow: row wrap;
+        width: auto;
+        margin: 0.5rem;
+    }
+
+    .col-2, .col-3, .col-4, .col {
+        width: 50%;
+        flex-basis: 50%;
+    }
+
+    .nav-item {
+        width: 100%;
+        display: flex;
+    }
+
+    .nav-link {
+        margin: 0.5rem;
+        flex-grow: 1;
+    }
+
+    .title-row .col, .title-row .col-2, .title-row .col-3 {
+        width: 30%;
+    }
+
+    #dashboard > .row, #dashboard .col-4, #dashboard .col {
+        width: 100%;
+        flex-basis: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #dashboard .btn, table .btn {
+        width: auto;
+    }
+
+    #eol-filters {
+        width: auto !important;
+        margin: 0.5rem !important;
+        &.col {
+            width: 50%;
+            flex-basis: 50%;
+        }
+    }
+
+    .page-content {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .col-icon {
+        min-width: 20%;
+    }
+
+    .change-btnrow {
+        flex-flow: column nowrap;
+        & > .col {
+            width: 100%;
+        }
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    .title-row .col, .title-row .col-2, .title-row .col-3, .btn, .title-row .dropdown {
+        width: 100% !important;
+    }
+
+    .tag {
+        width: auto !important;
+    }
+}
+
+// Phone
+@media screen and (max-width: 576px) {
+
+    .row {
+        display: flex;
+        flex-flow: column nowrap;
+        width: auto;
+        margin: 0.5rem;
+    }
+
+    .col-2, .col-3, .col-4, .col-8, .col, .search-submit {
+        width: auto;
+    }
+
+    .title-row .col, .title-row .col-2, .title-row .col-3, .btn, .title-row .dropdown {
+        width: 100% !important;
+    }
+
+    .small-icon {
+        margin: 0;
+    }
+
+    #dashboard > .row, #dashboard .col-4, #dashboard .col, table {
+        width: 100%;
+        margin: 0 0 0.5rem 0;
+        padding: 0;
+    }
+
 }

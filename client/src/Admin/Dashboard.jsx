@@ -279,16 +279,18 @@ const Dashboard = () => {
                 <div className="col">
                     <h2>Admin Dashboard</h2>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+            </div>
+            <div className="row title-row mt-3 mb-2">
+                <div className="col-3 d-flex justify-content-end">
                     <Button text="Settings" linkTo="/admin/settings" type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+                <div className="col-3 d-flex justify-content-end">
                     <Button text="Categories" linkTo="/categories" type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+                <div className="col-3 d-flex justify-content-end">
                     <Button text="Users" linkTo="/users" type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+                <div className="col-3 d-flex justify-content-end">
                     <div className="dropdown">
                         <div 
                             className="btn btn-outline-primary dropdown-toggle" 
@@ -303,11 +305,8 @@ const Dashboard = () => {
                         )}
                     </div>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Locations" linkTo="/locations" type="nav" />
-                </div>
             </div>
-            <div className="page-content">
+            <div className="page-content" id="dashboard">
                 { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row">
                     <div className="col-4">
@@ -334,13 +333,13 @@ const Dashboard = () => {
                                     CSV Exports
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="small" />
+                                    <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="report" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Inventory Report" linkTo={ () => downloadCSV("inventory") } type="small" />
+                                    <Button text="Inventory Report" linkTo={ () => downloadCSV("inventory") } type="report" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="End of Life Report" linkTo={ () => downloadCSV("eol") } type="small" />
+                                    <Button text="End of Life Report" linkTo={ () => downloadCSV("eol") } type="report" />
                                 </div>
                             </div>
                         </div>
@@ -363,7 +362,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <h4>Items to Discard Soon</h4>
-                <div className="row row-info">
+                <div className="row row-info" id="eol-filters">
                     <div className="col col-info">
                         <div className="col-head">
                             End of Life Start Date
