@@ -25,25 +25,11 @@ exports.getSettings = async (req, res, next) => {
 exports.updateSettings = async (req, res, next) => {
     try {
         const { depreciationRate, unitTypes, name, url, logoSrc } = req.body;
-        const settings = req.data.settings;
+        const currentSettings = req.data.settings;
         const currentUnitTypes = req.data.unitTypes.map(type => type.name);
 
         if (!depreciationRate || !unitTypes || !name || !url || !logoSrc) {
-            return res.status(400).json({ error: 'Bad request.' })
-        }
-
-        const settingsMap = {
-            depreciationRate,
-            name,
-            url,
-            logoSrc
-        }
-
-        for (const setting of settings) {
-            if (settingsMap.hasOwnProperty(setting.name)) {
-                setting.value = settingsMap[setting.name];
-                await setting.save();
-            }
+            return res.status(400).json({ error: 'Missing expected settings.' })
         }
 
         const addedUnitTypes = unitTypes.filter(unitType => !currentUnitTypes.includes(unitType));
@@ -63,25 +49,39 @@ exports.updateSettings = async (req, res, next) => {
         }
 
         req.data.unitTypes = currentUnitTypes;
+
+        const settings = currentSettings.map(setting => {
+            return {name: setting.name, value: setting.value}
+        });
+
+        settings.map(setting => {
+            console.log(currentSettings[setting.name] + '' + setting.value)
+            console.log(currentSettings[setting.name] + '' + setting.value)
+        })
+
         next();
 
     } catch (err) {
         console.error(err);
+        if(err.name = 'SequelizeForeignKeyConstraintError'){
+            return res.status(405).json({ error: 'Removed unitType has dependent Unit(s).'})
+        }
         return res.status(500).json({ error: 'Server error.' });
     }
 };
 
 exports.sendSettings = async (req, res, next) => {
-    const settings = req.data.settings;
+    const settingsData = req.data.settings;
     const unitTypes = req.data.unitTypes;
 
+    const settings = settingsData.map(setting => {
+        return {name: setting.name, value: setting.value}
+    });
+
     const settingsResponse = {
-        depreciationRate: settings.depreciationRate,
-        name: settings.name,
-        url: settings.url,
-        logoSrc: settings.logoSrc,
+        settings: settings,
         unitTypes: unitTypes
-    };
+    }
 
     return res.status(200).json(settingsResponse);
 }

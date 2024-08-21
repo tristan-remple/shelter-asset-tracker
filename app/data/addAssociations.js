@@ -44,6 +44,7 @@ module.exports = (sequelize) => {
     Icon.hasMany(Template, { foreignKey: 'icon', onDelete: 'SET NULL' });
     Template.belongsTo(Icon, { foreignKey: 'icon', onDelete: 'SET NULL' });
 
-    UnitType.hasMany(Unit, { foreignKey: 'type', onDelete: 'RESTRICT' });
-    Unit.belongsTo(UnitType, { foreignKey: 'type', onDelete: 'CASCADE' });
+    //UnitType to Unit
+    UnitType.hasMany(Unit, { foreignKey: 'type', onDelete: 'SET NULL' });
+    Unit.belongsTo(UnitType, { foreignKey: 'type', onDelete: 'SET NULL' });
 };
