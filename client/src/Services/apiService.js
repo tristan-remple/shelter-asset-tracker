@@ -520,19 +520,20 @@ class apiService {
     }
 
     // Called by: Dashboard
-    csvReport = async(title, id, callback) => {
-        let url = `${ import.meta.env.VITE_API_URL }/csv/${ title }`
-        if (id) { url += "/" + id }
-        await axios.get(url, {
+    csvReport = async(title, params, callback) => {
+        let url = `${ import.meta.env.VITE_API_URL }/reports/csv/${ title }`
+        await axios.post(url, params, {
             withCredentials: true
         })
         .then(res => {
+            console.log(res)
             callback(res.data)
         })
         .catch(err => {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
+                console.log(err)
                 callback({ error: errorCodes[err.response.status] })
             }
         })

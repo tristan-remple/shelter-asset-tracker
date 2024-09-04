@@ -1,7 +1,8 @@
 // external dependencies
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useState, useEffect } from 'react'
-import { CSVLink } from "react-csv"
+import { useContext, useState, useEffect, useRef } from 'react'
+import CsvDownloader from 'react-csv-downloader'
+import { CSVLink } from 'react-csv'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -254,22 +255,44 @@ const Dashboard = () => {
         >Deleted { capitalize(item) }</li>
     })
 
+    // https://stackoverflow.com/questions/53504924/reactjs-download-csv-file-on-button-click
+    const [ csvData, setCsvData ] = useState([])
+    const [ reportTitle, setReportTitle ] = useState("")
+    const downloadLink = useRef()
+
     const downloadCSV = async(report) => {
+        setReportTitle(report)
         let id = null
         if (view !== "All Locations" && response?.length > 0) {
             id = response.filter(loc => {
                 return loc.facility === view
             })[0].id
         }
-        apiService.csvReport(report, id, (data) => {
+
+        const params = {
+            facility: id,
+            startDate: filters.startDate,
+            endDate: filters.endDate
+        }
+
+        apiService.csvReport(report, params, (data) => {
             if (data.error) {
                 setErr(data.error)
                 return
             }
-            const download = <CSVLink data={ data } />
-            download.click()
-            setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+            setCsvData(data)
+
+            // wait for the state to be updated before calling the download button
+            setTimeout(() => {
+                downloadLink.current.link.click()
+                setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+            }, 500)
         })
+    }
+
+    const getDate = () => {
+        const date = new Date()
+        return `${ date.getFullYear() }-${ date.getMonth().toString().padStart(2, "0") }-${ date.getDate().toString().padStart(2, "0") }`
     }
 
     // https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
@@ -331,6 +354,13 @@ const Dashboard = () => {
                                 </div>
                                 <div className="col-head">
                                     CSV Exports
+                                    <CSVLink
+                                        data={ csvData }
+                                        filename={ `${ getDate() } ${ view } ${ reportTitle }.csv` }
+                                        className="hidden"
+                                        ref={ downloadLink }
+                                        target="_blank"
+                                    />
                                 </div>
                                 <div className="col-content">
                                     <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="report" />
