@@ -91,8 +91,6 @@ const ItemInspect = () => {
                 usefulLifeOffset: 0,
                 comment: ""
             })
-
-            console.log(item)
         }
     }, [ item ])
 
@@ -119,8 +117,6 @@ const ItemInspect = () => {
         date.setFullYear(date.getFullYear() + 1)
         newChanges.eol = date.toISOString()
         newChanges.usefulLifeOffset += 12
-
-        console.log(newChanges)
 
         setChanges(newChanges)
         setSnoozeYears(snoozeYears + 1)

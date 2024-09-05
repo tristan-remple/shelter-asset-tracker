@@ -17,6 +17,7 @@ import Search from '../Reusables/Search'
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import { adminDate } from '../Services/dateHelper'
 import Dropdown from '../Reusables/Dropdown'
+import Checkbox from '../Reusables/Checkbox'
 
 //------ MODULE INFO
 // Displays some stats and reports for the admin.
@@ -182,6 +183,18 @@ const Dashboard = () => {
         inspect: false,
         discard: true
     })
+
+    const inspectHandler = () => {
+        const newFilters = {...filters}
+        newFilters.inspect = filters.inspect ? false : true
+        setFilters(newFilters)
+    }
+
+    const discardHandler = () => {
+        const newFilters = {...filters}
+        newFilters.discard = filters.discard ? false : true
+        setFilters(newFilters)
+    }
 
     // when filters are updated, update the items listed
     useEffect(() => {
@@ -424,11 +437,11 @@ const Dashboard = () => {
                             Items to Inspect Only
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="inspect" 
-                                checked={ filters.inspect } 
-                                onChange={ (event) => handleChanges.handleCheckChange(event, filters, setFilters, setUnsaved) }  
+                            <Checkbox 
+                                id="inspect"
+                                name="Inspect Filter"
+                                checked={ filters.inspect }
+                                changeHandler={ inspectHandler }
                             />
                         </div>
                     </div>
@@ -437,16 +450,16 @@ const Dashboard = () => {
                             Items to Discard Only
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="discard" 
-                                checked={ filters.discard } 
-                                onChange={ (event) => handleChanges.handleCheckChange(event, filters, setFilters, setUnsaved) } 
+                            <Checkbox 
+                                id="discard"
+                                name="Discard Filter"
+                                checked={ filters.discard }
+                                changeHandler={ discardHandler }
                             />
                         </div>
                     </div>
                 </div>
-                <Search data={ items } setData={ setFilteredItems } />
+                <Search data={ filteredItems } setData={ setFilteredItems } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
@@ -460,7 +473,7 @@ const Dashboard = () => {
                         { displayItems && displayItems.length > 0 ? displayItems : <tr><td colSpan={ 4 }>No items yet.</td></tr> }
                     </tbody>
                 </table>
-            </div> {/* page content */}
+            </div>
         </main>
     )
 }
