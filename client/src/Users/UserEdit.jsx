@@ -254,15 +254,13 @@ const UserEdit = () => {
                             Admin?
                         </div>
                         <div className="col-content">
-                            <div className="row">
-                                <div className="col-4">
-                                    <Button text={ originalData.isAdmin ? "Remove Admin" : "Grant Admin" } linkTo={ changeAdmin } type="admin" />
-                                </div>
-                                <div className="col">
+                            <div className="col">
+                                <Button text={ originalData.isAdmin ? "Remove Admin" : "Grant Admin" } linkTo={ changeAdmin } type="admin" />
+                                <p>
                                     Setting a user to admin allows them full access to everything. This includes the ability to edit other users and change the admin status of other users. It also includes the ability to view the dashboard and create, edit, and delete templates, locations, and units.
                                     <br /><br />
                                     Be careful who you grant this role to, and make sure at least one person is an admin.
-                                </div>
+                                </p>
                             </div>
                         </div>
                     </div>

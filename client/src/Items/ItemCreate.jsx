@@ -263,9 +263,6 @@ const ItemCreate = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
-                    
-                </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/unit/${ unit.id }` } /> }
             </div>
         </main>

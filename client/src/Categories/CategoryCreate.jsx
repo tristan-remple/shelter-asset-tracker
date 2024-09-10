@@ -15,6 +15,7 @@ import Button from "../Reusables/Button"
 import Error from '../Reusables/Error'
 import IconSelector from './IconSelector'
 import ChangePanel from '../Reusables/ChangePanel'
+import Checkbox from '../Reusables/Checkbox'
 
 //------ MODULE INFO
 // Allows the user add a new category
@@ -58,6 +59,13 @@ const CategoryCreate = () => {
             })
         })()
     }, [ newIcons ])
+
+    const checkHandler = () => {
+        const newChanges = { ...changes }
+        newChanges.singleResident = changes.singleResident ? false : true
+        setChanges(newChanges)
+        setUnsaved(true)
+    }
 
     // sends the item object to the apiService
     const saveChanges = async() => {
@@ -120,12 +128,11 @@ const CategoryCreate = () => {
                             Single Resident
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="singleResident" 
+                            <Checkbox 
+                                id="singleResident"
+                                name="Single Resident"
                                 checked={ changes.singleResident }
-                                onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
-                                tabIndex={ selector ? -1 : 0 }
+                                changeHandler={ checkHandler }
                             />
                         </div>
                     </div>

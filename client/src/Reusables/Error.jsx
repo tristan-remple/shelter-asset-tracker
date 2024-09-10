@@ -36,20 +36,23 @@ const Error = ({ err }) => {
             break
         case "anonymous":
             errorText = "You are not logged in. Please log in to use this app."
-            // sessionStorage.removeItem("userId")
-            // sessionStorage.removeItem("isAdmin")
-            // sessionStorage.removeItem("facilityAuths")
-            // setUserDetails({
-            //     userId: null,
-            //     isAdmin: false,
-            //     facilityAuths: []
-            // })
+            sessionStorage.removeItem("userId")
+            sessionStorage.removeItem("isAdmin")
+            sessionStorage.removeItem("facilityAuths")
+            setUserDetails({
+                userId: null,
+                isAdmin: false,
+                facilityAuths: []
+            })
             break
         case "duplicate":
             errorText = "The thing you are trying to create already exists."
             break
+        case "dependency": 
+            errorText = "The thing you're trying to delete cannot be deleted while it is being used."
+            break
         default:
-            errorText = "Something went wrong"
+            errorText = "Something went wrong."
     }
     
     return (

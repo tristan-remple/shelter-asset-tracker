@@ -1,7 +1,8 @@
 // external dependencies
 import { useNavigate, useParams } from 'react-router-dom'
-import { useContext, useState, useEffect } from 'react'
-import { CSVLink } from "react-csv"
+import { useContext, useState, useEffect, useRef } from 'react'
+import CsvDownloader from 'react-csv-downloader'
+import { CSVLink } from 'react-csv'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -16,6 +17,7 @@ import Search from '../Reusables/Search'
 import Flag, { flagTextOptions, flagColorOptions } from "../Reusables/Flag"
 import { adminDate } from '../Services/dateHelper'
 import Dropdown from '../Reusables/Dropdown'
+import Checkbox from '../Reusables/Checkbox'
 
 //------ MODULE INFO
 // Displays some stats and reports for the admin.
@@ -182,6 +184,18 @@ const Dashboard = () => {
         discard: true
     })
 
+    const inspectHandler = () => {
+        const newFilters = {...filters}
+        newFilters.inspect = filters.inspect ? false : true
+        setFilters(newFilters)
+    }
+
+    const discardHandler = () => {
+        const newFilters = {...filters}
+        newFilters.discard = filters.discard ? false : true
+        setFilters(newFilters)
+    }
+
     // when filters are updated, update the items listed
     useEffect(() => {
         const newFilters = items?.filter(item => {
@@ -254,22 +268,44 @@ const Dashboard = () => {
         >Deleted { capitalize(item) }</li>
     })
 
+    // https://stackoverflow.com/questions/53504924/reactjs-download-csv-file-on-button-click
+    const [ csvData, setCsvData ] = useState([])
+    const [ reportTitle, setReportTitle ] = useState("")
+    const downloadLink = useRef()
+
     const downloadCSV = async(report) => {
+        setReportTitle(report)
         let id = null
         if (view !== "All Locations" && response?.length > 0) {
             id = response.filter(loc => {
                 return loc.facility === view
             })[0].id
         }
-        apiService.csvReport(report, id, (data) => {
+
+        const params = {
+            facility: id,
+            startDate: filters.startDate,
+            endDate: filters.endDate
+        }
+
+        apiService.csvReport(report, params, (data) => {
             if (data.error) {
                 setErr(data.error)
                 return
             }
-            const download = <CSVLink data={ data } />
-            download.click()
-            setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+            setCsvData(data)
+
+            // wait for the state to be updated before calling the download button
+            setTimeout(() => {
+                downloadLink.current.link.click()
+                setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+            }, 500)
         })
+    }
+
+    const getDate = () => {
+        const date = new Date()
+        return `${ date.getFullYear() }-${ date.getMonth().toString().padStart(2, "0") }-${ date.getDate().toString().padStart(2, "0") }`
     }
 
     // https://stackoverflow.com/questions/2901102/how-to-format-a-number-with-commas-as-thousands-separators
@@ -279,16 +315,18 @@ const Dashboard = () => {
                 <div className="col">
                     <h2>Admin Dashboard</h2>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+            </div>
+            <div className="row title-row mt-3 mb-2">
+                <div className="col-3 d-flex justify-content-end">
                     <Button text="Settings" linkTo="/admin/settings" type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+                <div className="col-3 d-flex justify-content-end">
                     <Button text="Categories" linkTo="/categories" type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+                <div className="col-3 d-flex justify-content-end">
                     <Button text="Users" linkTo="/users" type="admin" />
                 </div>
-                <div className="col-2 d-flex justify-content-end">
+                <div className="col-3 d-flex justify-content-end">
                     <div className="dropdown">
                         <div 
                             className="btn btn-outline-primary dropdown-toggle" 
@@ -303,11 +341,8 @@ const Dashboard = () => {
                         )}
                     </div>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="Locations" linkTo="/locations" type="nav" />
-                </div>
             </div>
-            <div className="page-content">
+            <div className="page-content" id="dashboard">
                 { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
                 <div className="row">
                     <div className="col-4">
@@ -332,15 +367,22 @@ const Dashboard = () => {
                                 </div>
                                 <div className="col-head">
                                     CSV Exports
+                                    <CSVLink
+                                        data={ csvData }
+                                        filename={ `${ getDate() } ${ view } ${ reportTitle }.csv` }
+                                        className="hidden"
+                                        ref={ downloadLink }
+                                        target="_blank"
+                                    />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="small" />
+                                    <Button text="Financial Report" linkTo={ () => downloadCSV("financial") } type="report" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="Inventory Report" linkTo={ () => downloadCSV("inventory") } type="small" />
+                                    <Button text="Inventory Report" linkTo={ () => downloadCSV("inventory") } type="report" />
                                 </div>
                                 <div className="col-content">
-                                    <Button text="End of Life Report" linkTo={ () => downloadCSV("eol") } type="small" />
+                                    <Button text="End of Life Report" linkTo={ () => downloadCSV("eol") } type="report" />
                                 </div>
                             </div>
                         </div>
@@ -363,7 +405,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <h4>Items to Discard Soon</h4>
-                <div className="row row-info">
+                <div className="row row-info" id="eol-filters">
                     <div className="col col-info">
                         <div className="col-head">
                             End of Life Start Date
@@ -395,11 +437,11 @@ const Dashboard = () => {
                             Items to Inspect Only
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="inspect" 
-                                checked={ filters.inspect } 
-                                onChange={ (event) => handleChanges.handleCheckChange(event, filters, setFilters, setUnsaved) }  
+                            <Checkbox 
+                                id="inspect"
+                                name="Inspect Filter"
+                                checked={ filters.inspect }
+                                changeHandler={ inspectHandler }
                             />
                         </div>
                     </div>
@@ -408,16 +450,16 @@ const Dashboard = () => {
                             Items to Discard Only
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="discard" 
-                                checked={ filters.discard } 
-                                onChange={ (event) => handleChanges.handleCheckChange(event, filters, setFilters, setUnsaved) } 
+                            <Checkbox 
+                                id="discard"
+                                name="Discard Filter"
+                                checked={ filters.discard }
+                                changeHandler={ discardHandler }
                             />
                         </div>
                     </div>
                 </div>
-                <Search data={ items } setData={ setFilteredItems } />
+                <Search data={ filteredItems } setData={ setFilteredItems } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
@@ -431,7 +473,7 @@ const Dashboard = () => {
                         { displayItems && displayItems.length > 0 ? displayItems : <tr><td colSpan={ 4 }>No items yet.</td></tr> }
                     </tbody>
                 </table>
-            </div> {/* page content */}
+            </div>
         </main>
     )
 }

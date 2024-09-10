@@ -61,7 +61,7 @@ const Search = ({ data, setData }) => {
                 onChange={ changeHandler }
             />
             <button
-                className="btn btn-outline-success"
+                className="btn btn-secondary search-submit"
                 type="submit"
                 onClick={ applyFilter }
             >

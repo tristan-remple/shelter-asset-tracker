@@ -6,5 +6,6 @@ export const errorCodes = {
     401: "anonymous",
     403: "permission",
     404: "unknown",
+    405: "dependency",
     500: "api"
 }

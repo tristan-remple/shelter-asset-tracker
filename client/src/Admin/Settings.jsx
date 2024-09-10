@@ -29,9 +29,15 @@ const Settings = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
-                    data.depreciationRate = +data.depreciationRate * 100
-                    data.unitTypes = data.unitTypes.map(type => type.name)
-                    setChanges(data)
+                    const newChanges = {
+                        depreciationRate: +data.settings.filter(sett => sett.name === "depreciationRate")[0].value * 100,
+                        unitTypes: data.unitTypes.map(type => type.name),
+                        name: data.settings.filter(sett => sett.name === "name")[0].value,
+                        url: data.settings.filter(sett => sett.name === "url")[0].value,
+                        logoSrc: data.settings.filter(sett => sett.name === "logoSrc")[0].value
+                    }
+                    console.log(newChanges)
+                    setChanges(newChanges)
                 }
             })
         })()
@@ -59,15 +65,34 @@ const Settings = () => {
         setUnsaved(true)
     }
 
+    const [ file, setFile ] = useState(null)
+    const [ preview, setPreview ] = useState(null)
+
+    useEffect(() => {
+        if (!file) {
+            setPreview(null)
+            return
+        }
+        const filepath = URL.createObjectURL(file)
+        setPreview(filepath)
+        return () => URL.revokeObjectURL(filepath)
+    }, [ file ])
+
     const handleUpload = () => {
-        const file = document.getElementById("uploader").files[0]
         if (file) {
-            const filepath = URL.createObjectURL(file)
-            apiService.uploadLogo(filepath, (res) => {
+            const ext = file.type.split("/")[1]
+            const date = new Date().getTime()
+            const logoSubmission = {
+                file,
+                date,
+                ext
+            }
+            
+            apiService.uploadLogo(logoSubmission, (res) => {
                 if (res.error) {
                     setStatus("We were not able to upload your logo.")
                 } else {
-                    setStatus(`The new logo has been uploaded successfully.`)
+                    setStatus(`The logo has been changed.`)
                 }
             })
         }
@@ -144,10 +169,10 @@ const Settings = () => {
                         <div className="col-content">
                             <div className="row">
                                 <div className="col-2">
-                                    <img className="img-fluid small-icon" src={ `/img/${ changes.logoSrc }` } />
+                                    <img className="img-fluid small-icon" src={ preview } />
                                 </div>
                                 <div className="col">
-                                    <input type="file" id="uploader" accept="image/png,image/jpg,image/jpeg" />
+                                    <input type="file" id="uploader" accept="image/png,image/jpg,image/jpeg" onChange={ (e) => setFile(e.target.files[0]) } />
                                 </div>
                             </div>
                         </div>
@@ -185,7 +210,7 @@ const Settings = () => {
                             }
                         </div>
                         <div className="col-content">
-                            <div className="row">
+                            <div className="row" id="submit-tag">
                                 <div className="col">
                                     <input 
                                         type="text" 

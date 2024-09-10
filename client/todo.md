@@ -23,10 +23,10 @@ interface Icon {
 - ✅ remove password field from User Create
 
 ## Deletions
-- check updated delete endpoints
+- ✅ check updated delete endpoints
 
 ## Dashboard
-- make sure CSV export endpoints are receiving the information they need
+- ✅ make sure CSV export endpoints are receiving the information they need
 - ✅ fix edit category
 - ✅ remove depreciation rate from category pages
 
@@ -40,7 +40,7 @@ interface Icon {
 ## Items
 - ✅ item type autofill
 - comments don't upload
-- template icon error
+- ✅ template icon error
 
 ## Misc
 - ✅ purge real data from github
@@ -48,8 +48,13 @@ interface Icon {
 ## Styling
 - ✅ icon selector interface
 - header highlight color
+- header overlap
 - ✅ danger color
 - ✅ checkboxes
+  - ✅ Add Category
+  - ✅ Edit Category
+  - ✅ Edit User
+  - ✅ Dashboard
 
 ## Keyboard
 - ✅ down arrow on icons to skip
@@ -60,9 +65,9 @@ interface Icon {
 - ✅ test deployment
 - ✅ fix test database
 - ✅ create new users with better passwords
-- set up an email for this test deployment
+- ✅ set up an email for this test deployment
 - get a from email set up for shelter
-- funding proposal
+- ✅ funding proposal
 - documentation
     - end user
     - admin user
@@ -74,7 +79,7 @@ interface Icon {
 - schedule training
 
 ## Reports
-- send data to api
+- ✅ send data to api
 ```js
 const postData = {
     facilityId: 1, // if omitted, returns all facilities
@@ -82,7 +87,7 @@ const postData = {
     endDate: "2029-12-31" // only needed for EoL
 }
 ```
-- find how to convert json -> csv and download
+- ✅ find how to convert json -> csv and download
 
 ## Passwords
 - how are passwords set and reset?
