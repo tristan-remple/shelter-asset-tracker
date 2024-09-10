@@ -151,7 +151,7 @@ exports.updateItem = async (req, res, next) => {
         const item = req.data;
         const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
 
-        if (item.status !== 'ok' && status !== item.status) {
+        if (comment !== '') {
             await models.Inspection.create({
                 comment: comment,
                 itemId: item.id,
