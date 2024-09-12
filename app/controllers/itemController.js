@@ -197,6 +197,7 @@ exports.updateItem = async (req, res, next) => {
 };
 
 exports.checkFacility = async (req, res, next) => {
+    console.log(req.body.unitId);
     const facility = await models.Unit.findOne({
         where: { id: req.body.unitId },
         include: {
@@ -206,6 +207,7 @@ exports.checkFacility = async (req, res, next) => {
     });
 
     req.facility = facility.Facility.id;
+    console.log(req.facility)
     next();
 }
 
@@ -314,7 +316,7 @@ exports.restoreDeleted = async (req, res, next) => {
             paranoid: false
         });
 
-        if (!deletedItem) {
+        if (!deletedItem || !deletedItem.deletedAt) {
             return res.status(404).json({ error: 'Deleted item not found.' });
         }
 

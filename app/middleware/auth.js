@@ -15,11 +15,6 @@ const checkAuth = async (req, res, next) => {
         req.facilities = auth.facilities;
         req.isAdmin = auth.isAdmin;
 
-        if (req.isAdmin) {
-            next();
-            return;
-        }
-
         next();
 
     } catch (error) {

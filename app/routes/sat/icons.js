@@ -13,8 +13,6 @@ const upload = multer({ storage: storage });
 
 const rename = function (req, res, next) {
     var files = req.files;
-    console.log(req.body);
-    console.log(files);
     if (files) {
         //Move file to the deployment folder.
         var newPath = `client/public/img/${req.body.date}-${req.body.name}.${req.body.ext}`;
