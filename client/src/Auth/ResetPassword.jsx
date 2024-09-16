@@ -5,16 +5,14 @@ import { useContext, useState } from "react"
 // internal dependencies
 import { statusContext } from "../Services/Context"
 import authService from "../Services/authService"
-import apiService from "../Services/apiService"
 import handleChanges from "../Services/handleChanges"
 
 // components
-import Error from "../Reusables/Error"
-import Button from "../Reusables/Button"
-import ChangePanel from "../Reusables/ChangePanel"
+import Error from "../Components/Error"
+import Button from "../Components/Button"
+import ChangePanel from "../Components/ChangePanel"
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module allows a user to reset their own password by typing the new password twice.
 // Imported by: App
 

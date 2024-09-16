@@ -1,6 +1,6 @@
 //------ MODULE INFO
 // This module handles changes to simple form elements.
-// Imported by: ItemCreate, ItemEdit, LocationEdit
+// Imported by: ItemCreate, ItemEdit, ItemInspect, UnitCreate, UnitEdit, LocationCreate, LocationEdit, CategoryCreate, CategoryEdit, IconSelector, UserCreate, UserEdit, ResetPassword, Login, Dashboard, Settings
 
 class handleChanges {
 
@@ -24,6 +24,7 @@ class handleChanges {
     }
 
     // handles changes to checkboxes
+    // obselete after the Checkbox component was created
     handleCheckChange = (event, changes, setChanges, setUnsaved) => {
         const fieldName = event.target.name
         const newChanges = {...changes}

@@ -6,14 +6,13 @@ import { useContext, useState, useEffect } from "react"
 import { statusContext, userContext } from "../Services/Context"
 import authService from "../Services/authService"
 import apiService from "../Services/apiService"
-
-// components
-import Button from "../Reusables/Button"
-import Error from "../Reusables/Error"
 import { adminDate } from "../Services/dateHelper"
 
+// components
+import Button from "../Components/Button"
+import Error from "../Components/Error"
+
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module shows the details about a specific user to the admin or to themself.
 // Imported by: App
 

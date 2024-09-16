@@ -1,17 +1,16 @@
 // external dependencies
 import { useContext, useState, useEffect } from "react"
-import { statusContext, userContext } from "../Services/Context"
 import { useNavigate } from "react-router-dom"
 
 // internal dependencies
+import { statusContext, userContext } from "../Services/Context"
 import handleChanges from "../Services/handleChanges"
 import authService from "../Services/authService"
 
 // components
-import Button from '../Reusables/Button'
+import Button from '../Components/Button'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This page allows users to log in.
 // It has the "/" route, so it will be the first thing users see.
 // It automatically redirects to "/location" if the user is already logged in.
@@ -68,12 +67,16 @@ const LogIn = () => {
             if (response.error) {
                 setStatus("We weren't able to validate your credentials.")
             } else {
+
+                // set user info to context and session storage
                 setUserDetails(response)
                 sessionStorage.setItem("userId", response.userId)
                 sessionStorage.setItem("isAdmin", response.isAdmin)
                 sessionStorage.setItem("facilityAuths", response.facilityAuths)
                 setStatus(`Welcome.`)
                 setUnsaved(false)
+
+                // navigate to the user's location(s)
                 if (response.facilityAuths.length === 1 && !userDetails.isAdmin) {
                     navigate(`/location/${ response.facilityAuths[0] }`)
                 } else {

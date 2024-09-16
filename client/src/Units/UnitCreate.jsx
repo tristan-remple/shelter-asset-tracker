@@ -4,21 +4,17 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
-import { formattedDate, friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
+import capitalize from '../Services/capitalize'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import ChangePanel from '../Reusables/ChangePanel'
-import Dropdown from '../Reusables/Dropdown'
-import capitalize from '../Services/capitalize'
-import Autofill from '../Reusables/Autofill'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import ChangePanel from '../Components/ChangePanel'
+import Autofill from '../Components/Autofill'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module allows an admin to add a new unit to a location.
 // Imported by: App
 

@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react"
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module creates an autofill input for use with forms.
 // It takes the same parameters as Dropdown, but the user input allows faster filtering.
 // list is a list of items to appear in the dropdown

@@ -1,4 +1,4 @@
-import React from 'react'
+// internal dependencies
 import capitalize from '../Services/capitalize'
 
 const Tag = ({ word, remove }) => {

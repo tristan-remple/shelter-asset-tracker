@@ -2,18 +2,14 @@ import { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { statusContext } from '../Services/Context'
-import authService from '../Services/authService'
 import apiService from '../Services/apiService'
-import { formattedDate, adminDate } from '../Services/dateHelper'
 import handleChanges from '../Services/handleChanges'
 
-import Error from '../Reusables/Error'
-import Button from '../Reusables/Button'
-import Dropdown from '../Reusables/Dropdown'
-import ChangePanel from '../Reusables/ChangePanel'
+import Error from '../Components/Error'
+import Button from '../Components/Button'
+import ChangePanel from '../Components/ChangePanel'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module allows the admin to create a new user.
 // Imported by: App
 

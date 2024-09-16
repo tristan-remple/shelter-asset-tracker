@@ -3,17 +3,14 @@ import { useContext, useState, useEffect } from "react"
 
 // internal dependencies
 import { statusContext } from '../Services/Context'
-import authService from "../Services/authService"
 import apiService from "../Services/apiService"
-import { adminDate } from "../Services/dateHelper"
 
 // components
-import Error from "../Reusables/Error"
-import Button from "../Reusables/Button"
-import Search from "../Reusables/Search"
+import Error from "../Components/Error"
+import Button from "../Components/Button"
+import Search from "../Components/Search"
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module shows a list of users to the admin.
 // Imported by: App
 

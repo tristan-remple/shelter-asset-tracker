@@ -3,14 +3,12 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import capitalize from '../Services/capitalize'
-import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext } from '../Services/Context'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import Search from '../Reusables/Search'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import Search from '../Components/Search'
 
 //------ MODULE INFO
 // ** Available for SCSS **

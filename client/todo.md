@@ -44,6 +44,7 @@ interface Icon {
 
 ## Misc
 - ✅ purge real data from github
+- set up loading screen
 
 ## Styling
 - ✅ icon selector interface

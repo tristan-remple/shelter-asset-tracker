@@ -7,8 +7,8 @@ import { adminDate } from '../Services/dateHelper'
 import { statusContext } from '../Services/Context'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
 
 //------ MODULE INFO
 // This module displays a list of deleted locations, and allows the user to restore them.

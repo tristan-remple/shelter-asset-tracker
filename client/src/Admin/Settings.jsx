@@ -1,13 +1,16 @@
+// external dependencies
 import { useContext, useState, useEffect } from "react"
-import { statusContext } from "../Services/Context"
 
+// internal dependencies
+import { statusContext } from "../Services/Context"
 import apiService from "../Services/apiService"
 import handleChanges from "../Services/handleChanges"
 
-import Error from "../Reusables/Error"
-import Button from "../Reusables/Button"
-import ChangePanel from "../Reusables/ChangePanel"
-import Tag from "../Reusables/Tag"
+// components
+import Error from "../Components/Error"
+import Button from "../Components/Button"
+import ChangePanel from "../Components/ChangePanel"
+import Tag from "../Components/Tag"
 
 const Settings = () => {
 

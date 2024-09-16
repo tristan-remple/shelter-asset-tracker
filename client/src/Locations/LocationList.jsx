@@ -3,15 +3,13 @@ import { useContext, useEffect, useState } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
-import { statusContext, authContext, userContext } from '../Services/Context'
+import { statusContext, userContext } from '../Services/Context'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module displays a list of all locations.
 // Imported by: App
 

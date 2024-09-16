@@ -6,7 +6,6 @@ import { statusContext, userContext } from "../Services/Context"
 import authService from "../Services/authService"
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This page allows users to log out.
 // Imported by: App
 
@@ -14,7 +13,7 @@ const LogOut = () => {
 
     // get status context
     const { status, setStatus } = useContext(statusContext)
-    const { userDetails, setUserDetails } = useContext(userContext)
+    const { setUserDetails } = useContext(userContext)
 
     // perform the logout api call
     useEffect(() => {
@@ -28,6 +27,8 @@ const LogOut = () => {
                         isAdmin: false,
                         facilityAuths: []
                     })
+
+                    // remove login information from session storage as well as the context
                     sessionStorage.removeItem("userId")
                     sessionStorage.removeItem("isAdmin")
                     sessionStorage.removeItem("facilityAuths")

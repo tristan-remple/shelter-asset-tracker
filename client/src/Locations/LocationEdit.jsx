@@ -4,18 +4,15 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
 import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 import capitalize from '../Services/capitalize'
-import validatePhone from '../Services/validatePhone'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import ChangePanel from '../Reusables/ChangePanel'
-import CommentBox from '../Reusables/CommentBox'
-import Dropdown from '../Reusables/Dropdown'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import ChangePanel from '../Components/ChangePanel'
+import Dropdown from '../Components/Dropdown'
 
 //------ MODULE INFO
 // ** Available for SCSS **

@@ -4,22 +4,17 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
-import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext, userContext } from '../Services/Context'
+import { statusContext, userContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import CommentBox from '../Reusables/CommentBox'
-import ChangePanel from '../Reusables/ChangePanel'
-import Dropdown from '../Reusables/Dropdown'
-import capitalize from '../Services/capitalize'
-import Autofill from '../Reusables/Autofill'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import ChangePanel from '../Components/ChangePanel'
+import capitalize from '../Components/capitalize'
+import Autofill from '../Components/Autofill'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
 // The items within the unit are displayed as well.
 // Imported by: App

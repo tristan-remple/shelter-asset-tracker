@@ -2,19 +2,15 @@ import { useContext, useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { statusContext, userContext } from '../Services/Context'
-import authService from '../Services/authService'
 import apiService from '../Services/apiService'
-import { adminDate } from '../Services/dateHelper'
 import handleChanges from '../Services/handleChanges'
 
-import Error from '../Reusables/Error'
-import Button from '../Reusables/Button'
-import Dropdown from '../Reusables/Dropdown'
-import ChangePanel from '../Reusables/ChangePanel'
-import Checkbox from '../Reusables/Checkbox'
+import Error from '../Components/Error'
+import Button from '../Components/Button'
+import ChangePanel from '../Components/ChangePanel'
+import Checkbox from '../Components/Checkbox'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module allows the admin to edit a specific user.
 // Imported by: App
 

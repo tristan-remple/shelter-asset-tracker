@@ -1,4 +1,4 @@
-// Button.jsx
+// external dependencies
 import { Link } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
 

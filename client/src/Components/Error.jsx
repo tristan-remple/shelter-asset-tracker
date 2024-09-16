@@ -1,11 +1,13 @@
 // external dependencies
-import { Link } from "react-router-dom"
-import Button from "./Button"
-import { userContext } from "../Services/Context"
 import { useContext } from "react"
 
+// internal dependencies
+import { userContext } from "../Services/Context"
+
+// components
+import Button from "./Button"
+
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module is displayed instead of the page when something goes wrong.
 // Refer to the switch case to view and add error messages.
 // Imported by: ItemDetails, ItemEdit, ItemCreate, UnitDetails
@@ -46,7 +48,7 @@ const Error = ({ err }) => {
             })
             break
         case "duplicate":
-            errorText = "The thing you are trying to create already exists."
+            errorText = "The thing you are trying to create already exists, or your input may not be valid."
             break
         case "dependency": 
             errorText = "The thing you're trying to delete cannot be deleted while it is being used."

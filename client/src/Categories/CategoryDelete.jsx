@@ -7,10 +7,9 @@ import apiService from "../Services/apiService"
 import { statusContext } from '../Services/Context'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import authService from '../Services/authService'
-import ChangePanel from '../Reusables/ChangePanel'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import ChangePanel from '../Components/ChangePanel'
 
 //------ MODULE INFO
 // This module checks that the user wants to delete a category.

@@ -1,51 +1,56 @@
 // external imports
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 // internal imports
 import './css/style.css'
 import { userContext, statusContext } from './Services/Context'
-import authService from './Services/authService'
 import { GeneralRoutes, AdminRoutes } from './Services/ProtectedRoutes'
 
 // component imports
-import Header from './Reusables/Header'
-import Footer from './Reusables/Footer'
+import Header from './Components/Header'
+import Footer from './Components/Footer'
+
+import LogIn from './Auth/LogIn'
+import LogOut from './Auth/LogOut'
+import FAQ from './Components/FAQ'
+import Dashboard from './Admin/Dashboard'
+import Settings from './Admin/Settings'
+
 import ItemDetails from './Items/ItemDetails'
 import ItemEdit from './Items/ItemEdit'
+import ItemInspect from './Items/ItemInspect'
 import ItemCreate from './Items/ItemCreate'
+import ItemRecovery from './Items/ItemRecovery'
+
 import UnitDetails from './Units/UnitDetails'
-import LocationDetails from './Locations/LocationDetails'
-import LocationList from './Locations/LocationList'
+import UnitEdit from './Units/UnitEdit'
+import UnitCreate from './Units/UnitCreate'
 import UnitDelete from './Units/UnitDelete'
+import UnitRecovery from './Units/UnitRecovery'
+
+import LocationList from './Locations/LocationList'
+import LocationDetails from './Locations/LocationDetails'
 import LocationEdit from './Locations/LocationEdit'
 import LocationCreate from './Locations/LocationCreate'
 import LocationDelete from './Locations/LocationDelete'
-import UnitEdit from './Units/UnitEdit'
-import UnitCreate from './Units/UnitCreate'
+import LocationRecovery from './Locations/LocationRecovery'
+
 import CategoryList from './Categories/CategoryList'
 import CategoryDetails from './Categories/CategoryDetails'
 import CategoryEdit from './Categories/CategoryEdit'
-import Dashboard from './Admin/Dashboard'
+import CategoryCreate from './Categories/CategoryCreate'
 import CategoryDelete from './Categories/CategoryDelete'
-import LogIn from './Auth/LogIn'
-import LogOut from './Auth/LogOut'
+import CategoryRecovery from './Categories/CategoryRecovery'
+
 import UserList from './Users/UserList'
 import UserDetails from './Users/UserDetails'
 import UserCreate from './Users/UserCreate'
 import UserEdit from './Users/UserEdit'
 import UserDelete from './Users/UserDelete'
 import ResetPassword from './Auth/ResetPassword'
-import Error from './Reusables/Error'
-import CategoryCreate from './Categories/CategoryCreate'
-import FAQ from './Reusables/FAQ'
-import ItemInspect from './Items/ItemInspect'
-import ItemRecovery from './Items/ItemRecovery'
-import UnitRecovery from './Units/UnitRecovery'
-import LocationRecovery from './Locations/LocationRecovery'
-import CategoryRecovery from './Categories/CategoryRecovery'
-import UserRecovery from './Users/UserRecovery'
-import Settings from './Admin/Settings'
+
+import Error from './Components/Error'
 
 //------ MODULE INFO
 // This is the first module accessed by main.jsx, which is connected to index.html as the entry point of our app.

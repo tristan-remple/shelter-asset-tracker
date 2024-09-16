@@ -2,10 +2,10 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
+// internal dependencies
 import apiService from '../Services/apiService'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module defines the footer navigation that appears on every page.
 // Imported by: App
 

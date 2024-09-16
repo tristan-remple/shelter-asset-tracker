@@ -1,12 +1,16 @@
+// external dependencies
 import { useState, useContext, useEffect } from "react"
-import Button from "../Reusables/Button"
+
+// internal dependencies
 import capitalize from "../Services/capitalize"
 import handleChanges from "../Services/handleChanges"
 import { statusContext } from "../Services/Context"
 import apiService from "../Services/apiService"
 
+// components
+import Button from "../Reusables/Button"
+
 //------ MODULE INFO
-// ** Available for SCSS **
 // Displays a modal that allows the user to select a new icon for a category
 // Imported by: CategoryEdit
 

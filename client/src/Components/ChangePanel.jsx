@@ -1,6 +1,3 @@
-// internal dependencies
-import authService from '../Services/authService'
-
 // components
 import Button from "./Button"
 

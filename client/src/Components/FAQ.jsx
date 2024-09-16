@@ -2,7 +2,6 @@
 import Button from "./Button"
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module displays information to help users get the most out of this app.
 // Imported by: App
 

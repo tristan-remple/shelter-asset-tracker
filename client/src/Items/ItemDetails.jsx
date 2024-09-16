@@ -9,10 +9,10 @@ import { friendlyDate } from '../Services/dateHelper'
 import { statusContext } from '../Services/Context'
 
 // components
-import Button from "../Reusables/Button"
-import Flag, { flagOptions } from "../Reusables/Flag"
-import Error from '../Reusables/Error'
-import CommentBox from '../Reusables/CommentBox'
+import Button from "../Components/Button"
+import Flag, { flagOptions } from "../Components/Flag"
+import Error from '../Components/Error'
+import CommentBox from '../Components/CommentBox'
 
 //------ MODULE INFO
 // ** Available for SCSS **

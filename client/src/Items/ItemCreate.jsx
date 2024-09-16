@@ -4,17 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
 import { formattedDate } from '../Services/dateHelper'
 import { statusContext, userContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import Dropdown from '../Reusables/Dropdown'
-import ChangePanel from '../Reusables/ChangePanel'
-import Autofill from '../Reusables/Autofill'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import ChangePanel from '../Components/ChangePanel'
+import Autofill from '../Components/Autofill'
 
 //------ MODULE INFO
 // ** Available for SCSS **

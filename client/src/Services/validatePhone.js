@@ -3,7 +3,7 @@
 // The valid format is 000-000-0000.
 // Formats 0000000000 and (000) 000-0000 are converted.
 // Other formats return an error.
-// Imported by: LocationEdit, LocationCreate
+// We decided not to include phone numbers in the app, so this module is not imported anywhere.
 
 const validatePhone = (number) => {
 

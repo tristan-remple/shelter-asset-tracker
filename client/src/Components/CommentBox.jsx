@@ -5,7 +5,6 @@ import { useState } from 'react'
 import Comment from '../Reusables/Comment'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module displays comments about any given item, unit, or location.
 // It always displays the most recent comment, and allows the user to toggle visibility of the older comments.
 // It takes an array of comment objects.

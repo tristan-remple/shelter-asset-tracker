@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import { statusContext, authContext } from '../Services/Context'
+import { statusContext } from '../Services/Context'
 import capitalize from '../Services/capitalize'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
-import { friendlyDate } from '../Services/dateHelper'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
+import { friendlyDate } from '../Components/dateHelper'
 
 //------ MODULE INFO
 // ** Available for SCSS **

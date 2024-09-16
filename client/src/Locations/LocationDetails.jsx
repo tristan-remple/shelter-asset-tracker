@@ -4,16 +4,15 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, authContext, userContext } from '../Services/Context'
+import { statusContext, userContext } from '../Services/Context'
 
 // components
-import Button from "../Reusables/Button"
-import Flag, { flagOptions } from "../Reusables/Flag"
-import Error from '../Reusables/Error'
-import Search from '../Reusables/Search'
+import Button from "../Components/Button"
+import Flag, { flagOptions } from "../Components/Flag"
+import Error from '../Components/Error'
+import Search from '../Components/Search'
 
 //------ MODULE INFO
 // ** Available for SCSS **

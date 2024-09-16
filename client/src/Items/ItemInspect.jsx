@@ -4,19 +4,17 @@ import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
 import capitalize from '../Services/capitalize'
 import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 import { friendlyDate } from '../Services/dateHelper'
 
 // components
-import Button from "../Reusables/Button"
-import Flag, { flagOptions } from "../Reusables/Flag"
-import Error from '../Reusables/Error'
-import Dropdown from '../Reusables/Dropdown'
-import ChangePanel from '../Reusables/ChangePanel'
-import CommentBox from '../Reusables/CommentBox'
+import Button from "../Components/Button"
+import Flag, { flagOptions } from "../Components/Flag"
+import Error from '../Components/Error'
+import Dropdown from '../Components/Dropdown'
+import ChangePanel from '../Components/ChangePanel'
 
 //------ MODULE INFO
 // ** Available for SCSS **

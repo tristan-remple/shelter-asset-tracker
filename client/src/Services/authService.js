@@ -1,5 +1,7 @@
+// external dependencies
 import axios from 'axios'
 
+// internal dependencies
 import { errorCodes } from './errorCodes'
 
 //------ MODULE INFO

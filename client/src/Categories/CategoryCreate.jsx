@@ -1,21 +1,18 @@
 // external dependencies
 import { useContext, useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import authService from '../Services/authService'
-import { statusContext, authContext } from '../Services/Context'
-import capitalize from '../Services/capitalize'
+import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
-import { formattedDate, friendlyDate } from '../Services/dateHelper'
 
 // components
-import Button from "../Reusables/Button"
-import Error from '../Reusables/Error'
+import Button from "../Components/Button"
+import Error from '../Components/Error'
 import IconSelector from './IconSelector'
-import ChangePanel from '../Reusables/ChangePanel'
-import Checkbox from '../Reusables/Checkbox'
+import ChangePanel from '../Components/ChangePanel'
+import Checkbox from '../Components/Checkbox'
 
 //------ MODULE INFO
 // Allows the user add a new category
