@@ -14,6 +14,7 @@ import Search from '../Components/Search'
 //------ MODULE INFO
 // This module displays a list of deleted categories, and allows the user to restore them.
 // Imported by: App
+// Navigated from: Dashboard
 
 const CategoryRecovery = () => {
 
@@ -38,6 +39,7 @@ const CategoryRecovery = () => {
         })()
     }, [])
 
+    // if there's an api error, display the error page
     if (err) { return <Error err={ err } /> }
     if (categories) {
 

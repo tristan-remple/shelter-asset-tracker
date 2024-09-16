@@ -11,9 +11,10 @@ import Error from '../Components/Error'
 import Search from '../Components/Search'
 
 //------ MODULE INFO
-// ** Available for SCSS **
-// A list of item categories that is only available to admin users.
+// Lists the possible categories that items can fall into.
 // Imported by: App
+// Navigated from: Dashboard
+// Navigates to: CategoryDetails, CategoryCreate
 
 const CategoryList = () => {
 

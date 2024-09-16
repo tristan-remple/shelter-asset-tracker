@@ -8,16 +8,22 @@ import { statusContext } from "../Services/Context"
 import apiService from "../Services/apiService"
 
 // components
-import Button from "../Reusables/Button"
+import Button from "../Components/Button"
 
 //------ MODULE INFO
-// Displays a modal that allows the user to select a new icon for a category
-// Imported by: CategoryEdit
+// Displays a modal that allows the user to select a new icon for a category.
+// This is the only way for the user to interact with icons directly.
+// It allows uploading and deleting icons as well.
+// Imported by: CategoryEdit, CategoryCreate
 
 const IconSelector = ({ changes, setChanges, toggle }) => {
 
+    // get context
     const { status, setStatus } = useContext(statusContext)
 
+    // fetch icons from the api
+    // the newIcons state causes the call to be made again when new icons are uploaded.
+    // the actual value of newIcons doesn't matter, just whether it has changed.
     const [ iconList, setIconList ] = useState([])
     const [ newIcons, setNewIcons ] = useState("")
     useEffect(() => {
@@ -32,6 +38,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         })()
     }, [ newIcons ])
 
+    // when an icon is selected, set it to the category and close the selector modal
     const pickIcon = (event) => {
         const target = parseInt(event.target.id)
         const selectedIcon = iconList.filter(icon => icon.id === target)[0]
@@ -41,6 +48,9 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         toggle()
     }
 
+    // keyboard handler
+    // selects the icon on enter or space
+    // skips to the buttons below the icon list on arrowdown
     const keyboardHandler = (event) => {
         if (event.code === "Enter" || event.code === "Space") {
             pickIcon()
@@ -49,12 +59,14 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         }
     }
 
+    // state that toggles the upload form to be hidden or displayed
     const [ uploadForm, setUploadForm ] = useState(false)
     const toggleUpload = () => {
         const newForm = uploadForm ? false : true
         setUploadForm(newForm)
     }
 
+    // render the icons
     const displayIcons = iconList.map(icon => {
         return <img
             className="icon-pick" 
@@ -69,15 +81,18 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         />
     })
 
+    // when the upload form is opened, focus on it
     useEffect(() => {
         if (uploadForm) {
             document.getElementById("uploader").focus()
         }
     }, [ uploadForm ])
 
+    // file and icon preview state
     const [ file, setFile ] = useState(null)
     const [ preview, setPreview ] = useState(null)
 
+    // change the preview when the file is updated
     useEffect(() => {
         if (!file) {
             setPreview(null)
@@ -85,11 +100,16 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         }
         const filepath = URL.createObjectURL(file)
         setPreview(filepath)
+
+        // don't keep the temporary filepath longer than necessary
         return () => URL.revokeObjectURL(filepath)
     }, [ file ])
 
+    // handles icon upload
     const handleUpload = () => {
         if (file) {
+
+            // validation
             if (uploaderChanges.name === "") {
                 setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
                 return
@@ -98,9 +118,11 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 return
             }
 
+            // get the file extension and date
             const ext = file.type.split("/")[1]
             const date = new Date().getTime()
 
+            // create the icon object
             const iconSubmission = {
                 name: uploaderChanges.name.toLowerCase(),
                 file,
@@ -108,6 +130,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 ext
             }
             
+            // send the icon object to the api
             apiService.uploadIcon(iconSubmission, (res) => {
                 if (res.error) {
                     setStatus("We were not able to upload your icon.")
@@ -120,18 +143,24 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         }
     }
 
+    // the unsaved changes window doesn't appear here, but our form handling still expects the state
+    // likewise, a changes object is expected rather than a string
     const [ unsaved, setUnsaved ] = useState(false)
     const [ uploaderChanges, setUploaderChanges ] = useState({
         name: ""
     })
 
+    // toggles mass delete mode
     const [ deleteMode, setDeleteMode ] = useState(false)
     const toggleDeleteMode = () => {
         const newDeleteMode = deleteMode ? false : true
         setDeleteMode(newDeleteMode)
     }
 
+    // list of icons to delete, id only
     const [ iconsToDelete, setIconsToDelete ] = useState([])
+
+    // toggles an icon to be deleted or kept
     const toggleIconForDelete = (event) => {
         const id = parseInt(event.target.id)
         const newIconsToDelete = [...iconsToDelete]
@@ -150,6 +179,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         }
     }
 
+    // render icons in delete mode
     const displayDeletableIcons = iconList.map(icon => {
         return <img
             className={ "icon-pick " + (iconsToDelete.filter(id => id === icon.id).length > 0 ? "being-deleted" : "can-delete") }
@@ -165,8 +195,8 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         />
     })
 
+    // sends the icons to delete as an array of id numbers to the api
     const confirmDelete = () => {
-        console.log(iconsToDelete)
         const count = iconsToDelete.length
         apiService.deleteIcons(iconsToDelete, data => {
             if (data.error) {
@@ -179,6 +209,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         })
     }
 
+    // keep keyboard navigation inside the modal
     const trap = (event) => {
         console.log(event)
         if (event.code === "Tab" && event.shiftKey === true) {

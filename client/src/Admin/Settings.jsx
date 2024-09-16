@@ -12,11 +12,25 @@ import Button from "../Components/Button"
 import ChangePanel from "../Components/ChangePanel"
 import Tag from "../Components/Tag"
 
+//------ MODULE INFO
+// This page allows the admin to set some global variables.
+// * Organization Title (displayed in Header and Footer)
+// * Organization URL (displayed in Footer)
+// * Organization Logo (displayed in Header)
+//     * Note that the Logo upload is handled separately.
+// * Global Depreciation Rate (used to calculate items' current value)
+// * Possible Unit Types (used by UnitCreate, UnitEdit)
+// * Admin Email and Admin Password (the from email for password reset notifications)
+// Imported by: App
+// Nativated from: Dashboard
+
 const Settings = () => {
 
+    // setup
     const { status, setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState(null)
 
+    // form handling
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
         depreciationRate: 0,
@@ -26,6 +40,7 @@ const Settings = () => {
         logoSrc: ""
     })
 
+    // get current settings from the API
     useEffect(() => {
         (async()=> {
             await apiService.getSettings(data => {
@@ -39,19 +54,20 @@ const Settings = () => {
                         url: data.settings.filter(sett => sett.name === "url")[0].value,
                         logoSrc: data.settings.filter(sett => sett.name === "logoSrc")[0].value
                     }
-                    console.log(newChanges)
                     setChanges(newChanges)
                 }
             })
         })()
     }, [])
 
+    // text field where users can enter new unit types as tags
     const [ tagField, setTagField ] = useState("")
     const handleTagField = (event) => {
         const text = event.target.value
         setTagField(text)
     }
 
+    // add unit type (tag formatted)
     const addTag = () => {
         const newChanges = {...changes}
         newChanges.unitTypes.push(tagField.toLowerCase())
@@ -60,6 +76,7 @@ const Settings = () => {
         setUnsaved(true)
     }
 
+    // remove unit type (tag formatted)
     const removeTag = (word) => {
         const newChanges = {...changes}
         const index = newChanges.unitTypes.findIndex(unitType => unitType.toLowerCase() === word.toLowerCase())
@@ -68,9 +85,11 @@ const Settings = () => {
         setUnsaved(true)
     }
 
+    // handling file uploading and preview for the logo
     const [ file, setFile ] = useState(null)
     const [ preview, setPreview ] = useState(null)
 
+    // when the file changes, update the preview and file
     useEffect(() => {
         if (!file) {
             setPreview(null)
@@ -78,9 +97,12 @@ const Settings = () => {
         }
         const filepath = URL.createObjectURL(file)
         setPreview(filepath)
+
+        // don't keep the temporary filepaths for longer than necessary
         return () => URL.revokeObjectURL(filepath)
     }, [ file ])
 
+    // handle uploading of a new logo
     const handleUpload = () => {
         if (file) {
             const ext = file.type.split("/")[1]
@@ -101,7 +123,10 @@ const Settings = () => {
         }
     }
 
+    // save settings changes
     const saveChanges = async() => {
+
+        // validation
         if (changes.depreciationRate <= 0) {
             setStatus("The global depreciation rate must be a positive number.")
             return
@@ -113,9 +138,11 @@ const Settings = () => {
             return
         }
 
+        // convert the depreciation from percent to decimal
         const newChanges = {...changes}
         newChanges.depreciationRate = newChanges.depreciationRate / 100
 
+        // send the updates to the api
         await apiService.postSettings(newChanges, (res) => {
             if (res.error) {
                 setErr(res.error)

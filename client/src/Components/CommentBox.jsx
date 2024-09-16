@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 // components
-import Comment from '../Reusables/Comment'
+import Comment from './Comment'
 
 //------ MODULE INFO
 // This module displays comments about any given item, unit, or location.

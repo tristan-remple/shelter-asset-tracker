@@ -8,6 +8,7 @@ import authService from "../Services/authService"
 //------ MODULE INFO
 // This page allows users to log out.
 // Imported by: App
+// Navigated from: Header
 
 const LogOut = () => {
 

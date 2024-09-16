@@ -18,9 +18,13 @@ import Dropdown from '../Components/Dropdown'
 import Checkbox from '../Components/Checkbox'
 
 //------ MODULE INFO
-// Displays some stats and reports for the admin.
-// Also has some useful admin links.
+// This page is the main page for admin functionality.
+// * Access to the Settings, Categories, Users, and Restore Deleted pages.
+// * Quick stats about the value and type of items, in total or per location.
+// * List of items that might need to be replaced soon, with adjustable filters.
 // Imported by: App
+// Navigated from: Header
+// Navigates to: Settings, CategoryList, UserList, RestoreItems, RestoreUnits, RestoreLocations, RestoreCategories
 
 const Dashboard = () => {
 
@@ -29,7 +33,7 @@ const Dashboard = () => {
     const [ err, setErr ] = useState("loading")
     const navigate = useNavigate()
 
-    // view options: list of location names to filter by dropdown
+    // viewOptions: list of location names to filter by dropdown
     // view: currently selected location
     const [ viewOptions, setViewOptions ] = useState([])
     const [ view, setView ] = useState("All Locations")
@@ -171,7 +175,7 @@ const Dashboard = () => {
         )
     })
 
-    // list of all items fetched, initially filtered to display items to be discarded only
+    // list of all items fetched, initially filtered to display items to be discarded within the current calendar year
 
     // possible filter criteria
     const [ unsaved, setUnsaved ] = useState(false)
@@ -182,12 +186,12 @@ const Dashboard = () => {
         discard: true
     })
 
+    // handlers for filter checkboxes
     const inspectHandler = () => {
         const newFilters = {...filters}
         newFilters.inspect = filters.inspect ? false : true
         setFilters(newFilters)
     }
-
     const discardHandler = () => {
         const newFilters = {...filters}
         newFilters.discard = filters.discard ? false : true
@@ -252,6 +256,7 @@ const Dashboard = () => {
         }
     }
 
+    // list of entity types that can be restored after deleting
     const list = [ "items", "units", "locations", "categories"]
 
     // render the list, including all listeners
@@ -266,13 +271,23 @@ const Dashboard = () => {
         >Deleted { capitalize(item) }</li>
     })
 
+    // functionality to allow the user to download CSV reports from the database
     // https://stackoverflow.com/questions/53504924/reactjs-download-csv-file-on-button-click
-    const [ csvData, setCsvData ] = useState([])
-    const [ reportTitle, setReportTitle ] = useState("")
+    
+    // the download button is invisible, but needs to be clicked programmatically
+    // assigning it a useRef allows us to do that
     const downloadLink = useRef()
 
+    // the state of what is downloaded, initialized to falsey values
+    const [ csvData, setCsvData ] = useState([])
+    const [ reportTitle, setReportTitle ] = useState("")
+
     const downloadCSV = async(report) => {
+
+        // get which report is to be downloaded from the button label
         setReportTitle(report)
+
+        // if the view is set to a specific location, get the id of that location
         let id = null
         if (view !== "All Locations" && response?.length > 0) {
             id = response.filter(loc => {
@@ -280,12 +295,14 @@ const Dashboard = () => {
             })[0].id
         }
 
+        // parameters for the api to find our data
         const params = {
             facility: id,
             startDate: filters.startDate,
             endDate: filters.endDate
         }
 
+        // call the api
         apiService.csvReport(report, params, (data) => {
             if (data.error) {
                 setErr(data.error)
@@ -301,6 +318,7 @@ const Dashboard = () => {
         })
     }
 
+    // date formatting function for the filename of CSV exports
     const getDate = () => {
         const date = new Date()
         return `${ date.getFullYear() }-${ date.getMonth().toString().padStart(2, "0") }-${ date.getDate().toString().padStart(2, "0") }`

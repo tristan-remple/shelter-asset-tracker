@@ -17,6 +17,7 @@ import Checkbox from '../Components/Checkbox'
 //------ MODULE INFO
 // Allows the user add a new category
 // Imported by: App
+// Navigated from: CategoryList
 
 const CategoryCreate = () => {
 
@@ -43,20 +44,7 @@ const CategoryCreate = () => {
         setSelector(newSelector)
     }
 
-    const [ icons, setIcons ] = useState([])
-    const [ newIcons, setNewIcons ] = useState("")
-    useEffect(() => {
-        (async() => {
-            await apiService.listIcons((data) => {
-                if (data.error) {
-                    setErr(data.error)
-                } else {
-                    setIcons(data)
-                }
-            })
-        })()
-    }, [ newIcons ])
-
+    // handle single resident checkbox
     const checkHandler = () => {
         const newChanges = { ...changes }
         newChanges.singleResident = changes.singleResident ? false : true
@@ -73,6 +61,7 @@ const CategoryCreate = () => {
             return
         }
 
+        // set the icon to the icon's id instead of the whole object
         const newChanges = {...changes}
         newChanges.icon = changes.icon.id
 
@@ -119,7 +108,6 @@ const CategoryCreate = () => {
                             />
                         </div>
                     </div>
-                    
                     <div className="col col-info">
                         <div className="col-head">
                             Single Resident
@@ -175,7 +163,7 @@ const CategoryCreate = () => {
                         <div className="col-icon col-content d-flex justify-content-start">
                             { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.alt } /> }
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } tabIndex={ selector ? -1 : 0 } /> }
+                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>
                 </div>

@@ -17,9 +17,10 @@ import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // Allows the user to change the information about a single category.
 // Imported by: App
+// Navigated from: CategoryDetails
+// Navigates to: CategoryDelete
 
 const CategoryEdit = () => {
 
@@ -86,6 +87,7 @@ const CategoryEdit = () => {
         setSelector(newSelector)
     }
 
+    // handles single resident checkbox
     const checkHandler = () => {
         const newChanges = { ...changes }
         newChanges.singleResident = changes.singleResident ? false : true

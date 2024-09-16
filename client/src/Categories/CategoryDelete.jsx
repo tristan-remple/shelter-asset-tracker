@@ -14,6 +14,7 @@ import ChangePanel from '../Components/ChangePanel'
 //------ MODULE INFO
 // This module checks that the user wants to delete a category.
 // Imported by: App
+// Navigated from: CategoryEdit
 
 const CategoryDelete = () => {
 

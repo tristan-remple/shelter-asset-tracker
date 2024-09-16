@@ -6,16 +6,16 @@ import { useParams } from 'react-router-dom'
 import apiService from "../Services/apiService"
 import { statusContext } from '../Services/Context'
 import capitalize from '../Services/capitalize'
+import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
-import { friendlyDate } from '../Components/dateHelper'
 
 //------ MODULE INFO
-// ** Available for SCSS **
-// The information about a single category.
+// Displays the information about a single category.
 // Imported by: App
+// Navigated from: CategoryList
 
 const CategoryDetails = () => {
 

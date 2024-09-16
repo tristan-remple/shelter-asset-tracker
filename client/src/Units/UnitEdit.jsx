@@ -6,12 +6,12 @@ import { useContext, useState, useEffect } from 'react'
 import apiService from "../Services/apiService"
 import { statusContext, userContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
+import capitalize from '../Services/capitalize'
 
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
-import capitalize from '../Components/capitalize'
 import Autofill from '../Components/Autofill'
 
 //------ MODULE INFO

@@ -48,13 +48,32 @@ const Error = ({ err }) => {
             })
             break
         case "duplicate":
-            errorText = "The thing you are trying to create already exists, or your input may not be valid."
+            errorText = "The thing you are trying to create may already exist, or your input may not be valid."
             break
         case "dependency": 
             errorText = "The thing you're trying to delete cannot be deleted while it is being used."
             break
         default:
             errorText = "Something went wrong."
+    }
+
+    if (err === "loading") {
+        return (
+            <main className="container">
+                <h1>Loading...</h1>
+                <div className="page-content">
+                    <p className="mx-2">Please be patient while we find the data you're looking for.</p>
+                    <div className="row d-flex-col">
+                        <div className="co-1l">
+                            <Button text="Return Home" linkTo="/" type="nav" />
+                        </div>
+                        <div className="col">
+                            <Button text="Read Help Document" linkTo="/help" type="admin" />
+                        </div>
+                    </div>
+                </div>
+            </main>
+        )
     }
     
     return (
