@@ -21,6 +21,14 @@ module.exports = (db, { DataTypes }) => {
         isAdmin: {
             type: DataTypes.BOOLEAN,
             allowNull: false
+        },
+        requestHash: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        requestDate: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
         tableName: 'Users'

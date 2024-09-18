@@ -44,7 +44,7 @@ interface Icon {
 
 ## Misc
 - ✅ purge real data from github
-- set up loading screen
+- ✅ set up loading screen
 
 ## Styling
 - ✅ icon selector interface
@@ -72,7 +72,7 @@ interface Icon {
 - documentation
     - end user
     - admin user
-    - maintenance
+    - ✅ maintenance
     - continued development
     - copyright
     - contact
