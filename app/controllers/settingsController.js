@@ -25,12 +25,29 @@ exports.getSettings = async (req, res, next) => {
 exports.updateSettings = async (req, res, next) => {
     try {
         const { depreciationRate, unitTypes, name, url, logoSrc } = req.body;
-        const currentSettings = req.data.settings;
-        const currentUnitTypes = req.data.unitTypes.map(type => type.name);
 
         if (!depreciationRate || !unitTypes || !name || !url || !logoSrc) {
             return res.status(400).json({ error: 'Missing expected settings.' })
         }
+
+        const settingsToUpdate = {
+            depreciationRate,
+            name,
+            url,
+            logoSrc,
+        };
+
+        for (const setting of req.data.settings) {
+            if (settingsToUpdate.hasOwnProperty(setting.name)) {
+                const updated = await models.Setting.update(
+                    { value: settingsToUpdate[setting.name] },
+                    { where: { name: setting.name } }
+                );
+                setting.value = settingsToUpdate[setting.name];
+            }
+        }
+
+        const currentUnitTypes = req.data.unitTypes.map(type => type.name);
 
         const addedUnitTypes = unitTypes.filter(unitType => !currentUnitTypes.includes(unitType));
         const removedUnitTypes = currentUnitTypes.filter(unitType => !unitTypes.includes(unitType));
@@ -49,10 +66,6 @@ exports.updateSettings = async (req, res, next) => {
         }
 
         req.data.unitTypes = currentUnitTypes;
-
-        const settings = currentSettings.map(setting => {
-            return { name: setting.name, value: setting.value }
-        });
 
         next();
 

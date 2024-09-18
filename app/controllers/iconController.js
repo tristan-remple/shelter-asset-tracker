@@ -60,7 +60,6 @@ exports.sendIcon = async (req, res, next) => {
 };
 
 exports.createNewIcon = async (req, res, next) => {
-    console.log('create function');
     try {
 
         const { name, date, ext } = req.body;
