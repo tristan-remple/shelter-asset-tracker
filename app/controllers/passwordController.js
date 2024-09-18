@@ -1,10 +1,8 @@
 const { models } = require('../data')
 const { hashPassword } = require('../util/hash')
-const { verifyToken } = require('../util/token')
 
 const nodemailer = require("nodemailer")
 var randomstring = require("randomstring")
-const { DataTypes } = require('sequelize')
 const dotenv = require('dotenv')
 
 dotenv.config()
@@ -89,6 +87,7 @@ exports.createRequest = async (req, res, next) => {
     }
 }
 
+// set a new password for a user with a valid password request hash
 exports.updatePassword = async (req, res, next) => {
 
     const { hash, email, password } = req.body
@@ -110,6 +109,7 @@ exports.updatePassword = async (req, res, next) => {
             return res.status(404).json({ error: 'User not found.' })
         }
 
+        // if the link is expired, wipe the reset request
         const expiryDate = user.requestDate.getTime() + offset
         if (new Date().getTime() > expiryDate) {
 
