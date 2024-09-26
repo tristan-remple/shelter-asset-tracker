@@ -5,8 +5,7 @@ const multer = require('multer');
 
 // Create a multer instance to handle both file upload and form fields
 exports.upload = async (req, file) => {
-    console.log('upload')
-
+    console.log('upload');
 
     // Set multer to store the images in the img folder
     const storage = multer.diskStorage({
@@ -33,7 +32,7 @@ exports.upload = async (req, file) => {
     multer({
         storage: storage,
         fileFilter: imageOnly
-    }).single('file')
+    }).single('file');
 
     multer().fields([
         { name: 'name' },

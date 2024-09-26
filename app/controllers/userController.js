@@ -1,11 +1,9 @@
 const { models } = require('../data');
-const { hashPassword } = require('../util/hash');
-const { verifyToken } = require('../util/token');
 
 exports.createNewUser = async (req, res, next) => {
     try {
-        const { email, password, name, isAdmin, auths, authorizedBy } = req.body;
-        if (!email || !password || !name || isAdmin === undefined) {
+        const { email, name, isAdmin, auths, authorizedBy } = req.body;
+        if (!email || !name || isAdmin === undefined) {
             return res.status(400).json({ error: 'Bad request' });
         }
 
@@ -14,11 +12,9 @@ exports.createNewUser = async (req, res, next) => {
             return res.status(400).json({ error: 'User already exists' });
         }
 
-        const hashedPassword = await hashPassword(password);
-
         const newUser = await models.User.create({
             email: email,
-            password: hashedPassword,
+            password: null,
             name: name,
             isAdmin: isAdmin
         });
@@ -104,6 +100,8 @@ exports.getUserById = async (req, res, next) => {
                 'email',
                 'name',
                 'isAdmin',
+                'requestHash',
+                'requestExpiry',
                 'createdAt',
                 'updatedAt'
             ],

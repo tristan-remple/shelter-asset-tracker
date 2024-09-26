@@ -7,7 +7,7 @@ module.exports = (db, { DataTypes }) => {
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING,
@@ -26,7 +26,7 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        requestDate: {
+        requestExpiry: {
             type: DataTypes.DATE,
             allowNull: true
         }

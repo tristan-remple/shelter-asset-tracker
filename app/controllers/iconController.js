@@ -75,7 +75,7 @@ exports.createNewIcon = async (req, res, next) => {
             alt: newIcon.alt,
             src: newIcon.src,
             success: true
-        }
+        };
         return res.status(201).json(createResponse);
 
     } catch (err) {

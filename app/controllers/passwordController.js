@@ -1,96 +1,45 @@
-const { models } = require('../data')
-const { hashPassword } = require('../util/hash')
-
-const nodemailer = require("nodemailer")
-var randomstring = require("randomstring")
-const dotenv = require('dotenv')
-
-dotenv.config()
-
-// set the length of time that password resets should be available, in days
-const expireInDays = 7
-const offset = expireInDays * 86400000
-
-// set up nodemailer
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-    },
-})
-
-// send a password reset email
-async function sendEmail(user) {
-
-    const { name, email, requestHash, requestDate } = user
-    if (!name || !email || !requestHash || !requestDate) {
-        return {
-            success: false,
-            messsage: "User lacks required fields."
-        }
-    }
-
-    // generate message
-    const expiryDate = new Date(requestDate.getTime() + offset)
-    const formattedDate = expiryDate.toString()
-    const messageText = `Hello ${ name },\n
-        You have requested a password reset for your Shelter Asset Tracker account. To enter your new password, please visit ${ process.env.APP_URL }/reset/${ requestHash }. This link will expire on ${ formattedDate }.\n
-        This email account is not monitored. If you have questions, please contact your supervisor.`
-
-    try {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
-            from: `"Shelter Asset Tracker" <${ process.env.EMAIL_USER }>`,
-            to: email,
-            subject: "Password Reset",
-            text: messageText
-        })
-
-        return {
-            success: true,
-            message: info.messageId
-        }
-
-    } catch(err) {
-        return {
-            success: false,
-            message: err
-        }
-    }
-}
+const { models } = require('../data');
+const { hashPassword, createReset } = require('../util/hash');
+const { sendEmail } = require('../util/email');
 
 // set password reset request fields on the current user
 exports.createRequest = async (req, res, next) => {
     try {
-        const user = req.data
+        const user = req.data;
+        const resetRequest = createReset;
 
-        const hash = randomstring.generate()
+        user.set(resetRequest);
+        const { name, email, requestHash, requestExpiry } = user;
+        if (!name || !email || !requestHash || !requestExpiry) {
+            return res.status(400).json({ error: 'Bad request.' });
+        }
 
-        user.set({
-            requestHash: hash,
-            requestDate: new Date()
-        })
+        const emailResponse = await sendEmail(user);
+        console.log(emailResponse);
 
-        await user.save()
+        if (!emailResponse.success) {
+            return res.status(500).json('Email failed to send.');
+        }
 
-        const emailResponse = await sendEmail(user)
-        console.log(emailResponse)
-
+        await user.save();
         return res.status(200).json(emailResponse);
 
     } catch (err) {
-        console.error(err)
-        return res.status(500).json({ error: 'Server error.' })
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
     }
 }
 
 // set a new password for a user with a valid password request hash
 exports.updatePassword = async (req, res, next) => {
 
-    const { hash, email, password } = req.body
+    const hash = req.params.hash;
+    const { email, password } = req.body;
+    const validPassword = checkPassword(password);
+
+    if ( !email || !validPassword ) {
+        return res.status(400).json({ error: 'Bad request' });
+    };
 
     try {
         const user = await models.User.findOne({
@@ -99,6 +48,8 @@ exports.updatePassword = async (req, res, next) => {
                 'email',
                 'name',
                 'isAdmin',
+                'requestHash',
+                'requestExpiry',
                 'createdAt',
                 'updatedAt'
             ],
@@ -106,24 +57,22 @@ exports.updatePassword = async (req, res, next) => {
         })
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found.' })
+            return res.status(404).json({ error: 'User not found.' });
         }
 
         // if the link is expired, wipe the reset request
-        const expiryDate = user.requestDate.getTime() + offset
-        if (new Date().getTime() > expiryDate) {
-
+        if (new Date().getTime() > user.requestExpiry) {
             user.set({
                 requestHash: null,
-                requestDate: null
-            })
+                requestExpiry: null
+            });
     
-            user.save()
+            user.save();
             
-            return res.status(401).json({ error: 'Expired.' })
+            return res.status(401).json({ error: 'Expired request.' })
         }
 
-        const hashedPassword = await hashPassword(password)
+        const hashedPassword = await hashPassword(password); 
         user.set({
             password: hashedPassword,
             requestHash: null,

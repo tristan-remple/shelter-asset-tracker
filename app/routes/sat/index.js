@@ -12,6 +12,7 @@ const unitsRouter = require('./units');
 const usersRouter = require('./users');
 const reportsRouter = require('./reports');
 const settingsRouter = require('./settings');
+const passwordsRouter = require('./passwords');
 
 // Middleware for SAT CRUD routes
 
@@ -22,11 +23,11 @@ router.use('/templates', templateRouter);
 router.use('/units', unitsRouter);
 router.use('/users/authorize', authorizeRouter);
 router.use('/users', usersRouter);
+router.use('/reset', passwordsRouter);
 
 /*SAT Session Routes*/
 router.post('/login', login);
 router.post('/logout', logout);
-router.put('/reset/:id', reset);
 
 /*Report Routes*/
 router.use('/reports', reportsRouter);
