@@ -1,13 +1,17 @@
+// external dependencies
 import { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+// internal dependencies
 import { statusContext } from '../Services/Context'
 import apiService from '../Services/apiService'
 import handleChanges from '../Services/handleChanges'
 
+// components
 import Error from '../Components/Error'
 import Button from '../Components/Button'
 import ChangePanel from '../Components/ChangePanel'
+import Checkbox from '../Components/Checkbox'
 
 //------ MODULE INFO
 // This module allows the admin to create a new user.
@@ -28,10 +32,10 @@ const UserCreate = () => {
         name: "",
         isAdmin: false,
         createdAt: "",
-        auths: [],
         email: "",
         password: "test",
-        authorizedBy: 1
+        authorizedBy: 1,
+        facilities: []
     })
 
     // list of locations for dropdown
@@ -46,35 +50,41 @@ const UserCreate = () => {
                         loc.active = false
                         return loc
                     })
-                    newChanges.auths = facilityList
+                    newChanges.facilities = facilityList
                     setChanges(newChanges)
                 }
             })
         })()
     }, [])
 
-    const handleLocations = (event, changes, setChanges, setUnsaved) => {
-        const fieldName = parseInt(event.target.name)
+    // handle toggles to the location auth checkboxes
+    const handleLocations = (event) => {
+        const fieldName = event.target.id ? parseInt(event.target.id) : parseInt(event.target.parentNode.id)
         const newChanges = {...changes}
-        const currentIndex = newChanges.auths.findIndex(loc => loc.id === fieldName)
-        newChanges.auths[currentIndex].active = newChanges.auths[currentIndex].active ? false : true
+        const currentIndex = newChanges.facilities.findIndex(loc => loc.id === fieldName)
+        newChanges.facilities[currentIndex].active = newChanges.facilities[currentIndex].active ? false : true
         setChanges(newChanges)
         setUnsaved(true)
     }
 
-    const locationSelector = changes.auths?.map(loc => {
+    const locationSelector = changes.facilities?.map(loc => {
         return (
             <li key={ loc.id }>
-                <label htmlFor={ loc.id }>{ loc.name }</label>
-                <input 
-                    type="checkbox"
-                    name={ loc.id } 
-                    checked={ loc.active }
-                    onChange={ (event) => handleLocations(event, changes, setChanges, setUnsaved) } 
+                <Checkbox 
+                    id={ loc.id } 
+                    name={ loc.name } 
+                    checked={ loc.active } 
+                    changeHandler={ (event) => handleLocations(event) } 
                 />
             </li>
         )
     })
+
+    const handleAdmin = () => {
+        const newChanges = {...changes}
+        newChanges.isAdmin = changes.isAdmin ? false : true
+        setChanges(newChanges)
+    }
 
     // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
     const validateEmail = (email) => {
@@ -95,7 +105,7 @@ const UserCreate = () => {
         }
 
         const newUser = {...changes}
-        newUser.auths = newUser.auths.filter(loc => loc.active).map(loc => loc.id)
+        newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
         console.log(newUser)
 
         apiService.postNewUser(newUser, (response) => {
@@ -141,15 +151,21 @@ const UserCreate = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Admin?
+                            Grant Admin?
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="checkbox"
-                                name="isAdmin" 
+                            <Checkbox
+                                id="admin"
+                                name="Grant Admin" 
                                 checked={ changes.isAdmin }
-                                onChange={ (event) => handleChanges.handleCheckChange(event, changes, setChanges, setUnsaved) } 
+                                changeHandler={ handleAdmin } 
                             />
+                            <p>
+                                <br />
+                                Setting a user to admin allows them full access to everything. This includes the ability to edit other users and change the admin status of other users. It also includes the ability to view the dashboard and create, edit, and delete templates, locations, and units.
+                                <br /><br />
+                                Be careful who you grant this role to, and make sure at least one person is an admin.
+                            </p>
                         </div>
                     </div>
                     <div className="col col-info">

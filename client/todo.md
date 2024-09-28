@@ -91,4 +91,5 @@ const postData = {
 - ✅ find how to convert json -> csv and download
 
 ## Passwords
-- how are passwords set and reset?
+- ✅ how are passwords set and reset?
+- password error messages

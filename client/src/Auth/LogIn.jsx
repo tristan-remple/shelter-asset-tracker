@@ -15,6 +15,8 @@ import Button from '../Components/Button'
 // It has the "/" route, so it will be the first thing users see.
 // It automatically redirects to "/location" if the user is already logged in.
 // Imported by: App
+// Navigates to: ForgotPassword, LocationList, LocationDetails
+// Navigated from: Header, ForgotPassword
 
 const LogIn = () => {
 
@@ -128,8 +130,11 @@ const LogIn = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
-                    <Button text="Log In" linkTo={ submitLogin } type="action" id="loginBtn"/>
+                <div className="row row-info title-row">
+                    <div class="col-info">
+                        <Button text="Log In" linkTo={ submitLogin } type="action" id="loginBtn" />
+                        <Button text="Forgot Password?" linkTo="/reset" type="nav" id="resetPass" />
+                    </div>
                 </div>
                 </div>
             </div>

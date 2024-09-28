@@ -111,7 +111,7 @@ const UserEdit = () => {
                     id={ loc.id }
                     name={ loc.name }
                     checked={ loc.active }
-                    changeHandler={ (event) => handleLocations(event, changes, setChanges, setUnsaved) }
+                    changeHandler={ (event) => handleLocations(event) }
                 />
             </li>
         )

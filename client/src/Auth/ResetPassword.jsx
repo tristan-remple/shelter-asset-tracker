@@ -14,31 +14,25 @@ import ChangePanel from "../Components/ChangePanel"
 
 //------ MODULE INFO
 // This module allows a user to reset their own password by typing the new password twice.
+// The hash is in the url, and the user must also type their email address.
 // Imported by: App
+// Navigated from: Email link
+// Navigates to: LogIn
 
 const ResetPassword = () => {
 
     // the url for this page is /reset/:hash
-    // the hash is set by the server and should be emailed to the user when they request a reset password
+    // the hash is set by the server and emailed to the user when they request a reset password
     const { hash } = useParams()
 
     // other setup
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
 
-    // check the database for a password reset request
-    const resetRequest = authService.getResetRequest(hash)
-    if (!resetRequest || !resetRequest.userId) {
-        return <Error err="permission" />
-    }
-
-    // get the userId from the database
-    const { userId } = resetRequest
-
     // set up form controls
     const [ unsaved, setUnsaved ] = useState(false)
     const [ changes, setChanges ] = useState({
-        temp: "",
+        email: "",
         password: "",
         retypePassword: ""
     })
@@ -60,15 +54,16 @@ const ResetPassword = () => {
         // validation
         if ( changes.password !== changes.retypePassword) {
             setStatus("Please double check that you have typed the same password twice.")
+            return
         } else if (!checkPassword(changes.password)) {
             setStatus("Your password must be at least 8 characters and include a mix of letters, numbers, and symbols.")
-        } else {
-            const resetResponse = authService.resetPassword({
-                userId,
-                temporaryPassword: changes.temp,
-                password: changes.password
-            })
-            if (resetResponse?.status === 200) {
+            return
+        }
+
+        const resetObject = { ...changes }
+        resetObject.hash = hash
+        authService.resetPassword(resetObject, (response) => {
+            if (response?.success) {
 
                 // on success, log out the current user, set the status and unsaved, and send them to the login screen
                 authService.logout()
@@ -78,7 +73,7 @@ const ResetPassword = () => {
             } else {
                 setStatus("We weren't able to reset your password.")
             }
-        }
+        })
     }
 
     return (
@@ -96,13 +91,13 @@ const ResetPassword = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Temporary Password
+                            Email
                         </div>
                         <div className="col-content">
                             <input 
-                                type="password" 
-                                name="temp" 
-                                value={ changes.temp } 
+                                type="email" 
+                                name="email" 
+                                value={ changes.email } 
                                 onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
