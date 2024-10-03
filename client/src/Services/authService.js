@@ -40,6 +40,8 @@ class authService {
         .catch(err => {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
+            } else if (err.message === "no password") {
+                callback({ error: "password" })
             } else {
                 callback({ error: errorCodes[err?.response?.status] })
             }
@@ -66,23 +68,61 @@ class authService {
         })
     }
 
-    requestResetPassword(id) {
-        return {
-            userId: id,
-            success: true
-        }
+    // Called by: UserDetails
+    requestResetPassword = async(id, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/reset/${ id }`, {
+            withCredentials: true,
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err?.response?.status] })
+            }
+        })
     }
 
-    getResetRequest(hash) {
-        return {
-            userId: 3,
-            success: true
-        }
+    // Called by: ResetPassword
+    resetPassword = async(request, callback) => {
+        const { hash } = request
+        await axios.post(`${ import.meta.env.VITE_API_URL }/reset/${ hash }`, request, {
+            withCredentials: true,
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err?.response?.status] })
+            }
+        })
     }
 
-    resetPassword(request) {
-        request.success = true
-        return request
+    requestPasswordEmail = async(email, callback) => {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/reset/resend`, email, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err?.response?.status] })
+            }
+        })
     }
 }
 

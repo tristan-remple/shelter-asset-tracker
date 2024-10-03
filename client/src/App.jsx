@@ -13,6 +13,7 @@ import Footer from './Components/Footer'
 
 import LogIn from './Auth/LogIn'
 import LogOut from './Auth/LogOut'
+import ForgotPassword from './Auth/ForgotPassword'
 import FAQ from './Components/FAQ'
 import Dashboard from './Admin/Dashboard'
 import Settings from './Admin/Settings'
@@ -81,6 +82,7 @@ function App() {
         <Routes>
           <Route path="/" element={ <LogIn /> } />
           <Route path="/logout" element={ <LogOut /> } />
+          <Route path="/reset" element={ <ForgotPassword /> } />
           <Route path="/reset/:hash" element={ <ResetPassword /> } />
           <Route element={<GeneralRoutes />}>
             <Route path="/item/:id" element={ <ItemDetails /> } />

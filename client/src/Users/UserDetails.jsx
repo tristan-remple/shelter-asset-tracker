@@ -46,7 +46,7 @@ const UserDetails = () => {
     }
 
     // fetch user data from the api
-    const [ user, setUser ] = useState([])
+    const [ user, setUser ] = useState()
     useEffect(() => {
         (async()=>{
             await apiService.singleUser(profileId, function(data){
@@ -62,18 +62,19 @@ const UserDetails = () => {
 
     // send reset password request to the api
     const resetPassword = () => {
-        const resetResponse = authService.requestResetPassword(profileId)
-        if (resetResponse.error) {
-            setErr(resetResponse.error)
-        } else {
-            let newStatus = `The password has been reset for ${ user.name }. `
-            if (currentUser.userId === profileId) {
-                newStatus += "Please check your email."
+        authService.requestResetPassword(profileId, (res) => {
+            if (!res.success) {
+                setErr(res.error)
             } else {
-                newStatus += "Please have them check their email."
+                let newStatus = `The password has been reset for ${ user.name }. `
+                if (userId === profileId) {
+                    newStatus += "Please check your email."
+                } else {
+                    newStatus += "Please have them check their email."
+                }
+                setStatus(newStatus)
             }
-            setStatus(newStatus)
-        }
+        })
     }
 
     // if the user viewing the profile is the current user or an admin, allow them to reset their password and edit their details

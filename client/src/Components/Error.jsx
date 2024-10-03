@@ -53,6 +53,9 @@ const Error = ({ err }) => {
         case "dependency": 
             errorText = "The thing you're trying to delete cannot be deleted while it is being used."
             break
+        case "password":
+            errorText = "A password reset has been requested for your account, and you can't log in until it has been completed."
+            break
         default:
             errorText = "Something went wrong."
     }
