@@ -239,7 +239,6 @@ exports.flipUnit = async (req, res, next) => {
     try {
         const unit = req.data;
 
-        const currentDate = new Date();
         const inspectItems = [];
         const discardItems = [];
 
