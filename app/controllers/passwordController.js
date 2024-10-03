@@ -1,5 +1,5 @@
 const { models } = require('../data');
-const { hashPassword, createReset } = require('../util/hash');
+const { hashPassword, createReset } = require('../util/password');
 const { sendEmail } = require('../util/email');
 
 // set password reset request fields on the current user
