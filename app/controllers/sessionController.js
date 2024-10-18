@@ -11,6 +11,11 @@ exports.login = async (req, res, next) => {
 
     try {
         const user = await models.User.findOne({ where: { email } });
+        
+        if (!user.password) {
+
+        }
+
         const validPassword = await comparePasswords(password, user.password);
 
         if (!user || !validPassword) {

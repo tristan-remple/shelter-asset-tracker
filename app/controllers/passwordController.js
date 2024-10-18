@@ -1,6 +1,6 @@
-const { models } = require('../data');
+const models  = require('../data');
 const { hashPassword, createReset, comparePasswords, checkPassword } = require('../util/password');
-const { sendEmail } = require('../util/mail');
+const sendEmail = require('../util/mail');
 
 // set password reset request fields on the current user
 exports.createRequest = async (req, res, next) => {
@@ -48,15 +48,40 @@ exports.createRequest = async (req, res, next) => {
 }
 
 exports.resendRequest = async (req, res, next) => {
-    const { name, email, requestHash, requestExpiry } = req.user;
-    const emailResponse = await sendEmail(name, email, requestHash, requestExpiry);
+    const { email } = req.body;
 
-    const response = {
-        success: true,
-        emailSent: emailResponse
-    };
+    try {
+        const user = await models.User.findOne({
+            attributes: [
+                'name',
+                'requestHash',
+                'requestExpiry',
+            ],
+            where: { email: email }
+        });
 
-    return res.status(200).json(response);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        const { name, requestHash, requestExpiry } = user;
+        if (!requestHash || !requestExpiry){
+            return res.status(404).json({ error: 'Request not found.' });
+        }
+    
+        const emailResponse = await sendEmail(name, email, requestHash, requestExpiry);
+    
+        const response = {
+            success: true,
+            emailSent: emailResponse
+        };
+    
+        return res.status(200).json(response);
+
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ error: 'Server error.' })
+    }
 }
 
 // set a new password for a user with a valid password request hash
