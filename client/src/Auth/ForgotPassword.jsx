@@ -44,7 +44,7 @@ const ForgotPassword = () => {
             if (response.success) {
                 setStatus("An email has been sent to you with a link to reset your password. You may need to wait a moment, or check your junk mail.")
             } else {
-                setStatus("No active password reset request was found for that email. Please contact the admin to request a password reset.")
+                setStatus("We were unable to send a password reset to that email. Please check that it is entered correctly.")
             }
         })
     }

@@ -78,6 +78,12 @@ const LogIn = () => {
                 setStatus(`Welcome.`)
                 setUnsaved(false)
 
+                // if the user has an active reset request, send them to their profile
+                if (response.activeReset) {
+                    setStatus("You have made a request to change your password. If you do not need to reset your password, please cancel the request.")
+                    navigate("/user")
+                }
+
                 // navigate to the user's location(s)
                 if (response.facilityAuths.length === 1 && !userDetails.isAdmin) {
                     navigate(`/location/${ response.facilityAuths[0] }`)
@@ -131,7 +137,7 @@ const LogIn = () => {
                     </div>
                 </div>
                 <div className="row row-info title-row">
-                    <div class="col-info">
+                    <div className="col-info">
                         <Button text="Log In" linkTo={ submitLogin } type="action" id="loginBtn" />
                         <Button text="Forgot Password?" linkTo="/reset" type="nav" id="resetPass" />
                     </div>

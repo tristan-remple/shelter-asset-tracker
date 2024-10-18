@@ -70,7 +70,7 @@ class authService {
 
     // Called by: UserDetails
     requestResetPassword = async(id, callback) => {
-        await axios.get(`${ import.meta.env.VITE_API_URL }/reset/${ id }`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/reset/${ id }`, {
             withCredentials: true,
             headers: {
                 "content-type": "application/json"
@@ -91,7 +91,7 @@ class authService {
     // Called by: ResetPassword
     resetPassword = async(request, callback) => {
         const { hash } = request
-        await axios.post(`${ import.meta.env.VITE_API_URL }/reset/${ hash }`, request, {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/users/reset/${ hash }`, request, {
             withCredentials: true,
             headers: {
                 "content-type": "application/json"
@@ -110,8 +110,27 @@ class authService {
     }
 
     requestPasswordEmail = async(email, callback) => {
-        await axios.post(`${ import.meta.env.VITE_API_URL }/reset/resend`, email, {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/users/reset/resend`, email, {
             withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err?.response?.status] })
+            }
+        })
+    }
+
+    cancelResetPassword = async(id, callback) => {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/users/reset/${ id }/cancel`, {
+            withCredentials: true,
+            headers: {
+                "content-type": "application/json"
+            }
         })
         .then(res => {
             callback(res.data)

@@ -93,3 +93,7 @@ const postData = {
 ## Passwords
 - ✅ how are passwords set and reset?
 - password error messages
+- if forgot password -> prompt to request reset email
+- if login successful and reset request is active -> allow to cancel request
+- if reset requested but email fails -> prompt to update email or contact supervisor
+- ✅ do not null password on request

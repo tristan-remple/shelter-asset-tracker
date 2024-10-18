@@ -89,6 +89,22 @@ const UserDetails = () => {
         </div>
     }
 
+    const cancelReset = () => {
+        authService.cancelResetPassword(profileId, (res) => {
+            if (!res.success) {
+                setErr(res.error)
+            } else {
+                setStatus(`The password reset for ${ user.name } has been cancelled.`)
+            }
+        })
+    }
+
+    if (userDetails.activeReset) {
+        passwordLink = <div className="col-2 d-flex justify-content-end">
+            <Button text="Cancel Reset" linkTo={ cancelReset } type="action" />
+        </div>
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
