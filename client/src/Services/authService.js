@@ -110,7 +110,8 @@ class authService {
     }
 
     requestPasswordEmail = async(email, callback) => {
-        await axios.post(`${ import.meta.env.VITE_API_URL }/users/reset/resend`, email, {
+        const req = { email }
+        await axios.post(`${ import.meta.env.VITE_API_URL }/users/reset/resend`, req, {
             withCredentials: true
         })
         .then(res => {

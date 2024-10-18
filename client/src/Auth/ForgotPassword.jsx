@@ -76,7 +76,7 @@ const ForgotPassword = () => {
                     </div>
                 </div>
                 <div className="row row-info">
-                    <div class="col-info">
+                    <div className="col-info">
                         <Button text="Request Reset" linkTo={ submitForm } type="action" id="resetPass" />
                         <Button text="Log In" linkTo="/" type="nav" id="loginBtn" />
                     </div>
