@@ -1,6 +1,6 @@
-const models  = require('../data');
+const { models }  = require('../data');
 const { hashPassword, createReset, comparePasswords, checkPassword } = require('../util/password');
-const sendEmail = require('../util/mail');
+const { sendEmail } = require('../util/mail');
 
 // set password reset request fields on the current user
 exports.createRequest = async (req, res, next) => {
