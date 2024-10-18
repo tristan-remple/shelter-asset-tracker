@@ -42,6 +42,10 @@ exports.createRequest = async (req, res, next) => {
     }
 }
 
+exports.resendRequest = async (req, res, next) => {
+    
+}
+
 // set a new password for a user with a valid password request hash
 exports.updatePassword = async (req, res, next) => {
 
