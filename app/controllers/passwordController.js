@@ -58,8 +58,8 @@ exports.updatePassword = async (req, res, next) => {
     const { email, password } = req.body;
     const validPassword = checkPassword(password);
 
-    if ( !email || !validPassword ) {
-        return res.status(400).json({ error: 'Bad request' });
+    if ( !validPassword ) {
+        return res.status(400).json({ error: 'Invalid Password' });
     };
 
     try {
