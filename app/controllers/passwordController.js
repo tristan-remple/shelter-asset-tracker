@@ -109,11 +109,11 @@ exports.updatePassword = async (req, res, next) => {
                 'updatedAt'
             ],
             where: { requestHash: hash, email: email }
-        })
+        });
 
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
-        }
+        };
 
         // if the link is expired, wipe the reset request
         if (new Date().getTime() > user.requestExpiry) {
@@ -125,7 +125,7 @@ exports.updatePassword = async (req, res, next) => {
             user.save();
             
             return res.status(401).json({ error: 'Expired request.' })
-        }
+        };
 
         if (user.password){
             const duplicatePassword = await comparePasswords(password, user.password);
@@ -133,28 +133,28 @@ exports.updatePassword = async (req, res, next) => {
             if (duplicatePassword){
                 return res.status(400).json({ error: 'Bad request' });
             }
-        }
+        };
 
         const hashedPassword = await hashPassword(password); 
         user.set({
             password: hashedPassword,
             requestHash: null,
-            requestDate: null
-        })
+            requestExpiry: null
+        });
 
-        user.save()
+        user.save();
 
         const updateResponse = {
             userId: user.id,
             name: user.name,
             email: user.email,
             success: true
-        }
+        };
 
-        return res.status(200).json(updateResponse)
+        return res.status(200).json(updateResponse);
 
     } catch (err) {
-        console.error(err)
-        return res.status(500).json({ error: 'Server error.' })
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
     }
 }
