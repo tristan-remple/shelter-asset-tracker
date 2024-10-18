@@ -18,10 +18,13 @@ const transporter = nodemailer.createTransport({
 
 // send a password reset email
 exports.sendEmail = async(name, email, requestHash, requestExpiry) => {
+
+    const formattedDate = requestExpiry.toLocaleDateString();
+    const formattedTime = requestExpiry.toLocaleTimeString(); 
     try {
         // generate message
         const messageText = `Hello ${ name },\n
-            You have requested a password reset for your Shelter Asset Tracker account. To enter your new password, please visit ${ process.env.APP_URL }/reset/${ requestHash }. This link will expire on ${ requestExpiry }.\n
+            You have requested a password reset for your Shelter Asset Tracker account. To enter your new password, please visit ${ process.env.APP_URL }/reset/${ requestHash }. This link will expire on ${ formattedDate } at ${ formattedTime }.\n
             This email account is not monitored. If you have questions, please contact your supervisor.`;
 
         // send mail with defined transport object

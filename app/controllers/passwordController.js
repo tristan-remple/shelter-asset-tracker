@@ -6,17 +6,22 @@ const { sendEmail } = require('../util/mail');
 exports.createRequest = async (req, res, next) => {
     try {
         const user = req.data;
-        const resetRequest = createReset;
+        const resetRequest = await createReset();
 
-        user.set(resetRequest);
+        user.set({
+            requestHash: resetRequest.requestHash,
+            requestExpiry: resetRequest.requestExpiry
+        });
+
+
         const { name, email, requestHash, requestExpiry } = user;
         if (!name || !email || !requestHash || !requestExpiry) {
             return res.status(400).json({ error: 'Bad request.' });
         }
 
-        const emailResponse = await sendEmail(user);
-
+        const emailResponse = await sendEmail(name, email, requestHash, requestExpiry);
         await user.save();
+
         const response = {
             success: true,
             emailSent: emailResponse
@@ -43,7 +48,7 @@ exports.createRequest = async (req, res, next) => {
 }
 
 exports.resendRequest = async (req, res, next) => {
-    
+
 }
 
 // set a new password for a user with a valid password request hash
