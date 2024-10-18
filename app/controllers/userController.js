@@ -32,7 +32,6 @@ exports.createNewUser = async (req, res, next) => {
         };
 
         const user = await models.User.findOne({ where: { email } });
-        console.log(user.id)
         
         req.data = user;
         req.isNewUser = true;

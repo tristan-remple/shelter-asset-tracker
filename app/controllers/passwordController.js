@@ -48,7 +48,15 @@ exports.createRequest = async (req, res, next) => {
 }
 
 exports.resendRequest = async (req, res, next) => {
+    const { name, email, requestHash, requestExpiry } = req.user;
+    const emailResponse = await sendEmail(name, email, requestHash, requestExpiry);
 
+    const response = {
+        success: true,
+        emailSent: emailResponse
+    };
+
+    return res.status(200).json(response);
 }
 
 // set a new password for a user with a valid password request hash
