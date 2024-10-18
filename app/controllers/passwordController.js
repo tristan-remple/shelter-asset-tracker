@@ -59,7 +59,7 @@ exports.updatePassword = async (req, res, next) => {
     const validPassword = checkPassword(password);
 
     if ( !validPassword ) {
-        return res.status(400).json({ error: 'Invalid Password' });
+        return res.status(400).json({ error: 'Bad request.' });
     };
 
     try {
@@ -94,7 +94,8 @@ exports.updatePassword = async (req, res, next) => {
             return res.status(401).json({ error: 'Expired request.' })
         }
 
-        const duplicatePassword = comparePasswords(password, user.password);
+        const duplicatePassword = await comparePasswords(password, user.password);
+
         if (duplicatePassword){
             return res.status(400).json({ error: 'Bad request' });
         }
