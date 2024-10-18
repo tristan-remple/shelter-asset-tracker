@@ -127,10 +127,12 @@ exports.updatePassword = async (req, res, next) => {
             return res.status(401).json({ error: 'Expired request.' })
         }
 
-        const duplicatePassword = await comparePasswords(password, user.password);
+        if (user.password){
+            const duplicatePassword = await comparePasswords(password, user.password);
 
-        if (duplicatePassword){
-            return res.status(400).json({ error: 'Bad request' });
+            if (duplicatePassword){
+                return res.status(400).json({ error: 'Bad request' });
+            }
         }
 
         const hashedPassword = await hashPassword(password); 
