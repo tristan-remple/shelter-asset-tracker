@@ -32,15 +32,10 @@ exports.sendEmail = async(name, email, requestHash, requestExpiry) => {
             text: messageText
         });
 
-        return {
-            success: true,
-            message: info.messageId
-        };
+        return true;
 
     } catch(err) {
-        return {
-            success: false,
-            message: err
-        };
+        console.error(err);
+        return false;
     }
 }

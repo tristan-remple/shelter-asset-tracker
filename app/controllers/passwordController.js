@@ -1,5 +1,5 @@
 const { models } = require('../data');
-const { hashPassword, createReset } = require('../util/password');
+const { hashPassword, createReset, comparePasswords } = require('../util/password');
 const { sendEmail } = require('../util/mail');
 
 // set password reset request fields on the current user
@@ -15,14 +15,26 @@ exports.createRequest = async (req, res, next) => {
         }
 
         const emailResponse = await sendEmail(user);
-        console.log(emailResponse);
-
-        if (!emailResponse.success) {
-            return res.status(500).json('Email failed to send.');
-        }
 
         await user.save();
-        return res.status(200).json(emailResponse);
+        const response = {
+            success: true,
+            emailSent: emailResponse
+        };
+
+        if (user.isNewUser){
+            response = {
+                userId: user.id,
+                name: user.name,
+                isAdmin: user.isAdmin,
+                created: user.createdAt,
+                success: true,
+                emailSent: emailResponse
+            };
+            return res.status(201).json(response);
+        }
+
+        return res.status(200).json(response);
 
     } catch (err) {
         console.error(err);
@@ -47,6 +59,7 @@ exports.updatePassword = async (req, res, next) => {
                 'id',
                 'email',
                 'name',
+                'password',
                 'isAdmin',
                 'requestHash',
                 'requestExpiry',
@@ -70,6 +83,11 @@ exports.updatePassword = async (req, res, next) => {
             user.save();
             
             return res.status(401).json({ error: 'Expired request.' })
+        }
+
+        const duplicatePassword = comparePasswords(password, user.password);
+        if (duplicatePassword){
+            return res.status(400).json({ error: 'Bad request' });
         }
 
         const hashedPassword = await hashPassword(password); 

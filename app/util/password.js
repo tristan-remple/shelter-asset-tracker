@@ -27,7 +27,6 @@ exports.comparePasswords = async (password, hashedPassword) => {
 
 exports.createReset = async () => {
     return {
-        password: null,
         requestHash: randomstring.generate(hashLength),
         requestExpiry: new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000)
     }

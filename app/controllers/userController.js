@@ -29,17 +29,16 @@ exports.createNewUser = async (req, res, next) => {
             });
 
             await Promise.all(facilityAuths);
-        }
-
-        const createResponse = {
-            userId: newUser.id,
-            name: newUser.name,
-            isAdmin: newUser.isAdmin,
-            created: newUser.createdAt,
-            success: true
         };
 
-        return res.status(201).json(createResponse);
+        const user = await models.User.findOne({ where: { email } });
+        console.log(user.id)
+        
+        req.data = user;
+        req.isNewUser = true;
+
+        next();
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });

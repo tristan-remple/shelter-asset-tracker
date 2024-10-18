@@ -8,11 +8,4 @@ const user = require('../../middleware/user');
 const passwordController = require('../../controllers/passwordController');
 const userController = require('../../controllers/userController');
 
-// Define routes for handling password operations
-router.route('/reset/:id')
-  .get(userController.getUserById, auth, user, passwordController.createRequest);
-
-router.route('/reset/:hash')
-  .post(passwordController.updatePassword);
-  
 module.exports = router
