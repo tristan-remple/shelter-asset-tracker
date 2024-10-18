@@ -15,7 +15,9 @@ const rename = function (req, res, next) {
     var files = req.files;
     if (files) {
         //Move file to the deployment folder.
-        var newPath = `/opt/render/project/src/client/public/img/${req.body.date}-${req.body.name}.${req.body.ext}`;
+        var newPath = `${__dirname}/client/public/img/${req.body.date}-${req.body.name}.${req.body.ext}`;
+        console.log(newPath)
+        console.log(files[0].path)
         _fs.renameSync(files[0].path, newPath);
     }
 
