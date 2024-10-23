@@ -92,7 +92,7 @@ exports.deleteIcons = async (req, res, next) => {
             success: true
         };
 
-        const iconsToDelete = await Icon.findAll({
+        const iconsToDelete = await models.Icon.findAll({
             where: {
                 id: iconIds
             }
