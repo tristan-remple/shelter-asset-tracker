@@ -73,7 +73,7 @@ exports.updateSettings = async (req, res, next) => {
         console.error(err);
         if (err.name = 'SequelizeForeignKeyConstraintError') {
             return res.status(405).json({ error: 'Dependency error.' })
-        }
+        };
         return res.status(500).json({ error: 'Server error.' });
     }
 };

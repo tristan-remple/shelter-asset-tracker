@@ -89,6 +89,7 @@ exports.deleteIcons = async (req, res, next) => {
         const iconIds = req.body;
         const deleteResponse = {
             deletedIcons: 0,
+            failed: [],
             success: true
         };
 
@@ -100,14 +101,21 @@ exports.deleteIcons = async (req, res, next) => {
 
         if (iconsToDelete.length === 0) {
             return res.status(404).json({ error: 'No icons found.' });
-        }
+        };
 
         for (const icon of iconsToDelete) {
-            const deletedIcon = await icon.destroy();
-            
-            if (deletedIcon) {
-                deleteResponse.deletedIcons++;
-            };
+            try {
+                const deletedIcon = await icon.destroy();
+                
+                if (deletedIcon) {
+                    deleteResponse.deletedIcons++;
+                };
+            } catch (err) {
+                deleteResponse.failed.push({
+                    id: icon.id,
+                    error: err.message
+                });
+            }
         };
 
         return res.status(200).json(deleteResponse);
