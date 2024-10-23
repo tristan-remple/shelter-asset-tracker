@@ -1,6 +1,6 @@
 const { models, Sequelize } = require('../data');
 const fs = require("fs");
-const { upload, extractFields } = require('../util/upload')
+const { upload, extractFields } = require('../util/upload');
 
 exports.getAllIcons = async (req, res, next) => {
     try {
@@ -84,27 +84,30 @@ exports.createNewIcon = async (req, res, next) => {
     }
 };
 
-exports.deleteIcon = async (req, res, next) => {
+exports.deleteIcons = async (req, res, next) => {
     try {
-        const iconId = req.params.id;
+        const iconIds = req.body;
+        const deleteResponse = {
+            deletedIcons: 0,
+            success: true
+        };
 
-        const icon = await models.Icon.findByPk(iconId);
-
-        if (!icon) {
-            return res.status(404).json({ error: 'Icon not found.' });
-        }
-
-        const deletedIcon = await icon.destroy({
-            force: true     // No soft deletes on Icons
+        const iconsToDelete = await Icon.findAll({
+            where: {
+                id: iconIds
+            }
         });
 
-        const deleteResponse = {
-            iconId: deletedIcon.id,
-            src: deletedIcon.src,
-            name: deletedIcon.name,
-            alt: deletedIcon.alt,
-            deletedAt: deletedIcon.deletedAt,
-            success: true
+        if (iconsToDelete.length === 0) {
+            return res.status(404).json({ error: 'No icons found.' });
+        }
+
+        for (const icon of iconsToDelete) {
+            const deletedIcon = await icon.destroy();
+            
+            if (deletedIcon) {
+                deleteResponse.deletedIcons++;
+            };
         };
 
         return res.status(200).json(deleteResponse);

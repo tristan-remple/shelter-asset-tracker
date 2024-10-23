@@ -30,8 +30,10 @@ router.route('/')
     .get(iconController.getAllIcons)
     .post(admin, upload.any(), rename, iconController.createNewIcon);
 
+router.route('/delete')
+    .post(admin, iconController.deleteIcons);
+
 router.route('/:id')
-    .get(iconController.getIconById, iconController.sendIcon)
-    .delete(admin, iconController.getIconById, iconController.deleteIcon);
+    .get(iconController.getIconById, iconController.sendIcon);
 
 module.exports = router;
