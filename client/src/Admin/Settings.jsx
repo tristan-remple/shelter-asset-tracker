@@ -192,7 +192,11 @@ const Settings = () => {
                             />
                         </div>
                     </div>
-                    {/* <div className="col col-info">
+                    {/* 
+                    // this block will allow the user to change their organization icon in the header
+                    // if you implement this, you can probably use an altered version of the icon uploader
+                    // but we decided it was nonessential
+                    <div className="col col-info">
                         <div className="col-head">
                             Organization Logo
                         </div>

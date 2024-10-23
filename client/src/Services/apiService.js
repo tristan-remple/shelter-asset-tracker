@@ -819,7 +819,6 @@ class apiService {
 
     // Called by: IconSelector
     deleteIcons = async(iconList, callback) => {
-        console.log(iconList)
         await axios.post(`${ import.meta.env.VITE_API_URL }/icons/delete`, iconList, {
             withCredentials: true,
             headers: {

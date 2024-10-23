@@ -202,12 +202,14 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             if (data.error) {
                 setStatus("We weren't able to delete the icons you selected.")
             } else {
-                const successCount = data.count
+                const successCount = data.deletedIcons
+                const word = count > 1 ? "icons" : "icon"
+                const verb = count > 1 ? "have" : "has"
                 setNewIcons(successCount.toString())
                 if (successCount === count) {
-                    setStatus(`${ count } icons have been deleted.`)
+                    setStatus(`${ count } ${ word } ${ verb } been deleted.`)
                 } else {
-                    setStatus(`${ successCount } out of the ${ count } icons you were trying to delete have been successfully deleted.`)
+                    setStatus(`${ successCount } out of the ${ count } ${ word } you were trying to delete ${ verb } been successfully deleted.`)
                 }
                 setIconsToDelete([])
                 setDeleteMode(false)
@@ -217,7 +219,6 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
 
     // keep keyboard navigation inside the modal
     const trap = (event) => {
-        console.log(event)
         if (event.code === "Tab" && event.shiftKey === true) {
             event.preventDefault()
         }
@@ -245,7 +246,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                     <Button text={ deleteMode ? "Cancel Delete" : "Delete Icons" } linkTo={ toggleDeleteMode } type="nav" />
                 </div>
                 { deleteMode && (<div className="col d-flex justify-content-center">
-                    <Button text={ `Delete ${ iconsToDelete.length } icons` } linkTo={ confirmDelete } type="danger" />
+                    <Button text={ `Delete ${ iconsToDelete.length } icon(s)` } linkTo={ confirmDelete } type="danger" />
                 </div> )}
                 <div className="col d-flex justify-content-center">
                     <Button text="Close Selector" linkTo={ toggle } type="nav" />
