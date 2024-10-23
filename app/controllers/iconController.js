@@ -103,7 +103,7 @@ exports.deleteIcons = async (req, res, next) => {
         }
 
         for (const icon of iconsToDelete) {
-            const deletedIcon = await icon.destroy();
+            const deletedIcon = await models.icon.destroy();
             
             if (deletedIcon) {
                 deleteResponse.deletedIcons++;
