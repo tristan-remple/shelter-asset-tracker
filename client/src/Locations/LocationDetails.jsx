@@ -27,7 +27,7 @@ const LocationDetails = () => {
     const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
-    const { isAdmin } = userDetails
+    const { isAdmin, facilityAuths } = userDetails
     
     // fetch unit data from the api
     const [ response, setResponse ] = useState()
@@ -68,6 +68,14 @@ const LocationDetails = () => {
         )
     }
 
+    // show the list of locations button if the user is an admin or if they're assigned to multiple locations
+    let listButton = ""
+    if (isAdmin || facilityAuths.length > 1) {
+        listButton = <div className="col-2 d-flex justify-content-end">
+            <Button text="See All" linkTo="/locations" type="nav" />
+        </div>
+    }
+
     // put the units that have items which need to be assessed or discarded at the top of the list
     units?.sort((a, b) => {
         return a.name.localeCompare(b.name)
@@ -104,9 +112,7 @@ const LocationDetails = () => {
                 <div className="col">
                     <h2>{ name }</h2>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="See All" linkTo="/locations" type="nav" />
-                </div>
+                { listButton }
                 { adminButtons }
             </div>
             <div className="page-content">

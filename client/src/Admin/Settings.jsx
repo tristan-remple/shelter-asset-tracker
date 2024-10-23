@@ -192,7 +192,7 @@ const Settings = () => {
                             />
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Organization Logo
                         </div>
@@ -209,7 +209,7 @@ const Settings = () => {
                         <div className="col-content">
                             <Button text="Upload Logo" linkTo={ handleUpload } type="action" />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">

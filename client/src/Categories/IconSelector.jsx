@@ -202,7 +202,13 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             if (data.error) {
                 setStatus("We weren't able to delete the icons you selected.")
             } else {
-                setStatus(`You have deleted ${ count } icons.`)
+                const successCount = data.count
+                setNewIcons(successCount.toString())
+                if (successCount === count) {
+                    setStatus(`${ count } icons have been deleted.`)
+                } else {
+                    setStatus(`${ successCount } out of the ${ count } icons you were trying to delete have been successfully deleted.`)
+                }
                 setIconsToDelete([])
                 setDeleteMode(false)
             }
