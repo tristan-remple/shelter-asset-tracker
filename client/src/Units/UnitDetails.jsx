@@ -34,6 +34,7 @@ const UnitDetails = () => {
 
     const [ unit, setUnit ] = useState({})
     const [ filteredItems, setFilteredItems ] = useState([])
+    const [ flip, setFlip ] = useState(0)
     // fetch unit data from the api
     useEffect(() => {
         (async()=>{
@@ -47,7 +48,7 @@ const UnitDetails = () => {
                 }
             })
         })()
-    }, [])
+    }, [ flip ])
 
     if (err) { return <Error err={ err } /> }
     if (unit) {
@@ -118,8 +119,7 @@ const UnitDetails = () => {
                 setErr(response.error)
             } else {
                 setStatus(`Unit ${ name } has been flipped. Its items are now marked for inspection.`)
-                setUnsaved(false)
-                navigate(`/unit/${ id }`)
+                setTimeout(() => { setFlip(flip + 1) }, 500)
             }
         })
     }

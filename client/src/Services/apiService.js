@@ -124,7 +124,7 @@ class apiService {
 
     // Called by: UnitDetails
     flipUnit = async(id, callback) => {
-        await axios.post(`${ import.meta.env.VITE_API_URL }/units/${ id }/flip`, {
+        await axios.get(`${ import.meta.env.VITE_API_URL }/units/${ id }/flip`, {
             withCredentials: true
         })
         .then(res => {
@@ -134,6 +134,7 @@ class apiService {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
+                console.log(err)
                 callback({ error: errorCodes[err.response.status] })
             }
         })
