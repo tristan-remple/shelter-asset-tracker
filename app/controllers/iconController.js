@@ -113,7 +113,7 @@ exports.deleteIcons = async (req, res, next) => {
             } catch (err) {
                 deleteResponse.failed.push({
                     id: icon.id,
-                    error: err.message
+                    error: err.name === 'SequelizeForeignKeyConstraintError' ? 'Dependency Error.' : err.name
                 });
             }
         };
