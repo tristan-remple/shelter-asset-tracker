@@ -209,7 +209,11 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 if (successCount === count) {
                     setStatus(`${ count } ${ word } ${ verb } been deleted.`)
                 } else {
-                    setStatus(`${ successCount } out of the ${ count } ${ word } you were trying to delete ${ verb } been successfully deleted.`)
+                    let newStatus = `${ successCount } out of the ${ count } ${ word } you were trying to delete ${ verb } been successfully deleted.`
+                    if (data.failed.some(failure => failure.error.includes("foreign"))) {
+                        newStatus += ` One or more of the icons is currently being used for a category, and therefore cannot be deleted.`
+                    }
+                    setStatus(newStatus)
                 }
                 setIconsToDelete([])
                 setDeleteMode(false)
