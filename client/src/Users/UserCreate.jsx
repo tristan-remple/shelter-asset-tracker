@@ -106,7 +106,6 @@ const UserCreate = () => {
 
         const newUser = {...changes}
         newUser.auths = newUser.facilities.filter(loc => loc.active).map(loc => loc.id)
-        console.log(newUser)
 
         apiService.postNewUser(newUser, (response) => {
             if (response.error) {

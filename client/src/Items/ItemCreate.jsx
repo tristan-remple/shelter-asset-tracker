@@ -35,6 +35,11 @@ const ItemCreate = () => {
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
 
+    // the unit and the category list both have to load before the page can render
+    // this is used to set err to null when the fetches both succeed
+    const [ unitLoaded, setUnitLoaded ] = useState(false)
+    const [ categoriesLoaded, setCategoriesLoaded ] = useState(false)
+
     // redirect to the error page if no unit is specified or if the unit specified isn't found
     if (id === undefined) {
         setErr("undefined")
@@ -49,7 +54,7 @@ const ItemCreate = () => {
                     setErr(data.error)
                 } else {
                     setUnit(data)
-                    setErr(null)
+                    setUnitLoaded(true)
                 }
             })
         })()
@@ -71,10 +76,8 @@ const ItemCreate = () => {
             name: "Someguy",
             date: formattedDate()
         },
-        // comment: "",
         donated: false,
         initialValue: 0,
-        depreciationRate: 0.03,
         vendor: "",
         invoice: ""
     })
@@ -99,7 +102,7 @@ const ItemCreate = () => {
                     setErr(data.error)
                 } else {
                     setCategoryList(data)
-                    setErr(null)
+                    setCategoriesLoaded(true)
 
                     // the Dropdown component later is expecting a list of strings
                     const simpleList = data.map(cat => cat.name)
@@ -109,6 +112,13 @@ const ItemCreate = () => {
             })
         })()
     }, [])
+
+    // if both loading flags are true, clear the loading err state
+    useEffect(() => {
+        if (unitLoaded && categoriesLoaded && err === "loading") {
+            setErr(null)
+        }
+    }, [ unitLoaded, categoriesLoaded ])
 
     // Most changes are handled by Services/handleChanges
 
