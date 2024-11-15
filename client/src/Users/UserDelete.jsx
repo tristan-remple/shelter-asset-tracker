@@ -10,6 +10,7 @@ import { statusContext } from '../Services/Context'
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module checks that the admin wants to delete a user.
@@ -21,7 +22,7 @@ const UserDelete = () => {
 
     // get context information
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // validate id
@@ -50,7 +51,10 @@ const UserDelete = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully deleted user ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully deleted user ${ response.name }.`,
+                    error: false
+                })
                 navigate(`/users`)
             }
         })
@@ -67,7 +71,7 @@ const UserDelete = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <ChangePanel save={ confirmDelete } linkOut={ `/user/${ user?.id }` } locationId="0" />
             </div>
         </main>

@@ -10,6 +10,7 @@ import { statusContext } from '../Services/Context'
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module checks that the user wants to delete a unit.
@@ -21,7 +22,7 @@ const UnitDelete = () => {
 
     // get context information
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     
     // validate id
@@ -39,10 +40,16 @@ const UnitDelete = () => {
                 } else {
                     setResponse(data)
                     if (data.items.length > 0) {
-                        setStatus("You cannot delete a unit that contains items.")
+                        setStatus({
+                            message: "You cannot delete a unit that contains items.",
+                            error: true
+                        })
                         navigate(`/unit/${ id }`)
                     } else {
-                        setStatus(`Click Save to delete unit ${ data.name }.`)
+                        setStatus({
+                            message: `Click Save to delete unit ${ data.name }.`,
+                            error: false
+                        })
                         setErr(null)
                     }
                 }
@@ -55,7 +62,10 @@ const UnitDelete = () => {
             if (delres.error) {
                 setErr(delres.error)
             } else {
-                setStatus(`You have successfully deleted unit ${ delres.name }.`)
+                setStatus({
+                    message: `You have successfully deleted unit ${ delres.name }.`,
+                    error: false
+                })
                 navigate(`/location/${ delres.facilityId }`)
             }
         })
@@ -72,7 +82,7 @@ const UnitDelete = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <ChangePanel save={ confirmDelete } linkOut={ `/unit/${ id }` } locationId={ response?.facility.id } />
             </div>
         </main>

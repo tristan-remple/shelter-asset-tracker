@@ -13,6 +13,7 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Autofill from '../Components/Autofill'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module allows an admin to add a new unit to a location.
@@ -92,9 +93,15 @@ const UnitCreate = () => {
             newChanges.type = unitTypes[newTypeIndex]
             setChanges(newChanges)
             setUnsaved(true)
-            setStatus("")
+            setStatus({
+                message: "",
+                error: false
+            })
         } else {
-            setStatus("The type you selected cannot be found.")
+            setStatus({
+                message: "The type you selected cannot be found.",
+                error: true
+            })
         }
     }
 
@@ -103,7 +110,10 @@ const UnitCreate = () => {
 
         // light validation
         if (changes.name == "" || changes.type == "" || changes.type == "Select:") {
-            setStatus("A new unit must have a name and a type.")
+            setStatus({
+                message: "A new unit must have a name and a type.",
+                error: true
+            })
             return
         }
 
@@ -115,7 +125,10 @@ const UnitCreate = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully created unit ${ changes.name }.`)
+                setStatus({
+                    message: `You have successfully created unit ${ changes.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/unit/${ response.unitId }`)
             }
@@ -136,7 +149,7 @@ const UnitCreate = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

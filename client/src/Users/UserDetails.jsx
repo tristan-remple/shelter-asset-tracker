@@ -11,6 +11,7 @@ import { adminDate } from "../Services/dateHelper"
 // components
 import Button from "../Components/Button"
 import Error from "../Components/Error"
+import Statusbar from "../Components/Statusbar"
 
 //------ MODULE INFO
 // This module shows the details about a specific user to the admin or to themself.
@@ -20,7 +21,7 @@ const UserDetails = () => {
 
     // get context information
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const { userDetails } = useContext(userContext)
     const [ err, setErr ] = useState("loading")
 
@@ -72,7 +73,10 @@ const UserDetails = () => {
                 } else {
                     newStatus += "Please have them check their email."
                 }
-                setStatus(newStatus)
+                setStatus({
+                    message: newStatus,
+                    error: false
+                })
             }
         })
     }
@@ -94,7 +98,10 @@ const UserDetails = () => {
             if (!res.success) {
                 setErr(res.error)
             } else {
-                setStatus(`The password reset for ${ user.name } has been cancelled.`)
+                setStatus({
+                    message: `The password reset for ${ user.name } has been cancelled.`,
+                    error: false
+                })
             }
         })
     }
@@ -118,7 +125,7 @@ const UserDetails = () => {
                 { editLink }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

@@ -9,6 +9,7 @@ import { statusContext } from '../Services/Context'
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module displays a list of deleted locations, and allows the user to restore them.
@@ -17,7 +18,7 @@ import Error from '../Components/Error'
 const LocationRecovery = () => {
 
     // get context information
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // fetch data from the api
@@ -49,8 +50,10 @@ const LocationRecovery = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                console.response
-                setStatus(`You have successfully restored location ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully restored location ${ response.name }.`,
+                    error: false
+                })
             }
         })
     } 
@@ -77,7 +80,7 @@ const LocationRecovery = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>

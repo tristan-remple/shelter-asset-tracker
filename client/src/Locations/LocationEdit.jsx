@@ -13,6 +13,7 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Dropdown from '../Components/Dropdown'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -115,9 +116,15 @@ const LocationEdit = () => {
             newChanges.user = users[newUserIndex]
             setChanges(newChanges)
             setUnsaved(true),
-            setStatus("")
+            setStatus({
+                message: "",
+                error: false
+            })
         } else {
-            setStatus("The user you selected cannot be found.")
+            setStatus({
+                message: "The user you selected cannot be found.",
+                error: true
+            })
         }
     }
 
@@ -126,7 +133,10 @@ const LocationEdit = () => {
 
         // validate title
         if (changes.name == "") {
-            setStatus("Locations must have a title.")
+            setStatus({
+                message: "Locations must have a title.",
+                error: true
+            })
             return
         }
 
@@ -138,7 +148,10 @@ const LocationEdit = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully updated ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully updated ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/location/${ response.id }`)
             }
@@ -162,7 +175,7 @@ const LocationEdit = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

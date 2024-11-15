@@ -13,6 +13,7 @@ import Error from '../Components/Error'
 import IconSelector from './IconSelector'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // Allows the user add a new category
@@ -57,7 +58,10 @@ const CategoryCreate = () => {
 
         // validation
         if (changes.name === "" || changes.defaultValue <= 0 || changes.defaultUsefulLife <= 0 || changes.icon === "") {
-            setStatus("Please fill in all category fields.")
+            setStatus({
+                message: "Please fill in all category fields.",
+                error: true
+            })
             return
         }
 
@@ -70,7 +74,10 @@ const CategoryCreate = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully created category ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully created category ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/category/${ response.id }`)
             }
@@ -92,7 +99,7 @@ const CategoryCreate = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

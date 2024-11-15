@@ -15,6 +15,7 @@ import Error from '../Components/Error'
 import IconSelector from './IconSelector'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // Allows the user to change the information about a single category.
@@ -102,11 +103,17 @@ const CategoryEdit = () => {
         editedCategory.depreciationRate = changes.depreciationRate / 100
         await apiService.postCategoryEdit(editedCategory, (res) => {
             if (res.success) {
-                setStatus(`You have successfully saved your changes to category ${ res.name }.`)
+                setStatus({
+                    message: `You have successfully saved your changes to category ${ res.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/category/${ id }`)
             } else {
-                setStatus("We weren't able to process your edit category request.")
+                setStatus({
+                    message: "We weren't able to process your edit category request.",
+                    error: true
+                })
             }
         })
     }
@@ -128,7 +135,7 @@ const CategoryEdit = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

@@ -8,6 +8,7 @@ import { statusContext, userContext } from '../Services/Context'
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module displays a list of all locations.
@@ -21,7 +22,10 @@ const LocationList = () => {
     const [ err, setErr ] = useState("loading")
 
     if (userDetails.facilityAuths.length === 0 && !userDetails.isAdmin) {
-        setStatus("You are not currently assigned to any locations. Please contact an admin.")
+        setStatus({
+            message: "You are not currently assigned to any locations. Please contact an admin.",
+            error: true
+        })
     }
 
     // fetch data from the api
@@ -79,7 +83,7 @@ const LocationList = () => {
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info pt-2"><p className='mb-2'>{ status }</p></div> }
+                <Statusbar />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>

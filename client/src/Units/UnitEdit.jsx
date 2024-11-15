@@ -13,6 +13,7 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Autofill from '../Components/Autofill'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
@@ -95,10 +96,16 @@ const UnitEdit = () => {
             newChanges.type = unitTypes[newTypeIndex]
             setChanges(newChanges)
             setUnsaved(true)
-            setStatus("")
+            setStatus({
+                message: "",
+                error: false
+            })
             setValidOption(true)
         } else {
-            setStatus("The type you selected cannot be found.")
+            setStatus({
+                message: "The type you selected cannot be found.",
+                error: true
+            })
             setValidOption(false)
         }
     }
@@ -121,7 +128,10 @@ const UnitEdit = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully updated ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully updated ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/unit/${ unit.id }`)
             }
@@ -145,7 +155,7 @@ const UnitEdit = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='mb-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

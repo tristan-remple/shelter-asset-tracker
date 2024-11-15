@@ -9,6 +9,7 @@ import apiService from "../Services/apiService"
 
 // components
 import Button from "../Components/Button"
+import Statusbar from "../Components/Statusbar"
 
 //------ MODULE INFO
 // Displays a modal that allows the user to select a new icon for a category.
@@ -111,10 +112,16 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
 
             // validation
             if (uploaderChanges.name === "") {
-                setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
+                setStatus({
+                    message: "An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.",
+                    error: true
+                })
                 return
             } else if (iconList.map(icon => icon.name).includes(uploaderChanges.name)) {
-                setStatus("An icon with that name already exists. If you're sure you want to upload this icon, give it a different name.")
+                setStatus({
+                    message: "An icon with that name already exists. If you're sure you want to upload this icon, give it a different name.",
+                    error: true
+                })
                 return
             }
 
@@ -133,9 +140,15 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             // send the icon object to the api
             apiService.uploadIcon(iconSubmission, (res) => {
                 if (res.error) {
-                    setStatus("We were not able to upload your icon.")
+                    setStatus({
+                        message: "We were not able to upload your icon.",
+                        error: true
+                    })
                 } else {
-                    setStatus(`The icon ${ res.name } has been created.`)
+                    setStatus({
+                        message: `The icon ${ res.name } has been created.`,
+                        error: false
+                    })
                     setNewIcons(res.name)
                     setUploadForm(false)
                 }
@@ -200,20 +213,29 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
         const count = iconsToDelete.length
         apiService.deleteIcons(iconsToDelete, data => {
             if (data.error) {
-                setStatus("We weren't able to delete the icons you selected.")
+                setStatus({
+                    message: "We weren't able to delete the icons you selected.",
+                    error: true
+                })
             } else {
                 const successCount = data.deletedIcons
                 const word = count > 1 ? "icons" : "icon"
                 const verb = count > 1 ? "have" : "has"
                 setNewIcons(successCount.toString())
                 if (successCount === count) {
-                    setStatus(`${ count } ${ word } ${ verb } been deleted.`)
+                    setStatus({
+                        message: `${ count } ${ word } ${ verb } been deleted.`,
+                        error: false
+                    })
                 } else {
                     let newStatus = `${ successCount } out of the ${ count } ${ word } you were trying to delete ${ verb } been successfully deleted.`
                     if (data.failed.some(failure => failure.error.includes("Dependency"))) {
                         newStatus += ` One or more of the icons is currently being used for a category, and therefore cannot be deleted.`
                     }
-                    setStatus(newStatus)
+                    setStatus({
+                        message: newStatus,
+                        error: true
+                    })
                 }
                 setIconsToDelete([])
                 setDeleteMode(false)
@@ -238,7 +260,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                     Keyboard naviagtion is trapped on this modal until it closes.
                 </div>
             </div>
-            { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+            <Statusbar />
             <div className="icon-selector">
                 { deleteMode ? displayDeletableIcons : displayIcons }
             </div>

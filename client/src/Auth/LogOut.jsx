@@ -5,6 +5,9 @@ import { useContext, useEffect } from "react"
 import { statusContext, userContext } from "../Services/Context"
 import authService from "../Services/authService"
 
+// components
+import Statusbar from "../Components/Statusbar"
+
 //------ MODULE INFO
 // This page allows users to log out.
 // Imported by: App
@@ -21,7 +24,10 @@ const LogOut = () => {
         (async() => {
             await authService.logout((response) => {
                 if (response.error) {
-                    setStatus("We weren't able to process your request.")
+                    setStatus({
+                        message: "We weren't able to process your request.",
+                        error: true
+                    })
                 } else {
                     setUserDetails({
                         userId: null,
@@ -33,7 +39,10 @@ const LogOut = () => {
                     sessionStorage.removeItem("userId")
                     sessionStorage.removeItem("isAdmin")
                     sessionStorage.removeItem("facilityAuths")
-                    setStatus("You have been successfully logged out.")
+                    setStatus({
+                        message: "You have been successfully logged out.",
+                        error: false
+                    })
                 }
             })
         })()
@@ -47,7 +56,7 @@ const LogOut = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
             </div>
         </main>
     )

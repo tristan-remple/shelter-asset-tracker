@@ -10,6 +10,7 @@ import { statusContext } from '../Services/Context'
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module displays a list of deleted users, and allows the user to restore them.
@@ -18,7 +19,7 @@ import Search from '../Components/Search'
 const UserRecovery = () => {
 
     // get context information
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // fetch data from the api
@@ -55,7 +56,10 @@ const UserRecovery = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully restored user ${response.name}.`)
+                setStatus({
+                    message: `You have successfully restored user ${response.name}.`,
+                    error: false
+                })
             }
         })
     } 
@@ -82,7 +86,7 @@ const UserRecovery = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <Search data={ users } setData={ setFilteredUsers } />
                 <table className="c-table-info align-middle">
                     <thead>

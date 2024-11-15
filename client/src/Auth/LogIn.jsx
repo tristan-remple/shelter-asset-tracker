@@ -9,6 +9,7 @@ import authService from "../Services/authService"
 
 // components
 import Button from '../Components/Button'
+import Statusbar from "../Components/Statusbar"
 
 //------ MODULE INFO
 // This page allows users to log in.
@@ -60,14 +61,20 @@ const LogIn = () => {
 
         // validation
         if (changes.email === "" || changes.password === "") {
-            setStatus("Please enter your email and password.")
+            setStatus({
+                message: "Please enter your email and password.",
+                error: true
+            })
             return
         }
 
         // api call
         authService.login(changes, (response) => {
             if (response.error) {
-                setStatus("We weren't able to validate your credentials.")
+                setStatus({
+                    message: "We weren't able to validate your credentials.",
+                    error: true
+                })
             } else {
 
                 // set user info to context and session storage
@@ -75,14 +82,20 @@ const LogIn = () => {
                 sessionStorage.setItem("userId", response.userId)
                 sessionStorage.setItem("isAdmin", response.isAdmin)
                 sessionStorage.setItem("facilityAuths", response.facilityAuths)
-                setStatus(`Welcome.`)
+                setStatus({
+                    message: "Welcome.",
+                    error: false
+                })
                 setUnsaved(false)
 
                 // if the user has an active reset request, send them to their profile
-                if (response.activeReset) {
-                    setStatus("You have made a request to change your password. If you do not need to reset your password, please cancel the request.")
-                    navigate("/user")
-                }
+                // if (response.activeReset) {
+                //     setStatus({
+                //         message: "You have made a request to change your password. If you do not need to reset your password, please cancel the request.",
+                //         error: false
+                //     })
+                //     navigate("/user")
+                // }
 
                 // navigate to the user's location(s)
                 if (response.facilityAuths.length === 1 && !userDetails.isAdmin) {
@@ -101,9 +114,8 @@ const LogIn = () => {
                     <h2>Log In</h2>
                 </div>
             </div>
-            <div className="login-form-container"> 
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -141,7 +153,6 @@ const LogIn = () => {
                         <Button text="Log In" linkTo={ submitLogin } type="action" id="loginBtn" />
                         <Button text="Forgot Password?" linkTo="/reset" type="nav" id="resetPass" />
                     </div>
-                </div>
                 </div>
             </div>
         </main>

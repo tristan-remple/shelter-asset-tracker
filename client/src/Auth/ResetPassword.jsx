@@ -8,7 +8,6 @@ import authService from "../Services/authService"
 import handleChanges from "../Services/handleChanges"
 
 // components
-import Error from "../Components/Error"
 import Button from "../Components/Button"
 import ChangePanel from "../Components/ChangePanel"
 
@@ -39,24 +38,62 @@ const ResetPassword = () => {
 
     // check password strength
     const checkPassword = (pw) => {
-        return (
-            pw.length > 8 &&
+
+        // check password features and set error messages
+        const checkLength = pw.length >= 8 ? "Pass" : "Password must be at least 8 characters long."
+        const checkNumber = pw.match(/[0-9]/) ? "Pass" : "Password must contain at least one number."
+        const checkCase = pw.match(/[a-z]/) && pw.match(/[A-Z]/) ? "Pass" : "Password must contain a mix of upper and lower case letters."
+        const checkSymbol = pw.match(/[!@#\$%\^&\*\(\)\-_\+=:;"'<>,\.\/\?\\\|`~\[\]\{\}]/) ? "Pass" : "Password must contain at least one symbol."
+
+        // check overall password validitity
+        const validPassword = (
+            pw.length >= 8 &&
             pw.match(/[0-9]/) &&
             pw.match(/[a-z]/) &&
             pw.match(/[A-Z]/) &&
             pw.match(/[!@#\$%\^&\*\(\)\-_\+=:;"'<>,\.\/\?\\\|`~\[\]\{\}]/)
         )
+
+        // create and return a response
+        const validationResponse = {
+            validPassword,
+            errors: [
+                checkLength,
+                checkNumber,
+                checkCase,
+                checkSymbol
+            ]
+        }
+
+        return validationResponse
     }
 
     // send the new password to the api
     const saveChanges = () => {
 
         // validation
+        const valid = checkPassword(changes.password)
         if ( changes.password !== changes.retypePassword) {
-            setStatus("Please double check that you have typed the same password twice.")
+            setStatus({
+                message: "Please double check that you have typed the same password twice.",
+                error: true
+            })
             return
-        } else if (!checkPassword(changes.password)) {
-            setStatus("Your password must be at least 8 characters and include a mix of letters, numbers, and symbols.")
+        } else if (!valid.validPassword) {
+            let validationStatus = <p>Your password must be at least 8 characters and include a mix of letters, numbers, and symbols.</p>
+            let validationPoints = valid.errors
+                .filter(err => err !== "Pass")
+                .map(err => <li key={ err }>{ err }</li>)
+            setStatus({
+                message: <>
+                    { validationStatus }
+                    <ul>
+                        { validationPoints }
+                    </ul>
+                </>,
+                error: true
+            })
+
             return
         }
 
@@ -67,11 +104,17 @@ const ResetPassword = () => {
 
                 // on success, log out the current user, set the status and unsaved, and send them to the login screen
                 authService.logout()
-                setStatus("Your password has been reset. Please log in.")
+                setStatus({
+                    message: "Your password has been reset. Please log in.",
+                    error: false
+                })
                 setUnsaved(false)
                 navigate("/")
             } else {
-                setStatus("We weren't able to reset your password.")
+                setStatus({
+                    message: "We weren't able to reset your password.",
+                    error: true
+                })
             }
         })
     }

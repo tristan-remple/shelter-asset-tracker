@@ -11,6 +11,7 @@ import { friendlyDate } from '../Services/dateHelper'
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // Displays the information about a single category.
@@ -58,7 +59,7 @@ const CategoryDetails = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

@@ -9,6 +9,7 @@ import { statusContext } from '../Services/Context'
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // Lists the possible categories that items can fall into.
@@ -72,7 +73,7 @@ const CategoryList = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <Search data={ categories } setData={ setFilteredCategories } />
                 <table className="c-table-info align-middle">
                     <thead>

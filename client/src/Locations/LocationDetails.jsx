@@ -6,13 +6,14 @@ import { useContext, useState, useEffect } from 'react'
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, userContext } from '../Services/Context'
+import { userContext } from '../Services/Context'
 
 // components
 import Button from "../Components/Button"
 import Flag, { flagOptions } from "../Components/Flag"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -24,7 +25,6 @@ const LocationDetails = () => {
 
     // get context information
     const { id } = useParams()
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
     const { isAdmin, facilityAuths } = userDetails
@@ -116,7 +116,7 @@ const LocationDetails = () => {
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

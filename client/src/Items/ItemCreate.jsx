@@ -13,6 +13,7 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Autofill from '../Components/Autofill'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -30,7 +31,7 @@ const ItemCreate = () => {
 
     // page setup
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
@@ -132,9 +133,15 @@ const ItemCreate = () => {
             newItemAdditions.initialValue = parseFloat(categoryList[newCatIndex].defaultValue)
             setNewItem(newItemAdditions)
             setUnsaved(true)
-            setStatus("")
+            setStatus({
+                message: "",
+                error: false
+            })
         } else {
-            setStatus("The category you selected cannot be found.")
+            setStatus({
+                message: "The category you selected cannot be found.",
+                error: true
+            })
         }
     }
 
@@ -143,7 +150,10 @@ const ItemCreate = () => {
 
         // check that fields have been filled in
         if (newItem.name === "" || newItem.template.categoryName === "Select:" || newItem.initialValue === 0) {
-            setStatus("A new item must have a label, a category, and an initial value.")
+            setStatus({
+                message: "A new item must have a label, a category, and an initial value.",
+                error: true
+            })
             return
         }
 
@@ -161,7 +171,10 @@ const ItemCreate = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully added item ${response.name}.`)
+                setStatus({
+                    message: `You have successfully added item ${response.name}.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/item/${response.itemId}`)
             }
@@ -182,7 +195,7 @@ const ItemCreate = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

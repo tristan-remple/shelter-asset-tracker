@@ -11,6 +11,7 @@ import Error from "../Components/Error"
 import Button from "../Components/Button"
 import ChangePanel from "../Components/ChangePanel"
 import Tag from "../Components/Tag"
+import Statusbar from "../Components/Statusbar"
 
 //------ MODULE INFO
 // This page allows the admin to set some global variables.
@@ -115,9 +116,15 @@ const Settings = () => {
             
             apiService.uploadLogo(logoSubmission, (res) => {
                 if (res.error) {
-                    setStatus("We were not able to upload your logo.")
+                    setStatus({
+                        message: "We were not able to upload your logo.",
+                        error: true
+                    })
                 } else {
-                    setStatus(`The logo has been changed.`)
+                    setStatus({
+                        message: `The logo has been changed.`,
+                        error: false
+                    })
                 }
             })
         }
@@ -128,13 +135,22 @@ const Settings = () => {
 
         // validation
         if (changes.depreciationRate <= 0) {
-            setStatus("The global depreciation rate must be a positive number.")
+            setStatus({
+                message: "The global depreciation rate must be a positive number.",
+                error: true
+            })
             return
         } else if (changes.name === "" || changes.url === "") {
-            setStatus("Please set your organization's identity.")
+            setStatus({
+                message: "Please set your organization's identity.",
+                error: true
+            })
             return
         } else if (changes.unitTypes.length === 0) {
-            setStatus("Please set some unit types.")
+            setStatus({
+                message: "Please set some unit types.",
+                error: true
+            })
             return
         }
 
@@ -147,7 +163,10 @@ const Settings = () => {
             if (res.error) {
                 setErr(res.error)
             } else {
-                setStatus(`You have successfully saved your changes to the settings.`)
+                setStatus({
+                    message: `You have successfully saved your changes to the settings.`,
+                    error: false
+                })
                 setUnsaved(false)
             }
         })
@@ -164,7 +183,7 @@ const Settings = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

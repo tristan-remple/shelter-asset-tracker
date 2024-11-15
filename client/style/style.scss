@@ -10,6 +10,8 @@ $palegreen: #d9e4cd;
 $fontColour: #332114;
 $accentGreen: #157347;
 $white: #FFFFFF;
+$error: #EDA9B7;
+$field: #eeffdc;
 $fontmain: "Inter";
 $fontaccent: "Libre Caslon Text";
 
@@ -163,7 +165,7 @@ header, footer {
     margin-top: .5rem;
     &:hover, &:focus {
         color: $olivegreen;
-        background-color: $ltgreen;
+        background-color: $field;
         border-color: $white;
     }
     &:focus {
@@ -179,21 +181,8 @@ header, footer {
 }
    
 /* Login */
-#loginBtn, #resetPass {
-    width: 500px !important;
-}
-
-.login-form-container {
-    width: 80%;
-    margin: 0 auto; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.loginInput, #loginBtn {
-    width: 100%;
+.loginInput, #loginBtn, #resetPass {
+    width: auto;
 }
 
 
@@ -451,7 +440,7 @@ footer a {
 
 input[type=text], input[type=number], input[type=date], input[type=email], input[type=password], input[type=search], textarea, .checkbox, .dropdown-toggle {
     color: $fontColour;
-    background-color: $palegreen;
+    background-color: $field;
     border: 2px solid $brightgreen;
     border-radius: 0.25rem;
     font-size: 16px;
@@ -496,6 +485,11 @@ textarea {
 
 #submit-tag {
     width:100%;
+}
+
+.error-status {
+    background-color: $error;
+    border-color: $fontColour !important;
 }
 
 // Tablet

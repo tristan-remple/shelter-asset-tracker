@@ -2,10 +2,11 @@
 import { useContext } from "react"
 
 // internal dependencies
-import { userContext } from "../Services/Context"
+import { statusContext, userContext } from "../Services/Context"
 
 // components
 import Button from "./Button"
+import Statusbar from "./Statusbar"
 
 //------ MODULE INFO
 // This module is displayed instead of the page when something goes wrong.
@@ -15,6 +16,7 @@ import Button from "./Button"
 const Error = ({ err }) => {
 
     const { userDetails, setUserDetails } = useContext(userContext)
+    const { status } = useContext(statusContext)
 
     let errorText = ""
     switch(err) {
@@ -84,6 +86,7 @@ const Error = ({ err }) => {
             <h1>Error</h1>
             <div className="page-content">
                 <p className="mx-2">If you're seeing this page, something has gone wrong.</p>
+                <Statusbar />
                 <p className="mx-2">{ errorText }</p>
                 <div className="row d-flex-col">
                     <div className="co-1l">

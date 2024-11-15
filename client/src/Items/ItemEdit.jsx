@@ -16,6 +16,7 @@ import Error from '../Components/Error'
 import Dropdown from '../Components/Dropdown'
 import ChangePanel from '../Components/ChangePanel'
 import CommentBox from '../Components/CommentBox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -37,7 +38,7 @@ const ItemEdit = () => {
 
     // id from the url and status from the context
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
 
@@ -131,7 +132,10 @@ const ItemEdit = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully saved your changes to item ${response.name}.`)
+                setStatus({
+                    message: `You have successfully saved your changes to item ${response.name}.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/item/${response.id}`)
             }
@@ -148,7 +152,10 @@ const ItemEdit = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully deleted item ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully deleted item ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/unit/${ item.unit.id }`)
             }
@@ -169,7 +176,7 @@ const ItemEdit = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

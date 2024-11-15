@@ -9,6 +9,7 @@ import Error from '../Components/Error'
 import Button from '../Components/Button'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module allows the admin to edit a specific user.
@@ -18,11 +19,11 @@ const UserEdit = () => {
 
     // get context information
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
-    const { userId, isAdmin, facilityAuths } = userDetails
+    const { isAdmin } = userDetails
 
     // validate id
     if (id === undefined || id === "undefined") {
@@ -131,10 +132,16 @@ const UserEdit = () => {
 
         // validation
         if (changes.name === "") {
-            setStatus("Please enter a name.")
+            setStatus({
+                message: "Please enter a name.",
+                error: true
+            })
             return
         } else if (changes.email === "" || !validateEmail(changes.email)) {
-            setStatus("Please provide a valid email.")
+            setStatus({
+                message: "Please enter a valid email address.",
+                error: true
+            })
             return
         }
 
@@ -146,10 +153,16 @@ const UserEdit = () => {
         if (newUser.name !== originalData.name || newUser.email !== originalData.email) {
             await apiService.postUserEdit(newUser, (response) => {
                 if (response.error) {
-                    setStatus("We weren't able to process your edit user request.")
+                    setStatus({
+                        message: "We were unable to process your edit user request.",
+                        error: true
+                    })
                     return
                 } else {
-                    setStatus(`You have successfully updated user ${newUser.name}.`)
+                    setStatus({
+                        message: `You have successfully updated user ${newUser.name}.`,
+                        error: false
+                    })
                     setUnsaved(false)
                 }
             })
@@ -159,10 +172,16 @@ const UserEdit = () => {
         if (!newUser.facilities.every(fac => fac.active === fac.original)) {
             await apiService.postUserAuths(newUser, (response => {
                 if (response.error) {
-                    setStatus("We weren't able to process your request to update user location assignments.")
+                    setStatus({
+                        message: "We were unable to process your request to update user location assignments.",
+                        error: true
+                    })
                     return
                 } else {
-                    setStatus(`You have successfully updated user ${newUser.name}'s location assignments.`)
+                    setStatus({
+                        message: `You have successfully updated user ${newUser.name}'s location assignments.`,
+                        error: false
+                    })
                     setUnsaved(false)
                     navigate(`/user/${ changes.id }`)
                 }
@@ -179,18 +198,27 @@ const UserEdit = () => {
             return
         }
         if (originalData.id === 1) {
-            setStatus("You cannot change the admin status of user 1.")
+            setStatus({
+                message: "You cannot change the admin status of user 1.",
+                error: true
+            })
             return
         }
         const newUser = {...changes}
         newUser.isAdmin = originalData.isAdmin ? false : true
         await apiService.postAdminEdit(newUser, (response) => {
             if (response.error) {
-                setStatus("We weren't able to process your edit admin request.")
+                setStatus({
+                    message: "We were unable to process your edit admin request.",
+                    error: true
+                })
                 return
             } else {
                 const newStatus = newUser.isAdmin ? `User ${ newUser.name } has been promoted to admin.` : `User ${ newUser.name } is no longer an admin.`
-                setStatus(newStatus)
+                setStatus({
+                    message: newStatus,
+                    error: false
+                })
                 navigate(`/user/${ changes.id }`)
             }
         })
@@ -214,7 +242,7 @@ const UserEdit = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

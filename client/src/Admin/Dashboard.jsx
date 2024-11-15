@@ -16,6 +16,7 @@ import Error from '../Components/Error'
 import Search from '../Components/Search'
 import Dropdown from '../Components/Dropdown'
 import Checkbox from '../Components/Checkbox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This page is the main page for admin functionality.
@@ -313,7 +314,10 @@ const Dashboard = () => {
             // wait for the state to be updated before calling the download button
             setTimeout(() => {
                 downloadLink.current.link.click()
-                setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+                setStatus({
+                    message: `The ${ report } report for ${ view } has been downloaded to your computer.`,
+                    error: false
+                })
             }, 500)
         })
     }
@@ -359,7 +363,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="page-content" id="dashboard">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row">
                     <div className="col-4">
                         <h4>Overview</h4>

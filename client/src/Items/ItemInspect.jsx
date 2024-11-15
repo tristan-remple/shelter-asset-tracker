@@ -15,6 +15,7 @@ import Flag, { flagOptions } from "../Components/Flag"
 import Error from '../Components/Error'
 import Dropdown from '../Components/Dropdown'
 import ChangePanel from '../Components/ChangePanel'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -145,10 +146,16 @@ const ItemInspect = () => {
 
         if (newItem.status === item.status && !confirm) {
             if (newItem.comment === "" && newItem.usefulLife === item.usefulLife) {
-                setStatus("You have not entered or changed anything.")
+                setStatus({
+                    message: "You have not entered or changed anything.",
+                    error: true
+                })
                 return
             }
-            setStatus("You have not changed the status flag of this item. To confirm that you'd like to submit anyway, click save again.")
+            setStatus({
+                message: "You have not changed the status flag of this item. To confirm that you'd like to submit anyway, click save again.",
+                error: true
+            })
             setConfirm(true)
             return
         }
@@ -157,7 +164,10 @@ const ItemInspect = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have submitted an inspection on ${ response.name }.`)
+                setStatus({
+                    message: `You have submitted an inspection on ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/item/${response.id}`)
             }
@@ -179,7 +189,7 @@ const ItemInspect = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

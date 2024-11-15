@@ -9,6 +9,7 @@ import authService from "../Services/authService"
 
 // components
 import Button from '../Components/Button'
+import Statusbar from "../Components/Statusbar"
 
 //------ MODULE INFO
 // This module takes in an email address and resends a password reset email if there is an active request.
@@ -42,9 +43,15 @@ const ForgotPassword = () => {
     const submitForm = () => {
         authService.requestPasswordEmail(changes.email, (response) => {
             if (response.success) {
-                setStatus("An email has been sent to you with a link to reset your password. You may need to wait a moment, or check your junk mail.")
+                setStatus({
+                    message: "An email has been sent to you with a link to reset your password. You may need to wait a moment, or check your junk mail.",
+                    error: false
+                })
             } else {
-                setStatus("We were unable to send a password reset to that email. Please check that it is entered correctly.")
+                setStatus({
+                    message: "We were unable to send a password reset to that email. Please check that it is entered correctly.",
+                    error: true
+                })
             }
         })
     }
@@ -58,7 +65,7 @@ const ForgotPassword = () => {
             </div>
             <div className="login-form-container"> 
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

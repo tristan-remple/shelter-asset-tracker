@@ -12,6 +12,7 @@ import Error from '../Components/Error'
 import Button from '../Components/Button'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module allows the admin to create a new user.
@@ -20,7 +21,7 @@ import Checkbox from '../Components/Checkbox'
 const UserCreate = () => {
 
     // get context information
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState(null)
 
@@ -97,10 +98,16 @@ const UserCreate = () => {
 
     const saveChanges = () => {
         if (changes.name === "") {
-            setStatus("Please enter a name.")
+            setStatus({
+                message: "Please enter a name.",
+                error: true
+            })
             return
         } else if (changes.email === "" || !validateEmail(changes.email)) {
-            setStatus("Please provide a valid email.")
+            setStatus({
+                message: "Please enter a valid email address.",
+                error: true
+            })
             return
         }
 
@@ -111,7 +118,10 @@ const UserCreate = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully added user ${response.name}.`)
+                setStatus({
+                    message: `You have successfully added user ${response.name}.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/user/${response.userId}`)
             }
@@ -133,7 +143,7 @@ const UserCreate = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
