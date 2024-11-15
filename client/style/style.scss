@@ -487,9 +487,18 @@ textarea {
     width:100%;
 }
 
-.error-status {
-    background-color: $error;
+.error {
+    background-color: $error !important;
     border-color: $fontColour !important;
+    outline-color: $error !important;
+    color: $fontColour !important;
+}
+
+.error-message {
+    border-width: 0 !important;
+    padding: 0;
+    width: 100% !important;
+    white-space: pre-wrap;
 }
 
 // Tablet
@@ -567,6 +576,10 @@ textarea {
     .tag {
         width: auto !important;
     }
+
+    #loginBtn, #resetPass {
+        width: auto !important;
+    }
 }
 
 // Phone
@@ -597,4 +610,8 @@ textarea {
         padding: 0;
     }
 
+
+    #loginBtn, #resetPass {
+        width: auto !important;
+    }
 }

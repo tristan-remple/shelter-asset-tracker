@@ -14,7 +14,7 @@ const Statusbar = () => {
 
     // set the error class if needed
     let className = "row row-info"
-    if (status.error) { className += " error-status" }
+    if (status.error) { className += " error" }
 
     return (
         <div className={ className }><p className='my-2'>{ status.message }</p></div>

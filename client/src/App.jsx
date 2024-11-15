@@ -71,7 +71,8 @@ function App() {
   })
 
   // Sets a status message to update the user on site actions.
-  // Some status messages persist for longer than they need to.
+  // Updated by any component that needs to communicate without throwing a whole error screen.
+  // Read by Statusbar.
   const [ status, setStatus ] = useState({
     message: "",
     error: false

@@ -14,9 +14,9 @@ import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Autofill from '../Components/Autofill'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module allows a user to add an item to a specific unit.
 // This module does NOT currently record which user is editing.
 // User information will need to be taken either here or in the apiService module.
@@ -35,6 +35,7 @@ const ItemCreate = () => {
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // the unit and the category list both have to load before the page can render
     // this is used to set err to null when the fetches both succeed
@@ -67,7 +68,7 @@ const ItemCreate = () => {
         unitId: 0,
         template: {
             id: 0,
-            name: "Select:",
+            name: "",
             defaultValue: 0,
             Icon: {},
             singleUse: false
@@ -80,7 +81,8 @@ const ItemCreate = () => {
         donated: false,
         initialValue: 0,
         vendor: "",
-        invoice: ""
+        invoice: "",
+        errorFields: []
     })
 
     // unsaved toggles the ChangePanel
@@ -107,7 +109,6 @@ const ItemCreate = () => {
 
                     // the Dropdown component later is expecting a list of strings
                     const simpleList = data.map(cat => cat.name)
-                    simpleList.unshift("Select:")
                     setSimpleCategories(simpleList)
                 }
             })
@@ -125,23 +126,24 @@ const ItemCreate = () => {
 
     // handles category change
     // passed into Dropdown
+    const [ categoryError, setCategoryError ] = useState("")
     const handleCategoryChange = (newCatName) => {
         const newCatIndex = categoryList.map(cat => cat.name).indexOf(newCatName)
         if (newCatIndex !== -1) {
             const newItemAdditions = {...newItem}
             newItemAdditions.template = categoryList[newCatIndex]
             newItemAdditions.initialValue = parseFloat(categoryList[newCatIndex].defaultValue)
+            const errorIndex = newItemAdditions.errorFields.indexOf("category")
+            if (errorIndex !== -1) { newItemAdditions.errorFields.splice(errorIndex, 1) }
             setNewItem(newItemAdditions)
             setUnsaved(true)
-            setStatus({
-                message: "",
-                error: false
-            })
+            setCategoryError("")
         } else {
-            setStatus({
-                message: "The category you selected cannot be found.",
-                error: true
-            })
+            setCategoryError("The category you selected cannot be found.")
+            const itemChanges = { ...newItem }
+            if (itemChanges.errorFields.indexOf("category") === -1) {
+                itemChanges.errorFields.push("category")
+            }
         }
     }
 
@@ -149,7 +151,9 @@ const ItemCreate = () => {
     const saveChanges = async() => {
 
         // check that fields have been filled in
-        if (newItem.name === "" || newItem.template.categoryName === "Select:" || newItem.initialValue === 0) {
+        if (newItem.name === "" || newItem.initialValue === 0 || newItem.category === "") {
+            setForceValidation(forceValidation + 1)
+            setCategoryError("An item must have a category.")
             setStatus({
                 message: "A new item must have a label, a category, and an initial value.",
                 error: true
@@ -181,6 +185,14 @@ const ItemCreate = () => {
         }))
     }
 
+    const formControls = { 
+        changes: newItem, 
+        setChanges: setNewItem, 
+        unsaved, 
+        setUnsaved, 
+        force: forceValidation 
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -199,32 +211,35 @@ const ItemCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Label
+                            Label *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ newItem.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
+                            <RegularField
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Item Category
+                            Item Category *
                         </div>
                         <div className="col-content">
                             <Autofill
                                 list={ simpleCategories } 
                                 current={ newItem.template.name } 
                                 setCurrent={ handleCategoryChange }
+                                error={ categoryError }
                             />
                         </div>
                     </div>
                     <div className="col-2 col-content col-icon">
                         { newItem.template.Icon.src ? <img className="img-fluid icon" src={ `/img/${ newItem.template.Icon.src }` } alt={ newItem.template.Icon.name + " icon" } /> : "Select category to view icon." }
                     </div>
+                </div>
+                <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Location
@@ -248,12 +263,11 @@ const ItemCreate = () => {
                             Vendor
                         </div>
                         <div className="col-content">
-                            { <input 
-                                type="text" 
-                                name="vendor" 
-                                value={ newItem.vendor } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
+                            <RegularField 
+                                type="text"
+                                name="vendor"
+                                formControls={ formControls }
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
@@ -261,26 +275,25 @@ const ItemCreate = () => {
                             Invoice Number
                         </div>
                         <div className="col-content">
-                            { <input 
-                                type="text" 
-                                name="invoice" 
-                                value={ newItem.invoice } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
+                            <RegularField 
+                                type="text"
+                                name="invoice"
+                                formControls={ formControls }
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Initial Value
+                            Initial Value *
                         </div>
                         <div className="col-content">
-                            { <input 
-                                type="number" 
+                            <RegularField 
+                                type="number"
+                                name="initialValue"
+                                formControls={ formControls }
                                 step=".01"
-                                name="initialValue" 
-                                value={ newItem.initialValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, newItem, setNewItem, setUnsaved) } 
-                            /> }
+                                required={ true }
+                            />
                         </div>
                     </div>
                 </div>

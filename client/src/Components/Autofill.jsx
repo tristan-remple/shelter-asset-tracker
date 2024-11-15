@@ -9,13 +9,14 @@ import { useState, useEffect } from "react"
 // setCurrent is the setter for the current state variable
 // Imported by: ItemEdit, ItemCreate, UnitEdit, UnitCreate
 
-const Autofill = ({ list, current, setCurrent }) => {
+const Autofill = ({ list, current, setCurrent, error }) => {
 
     const id = `dropdown-${ list[0] }`
 
     // open state of the dropdown menu
     const [ open, setOpen ] = useState(false)
 
+    const [ className, setClassName ] = useState("")
     const [ userInput, setUserInput ] = useState(current)
 
     useEffect(() => {
@@ -30,8 +31,12 @@ const Autofill = ({ list, current, setCurrent }) => {
         })
         if (newFilteredList.length === 1 && newFilteredList[0].toLowerCase() === newUserInput.toLowerCase()) {
             setCurrent(newFilteredList[0])
+            setClassName("")
             setOpen(false)
+        } else if (newFilteredList.length === 0) {
+            setClassName("error")
         } else {
+            setClassName("")
             setOpen(true)
         }
         setUserInput(newUserInput)
@@ -74,6 +79,12 @@ const Autofill = ({ list, current, setCurrent }) => {
         }
     }
 
+    useEffect(() => {
+        if (error) {
+            setClassName("error")
+        }
+    }, [ error ])
+
     // render the list, including all listeners
     const renderedList = filteredList.length > 0 ? filteredList.map((item, index) => {
         return <li 
@@ -87,23 +98,29 @@ const Autofill = ({ list, current, setCurrent }) => {
     }) : <li className="danger" >No matches</li>
 
     return (
-        <div className="dropdown">
-            <input 
-                id={ `${ id }-input` }
-                onChange={ handleChange }
-                tabIndex={ 0 }
-                value={ userInput }
-                onKeyDown={ kbInputChange }
-                onFocus={ focusEmptyInput }
-                onBlur={ () => { setCurrent(userInput) } }
-                type="text"
-            />
-            { open && (
-                <ul className="dropdown-menu" id={ id }>
-                    { renderedList }
-                </ul>
-            )}
-        </div>
+        <>
+            <div className="dropdown">
+                <input 
+                    id={ `${ id }-input` }
+                    onChange={ handleChange }
+                    tabIndex={ 0 }
+                    value={ userInput }
+                    onKeyDown={ kbInputChange }
+                    onFocus={ focusEmptyInput }
+                    onBlur={ () => { setCurrent(userInput) } }
+                    type="text"
+                    placeholder="Select:"
+                    className={ className }
+                />
+                { open && (
+                    <ul className="dropdown-menu" id={ id }>
+                        { renderedList }
+                    </ul>
+                )}
+            </div>
+            { error && <div className="row row-info error error-message"><p className="my-2">{ error }</p></div> }
+        </>
+        
     )
 }
 

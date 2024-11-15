@@ -105,15 +105,15 @@ const postData = {
 ## New November 4th
 
 ### Status and Error Messages
-- password error messages
-- users that are not assigned to a location need to get a helpful error screen
-- navigation buttons should clear current status
-- display error messages in red
+- ✅ password error messages
+- ✅ users that are not assigned to a location need to get a helpful error screen
+- ✅ navigation buttons should clear current status
+- ✅ display error messages in red
 - ✅ status type context
-- incorrect fields should turn red and display an error
+- ✅ incorrect fields should turn red and display an error
+  - change all fields to updated version
 
 ### Error Handling
-- allow items to be added without invoice or vendor
 - "snooze end of life" changed to "update end of life"
   - text: you can set more specific end of life from the edit screen
   - updated end of life does not register as a changed field: it should
@@ -141,7 +141,7 @@ const postData = {
 - add sort buttons to columns on dashboard tables
 
 ### Styling
-- header highlight color
+- ✅ header highlight color
 - inconsistent margin after header: unit pages need more margin at top
 - ✅ fields lighter than buttons
 - change 100vw to 100vrw ? to adjust for scroll
