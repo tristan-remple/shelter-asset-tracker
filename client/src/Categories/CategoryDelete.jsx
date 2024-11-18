@@ -22,7 +22,7 @@ const CategoryDelete = () => {
     // set up page functionality
     const navigate = useNavigate()
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // validate id

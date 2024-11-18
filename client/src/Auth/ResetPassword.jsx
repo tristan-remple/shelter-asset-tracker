@@ -5,8 +5,6 @@ import { useContext, useState } from "react"
 // internal dependencies
 import { statusContext } from "../Services/Context"
 import authService from "../Services/authService"
-import handleChanges from "../Services/handleChanges"
-import validateEmail from "../Services/validateEmail"
 
 // components
 import Button from "../Components/Button"
@@ -28,7 +26,7 @@ const ResetPassword = () => {
     const { hash } = useParams()
 
     // other setup
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
 
     // set up form controls
@@ -57,7 +55,7 @@ const ResetPassword = () => {
     const saveChanges = () => {
 
         // validation
-        if (changes.errorFields.length > 0) {
+        if (changes.email === "" || changes.password === "" || changes.retypePassword === "" || changes.errorFields.length > 0) {
             setForceValidation(forceValidation + 1)
             setStatus({
                 message: "Please verify that you have entered a valid email, that your password is strong, and that you have entered the same password twice.",
@@ -112,7 +110,6 @@ const ResetPassword = () => {
                                 type="email"
                                 name="email"
                                 formControls={ formControls }
-                                checks={ [ validateEmail ] }
                                 required={ true }
                             />
                         </div>

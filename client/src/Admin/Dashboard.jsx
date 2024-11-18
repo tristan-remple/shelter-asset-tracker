@@ -424,7 +424,7 @@ const Dashboard = () => {
                         </table>
                     </div>
                 </div>
-                <h4>Items to Discard Soon</h4>
+                <h4>Items Overview</h4>
                 <div className="row row-info" id="eol-filters">
                     <div className="col col-info">
                         <div className="col-head">

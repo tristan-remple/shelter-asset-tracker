@@ -569,7 +569,7 @@ textarea {
 }
 
 @media screen and (max-width: 768px) {
-    .title-row .col, .title-row .col-2, .title-row .col-3, .btn, .title-row .dropdown {
+    .title-row .col, .title-row .col-2, .title-row .col-3, .btn, .title-row .dropdown, input[type=file] {
         width: 100% !important;
     }
 

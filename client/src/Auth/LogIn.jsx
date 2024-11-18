@@ -10,6 +10,7 @@ import authService from "../Services/authService"
 // components
 import Button from '../Components/Button'
 import Statusbar from "../Components/Statusbar"
+import RegularField from "../Components/RegularField"
 
 //------ MODULE INFO
 // This page allows users to log in.
@@ -23,7 +24,7 @@ const LogIn = () => {
 
     // set up
     const navigate = useNavigate()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const { userDetails, setUserDetails } = useContext(userContext)
 
     // if the user has a session but has somehow erased their context, reset context
@@ -52,15 +53,18 @@ const LogIn = () => {
     // form handling
     const [ changes, setChanges ] = useState({
         email: "",
-        password: ""
+        password: "",
+        errorFields: []
     })
     const [ unsaved, setUnsaved ] = useState(false)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // process form submit
     const submitLogin = () => {
 
         // validation
         if (changes.email === "" || changes.password === "") {
+            setForceValidation(forceValidation + 1)
             setStatus({
                 message: "Please enter your email and password.",
                 error: true
@@ -107,6 +111,11 @@ const LogIn = () => {
         })   
     }
 
+    const formControls = {
+        changes, setChanges, unsaved, setUnsaved,
+        force: forceValidation
+    }
+
     return (
         <main className="container">
             <div className="row title-row mt-5 mb-2">
@@ -122,12 +131,11 @@ const LogIn = () => {
                             Email
                         </div>
                         <div className="col-content">
-                            <input 
-                                className="loginInput"
-                                type="text" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="email"
+                                name="email"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -138,12 +146,11 @@ const LogIn = () => {
                             Password
                         </div>
                         <div className="col-content">
-                            <input 
-                                className="loginInput"
-                                type="password" 
-                                name="password" 
-                                value={ changes.password } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="password"
+                                name="password"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>

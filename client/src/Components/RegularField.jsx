@@ -1,26 +1,30 @@
 import { useState, useEffect } from 'react'
 
+import validateEmail from '../Services/validateEmail'
+
 //------ MODULE INFO
 // This module renders a simple input field and its associated errors.
 // It takes a lot of props:
 // * type: html type of input (text, number, password, email)
 // * name: html name of field AND the field's key in changes
-// * changes/setChanges: the state of the parent form
-// * unsaved/setUnsaved: whether the parent form has been altered since initial rendering
 // * checks: array of functions that return either an error message or null (see sampleCheck)
 // * step: html step, indicating the decimal place for number input
 // * required: if flagged true, the field will error if it is changed to empty
+// * changes/setChanges: the state of the parent form
+// * unsaved/setUnsaved: whether the parent form has been altered since initial rendering
 // * force: a counter that forces the field to check its validation on change
 
-const sampleCheck = (input) => {
-    if (input !== validEmail) {
-        return "Invalid email address."
-    } else {
-        return null
-    }
-}
+// const sampleCheck = (input) => {
+//     if (input !== validEmail) {
+//         return "Invalid email address."
+//     } else {
+//         return null
+//     }
+// }
 
-const RegularField = ({ type, name, formControls, checks = [], step = "0", required = false }) => {
+const checkPositive = (num) => { return parseFloat(num) > 0 ? null : "Input must be a positive number." }
+
+const RegularField = ({ type, name, formControls, checks = [], step = "0", required = false, tabIndex = 0 }) => {
 
     const { changes, setChanges, unsaved, setUnsaved, force } = formControls
 
@@ -39,6 +43,12 @@ const RegularField = ({ type, name, formControls, checks = [], step = "0", requi
             errors.push("Input is too long.")
         } else if (required && (input.length === 0 || input == 0)) {
             errors.push("Input cannot be empty.")
+        } else if (type === "email") {
+            const emailError = validateEmail(input)
+            if (emailError) { errors.push(emailError) }
+        } else if (type === "number") {
+            const numberError = checkPositive(input)
+            if (numberError) { errors.push(numberError) }
         }
 
         // check custom errors passed into this component
@@ -95,6 +105,7 @@ const RegularField = ({ type, name, formControls, checks = [], step = "0", requi
                 onChange={ (event) => handleTextChange(event) } 
                 onBlur={ () => { checkField(changes[name]); setUnsaved(true) } }
                 className={ fieldError && "error" }
+                tabIndex={ tabIndex }
             />
             { fieldError && <div className="row row-info error error-message"><p className="my-2">{ fieldError }</p></div> }
         </>

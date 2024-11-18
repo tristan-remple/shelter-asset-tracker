@@ -14,6 +14,7 @@ import IconSelector from './IconSelector'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // Allows the user add a new category
@@ -24,8 +25,9 @@ const CategoryCreate = () => {
 
     // set up page functionality
     const navigate = useNavigate()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState(null)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // form controls
     const [ unsaved, setUnsaved ] = useState(false)
@@ -35,7 +37,8 @@ const CategoryCreate = () => {
         defaultValue: 0,
         depreciationRate: 0,
         icon: "",
-        singleResident: false
+        singleResident: false,
+        errorFields: []
     })
 
     // open or close the icon selector menu
@@ -57,11 +60,16 @@ const CategoryCreate = () => {
     const saveChanges = async() => {
 
         // validation
-        if (changes.name === "" || changes.defaultValue <= 0 || changes.defaultUsefulLife <= 0 || changes.icon === "") {
+        if (changes.name === "" || changes.defaultUsefulLife == "" || changes.defaultValue == "" || changes.icon === "" || changes.errorFields.length > 0) {
+            setForceValidation(forceValidation + 1)
             setStatus({
-                message: "Please fill in all category fields.",
+                message: "Please check that all category fields are filled in correctly.",
                 error: true
             })
+            if (changes.icon === "" && changes.errorFields.indexOf("icon") === -1) {
+                const newChanges = {...changes}
+                newChanges.errorFields.push("icon")
+            }
             return
         }
 
@@ -84,6 +92,11 @@ const CategoryCreate = () => {
         })
     }
 
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
+    }
+
     // if there's an error, return the error screen instead of the page
     return err ? <Error err={ err } /> : (
         <main className="container">
@@ -103,15 +116,15 @@ const CategoryCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Name
+                            Name *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                                tabIndex={ selector ? -1 : 0 }
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true } 
+                                tabIndex={ selector ? -1 : 0 } 
                             />
                         </div>
                     </div>
@@ -125,6 +138,7 @@ const CategoryCreate = () => {
                                 name="Single Resident"
                                 checked={ changes.singleResident }
                                 changeHandler={ checkHandler }
+                                tabIndex={ selector ? -1 : 0 } 
                             />
                         </div>
                     </div>
@@ -132,32 +146,33 @@ const CategoryCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Useful Life<br />
+                            Default Useful Life *<br />
                             (In Months)
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="number" 
+                            <RegularField 
+                                type="number"
                                 name="defaultUsefulLife"
-                                value={ changes.defaultUsefulLife } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                                tabIndex={ selector ? -1 : 0 }
-                            /><br />
-                            Equivalent to { (changes.defaultUsefulLife / 12).toFixed(1) } years
+                                formControls={ formControls }
+                                required={ true }
+                                tabIndex={ selector ? -1 : 0 } 
+                            />
+                            <br />
+                            { changes.errorFields.indexOf("defaultUsefulLife") === -1 && `Equivalent to ${ (changes.defaultUsefulLife / 12).toFixed(1) } years` }
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Default Value
+                            Default Value *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="number" 
-                                name="defaultValue" 
+                            <RegularField 
+                                type="number"
+                                name="defaultValue"
                                 step=".01"
-                                value={ changes.defaultValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                                tabIndex={ selector ? -1 : 0 }
+                                formControls={ formControls }
+                                required={ true }
+                                tabIndex={ selector ? -1 : 0 } 
                             />
                         </div>
                     </div>
@@ -165,11 +180,12 @@ const CategoryCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Icon
+                            Icon *
                         </div>
                         <div className="col-icon col-content d-flex justify-content-start">
                             { changes.icon && <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.alt } /> }
-                            <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
+                            <Button text="Change Icon" linkTo={ toggleSelector } type={ changes.errorFields.indexOf("icon") === -1 ? "admin" : "error" } />
+                            { changes.errorFields.indexOf("icon") > -1 && <div className="row row-info error error-message"><p className="my-2">A new category requires an icon.</p></div> }
                             { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>

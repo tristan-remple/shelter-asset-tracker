@@ -20,7 +20,7 @@ import Statusbar from '../Components/Statusbar'
 const CategoryRecovery = () => {
 
     // get context information
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // fetch data from the api

@@ -52,7 +52,7 @@ const ItemDetails = () => {
     const { unit, name, template, status: itemStatus, value, createdAt, eol, inspectionRecord, invoice, vendor } = item
 
     // if it has been deleted, throw an error
-    // if (discardDate) {
+    // if (item.discardDate) {
     //     return <Error err="deleted" />
     // }
 

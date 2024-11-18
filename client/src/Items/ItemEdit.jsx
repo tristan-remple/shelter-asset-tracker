@@ -17,6 +17,7 @@ import Dropdown from '../Components/Dropdown'
 import ChangePanel from '../Components/ChangePanel'
 import CommentBox from '../Components/CommentBox'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -41,6 +42,7 @@ const ItemEdit = () => {
     const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // redirect to the error page if no item is specified or if the item specified isn't found
     if (id === undefined) {
@@ -75,7 +77,8 @@ const ItemEdit = () => {
         vendor: "",
         eol: "",
         initialValue: 0,
-        currentValue: 0
+        currentValue: 0,
+        errorFields: []
     })
 
     useEffect(() => {
@@ -95,7 +98,8 @@ const ItemEdit = () => {
                 vendor: item.vendor,
                 eol: item.eol,
                 initialValue: item.value.initialValue,
-                currentValue: item.value.currentValue
+                currentValue: item.value.currentValue,
+                errorFields: []
             })
         }
     }, [ item ])
@@ -162,6 +166,11 @@ const ItemEdit = () => {
         })
     }
 
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -180,14 +189,14 @@ const ItemEdit = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Label
+                            Label *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -217,7 +226,7 @@ const ItemEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Status
+                            Status *
                         </div>
                         <div className="col-content">
                             <Flag color={ changes.flag.color } />
@@ -241,7 +250,6 @@ const ItemEdit = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             className="comment-area" 
                         />
-                        <CommentBox comments={ item.comments } />
                     </div>
                 </div>
                 <div className="row row-info">
@@ -255,7 +263,7 @@ const ItemEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Expected End of Life
+                            Expected End of Life *
                         </div>
                         <div className="col-content">
                             <input 
@@ -271,11 +279,10 @@ const ItemEdit = () => {
                             Invoice Number
                         </div>
                         <div className="col-content">
-                            <input 
+                            <RegularField 
                                 type="text"
-                                name="invoice" 
-                                value={ changes.invoice } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                name="invoice"
+                                formControls={ formControls }
                             />
                         </div>
                     </div>
@@ -284,25 +291,24 @@ const ItemEdit = () => {
                             Vendor
                         </div>
                         <div className="col-content">
-                            <input 
+                            <RegularField 
                                 type="text"
-                                name="vendor" 
-                                value={ changes.vendor } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                name="vendor"
+                                formControls={ formControls }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Initial Value
+                            Initial Value *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="number" 
+                            <RegularField 
+                                type="number"
+                                name="initialValue"
                                 step=".01"
-                                name="initialValue" 
-                                value={ changes.initialValue } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>

@@ -24,6 +24,9 @@ const Button = ({ text, linkTo, type, id }) => {
         case "danger":
             buttonClass += "btn-danger"
             break
+        case "error":
+            buttonClass += "error"
+            break
         case "dropdown":
             buttonClass += "btn-outline-primary dropdown-toggle"
             break

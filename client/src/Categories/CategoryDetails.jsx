@@ -1,10 +1,9 @@
 // external dependencies
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import { statusContext } from '../Services/Context'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
 
@@ -22,7 +21,6 @@ const CategoryDetails = () => {
 
     // set up page functionality
     const { id } = useParams()
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // validate id

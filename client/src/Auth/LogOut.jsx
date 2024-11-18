@@ -16,7 +16,7 @@ import Statusbar from "../Components/Statusbar"
 const LogOut = () => {
 
     // get status context
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const { setUserDetails } = useContext(userContext)
 
     // perform the logout api call

@@ -1,9 +1,8 @@
 // external dependencies
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Components/Button"
@@ -20,7 +19,6 @@ import Statusbar from '../Components/Statusbar'
 const CategoryList = () => {
 
     // get the status from context
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // get the categories from the api

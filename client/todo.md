@@ -111,20 +111,56 @@ const postData = {
 - ✅ display error messages in red
 - ✅ status type context
 - ✅ incorrect fields should turn red and display an error
-  - change all fields to updated version
+  - ✅ admin
+  - ✅ categories
+  - ✅ items
+  - locations
+  - units
+  - users
+
+```js Changes to forms
+// SETUP
+  const [ forceValidation, setForceValidation ] = useState(0)
+  changes = { ..., errorFields: [] }
+
+// SUBMIT
+  if (changes.whatever === "" || changes.errorFields.length > 0) {
+    setForceValidation(forceValidation + 1)
+    setStatus({
+      message: "Please verify your input.",
+      error: true
+    })
+    return
+  }
+
+// PRE-RETURN
+const formControls = { 
+  changes, setChanges, unsaved, setUnsaved, 
+  force: forceValidation
+}
+
+// FIELDS
+  <RegularField 
+    type="password"
+    name="retypePassword"
+    formControls={ formControls }
+    checks={[ retypeCheck ]}
+    required={ true }
+  />
+```
 
 ### Error Handling
-- "snooze end of life" changed to "update end of life"
+- ✅ "snooze end of life" changed to "update end of life"
   - text: you can set more specific end of life from the edit screen
   - updated end of life does not register as a changed field: it should
 - when changing an item from flagged to ok, if the item is past its eol, throw an error asking user to change eol
-- remove comments display from item edit
-- no strings over 255 characters allowed
-- category create form: better error handling when form is incomplete
-  - NaN values in number fields should throw error
-  - 0, negative, or NaN months should display not valid instead of equivalent in years
-- "items to discard soon" -> "items overview"
-- disallow gifs
+- ✅ remove comments display from item edit
+- ✅ no strings over 255 characters allowed
+- ✅ category create form: better error handling when form is incomplete
+  - ✅ NaN values in number fields should throw error
+  - ✅ 0, negative, or NaN months should display not valid instead of equivalent in years
+- ✅ "items to discard soon" -> "items overview"
+- ✅ disallow gifs
 - icon upload failure: allow to try again
 
 ### Updated Functionality

@@ -37,7 +37,7 @@ const ItemInspect = () => {
 
     // id from the url and status from the context
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
 
     // navigation and error handling
     const navigate = useNavigate()
@@ -179,7 +179,7 @@ const ItemInspect = () => {
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Inspecting { capitalize(item?.template.name) } { item?.label } in { item?.unit.name }</h2>
+                    <h2>Recording Inspection on { capitalize(item?.template.name) } { item?.label } in { item?.unit.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end p-0">
                     <Button text="Cancel Inspection" linkTo={ `/item/${ item?.id }` } type="nav" />
@@ -193,7 +193,7 @@ const ItemInspect = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Status
+                            Status *
                         </div>
                         <div className="col-content">
                             <Flag color={ changes.flag.color } />
@@ -206,7 +206,7 @@ const ItemInspect = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Snooze End of Life
+                            Adjust End of Life
                         </div>
                         <div className="col-content">
                             <p>{ friendlyDate(changes.eol) }</p>

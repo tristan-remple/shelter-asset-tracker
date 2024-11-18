@@ -168,19 +168,17 @@ const ItemCreate = () => {
         changes.donated = newItem.donated ? 1 : 0
         changes.usefulLifeOffset = 12
 
-        console.log(changes)
-
         // send api request and process api response
         await apiService.postNewItem(changes, (response => {
             if (response.error) {
                 setErr(response.error)
             } else {
                 setStatus({
-                    message: `You have successfully added item ${response.name}.`,
+                    message: `You have successfully added item ${ response.name }.`,
                     error: false
                 })
                 setUnsaved(false)
-                navigate(`/item/${response.itemId}`)
+                navigate(`/item/${ response.itemId }`)
             }
         }))
     }
