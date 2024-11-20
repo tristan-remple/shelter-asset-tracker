@@ -10,6 +10,7 @@ import Button from '../Components/Button'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // This module allows the admin to edit a specific user.
@@ -24,6 +25,7 @@ const UserEdit = () => {
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
     const { isAdmin } = userDetails
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // validate id
     if (id === undefined || id === "undefined") {
@@ -41,7 +43,8 @@ const UserEdit = () => {
         isAdmin: false,
         createdAt: "",
         updatedAt: "",
-        facilities: []
+        facilities: [],
+        errorFields: []
     })
 
     // state that holds original data to check if an api call needs to be made
@@ -70,6 +73,7 @@ const UserEdit = () => {
                         return loc
                     })
                     newChanges.facilities = toggledLocations
+                    newChanges.errorFields = []
                     setChanges(newChanges)
                     setOriginalData(newChanges)
                 }
@@ -100,6 +104,7 @@ const UserEdit = () => {
         const newChanges = {...changes}
         const currentIndex = newChanges.facilities.findIndex(loc => loc.id === fieldName)
         newChanges.facilities[currentIndex].active = newChanges.facilities[currentIndex].active ? false : true
+        newChanges.errorFields = []
         setChanges(newChanges)
         setUnsaved(true)
     }
@@ -118,30 +123,36 @@ const UserEdit = () => {
         )
     })
 
-    // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-    const validateEmail = (email) => {
-        return String(email)
-            .toLowerCase()
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            )
-    }
+    const [ confirmed, setConfirmed ] = useState(false)
 
     // send data to the api
     const saveChanges = async() => {
 
-        // validation
-        if (changes.name === "") {
+        if (changes.name === originalData.name && changes.email === originalData.email && changes.facilities.every(fac => {
+            return fac.active === fac.original
+        })) {
             setStatus({
-                message: "Please enter a name.",
+                message: "You have no changes to save.",
                 error: true
             })
             return
-        } else if (changes.email === "" || !validateEmail(changes.email)) {
+        }
+
+        // validation
+        if (changes.name === "" || changes.email === "" || changes.errorFields.length > 0) {
             setStatus({
-                message: "Please enter a valid email address.",
+                message: "Please make sure that you have filled out all required fields correctly.",
                 error: true
             })
+            return
+        }
+
+        if (!changes.facilities.some(loc => loc.active) && !confirm) {
+            setStatus({
+                message: "This user has no locations assigned. They will not be able to view or edit any information on the app. You can assign them to locations by clicking the checkboxes beside the location names. If you're sure you wish to proceed, click save again.",
+                error: true
+            })
+            setConfirmed(true)
             return
         }
 
@@ -191,6 +202,11 @@ const UserEdit = () => {
         // return to the user details page
         navigate(`/user/${ changes.id }`)
         
+    }
+
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
     }
 
     const changeAdmin = async() => {
@@ -246,27 +262,27 @@ const UserEdit = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            User Name
+                            Name *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Email
+                            Email *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="email" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="email"
+                                name="email"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>

@@ -19,7 +19,10 @@ const Header = () => {
     }
 
     const clearStatus = () => {
-        setStatus("")
+        setStatus({
+            message: "",
+            error: false
+        })
     }
 
     const [ branding, setBranding ] = useState({

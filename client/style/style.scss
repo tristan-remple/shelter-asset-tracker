@@ -275,10 +275,18 @@ header, footer {
 
 
 /* Flag Styles */
+.flag-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    align-items: center;
+}
+
 .flag-box {
     width: 2rem;
     height: 2rem;
     margin: 0.25rem;
+    flex-shrink: 0;
 }
 
 .flag {
@@ -487,6 +495,14 @@ textarea {
     width:100%;
 }
 
+.btn-group {
+    width: 100%;
+    .btn {
+        width: auto !important;
+        flex: 1 0 auto;
+    }
+}
+
 .error {
     background-color: $error !important;
     border-color: $fontColour !important;
@@ -552,7 +568,7 @@ textarea {
 
     .page-content {
         width: 100%;
-        overflow-x: auto;
+        overflow-x: visible;
     }
 
     .col-icon {

@@ -14,6 +14,7 @@ import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Dropdown from '../Components/Dropdown'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -26,6 +27,7 @@ const LocationCreate = () => {
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState(null)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // unsaved toggles the ChangePanel
     const [ unsaved, setUnsaved ] = useState(false)
@@ -39,8 +41,9 @@ const LocationCreate = () => {
         // comment: "",
         user: {
             userId: 0,
-            name: "Select:"
-        }
+            name: ""
+        },
+        errorFields: []
     })
 
     const [ users, setUsers ] = useState([])
@@ -88,11 +91,17 @@ const LocationCreate = () => {
     const saveChanges = async() => {
 
         // validate title
-        if (changes.locationName === "") {
+        if (changes.locationName === "" || changes.errorFields.length > 0 || changes.user.name === "" || changes.user.name === "Select:") {
             setStatus({
-                message: "A new location must have a title.",
+                message: "Please verify that all required fields have been filled in correctly.",
                 error: true
             })
+            if ((changes.user.name === "" || changes.user.name === "Select:") && changes.errorFields.indexOf("user.name") === -1) {
+                const newChanges = { ...changes }
+                newChanges.errorFields.push("user.name")
+                setChanges(newChanges)
+            }
+            setForceValidation(forceValidation + 1)
             return
         }
 
@@ -114,6 +123,12 @@ const LocationCreate = () => {
     }
 
     if (err) { return <Error err={ err } /> }
+
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
+    }
+
     return (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -132,26 +147,27 @@ const LocationCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Title
+                            Title *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="locationName" 
-                                value={ changes.locationName } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="locationName"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Primary User
+                            Manager *
                         </div>
                         <div className="col-content">
                             <Dropdown 
                                 list={ simpleUsers } 
                                 current={ changes.user.name } 
                                 setCurrent={ handleUserChange }
+                                error={ changes.errorFields.indexOf("user.name") !== -1 }
                             />
                         </div>
                     </div>

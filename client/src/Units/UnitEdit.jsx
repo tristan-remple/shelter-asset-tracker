@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import { statusContext, userContext } from '../Services/Context'
+import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
 import capitalize from '../Services/capitalize'
 
@@ -14,6 +14,7 @@ import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Autofill from '../Components/Autofill'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
@@ -24,11 +25,11 @@ const UnitEdit = () => {
 
     // get context information
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const [ unsaved, setUnsaved ] = useState(false)
     const navigate = useNavigate()
-    const { userDetails } = useContext(userContext)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // validate id
     if (id === undefined) {
@@ -69,7 +70,7 @@ const UnitEdit = () => {
     const [ changes, setChanges ] = useState({
         name: "",
         type: "",
-        createdAt: ""
+        errorFields: []
     })
 
     useEffect(() => {
@@ -77,13 +78,11 @@ const UnitEdit = () => {
             const newTypeIndex = unitTypes.map(type => capitalize(type.name)).indexOf(capitalize(unit.type))
             setChanges({
                 name: unit.name,
-                type: unitTypes[newTypeIndex]
+                type: unitTypes[newTypeIndex],
+                errorFields: []
             })
         }
     }, [ unit, simpleTypes ])
-
-    // validate autofill input
-    const [ validOption, setValidOption ] = useState(true)
 
     if (err) { return <Error err={ err } /> }
 
@@ -94,26 +93,43 @@ const UnitEdit = () => {
         if (newTypeIndex !== -1) {
             const newChanges = {...changes}
             newChanges.type = unitTypes[newTypeIndex]
+            const errorIndex = changes.errorFields.indexOf("type")
+            if (errorIndex !== -1) {
+                newChanges.errorFields.splice(errorIndex, 1)
+            }
             setChanges(newChanges)
             setUnsaved(true)
             setStatus({
                 message: "",
                 error: false
             })
-            setValidOption(true)
         } else {
+            if (changes.errorFields.indexOf("type") === -1) {
+                const newChanges = { ...changes }
+                newChanges.errorFields.push("type")
+                setChanges(newChanges)
+            }
             setStatus({
                 message: "The type you selected cannot be found.",
                 error: true
             })
-            setValidOption(false)
         }
     }
 
     // sends the item object to the apiService
     const saveChanges = async() => {
 
-        if (!validOption) {
+        if (changes.name === "" || changes.type === "" || changes.errorFields.length > 0) {
+            setStatus({
+                message: "Please check that you have filled all required fields correctly.",
+                error: true
+            })
+            if (changes.errorFields.indexOf("type") === -1 && (changes.type == "" || changes.type == "Select:")) {
+                const newChanges = { ...changes }
+                newChanges.errorFields.push("type")
+                setChanges(newChanges)
+            }
+            setForceValidation(forceValidation + 1)
             return
         }
 
@@ -136,6 +152,11 @@ const UnitEdit = () => {
                 navigate(`/unit/${ unit.id }`)
             }
         })
+    }
+
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
     }
 
     return err ? <Error err={ err } /> : (
@@ -167,26 +188,27 @@ const UnitEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Unit Name
+                            Unit Name *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Unit Type
+                            Unit Type *
                         </div>
                         <div className="col-content">
                             <Autofill
                                 list={ simpleTypes }
                                 current={ capitalize(changes.type?.name) }
                                 setCurrent={ handleTypeChange }
+                                error={ changes.errorFields.indexOf("type") === -1 ? null : "Please select a unit type." }
                             />
                         </div>
                     </div>

@@ -196,12 +196,14 @@ const ItemInspect = () => {
                             Status *
                         </div>
                         <div className="col-content">
-                            <Flag color={ changes.flag.color } />
-                            <Dropdown
-                                list={ flagTextOptions }
-                                current={ changes.flag.text }
-                                setCurrent={ handleFlag }
-                            />
+                            <div className="flag-wrapper">
+                                <Flag color={ changes.flag.color } />
+                                <Dropdown
+                                    list={ flagTextOptions }
+                                    current={ changes.flag.text }
+                                    setCurrent={ handleFlag }
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="col col-info">

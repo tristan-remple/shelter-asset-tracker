@@ -1,3 +1,4 @@
+// https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
 const validateEmail = (email) => {
     return String(email)
         .toLowerCase()

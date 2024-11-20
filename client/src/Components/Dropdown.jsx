@@ -1,5 +1,5 @@
 // external dependencies
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 //------ MODULE INFO
 // This module creates a dropdown for use with forms.
@@ -8,7 +8,7 @@ import { useState } from "react"
 // setCurrent is the setter for the current state variable
 // Imported by: Dashboard
 
-const Dropdown = ({ list, current, setCurrent }) => {
+const Dropdown = ({ list, current, setCurrent, error }) => {
 
     const id = `dropdown-${ list[0] }`
 
@@ -54,10 +54,31 @@ const Dropdown = ({ list, current, setCurrent }) => {
         >{ item }</li>
     })
 
+    const errorClass = error ? " error" : ""
+
+    // if the user clicks outside the dropdown while it is open, close it
+    // https://stackoverflow.com/questions/32553158/detect-click-outside-react-component
+    const useOutsideFocus = (ref) => {
+        useEffect(() => {
+            const outsideClickHandler = (e) => {
+                if (ref.current && !ref.current.contains(e.target)) {
+                    setOpen(false)
+                }
+            }
+            document.addEventListener("click", outsideClickHandler)
+            return () => {
+                document.removeEventListener("click", outsideClickHandler)
+            }
+        }, [ ref ])
+    }
+
+    const wrapperRef = useRef(null)
+    useOutsideFocus(wrapperRef)
+
     return (
-        <div className="dropdown">
+        <div ref={ wrapperRef } className="dropdown" >
             <div 
-                className="btn btn-outline-primary dropdown-toggle" 
+                className={ `btn btn-outline-primary dropdown-toggle${ errorClass }` }
                 onClick={ toggle } 
                 onKeyUp={ keyboardMenuHandler } 
                 tabIndex={ 0 }
@@ -67,6 +88,7 @@ const Dropdown = ({ list, current, setCurrent }) => {
                     { renderedList }
                 </ul>
             )}
+            { error && <div className="row row-info error error-message"><p className="my-2">Please select an option from the dropdown.</p></div> }
         </div>
     )
 }

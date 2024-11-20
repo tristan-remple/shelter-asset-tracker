@@ -114,9 +114,9 @@ const postData = {
   - ✅ admin
   - ✅ categories
   - ✅ items
-  - locations
-  - units
-  - users
+  - ✅ locations
+  - ✅ units
+  - ✅ users
 
 ```js Changes to forms
 // SETUP

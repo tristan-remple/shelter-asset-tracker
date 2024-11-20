@@ -372,13 +372,11 @@ const Dashboard = () => {
                                 <div className="col-head">
                                     Location
                                 </div>
-                                <div className="col-content">
-                                    <Dropdown 
-                                        list={ viewOptions } 
-                                        current={ view } 
-                                        setCurrent={ setView }
-                                    />
-                                </div>
+                                <Dropdown 
+                                    list={ viewOptions } 
+                                    current={ view } 
+                                    setCurrent={ setView }
+                                />
                                 <div className="col-head">
                                     Total Value
                                 </div>

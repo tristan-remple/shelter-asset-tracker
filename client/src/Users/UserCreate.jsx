@@ -13,6 +13,7 @@ import Button from '../Components/Button'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
 import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // This module allows the admin to create a new user.
@@ -24,6 +25,7 @@ const UserCreate = () => {
     const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState(null)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // set up the change panel state
     const [ unsaved, setUnsaved ] = useState(false)
@@ -36,7 +38,8 @@ const UserCreate = () => {
         email: "",
         password: "test",
         authorizedBy: 1,
-        facilities: []
+        facilities: [],
+        errorFields: []
     })
 
     // list of locations for dropdown
@@ -87,27 +90,33 @@ const UserCreate = () => {
         setChanges(newChanges)
     }
 
-    // https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
-    const validateEmail = (email) => {
-        return String(email)
-            .toLowerCase()
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            )
-    }
+    const [ confirm, setConfirm ] = useState(false)
 
     const saveChanges = () => {
-        if (changes.name === "") {
+        if (changes.name === "" || changes.email === "" || changes.errorFields.length > 0) {
+            setForceValidation(forceValidation + 1)
             setStatus({
-                message: "Please enter a name.",
+                message: "Please make sure that you have filled in all required fields correctly.",
                 error: true
             })
             return
-        } else if (changes.email === "" || !validateEmail(changes.email)) {
+        }
+
+        if (changes.isAdmin && !confirm) {
             setStatus({
-                message: "Please enter a valid email address.",
+                message: "Granting a user admin privileges is a serious action. If you're sure you wish to proceed, click save again.",
+                error: true
+            }),
+            setConfirm(true)
+            return
+        } 
+        
+        if (!changes.facilities.some(loc => loc.active) && !confirm) {
+            setStatus({
+                message: "This user has no locations assigned. They will not be able to view or edit any information on the app. You can assign them to locations by clicking the checkboxes beside the location names. If you're sure you wish to proceed, click save again.",
                 error: true
             })
+            setConfirm(true)
             return
         }
 
@@ -126,6 +135,11 @@ const UserCreate = () => {
                 navigate(`/user/${response.userId}`)
             }
         })
+    }
+
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
     }
 
     if (err) { return <Error err={ err } /> }
@@ -147,14 +161,14 @@ const UserCreate = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            User Name
+                            Name *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -189,30 +203,17 @@ const UserCreate = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Email
+                            Email *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="email" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="email"
+                                name="email"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
-                    {/* <div className="col col-info">
-                        <div className="col-head">
-                            Password
-                        </div>
-                        <div className="col-content">
-                            <input 
-                                type="password" 
-                                name="password" 
-                                value={ changes.password } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
-                            />
-                        </div>
-                    </div> */}
                 </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut="/users" /> }
             </div>
