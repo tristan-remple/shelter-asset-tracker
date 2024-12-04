@@ -1,16 +1,16 @@
 // external dependencies
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import { statusContext } from '../Services/Context'
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // Displays the information about a single category.
@@ -21,7 +21,6 @@ const CategoryDetails = () => {
 
     // set up page functionality
     const { id } = useParams()
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // validate id
@@ -58,7 +57,7 @@ const CategoryDetails = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

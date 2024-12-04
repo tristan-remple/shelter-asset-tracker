@@ -1,18 +1,18 @@
 // external dependencies
 import { useParams } from 'react-router-dom'
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Components/Button"
 import Flag, { flagOptions } from "../Components/Flag"
 import Error from '../Components/Error'
 import CommentBox from '../Components/CommentBox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -23,7 +23,6 @@ const ItemDetails = () => {
 
     // get the id and status
     const { id } = useParams()
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // if no id has been provided, throw an error
@@ -53,7 +52,7 @@ const ItemDetails = () => {
     const { unit, name, template, status: itemStatus, value, createdAt, eol, inspectionRecord, invoice, vendor } = item
 
     // if it has been deleted, throw an error
-    // if (discardDate) {
+    // if (item.discardDate) {
     //     return <Error err="deleted" />
     // }
 
@@ -79,7 +78,7 @@ const ItemDetails = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

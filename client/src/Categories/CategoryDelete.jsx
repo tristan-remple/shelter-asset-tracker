@@ -10,6 +10,7 @@ import { statusContext } from '../Services/Context'
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module checks that the user wants to delete a category.
@@ -21,7 +22,7 @@ const CategoryDelete = () => {
     // set up page functionality
     const navigate = useNavigate()
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // validate id
@@ -50,7 +51,10 @@ const CategoryDelete = () => {
             if (res.error) {
                 setErr(res.error)
             } else {
-                setStatus(`You have successfully deleted category ${ res.name }.`)
+                setStatus({
+                    message: `You have successfully deleted category ${ res.name }.`,
+                    error: false
+                })
                 navigate(`/categories`)
             }
         })
@@ -66,7 +70,7 @@ const CategoryDelete = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
             </div>
         </main>

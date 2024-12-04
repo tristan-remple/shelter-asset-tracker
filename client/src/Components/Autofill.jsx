@@ -1,5 +1,5 @@
 // external dependencies
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 //------ MODULE INFO
 // This module creates an autofill input for use with forms.
@@ -9,20 +9,25 @@ import { useState, useEffect } from "react"
 // setCurrent is the setter for the current state variable
 // Imported by: ItemEdit, ItemCreate, UnitEdit, UnitCreate
 
-const Autofill = ({ list, current, setCurrent }) => {
+const Autofill = ({ list, current, setCurrent, error }) => {
 
     const id = `dropdown-${ list[0] }`
 
     // open state of the dropdown menu
     const [ open, setOpen ] = useState(false)
 
+    const [ className, setClassName ] = useState("")
     const [ userInput, setUserInput ] = useState(current)
 
+    // if the currently selected item changes by any method other than use typing, update the text field
     useEffect(() => {
         setUserInput(current)
     }, [ current ])
 
+    // create new state based on the list so we can manipulate it without changing the original
     const [ filteredList, setFilteredList ] = useState(list)
+
+    // when the user types, filter the autofill suggestions based on their input
     const handleChange = (e) => {
         const newUserInput = e.target.value
         const newFilteredList = list.filter(item => {
@@ -30,14 +35,19 @@ const Autofill = ({ list, current, setCurrent }) => {
         })
         if (newFilteredList.length === 1 && newFilteredList[0].toLowerCase() === newUserInput.toLowerCase()) {
             setCurrent(newFilteredList[0])
+            setClassName("")
             setOpen(false)
+        } else if (newFilteredList.length === 0) {
+            setClassName("error")
         } else {
+            setClassName("")
             setOpen(true)
         }
         setUserInput(newUserInput)
         setFilteredList(newFilteredList)
     }
 
+    // when the user presses the down arrow, focus on the first available suggestion instead of scrolling the page
     const kbInputChange = (event) => {
         if (event.code === "ArrowDown") {
             setOpen(true)
@@ -68,11 +78,21 @@ const Autofill = ({ list, current, setCurrent }) => {
         }
     }
 
+    // make sure the dropdown stays open while the list is being navigated by keyboard
     const focusEmptyInput = () => {
         if (!userInput) {
             setOpen(true)
         }
     }
+
+    // set error class when the element is in error state
+    useEffect(() => {
+        if (error) {
+            setClassName("error")
+        } else {
+            setClassName("")
+        }
+    }, [ error ])
 
     // render the list, including all listeners
     const renderedList = filteredList.length > 0 ? filteredList.map((item, index) => {
@@ -86,24 +106,49 @@ const Autofill = ({ list, current, setCurrent }) => {
         >{ item }</li>
     }) : <li className="danger" >No matches</li>
 
+    // if the user clicks outside the dropdown while it is open, close it
+    // https://stackoverflow.com/questions/32553158/detect-click-outside-react-component
+    const useOutsideFocus = (ref) => {
+        useEffect(() => {
+            const outsideClickHandler = (e) => {
+                if (ref.current && !ref.current.contains(e.target)) {
+                    setOpen(false)
+                }
+            }
+            document.addEventListener("click", outsideClickHandler)
+            return () => {
+                document.removeEventListener("click", outsideClickHandler)
+            }
+        }, [ ref ])
+    }
+
+    const wrapperRef = useRef(null)
+    useOutsideFocus(wrapperRef)
+
     return (
-        <div className="dropdown">
-            <input 
-                id={ `${ id }-input` }
-                onChange={ handleChange }
-                tabIndex={ 0 }
-                value={ userInput }
-                onKeyDown={ kbInputChange }
-                onFocus={ focusEmptyInput }
-                onBlur={ () => { setCurrent(userInput) } }
-                type="text"
-            />
-            { open && (
-                <ul className="dropdown-menu" id={ id }>
-                    { renderedList }
-                </ul>
-            )}
-        </div>
+        <>
+            <div className="dropdown" ref={ wrapperRef }>
+                <input 
+                    id={ `${ id }-input` }
+                    onChange={ handleChange }
+                    tabIndex={ 0 }
+                    value={ userInput }
+                    onKeyDown={ kbInputChange }
+                    onFocus={ focusEmptyInput }
+                    onBlur={ () => { setCurrent(userInput) } }
+                    type="text"
+                    placeholder="Select:"
+                    className={ className }
+                />
+                { open && (
+                    <ul className="dropdown-menu" id={ id }>
+                        { renderedList }
+                    </ul>
+                )}
+            </div>
+            { error && <div className="row row-info error error-message"><p className="my-2">{ error }</p></div> }
+        </>
+        
     )
 }
 

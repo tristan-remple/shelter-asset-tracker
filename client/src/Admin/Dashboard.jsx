@@ -16,6 +16,7 @@ import Error from '../Components/Error'
 import Search from '../Components/Search'
 import Dropdown from '../Components/Dropdown'
 import Checkbox from '../Components/Checkbox'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This page is the main page for admin functionality.
@@ -313,7 +314,10 @@ const Dashboard = () => {
             // wait for the state to be updated before calling the download button
             setTimeout(() => {
                 downloadLink.current.link.click()
-                setStatus(`The ${ report } report for ${ view } has been downloaded to your computer.`)
+                setStatus({
+                    message: `The ${ report } report for ${ view } has been downloaded to your computer.`,
+                    error: false
+                })
             }, 500)
         })
     }
@@ -359,7 +363,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="page-content" id="dashboard">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row">
                     <div className="col-4">
                         <h4>Overview</h4>
@@ -368,13 +372,11 @@ const Dashboard = () => {
                                 <div className="col-head">
                                     Location
                                 </div>
-                                <div className="col-content">
-                                    <Dropdown 
-                                        list={ viewOptions } 
-                                        current={ view } 
-                                        setCurrent={ setView }
-                                    />
-                                </div>
+                                <Dropdown 
+                                    list={ viewOptions } 
+                                    current={ view } 
+                                    setCurrent={ setView }
+                                />
                                 <div className="col-head">
                                     Total Value
                                 </div>
@@ -420,7 +422,7 @@ const Dashboard = () => {
                         </table>
                     </div>
                 </div>
-                <h4>Items to Discard Soon</h4>
+                <h4>Items Overview</h4>
                 <div className="row row-info" id="eol-filters">
                     <div className="col col-info">
                         <div className="col-head">

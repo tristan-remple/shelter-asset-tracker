@@ -1,14 +1,14 @@
 // external dependencies
-import { useContext, useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 // internal dependencies
-import { statusContext } from '../Services/Context'
 import apiService from "../Services/apiService"
 
 // components
 import Error from "../Components/Error"
 import Button from "../Components/Button"
 import Search from "../Components/Search"
+import Statusbar from "../Components/Statusbar"
 
 //------ MODULE INFO
 // This module shows a list of users to the admin.
@@ -16,8 +16,7 @@ import Search from "../Components/Search"
 
 const UserList = () => {
 
-    // get the status from context
-    const { status } = useContext(statusContext)
+    // set up state
     const [ err, setErr ] = useState("loading")
 
     // get the users from the api
@@ -61,7 +60,7 @@ const UserList = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <Search data={ users } setData={ setFilteredUsers } />
                 <table className="c-table-info align-middle">
                     <thead>

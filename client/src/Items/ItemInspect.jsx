@@ -15,6 +15,7 @@ import Flag, { flagOptions } from "../Components/Flag"
 import Error from '../Components/Error'
 import Dropdown from '../Components/Dropdown'
 import ChangePanel from '../Components/ChangePanel'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -36,7 +37,7 @@ const ItemInspect = () => {
 
     // id from the url and status from the context
     const { id } = useParams()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
 
     // navigation and error handling
     const navigate = useNavigate()
@@ -145,10 +146,16 @@ const ItemInspect = () => {
 
         if (newItem.status === item.status && !confirm) {
             if (newItem.comment === "" && newItem.usefulLife === item.usefulLife) {
-                setStatus("You have not entered or changed anything.")
+                setStatus({
+                    message: "You have not entered or changed anything.",
+                    error: true
+                })
                 return
             }
-            setStatus("You have not changed the status flag of this item. To confirm that you'd like to submit anyway, click save again.")
+            setStatus({
+                message: "You have not changed the status flag of this item. To confirm that you'd like to submit anyway, click save again.",
+                error: true
+            })
             setConfirm(true)
             return
         }
@@ -157,7 +164,10 @@ const ItemInspect = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have submitted an inspection on ${ response.name }.`)
+                setStatus({
+                    message: `You have submitted an inspection on ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/item/${response.id}`)
             }
@@ -169,7 +179,7 @@ const ItemInspect = () => {
         <main className="container">
             <div className="row title-row mt-3 mb-2">
                 <div className="col">
-                    <h2>Inspecting { capitalize(item?.template.name) } { item?.label } in { item?.unit.name }</h2>
+                    <h2>Recording Inspection on { capitalize(item?.template.name) } { item?.label } in { item?.unit.name }</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end p-0">
                     <Button text="Cancel Inspection" linkTo={ `/item/${ item?.id }` } type="nav" />
@@ -179,24 +189,26 @@ const ItemInspect = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Status
+                            Status *
                         </div>
                         <div className="col-content">
-                            <Flag color={ changes.flag.color } />
-                            <Dropdown
-                                list={ flagTextOptions }
-                                current={ changes.flag.text }
-                                setCurrent={ handleFlag }
-                            />
+                            <div className="flag-wrapper">
+                                <Flag color={ changes.flag.color } />
+                                <Dropdown
+                                    list={ flagTextOptions }
+                                    current={ changes.flag.text }
+                                    setCurrent={ handleFlag }
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Snooze End of Life
+                            Adjust End of Life
                         </div>
                         <div className="col-content">
                             <p>{ friendlyDate(changes.eol) }</p>

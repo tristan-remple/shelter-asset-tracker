@@ -13,6 +13,8 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Autofill from '../Components/Autofill'
+import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // This module allows an admin to add a new unit to a location.
@@ -25,6 +27,7 @@ const UnitCreate = () => {
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // validate id
     if (id === undefined) {
@@ -41,7 +44,6 @@ const UnitCreate = () => {
             } else {
                 setUnitTypes(data.unitTypes)
                 const simple = data.unitTypes.map(type => capitalize(type.name))
-                simple.unshift("Select:")
                 setSimpleTypes(simple)
                 setErr(null)
             }
@@ -69,7 +71,8 @@ const UnitCreate = () => {
     const [ changes, setChanges ] = useState({
         name: "",
         type: "",
-        facilityId: undefined
+        facilityId: undefined,
+        errorFields: []
     })
 
     // assign fetched location to new unit
@@ -77,8 +80,9 @@ const UnitCreate = () => {
         if (location) {
             setChanges({
                 name: "",
-                type: "Select:",
-                facilityId: location.facilityId
+                type: "",
+                facilityId: location.facilityId,
+                errorFields: []
             })
         }
     }, [ location ])
@@ -90,11 +94,26 @@ const UnitCreate = () => {
         if (newTypeIndex !== -1) {
             const newChanges = {...changes}
             newChanges.type = unitTypes[newTypeIndex]
+            const errorIndex = changes.errorFields.indexOf("type")
+            if (errorIndex !== -1) {
+                newChanges.errorFields.splice(errorIndex, 1)
+            }
             setChanges(newChanges)
             setUnsaved(true)
-            setStatus("")
+            setStatus({
+                message: "",
+                error: false
+            })
         } else {
-            setStatus("The type you selected cannot be found.")
+            if (changes.errorFields.indexOf("type") === -1) {
+                const newChanges = { ...changes }
+                newChanges.errorFields.push("type")
+                setChanges(newChanges)
+            }
+            setStatus({
+                message: "The type you selected cannot be found.",
+                error: true
+            })
         }
     }
 
@@ -102,8 +121,17 @@ const UnitCreate = () => {
     const saveChanges = () => {
 
         // light validation
-        if (changes.name == "" || changes.type == "" || changes.type == "Select:") {
-            setStatus("A new unit must have a name and a type.")
+        if (changes.name == "" || changes.type == "" || changes.type == "Select:" || changes.errorFields.length > 0) {
+            setStatus({
+                message: "Please check that you have filled all required fields correctly.",
+                error: true
+            })
+            if (changes.errorFields.indexOf("type") === -1 && (changes.type == "" || changes.type == "Select:")) {
+                const newChanges = { ...changes }
+                newChanges.errorFields.push("type")
+                setChanges(newChanges)
+            }
+            setForceValidation(forceValidation + 1)
             return
         }
 
@@ -115,11 +143,19 @@ const UnitCreate = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully created unit ${ changes.name }.`)
+                setStatus({
+                    message: `You have successfully created unit ${ changes.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/unit/${ response.unitId }`)
             }
         })
+    }
+
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
     }
 
     return err ? <Error err={ err } /> : (
@@ -136,7 +172,7 @@ const UnitCreate = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
@@ -148,27 +184,27 @@ const UnitCreate = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Unit Name
+                            Unit Name *
                         </div>
                         <div className="col-content">
-                            <input 
-                               className='my-2'
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Unit Type
+                            Unit Type *
                         </div>
                         <div className="col-content">
                             <Autofill
                                 list={ simpleTypes }
                                 current={ capitalize(changes.type.name) }
                                 setCurrent={ handleTypeChange }
+                                error={ changes.errorFields.indexOf("type") === -1 ? null : "Please select a unit type." }
                             />
                         </div>
                     </div>

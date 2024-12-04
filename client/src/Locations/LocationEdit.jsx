@@ -13,6 +13,8 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
 import Dropdown from '../Components/Dropdown'
+import Statusbar from '../Components/Statusbar'
+import RegularField from '../Components/RegularField'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -26,6 +28,7 @@ const LocationEdit = () => {
     const { status, setStatus } = useContext(statusContext)
     const navigate = useNavigate()
     const [ err, setErr ] = useState("loading")
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // validate id
     if (id === undefined) {
@@ -61,7 +64,8 @@ const LocationEdit = () => {
             userId: 0
         },
         created: "",
-        types: []
+        types: [],
+        errorFields: []
     })
 
     // destructure api response
@@ -76,7 +80,8 @@ const LocationEdit = () => {
                 user: {
                     name: manager?.name,
                     userId: manager?.id
-                }
+                },
+                errorFields: []
             })
         }
     }, [ location ])
@@ -115,9 +120,20 @@ const LocationEdit = () => {
             newChanges.user = users[newUserIndex]
             setChanges(newChanges)
             setUnsaved(true),
-            setStatus("")
+            setStatus({
+                message: "",
+                error: false
+            })
         } else {
-            setStatus("The user you selected cannot be found.")
+            const newChanges = { ...changes }
+            if (newChanges.errorFields.indexOf("user.name") === -1) {
+                newChanges.errorFields.push("user.name")
+                setChanges(newChanges)
+            }
+            setStatus({
+                message: "The user you selected cannot be found.",
+                error: true
+            })
         }
     }
 
@@ -125,8 +141,12 @@ const LocationEdit = () => {
     const saveChanges = async() => {
 
         // validate title
-        if (changes.name == "") {
-            setStatus("Locations must have a title.")
+        if (changes.name == "" || changes.user.name === "" || changes.user.name === "Select:" || changes.errorFields.length > 0) {
+            setStatus({
+                message: "Please verify that all necessary fields have been filled out correctly.",
+                error: true
+            })
+            setForceValidation(forceValidation + 1)
             return
         }
 
@@ -138,11 +158,19 @@ const LocationEdit = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully updated ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully updated ${ response.name }.`,
+                    error: false
+                })
                 setUnsaved(false)
                 navigate(`/location/${ response.id }`)
             }
         })
+    }
+
+    const formControls = { 
+        changes, setChanges, unsaved, setUnsaved, 
+        force: forceValidation
     }
 
     return err ? <Error err={ err } /> : (
@@ -162,30 +190,31 @@ const LocationEdit = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Title
+                            Title *
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Manager
+                            Manager *
                         </div>
                         <div className="col-content">
                             <Dropdown 
                                 list={ simpleUsers } 
                                 current={ changes.user.name } 
                                 setCurrent={ handleUserChange }
+                                error={ changes.errorFields.indexOf("user.name") !== -1 }
                             />
                         </div>
                     </div>

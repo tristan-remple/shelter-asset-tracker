@@ -10,6 +10,7 @@ import { statusContext } from '../Services/Context'
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import ChangePanel from '../Components/ChangePanel'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -40,10 +41,16 @@ const LocationDelete = () => {
                 } else {
                     setResponse(data)
                     if (data.units.length > 0) {
-                        setStatus("You cannot delete a location that contains units.")
+                        setStatus({
+                            message: "You cannot delete a location that contains units.",
+                            error: true
+                        })
                         navigate(`/location/${ id }`)
                     } else {
-                        setStatus(`Click Save to delete location ${ data.name }.`)
+                        setStatus({
+                            message: `Click Save to delete location ${ data.name }.`,
+                            error: false
+                        })
                         setErr(null)
                     }
                 }
@@ -59,7 +66,10 @@ const LocationDelete = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`You have successfully deleted location ${ response.name }.`)
+                setStatus({
+                    message: `You have successfully deleted location ${ response.name }.`,
+                    error: false
+                })
                 navigate(`/locations`)
             }
         })
@@ -76,7 +86,7 @@ const LocationDelete = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <ChangePanel save={ confirmDelete } linkOut={ `/location/${ location.facilityId }` } locationId={ location.facilityId } />
             </div>
         </main>

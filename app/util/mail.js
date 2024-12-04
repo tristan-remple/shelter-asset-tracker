@@ -24,8 +24,11 @@ exports.sendEmail = async(name, email, requestHash, requestExpiry) => {
     try {
         // generate message
         const messageText = `Hello ${ name },\n
-            You have requested a password reset for your Shelter Asset Tracker account. To enter your new password, please visit ${ process.env.APP_URL }/reset/${ requestHash }. This link will expire on ${ formattedDate } at ${ formattedTime }.\n
-            This email account is not monitored. If you have questions, please contact your supervisor.`;
+            This email is being sent to you so that you can set your password for your Shelter Asset Tracker account, either because your account is new or because you need to reset your password.\n
+            To enter your new password, please visit ${ process.env.EMAIL_URL }/reset/${ requestHash }. This link will expire on ${ formattedDate } at ${ formattedTime }.\n
+            This email account is not monitored. If you have questions, please contact your supervisor.\n\n
+            
+            If you are not sure why you're getting this email, please disregard it.`;
 
         // send mail with defined transport object
         const info = await transporter.sendMail({

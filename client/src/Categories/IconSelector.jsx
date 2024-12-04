@@ -3,12 +3,13 @@ import { useState, useContext, useEffect } from "react"
 
 // internal dependencies
 import capitalize from "../Services/capitalize"
-import handleChanges from "../Services/handleChanges"
 import { statusContext } from "../Services/Context"
 import apiService from "../Services/apiService"
 
 // components
 import Button from "../Components/Button"
+import Statusbar from "../Components/Statusbar"
+import RegularField from "../Components/RegularField"
 
 //------ MODULE INFO
 // Displays a modal that allows the user to select a new icon for a category.
@@ -19,7 +20,8 @@ import Button from "../Components/Button"
 const IconSelector = ({ changes, setChanges, toggle }) => {
 
     // get context
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // fetch icons from the api
     // the newIcons state causes the call to be made again when new icons are uploaded.
@@ -98,6 +100,8 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             setPreview(null)
             return
         }
+
+        console.log(file)
         const filepath = URL.createObjectURL(file)
         setPreview(filepath)
 
@@ -107,47 +111,88 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
 
     // handles icon upload
     const handleUpload = () => {
-        if (file) {
 
-            // validation
-            if (uploaderChanges.name === "") {
-                setStatus("An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.")
-                return
-            } else if (iconList.map(icon => icon.name).includes(uploaderChanges.name)) {
-                setStatus("An icon with that name already exists. If you're sure you want to upload this icon, give it a different name.")
-                return
-            }
-
-            // get the file extension and date
-            const ext = file.type.split("/")[1]
-            const date = new Date().getTime()
-
-            // create the icon object
-            const iconSubmission = {
-                name: uploaderChanges.name.toLowerCase(),
-                file,
-                date,
-                ext
-            }
-            
-            // send the icon object to the api
-            apiService.uploadIcon(iconSubmission, (res) => {
-                if (res.error) {
-                    setStatus("We were not able to upload your icon.")
-                } else {
-                    setStatus(`The icon ${ res.name } has been created.`)
-                    setNewIcons(res.name)
-                    setUploadForm(false)
-                }
+        if (!file) {
+            setStatus({
+                message: "You have not selected a file for upload.",
+                error: true
             })
+            return
         }
+
+        // label validation
+        if (uploaderChanges.name.length > 255) {
+            setStatus({
+                message: "This icon label is too long.",
+                error: true
+            })
+            return
+        } else if (uploaderChanges.name === "") {
+            setStatus({
+                message: "An icon label sets the hover and alt text for that icon, and helps people understand what it is. Please set one before uploading.",
+                error: true
+            })
+            return
+        } else if (iconList.map(icon => icon.name).includes(uploaderChanges.name)) {
+            setStatus({
+                message: "An icon with that name already exists. If you're sure you want to upload this icon, give it a different name.",
+                error: true
+            })
+            return
+        }
+
+        // get the file extension and date
+        const ext = file.type.split("/")[1]
+        const date = new Date().getTime()
+
+        // validate the file itself
+        if (ext !== "jpg" && ext !== "jpeg" && ext !== "png") {
+            setStatus({
+                message: "Icons must be in JPG or PNG format.",
+                error: true
+            })
+            return
+        }
+        if (file.size > 1000000) {
+            setStatus({
+                message: "Icons must be smaller than 1 MB.",
+                error: true
+            })
+            return
+        }
+
+        // create the icon object
+        const iconSubmission = {
+            name: uploaderChanges.name.toLowerCase(),
+            file,
+            date,
+            ext
+        }
+        
+        // send the icon object to the api
+        apiService.uploadIcon(iconSubmission, (res) => {
+            if (res.error) {
+                setStatus({
+                    message: "We were not able to upload your icon.",
+                    error: true
+                })
+            } else {
+                setStatus({
+                    message: `The icon ${ res.name } has been created.`,
+                    error: false
+                })
+                setNewIcons(res.name)
+                setUploadForm(false)
+            }
+        })
     }
 
     // the unsaved changes window doesn't appear here, but our form handling still expects the state
     // likewise, a changes object is expected rather than a string
     const [ unsaved, setUnsaved ] = useState(false)
     const [ uploaderChanges, setUploaderChanges ] = useState({
-        name: ""
+        name: "",
+        errorFields: []
     })
 
     // toggles mass delete mode
@@ -198,11 +243,39 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
     // sends the icons to delete as an array of id numbers to the api
     const confirmDelete = () => {
         const count = iconsToDelete.length
+        if (count > 1) {
+            setStatus({
+                message: "You have not selected any icons to delete.",
+                error: true
+            })
+            return
+        }
         apiService.deleteIcons(iconsToDelete, data => {
             if (data.error) {
-                setStatus("We weren't able to delete the icons you selected.")
+                setStatus({
+                    message: "We weren't able to delete the icons you selected.",
+                    error: true
+                })
             } else {
-                setStatus(`You have deleted ${ count } icons.`)
+                const successCount = data.deletedIcons
+                const word = count > 1 ? "icons" : "icon"
+                const verb = count > 1 ? "have" : "has"
+                setNewIcons(successCount.toString())
+                if (successCount === count) {
+                    setStatus({
+                        message: `${ count } ${ word } ${ verb } been deleted.`,
+                        error: false
+                    })
+                } else {
+                    let newStatus = `${ successCount } out of the ${ count } ${ word } you were trying to delete ${ verb } been successfully deleted.`
+                    if (data.failed.some(failure => failure.error.includes("Dependency"))) {
+                        newStatus += ` One or more of the icons is currently being used for a category, and therefore cannot be deleted.`
+                    }
+                    setStatus({
+                        message: newStatus,
+                        error: true
+                    })
+                }
                 setIconsToDelete([])
                 setDeleteMode(false)
             }
@@ -211,10 +284,17 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
 
     // keep keyboard navigation inside the modal
     const trap = (event) => {
-        console.log(event)
         if (event.code === "Tab" && event.shiftKey === true) {
             event.preventDefault()
         }
+    }
+
+    const formControls = { 
+        changes: uploaderChanges,
+        setChanges: setUploaderChanges,
+        unsaved,
+        setUnsaved, 
+        force: forceValidation
     }
 
     return (
@@ -227,7 +307,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                     Keyboard naviagtion is trapped on this modal until it closes.
                 </div>
             </div>
-            { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+            <Statusbar />
             <div className="icon-selector">
                 { deleteMode ? displayDeletableIcons : displayIcons }
             </div>
@@ -239,7 +319,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                     <Button text={ deleteMode ? "Cancel Delete" : "Delete Icons" } linkTo={ toggleDeleteMode } type="nav" />
                 </div>
                 { deleteMode && (<div className="col d-flex justify-content-center">
-                    <Button text={ `Delete ${ iconsToDelete.length } icons` } linkTo={ confirmDelete } type="danger" />
+                    <Button text={ `Delete ${ iconsToDelete.length } icon(s)` } linkTo={ confirmDelete } type="danger" />
                 </div> )}
                 <div className="col d-flex justify-content-center">
                     <Button text="Close Selector" linkTo={ toggle } type="nav" />
@@ -249,7 +329,7 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
             <div id="icon-uploader" className="row row-info">
                 <div className="col col-info">
                     <div className="col-head">
-                        File
+                        File *
                     </div>
                     <div className="col-content">
                         <input type="file" id="uploader" accept="image/png,image/jpg,image/jpeg" onChange={ (e) => setFile(e.target.files[0]) } />
@@ -266,14 +346,14 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
                 </div>
                 <div className="col col-info">
                     <div className="col-head">
-                        Label
+                        Label *
                     </div>
                     <div className="col-content">
-                        <input className='my-2'
-                            type="text" 
-                            name="name" 
-                            value={ uploaderChanges.name } 
-                            onChange={ (event) => handleChanges.handleTextChange(event, uploaderChanges, setUploaderChanges, setUnsaved) } 
+                        <RegularField 
+                            type="text"
+                            name="name"
+                            formControls={ formControls }
+                            required={ true }
                         />
                     </div>
                 </div>

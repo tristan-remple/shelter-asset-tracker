@@ -13,6 +13,7 @@ import Button from "../Components/Button"
 import Flag, { flagOptions } from "../Components/Flag"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // This module displays the details about a single unit inside of a building. Examples include apartments and snugs.
@@ -34,6 +35,7 @@ const UnitDetails = () => {
 
     const [ unit, setUnit ] = useState({})
     const [ filteredItems, setFilteredItems ] = useState([])
+    const [ flip, setFlip ] = useState(0)
     // fetch unit data from the api
     useEffect(() => {
         (async()=>{
@@ -47,7 +49,7 @@ const UnitDetails = () => {
                 }
             })
         })()
-    }, [])
+    }, [ flip ])
 
     if (err) { return <Error err={ err } /> }
     if (unit) {
@@ -117,9 +119,11 @@ const UnitDetails = () => {
             if (response.error) {
                 setErr(response.error)
             } else {
-                setStatus(`Unit ${ name } has been flipped. Its items are now marked for inspection.`)
-                setUnsaved(false)
-                navigate(`/unit/${ id }`)
+                setStatus({
+                    message: `Unit ${ name } has been flipped. Its items are now marked for inspection.`,
+                    error: false
+                })
+                setTimeout(() => { setFlip(flip + 1) }, 500)
             }
         })
     }
@@ -142,7 +146,7 @@ const UnitDetails = () => {
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">

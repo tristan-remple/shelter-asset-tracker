@@ -4,13 +4,14 @@ import { useContext, useState, useEffect } from "react"
 // internal dependencies
 import { statusContext } from "../Services/Context"
 import apiService from "../Services/apiService"
-import handleChanges from "../Services/handleChanges"
 
 // components
 import Error from "../Components/Error"
 import Button from "../Components/Button"
 import ChangePanel from "../Components/ChangePanel"
 import Tag from "../Components/Tag"
+import Statusbar from "../Components/Statusbar"
+import RegularField from "../Components/RegularField"
 
 //------ MODULE INFO
 // This page allows the admin to set some global variables.
@@ -27,8 +28,9 @@ import Tag from "../Components/Tag"
 const Settings = () => {
 
     // setup
-    const { status, setStatus } = useContext(statusContext)
-    const [ err, setErr ] = useState(null)
+    const { setStatus } = useContext(statusContext)
+    const [ err, setErr ] = useState("loading")
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // form handling
     const [ unsaved, setUnsaved ] = useState(false)
@@ -37,7 +39,8 @@ const Settings = () => {
         unitTypes: [],
         name: "",
         url: "",
-        logoSrc: ""
+        logoSrc: "",
+        errorFields: []
     })
 
     // get current settings from the API
@@ -52,9 +55,11 @@ const Settings = () => {
                         unitTypes: data.unitTypes.map(type => type.name),
                         name: data.settings.filter(sett => sett.name === "name")[0].value,
                         url: data.settings.filter(sett => sett.name === "url")[0].value,
-                        logoSrc: data.settings.filter(sett => sett.name === "logoSrc")[0].value
+                        logoSrc: data.settings.filter(sett => sett.name === "logoSrc")[0].value,
+                        errorFields: []
                     }
                     setChanges(newChanges)
+                    setErr(null)
                 }
             })
         })()
@@ -62,18 +67,23 @@ const Settings = () => {
 
     // text field where users can enter new unit types as tags
     const [ tagField, setTagField ] = useState("")
+    const [ tagError, setTagError ] = useState(null)
     const handleTagField = (event) => {
         const text = event.target.value
+        const newTagError = text.length > 255 ? "Input is too long." : null
+        setTagError(newTagError)
         setTagField(text)
     }
 
     // add unit type (tag formatted)
     const addTag = () => {
-        const newChanges = {...changes}
-        newChanges.unitTypes.push(tagField.toLowerCase())
-        setChanges(newChanges)
-        setTagField("")
-        setUnsaved(true)
+        if (!tagError) {
+            const newChanges = {...changes}
+            newChanges.unitTypes.push(tagField.toLowerCase())
+            setChanges(newChanges)
+            setTagField("")
+            setUnsaved(true)
+        }
     }
 
     // remove unit type (tag formatted)
@@ -115,26 +125,45 @@ const Settings = () => {
             
             apiService.uploadLogo(logoSubmission, (res) => {
                 if (res.error) {
-                    setStatus("We were not able to upload your logo.")
+                    setStatus({
+                        message: "We were not able to upload your logo.",
+                        error: true
+                    })
                 } else {
-                    setStatus(`The logo has been changed.`)
+                    setStatus({
+                        message: `The logo has been changed.`,
+                        error: false
+                    })
                 }
             })
         }
+    }
+
+    const checkUrl = (url) => {
+        let urlError = null
+        if (!url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) { urlError = "Invalid URL." }
+        if (url.substring(0, 7) !== "http://" && url.substring(0, 8) !== "https://") { urlError = "URL must begin with http:// or https://" }
+        return urlError
     }
 
     // save settings changes
     const saveChanges = async() => {
 
         // validation
-        if (changes.depreciationRate <= 0) {
-            setStatus("The global depreciation rate must be a positive number.")
+        if (changes.name === "" || changes.url === "" || changes.depreciationRate === "" || changes.depreciationRate === 0 || changes.unitTypes.length === 0 || changes.errorFields.length > 0 || tagError) {
+            setForceValidation(forceValidation + 1)
+            setStatus({
+                message: "Please review the form again to make sure all input is valid.",
+                error: true
+            })
             return
-        } else if (changes.name === "" || changes.url === "") {
-            setStatus("Please set your organization's identity.")
-            return
-        } else if (changes.unitTypes.length === 0) {
-            setStatus("Please set some unit types.")
+        }
+        
+        if (changes.unitTypes.length === 0) {
+            setStatus({
+                message: "Please set some unit types.",
+                error: true
+            })
             return
         }
 
@@ -147,10 +176,21 @@ const Settings = () => {
             if (res.error) {
                 setErr(res.error)
             } else {
-                setStatus(`You have successfully saved your changes to the settings.`)
+                setStatus({
+                    message: `You have successfully saved your changes to the settings.`,
+                    error: false
+                })
                 setUnsaved(false)
             }
         })
+    }
+
+    const formControls = {
+        changes,
+        setChanges,
+        unsaved,
+        setUnsaved,
+        force: forceValidation
     }
 
     return err ? <Error err={ err } /> : (
@@ -164,18 +204,18 @@ const Settings = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Organization Title
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={ changes.name } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="name"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -184,14 +224,19 @@ const Settings = () => {
                             Organization URL
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="text" 
-                                name="url" 
-                                value={ changes.url } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="text"
+                                name="url"
+                                formControls={ formControls }
+                                checks={[ checkUrl ]}
+                                required={ true }
                             />
                         </div>
                     </div>
+                    {/* 
+                    // this block will allow the user to change their organization icon in the header
+                    // if you implement this, you can probably use an altered version of the icon uploader
+                    // but we decided it was nonessential
                     <div className="col col-info">
                         <div className="col-head">
                             Organization Logo
@@ -209,7 +254,7 @@ const Settings = () => {
                         <div className="col-content">
                             <Button text="Upload Logo" linkTo={ handleUpload } type="action" />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">
@@ -217,11 +262,11 @@ const Settings = () => {
                             Global Depreciation Rate (Percent)
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="number" 
-                                name="depreciationRate" 
-                                value={ changes.depreciationRate } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="number"
+                                name="depreciationRate"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -231,14 +276,16 @@ const Settings = () => {
                         <div className="col-head">
                             Possible Unit Types
                         </div>
-                        <div className="col-content">
-                            { changes.unitTypes.length === 0 ? 
-                            "There are no possible unit types yet. Please set some with the field below." : 
-                            changes.unitTypes.map(tag => {
-                                return <Tag word={ tag } key={ tag } remove={ removeTag } />
-                            })
-                            }
-                        </div>
+                        { changes.unitTypes.length === 0 ? 
+                            <div className="row row-info error">
+                                <p className="my-2">There are no possible unit types yet. Please set some with the field below.</p>
+                            </div> : 
+                                <div className="col-content">
+                                { changes.unitTypes.map(tag => {
+                                    return <Tag word={ tag } key={ tag } remove={ removeTag } />
+                                }) }
+                            </div>
+                        }
                         <div className="col-content">
                             <div className="row" id="submit-tag">
                                 <div className="col">
@@ -247,7 +294,9 @@ const Settings = () => {
                                         name="tag" 
                                         value={ tagField } 
                                         onChange={ (event) => handleTagField(event) } 
+                                        className={ tagError && "error" }
                                     />
+                                    { tagError && <div className="row row-info error error-message"><p className="my-2">{ tagError }</p></div> }
                                 </div>
                                 <div className="col">
                                     <Button text="Add Type" linkTo={ addTag } type="action" />

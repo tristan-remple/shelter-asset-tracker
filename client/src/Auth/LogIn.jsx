@@ -9,6 +9,8 @@ import authService from "../Services/authService"
 
 // components
 import Button from '../Components/Button'
+import Statusbar from "../Components/Statusbar"
+import RegularField from "../Components/RegularField"
 
 //------ MODULE INFO
 // This page allows users to log in.
@@ -22,7 +24,7 @@ const LogIn = () => {
 
     // set up
     const navigate = useNavigate()
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const { userDetails, setUserDetails } = useContext(userContext)
 
     // if the user has a session but has somehow erased their context, reset context
@@ -51,23 +53,32 @@ const LogIn = () => {
     // form handling
     const [ changes, setChanges ] = useState({
         email: "",
-        password: ""
+        password: "",
+        errorFields: []
     })
     const [ unsaved, setUnsaved ] = useState(false)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // process form submit
     const submitLogin = () => {
 
         // validation
         if (changes.email === "" || changes.password === "") {
-            setStatus("Please enter your email and password.")
+            setForceValidation(forceValidation + 1)
+            setStatus({
+                message: "Please enter your email and password.",
+                error: true
+            })
             return
         }
 
         // api call
         authService.login(changes, (response) => {
             if (response.error) {
-                setStatus("We weren't able to validate your credentials.")
+                setStatus({
+                    message: "We weren't able to validate your credentials.",
+                    error: true
+                })
             } else {
 
                 // set user info to context and session storage
@@ -75,14 +86,20 @@ const LogIn = () => {
                 sessionStorage.setItem("userId", response.userId)
                 sessionStorage.setItem("isAdmin", response.isAdmin)
                 sessionStorage.setItem("facilityAuths", response.facilityAuths)
-                setStatus(`Welcome.`)
+                setStatus({
+                    message: "Welcome.",
+                    error: false
+                })
                 setUnsaved(false)
 
                 // if the user has an active reset request, send them to their profile
-                if (response.activeReset) {
-                    setStatus("You have made a request to change your password. If you do not need to reset your password, please cancel the request.")
-                    navigate("/user")
-                }
+                // if (response.activeReset) {
+                //     setStatus({
+                //         message: "You have made a request to change your password. If you do not need to reset your password, please cancel the request.",
+                //         error: false
+                //     })
+                //     navigate("/user")
+                // }
 
                 // navigate to the user's location(s)
                 if (response.facilityAuths.length === 1 && !userDetails.isAdmin) {
@@ -94,6 +111,11 @@ const LogIn = () => {
         })   
     }
 
+    const formControls = {
+        changes, setChanges, unsaved, setUnsaved,
+        force: forceValidation
+    }
+
     return (
         <main className="container">
             <div className="row title-row mt-5 mb-2">
@@ -101,21 +123,19 @@ const LogIn = () => {
                     <h2>Log In</h2>
                 </div>
             </div>
-            <div className="login-form-container"> 
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Email
                         </div>
                         <div className="col-content">
-                            <input 
-                                className="loginInput"
-                                type="text" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="email"
+                                name="email"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -126,12 +146,11 @@ const LogIn = () => {
                             Password
                         </div>
                         <div className="col-content">
-                            <input 
-                                className="loginInput"
-                                type="password" 
-                                name="password" 
-                                value={ changes.password } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="password"
+                                name="password"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>
@@ -141,7 +160,6 @@ const LogIn = () => {
                         <Button text="Log In" linkTo={ submitLogin } type="action" id="loginBtn" />
                         <Button text="Forgot Password?" linkTo="/reset" type="nav" id="resetPass" />
                     </div>
-                </div>
                 </div>
             </div>
         </main>

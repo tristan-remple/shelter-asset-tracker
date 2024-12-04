@@ -1,14 +1,14 @@
 // external dependencies
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // internal dependencies
 import apiService from "../Services/apiService"
-import { statusContext } from '../Services/Context'
 
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // Lists the possible categories that items can fall into.
@@ -19,7 +19,6 @@ import Search from '../Components/Search'
 const CategoryList = () => {
 
     // get the status from context
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
 
     // get the categories from the api
@@ -72,7 +71,7 @@ const CategoryList = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <Search data={ categories } setData={ setFilteredCategories } />
                 <table className="c-table-info align-middle">
                     <thead>

@@ -1,6 +1,12 @@
 // external dependencies
+import { useContext } from 'react';
 import { Link } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
+import { statusContext } from '../Services/Context';
+
+//------ MODULE INFO
+// This module renders a button for navigation or actions.
+// When clicked, a button rendered using this module will wipe the status message.
 
 const Button = ({ text, linkTo, type, id }) => {
 
@@ -18,6 +24,9 @@ const Button = ({ text, linkTo, type, id }) => {
         case "danger":
             buttonClass += "btn-danger"
             break
+        case "error":
+            buttonClass += "error"
+            break
         case "dropdown":
             buttonClass += "btn-outline-primary dropdown-toggle"
             break
@@ -30,6 +39,15 @@ const Button = ({ text, linkTo, type, id }) => {
         default:
             buttonClass += "btn-secondary"
             break
+    }
+
+    const { setStatus } = useContext(statusContext)
+
+    const clearStatus = () => {
+        setStatus({
+            message: "",
+            error: false
+        })
     }
 
     const keyboardHandler = (event) => {
@@ -49,9 +67,9 @@ const Button = ({ text, linkTo, type, id }) => {
     } else if (linkTo === null) {
         return <div className={ buttonClass } id={ id }>{ text }</div>
     } else if (linkTo.includes("#")) {
-        return <HashLink to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 }>{ text }</HashLink>
+        return <HashLink to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 } onClick={ clearStatus }>{ text }</HashLink>
     } else {
-        return <Link to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 }>{ text }</Link>
+        return <Link to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 } onClick={ clearStatus }>{ text }</Link>
     }
 }
 

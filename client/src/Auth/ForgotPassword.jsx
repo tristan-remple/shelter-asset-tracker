@@ -6,9 +6,12 @@ import { useNavigate } from "react-router-dom"
 import { statusContext, userContext } from "../Services/Context"
 import handleChanges from "../Services/handleChanges"
 import authService from "../Services/authService"
+import validateEmail from "../Services/validateEmail"
 
 // components
 import Button from '../Components/Button'
+import Statusbar from "../Components/Statusbar"
+import RegularField from "../Components/RegularField"
 
 //------ MODULE INFO
 // This module takes in an email address and resends a password reset email if there is an active request.
@@ -21,8 +24,9 @@ const ForgotPassword = () => {
 
     // set up
     const navigate = useNavigate()
-    const { status, setStatus } = useContext(statusContext)
-    const { userDetails, setUserDetails } = useContext(userContext)
+    const { setStatus } = useContext(statusContext)
+    const { userDetails } = useContext(userContext)
+    const [ forceValidation, setForceValidation ] = useState(0)
 
     // if the user is logged in, redirect them to their location(s)
     useEffect(() => {
@@ -35,18 +39,41 @@ const ForgotPassword = () => {
     
     // form handling
     const [ changes, setChanges ] = useState({
-        email: ""
+        email: "",
+        errorFields: []
     })
     const [ unsaved, setUnsaved ] = useState(false)
 
     const submitForm = () => {
+        if (changes.email === "" || changes.errorFields.length > 0) {
+            setStatus({
+                message: "Please check that your email address has been entered correctly.",
+                error: true
+            })
+            setForceValidation(forceValidation + 1)
+            return
+        }
         authService.requestPasswordEmail(changes.email, (response) => {
             if (response.success) {
-                setStatus("An email has been sent to you with a link to reset your password. You may need to wait a moment, or check your junk mail.")
+                setStatus({
+                    message: "An email has been sent to you with a link to reset your password. You may need to wait a moment, or check your junk mail.",
+                    error: false
+                })
             } else {
-                setStatus("We were unable to send a password reset to that email. Please check that it is entered correctly.")
+                setStatus({
+                    message: "We were unable to send a password reset to that email. Please check that it is entered correctly.",
+                    error: true
+                })
             }
         })
+    }
+
+    const formControls = {
+        changes,
+        setChanges,
+        unsaved,
+        setUnsaved,
+        force: forceValidation
     }
 
     return (
@@ -58,19 +85,18 @@ const ForgotPassword = () => {
             </div>
             <div className="login-form-container"> 
             <div className="page-content">
-                { status && <div className="row row-info"><p className="my-2">{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Email
                         </div>
                         <div className="col-content">
-                            <input 
-                                className="loginInput"
-                                type="text" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="email"
+                                name="email"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                     </div>

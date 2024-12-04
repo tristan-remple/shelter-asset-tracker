@@ -5,12 +5,12 @@ import { useContext, useState } from "react"
 // internal dependencies
 import { statusContext } from "../Services/Context"
 import authService from "../Services/authService"
-import handleChanges from "../Services/handleChanges"
 
 // components
-import Error from "../Components/Error"
 import Button from "../Components/Button"
 import ChangePanel from "../Components/ChangePanel"
+import Statusbar from "../Components/Statusbar"
+import RegularField from "../Components/RegularField"
 
 //------ MODULE INFO
 // This module allows a user to reset their own password by typing the new password twice.
@@ -26,7 +26,7 @@ const ResetPassword = () => {
     const { hash } = useParams()
 
     // other setup
-    const { status, setStatus } = useContext(statusContext)
+    const { setStatus } = useContext(statusContext)
     const navigate = useNavigate()
 
     // set up form controls
@@ -34,29 +34,33 @@ const ResetPassword = () => {
     const [ changes, setChanges ] = useState({
         email: "",
         password: "",
-        retypePassword: ""
+        retypePassword: "",
+        errorFields: []
     })
+    const [ forceValidation, setForceValidation ] = useState(0)
 
-    // check password strength
-    const checkPassword = (pw) => {
-        return (
-            pw.length > 8 &&
-            pw.match(/[0-9]/) &&
-            pw.match(/[a-z]/) &&
-            pw.match(/[A-Z]/) &&
-            pw.match(/[!@#\$%\^&\*\(\)\-_\+=:;"'<>,\.\/\?\\\|`~\[\]\{\}]/)
-        )
-    }
+    // check password features and set error messages
+    const checkLength = (pw) => { return pw.length >= 8 ? null : "Password must be at least 8 characters long." }
+    const checkNumber = (pw) => { return pw.match(/[0-9]/) ? null : "Password must contain at least one number." }
+    const checkCase = (pw) => { return pw.match(/[a-z]/) && pw.match(/[A-Z]/) ? null : "Password must contain a mix of upper and lower case letters." }
+    const checkSymbol = (pw) => { return pw.match(/[!@#\$%\^&\*\(\)\-_\+=:;"'<>,\.\/\?\\\|`~\[\]\{\}]/) ? null : "Password must contain at least one symbol." }
+
+    const passwordChecks = [ checkLength, checkNumber, checkCase, checkSymbol ]
+
+    const retypeCheck = (pw) => {
+        return pw === changes.password ? null : "The same password must be entered twice."
+    } 
 
     // send the new password to the api
     const saveChanges = () => {
 
         // validation
-        if ( changes.password !== changes.retypePassword) {
-            setStatus("Please double check that you have typed the same password twice.")
-            return
-        } else if (!checkPassword(changes.password)) {
-            setStatus("Your password must be at least 8 characters and include a mix of letters, numbers, and symbols.")
+        if (changes.email === "" || changes.password === "" || changes.retypePassword === "" || changes.errorFields.length > 0) {
+            setForceValidation(forceValidation + 1)
+            setStatus({
+                message: "Please verify that you have entered a valid email, that your password is strong, and that you have entered the same password twice.",
+                error: true
+            })
             return
         }
 
@@ -67,14 +71,22 @@ const ResetPassword = () => {
 
                 // on success, log out the current user, set the status and unsaved, and send them to the login screen
                 authService.logout()
-                setStatus("Your password has been reset. Please log in.")
+                setStatus({
+                    message: "Your password has been reset. Please log in.",
+                    error: false
+                })
                 setUnsaved(false)
                 navigate("/")
             } else {
-                setStatus("We weren't able to reset your password.")
+                setStatus({
+                    message: "We weren't able to reset your password.",
+                    error: true
+                })
             }
         })
     }
+
+    const formControls = { changes, setChanges, unsaved, setUnsaved, force: forceValidation }
 
     return (
         <main className="container">
@@ -87,40 +99,42 @@ const ResetPassword = () => {
                 </div>
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Email
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="email" 
-                                name="email" 
-                                value={ changes.email } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField
+                                type="email"
+                                name="email"
+                                formControls={ formControls }
+                                required={ true }
                             />
                         </div>
                         <div className="col-head">
                             New Password
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="password" 
-                                name="password" 
-                                value={ changes.password } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="password"
+                                name="password"
+                                formControls={ formControls }
+                                checks={ passwordChecks }
+                                required={ true }
                             />
                         </div>
                         <div className="col-head">
                             Retype New Password
                         </div>
                         <div className="col-content">
-                            <input 
-                                type="password" 
-                                name="retypePassword" 
-                                value={ changes.retypePassword } 
-                                onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
+                            <RegularField 
+                                type="password"
+                                name="retypePassword"
+                                formControls={ formControls }
+                                checks={[ retypeCheck ]}
+                                required={ true }
                             />
                         </div>
                     </div>

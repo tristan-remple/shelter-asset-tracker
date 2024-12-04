@@ -6,13 +6,14 @@ import { useContext, useState, useEffect } from 'react'
 import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
 import { friendlyDate } from '../Services/dateHelper'
-import { statusContext, userContext } from '../Services/Context'
+import { userContext } from '../Services/Context'
 
 // components
 import Button from "../Components/Button"
 import Flag, { flagOptions } from "../Components/Flag"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
+import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
 // ** Available for SCSS **
@@ -24,10 +25,9 @@ const LocationDetails = () => {
 
     // get context information
     const { id } = useParams()
-    const { status } = useContext(statusContext)
     const [ err, setErr ] = useState("loading")
     const { userDetails } = useContext(userContext)
-    const { isAdmin } = userDetails
+    const { isAdmin, facilityAuths } = userDetails
     
     // fetch unit data from the api
     const [ response, setResponse ] = useState()
@@ -68,6 +68,14 @@ const LocationDetails = () => {
         )
     }
 
+    // show the list of locations button if the user is an admin or if they're assigned to multiple locations
+    let listButton = ""
+    if (isAdmin || facilityAuths.length > 1) {
+        listButton = <div className="col-2 d-flex justify-content-end">
+            <Button text="See All" linkTo="/locations" type="nav" />
+        </div>
+    }
+
     // put the units that have items which need to be assessed or discarded at the top of the list
     units?.sort((a, b) => {
         return a.name.localeCompare(b.name)
@@ -104,13 +112,11 @@ const LocationDetails = () => {
                 <div className="col">
                     <h2>{ name }</h2>
                 </div>
-                <div className="col-2 d-flex justify-content-end">
-                    <Button text="See All" linkTo="/locations" type="nav" />
-                </div>
+                { listButton }
                 { adminButtons }
             </div>
             <div className="page-content">
-                { status && <div className="row row-info"><p className='my-2'>{ status }</p></div> }
+                <Statusbar />
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
