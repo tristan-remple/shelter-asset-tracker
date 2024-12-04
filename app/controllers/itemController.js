@@ -58,7 +58,7 @@ exports.getItemById = async (req, res, next) => {
                 paranoid: false
             },
             {
-                model: models.Inspection,
+                model: models.comment,
                 attributes: [
                     'id',
                     'comment',
@@ -123,14 +123,14 @@ exports.sendItem = async (req, res, next) => {
             id: item.addedByUser.id,
             name: item.addedByUser.name,
         },
-        inspectionRecord: item.Inspections ? item.Inspections.map(inspection => ({
-            id: inspection.id,
+        commentRecord: item.comments ? item.comments.map(comment => ({
+            id: comment,
             inspectedBy: {
-                id: inspection.User.id,
-                name: inspection.User.name
+                id: comment.User.id,
+                name: comment.User.name
             },
-            comment: inspection.comment,
-            createdAt: inspection.createdAt
+            comment: comment.comment,
+            createdAt: comment.createdAt
         })) : [],
         value: {
             initialValue: item.initialValue,
@@ -152,7 +152,7 @@ exports.updateItem = async (req, res, next) => {
         const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
 
         if (comment !== '') {
-            await models.Inspection.create({
+            await models.comment.create({
                 comment: comment,
                 itemId: item.id,
                 userId: req.userId

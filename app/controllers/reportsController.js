@@ -101,7 +101,7 @@ const getInventory = async (facility) => {
                 attributes: ['name']
             },
             {
-                model: models.Inspection,
+                model: models.Comment,
                 attributes: [
                     'userId',
                     'createdAt',
@@ -126,7 +126,7 @@ const getInventory = async (facility) => {
 
     const report = items.map(item => {
         const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
-        const lastInspection = item.Inspections[0] || {};
+        const lastComment = item.Comments[0] || {};
 
         return {
             id: item.id,
@@ -139,9 +139,9 @@ const getInventory = async (facility) => {
             invoice: item.invoice,
             addedBy: item.addedByUser.name,
             status: item.status,
-            inspectedBy: lastInspection.User ? lastInspection.User.name : null,
-            lastInspected: lastInspection.createdAt ? lastInspection.createdAt : null,
-            comment: lastInspection.comment ? lastInspection.comment : null,
+            inspectedBy: lastComment.User ? lastComment.User.name : null,
+            lastComment: lastComment.createdAt ? lastComment.createdAt : null,
+            comment: lastComment.comment ? lastComment.comment : null,
             eol: item.eol,
             currentValue: currentValue,
             donated: item.donated,
@@ -260,7 +260,7 @@ exports.getSummary = async (req, res, next) => {
                             as: 'addedByUser',
                             paranoid: false
                         }, {
-                            model: models.Inspection,
+                            model: models.Comment,
                             attributes: [
                                 'id',
                                 'comment',
@@ -332,14 +332,14 @@ exports.getSummary = async (req, res, next) => {
                         id: item.addedByUser.id,
                         name: item.addedByUser.name
                     },
-                    inspectionRecord: item.Inspections ? item.Inspections.map(inspection => ({
-                        id: inspection.id,
+                    commentRecord: item.Comments ? item.Comments.map(comment => ({
+                        id: comment.id,
                         inspectedBy: {
-                            id: inspection.User.id,
-                            name: inspection.User.name
+                            id: comment.User.id,
+                            name: comment.User.name
                         },
-                        comment: inspection.comment,
-                        createdAt: inspection.createdAt
+                        comment: comment.comment,
+                        createdAt: comment.createdAt
                     })) : [],
                     value: {
                         initialValue: item.initialValue,
