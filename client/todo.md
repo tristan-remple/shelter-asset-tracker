@@ -92,7 +92,7 @@ const postData = {
 
 ## Passwords
 - ✅ how are passwords set and reset?
-- password error messages
+- ✅ password error messages
 - ✅ if forgot password -> prompt to request reset email
 - if reset requested but email fails -> prompt to update email or contact supervisor
 - ✅ do not null password on request
@@ -151,8 +151,8 @@ const formControls = {
 
 ### Error Handling
 - ✅ "snooze end of life" changed to "update end of life"
-  - text: you can set more specific end of life from the edit screen
-  - updated end of life does not register as a changed field: it should
+  - ✅ text: you can set more specific end of life from the edit screen
+  - ✅ updated end of life does not register as a changed field: it should
 - when changing an item from flagged to ok, if the item is past its eol, throw an error asking user to change eol
 - ✅ remove comments display from item edit
 - ✅ no strings over 255 characters allowed

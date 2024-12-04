@@ -142,10 +142,10 @@ const ItemInspect = () => {
         newItem.unitId = item.unit.id
         newItem.status = changes.status
         newItem.comment = changes.comment
-        newItem.usefulLife = changes.usefulLife
+        newItem.eol = changes.eol
 
         if (newItem.status === item.status && !confirm) {
-            if (newItem.comment === "" && newItem.usefulLife === item.usefulLife) {
+            if (newItem.comment === "" && newItem.eol === item.eol) {
                 setStatus({
                     message: "You have not entered or changed anything.",
                     error: true
@@ -217,6 +217,7 @@ const ItemInspect = () => {
                                 <div className="btn btn-outline-primary">{ snoozeYears } year(s)</div>
                                 <Button text="+" type="action" linkTo={ snooze } />
                             </div>
+                            <p>To set a more specific end of life, you can go to the <Link to={ `/items/${ item.id }/edit` }>Item Edit page</Link>.</p>
                         </div>
                     </div>
                 </div>
