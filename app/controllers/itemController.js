@@ -58,7 +58,7 @@ exports.getItemById = async (req, res, next) => {
                 paranoid: false
             },
             {
-                model: models.comment,
+                model: models.Comment,
                 attributes: [
                     'id',
                     'comment',
