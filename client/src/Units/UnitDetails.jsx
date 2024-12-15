@@ -92,20 +92,44 @@ const UnitDetails = () => {
         return a.status === "discard" ? 0 : 1
     })
 
+    // sends a delete request to the apiService
+    const deleteItem = async(item) => {
+        console.log(item)
+        const deletedItem = {
+            id: item.itemId,
+            name: item.name
+        }
+        await apiService.deleteItem(deletedItem, (response) => {
+            if (response.error) {
+                setErr(response.error)
+            } else {
+                setStatus({
+                    message: `You have successfully marked ${ response.name } in ${ unit.name } as having been discarded.`,
+                    error: false
+                })
+                setTimeout(() => { setFlip(flip + 1) }, 500)
+            }
+        })
+    }
+
     // map the item objects into table rows
     const displayItems = filteredItems?.map(item => {
 
         // flag options are defined in the flag module
-        let currentFlag = flagOptions.filter(option => {
+        const currentFlag = flagOptions.filter(option => {
             return option.text.toLowerCase() === item.status
         })[0]
+
+        const actionButton = item.status.toLowerCase() === "discard"
+            ? <Button text="Mark Discarded" linkTo={ () => deleteItem(item) } type="small" />
+            : <Button text="Record Inspection" linkTo={ `/item/${ item.itemId }/inspect` } type="small" />
 
         return (
             <tr key={ item.itemId } >
                 <td>{ item.itemName }</td>
                 <td>{ capitalize(item.template.name) }</td>
                 <td><Button text="Details" linkTo={ `/item/${ item.itemId }` } type="small" /></td>
-                <td><Button text="Inspect" linkTo={ `/item/${ item.itemId }/inspect` } type="small" /></td>
+                <td>{ actionButton }</td>
                 <td><Flag color={ currentFlag.color } /> { currentFlag.text }</td>
             </tr>
         )
@@ -130,7 +154,7 @@ const UnitDetails = () => {
 
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Unit { name } in { facility.name }</h2>
                 </div>
@@ -204,7 +228,7 @@ const UnitDetails = () => {
                             <th scope="col">Label</th>
                             <th scope="col">Category</th>
                             <th scope="col">Details</th>
-                            <th scope="col">Inspect</th>
+                            <th scope="col">Action</th>
                             <th scope="col">Status</th>
                         </tr>
                     </thead>

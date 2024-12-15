@@ -10,6 +10,10 @@ import { useState, useRef, useEffect } from "react"
 
 const Dropdown = ({ list, current, setCurrent, error }) => {
 
+    if (!Array.isArray(list)) {
+        return
+    }
+
     const id = `dropdown-${ list[0] }`
 
     // open state of the dropdown menu (mouse)

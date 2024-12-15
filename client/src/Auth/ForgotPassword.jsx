@@ -78,7 +78,7 @@ const ForgotPassword = () => {
 
     return (
         <main className="container">
-            <div className="row title-row mt-5 mb-2">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col text-center">
                     <h2>Request Password Reset</h2>
                 </div>

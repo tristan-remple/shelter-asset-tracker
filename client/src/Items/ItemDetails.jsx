@@ -74,7 +74,7 @@ const ItemDetails = () => {
                     <Button  text="Inspect" linkTo={ `/item/${id}/inspect` } type="action" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
+                    <Button  text="Edit or Move" linkTo={ `/item/${id}/edit` } type="action" />
                 </div>
             </div>
             <div className="page-content">

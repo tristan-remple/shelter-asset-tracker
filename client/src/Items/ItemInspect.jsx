@@ -1,6 +1,6 @@
 // external dependencies
 import { useContext, useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 
 // internal dependencies
 import apiService from "../Services/apiService"
@@ -133,6 +133,15 @@ const ItemInspect = () => {
         setSnoozeYears(snoozeYears - 1)
     }
 
+    const now = new Date().getTime()
+    const [ eolError, setEolError ] = useState(false)
+    useEffect(() => {
+        const eolTime = new Date(changes.eol).getTime()
+        if (eolTime <= now && changes.flag !== "discard") {
+            setEolError(true)
+        }
+    }, [ changes ])
+
     const [ confirm, setConfirm ] = useState(false)
 
     // sends the item object to the apiService
@@ -157,6 +166,15 @@ const ItemInspect = () => {
                 error: true
             })
             setConfirm(true)
+            return
+        }
+
+        const eolTime = new Date(changes.eol).getTime()
+        if (eolTime <= now && changes.flag.text !== "Discard") {
+            setStatus({
+                message: "The End of Life date you have set is in the past. Please set an End of Life date in the future or set the flag to discard.",
+                error: true
+            })
             return
         }
 
@@ -211,13 +229,14 @@ const ItemInspect = () => {
                             Adjust End of Life
                         </div>
                         <div className="col-content">
-                            <p>{ friendlyDate(changes.eol) }</p>
+                            <p className="my-2" style={{ textAlign: "center", width: "100%" }}>{ friendlyDate(changes.eol) }</p>
                             <div className="btn-group" role="group">
                                 <Button text="-" type="action" linkTo={ unsnooze } />
                                 <div className="btn btn-outline-primary">{ snoozeYears } year(s)</div>
                                 <Button text="+" type="action" linkTo={ snooze } />
                             </div>
-                            <p>To set a more specific end of life, you can go to the <Link to={ `/items/${ item.id }/edit` }>Item Edit page</Link>.</p>
+                            { eolError ? <div className="row row-info error error-message" style={{ width: "100%" }}><p className="my-2">If the item is still usable, please set an End of Life date in the future.</p></div> :
+                            <div className="row row-info" style={{ width: "100%" }}><p className='my-2'>To set a more specific end of life, you can go to the <Link to={ `/items/${ item.id }/edit` }>Item Edit page</Link>.</p></div> }
                         </div>
                     </div>
                 </div>

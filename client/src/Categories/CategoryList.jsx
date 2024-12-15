@@ -9,6 +9,7 @@ import Button from "../Components/Button"
 import Error from '../Components/Error'
 import Search from '../Components/Search'
 import Statusbar from '../Components/Statusbar'
+import IconSelector from './IconSelector'
 
 //------ MODULE INFO
 // Lists the possible categories that items can fall into.
@@ -57,6 +58,18 @@ const CategoryList = () => {
         )
     })
 
+    // open or close the icon selector menu
+    const [ selector, setSelector ] = useState(false)
+    const toggleSelector = () => {
+        const newSelector = selector ? false : true
+        setSelector(newSelector)
+    }
+
+    const [ changes, setChanges ] = useState({
+        icon: null,
+        index: true
+    })
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -67,9 +80,13 @@ const CategoryList = () => {
                     <Button text="Return" linkTo="/admin" type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
+                    <Button text="Manage Icons" linkTo={ toggleSelector } type="admin" />
+                </div>
+                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Category" linkTo="/categories/add" type="admin" />
                 </div>
             </div>
+            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
             <div className="page-content">
                 <Statusbar />
                 <Search data={ categories } setData={ setFilteredCategories } />

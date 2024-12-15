@@ -53,8 +53,6 @@ const CategoryEdit = () => {
 
     // fetch data from the api
     const [ response, setResponse ] = useState()
-    const [ icons, setIcons ] = useState([])
-    const [ newIcons, setNewIcons ] = useState("")
     useEffect(() => {
         (async() => {
             await apiService.singleCategory(id, (data) => {
@@ -75,15 +73,8 @@ const CategoryEdit = () => {
                     })
                 }
             })
-            await apiService.listIcons((data) => {
-                if (data.error) {
-                    setErr(data.error)
-                } else {
-                    setIcons(data)
-                }
-            })
         })()
-    }, [ newIcons ])
+    }, [])
 
     // open or close the icon selector menu
     const [ selector, setSelector ] = useState(false)
@@ -252,7 +243,7 @@ const CategoryEdit = () => {
                             <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.name + " icon" } />
                             <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
                             { changes.errorFields.indexOf("icon") > -1 && <div className="row row-info error error-message"><p className="my-2">A category requires an icon.</p></div> }
-                            { selector && <IconSelector iconList={ icons } changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } setNewIcons={ setNewIcons } tabIndex={ selector ? -1 : 0 } /> }
+                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>
                 </div>

@@ -64,6 +64,26 @@ const Dashboard = () => {
     const [ totalValue, setTotalValue ] = useState(0)
     const [ itemCount, setItemCount ] = useState([])
 
+    // allow users to sort the list of item counts alphabetically or numerically
+    const changeCategorySort = (list, column) => {
+        const newCountSort = [...list]
+        if (newCountSort.length > 0) {
+            switch (column) {
+                case "name":
+                    newCountSort.sort((a, b) => a.name.localeCompare(b.name))
+                    break
+                case "count":
+                    newCountSort.sort((a, b) => b.count - a.count)
+                    break
+            }
+        }
+        return newCountSort
+    }
+    const handleCategorySort = (column) => {
+        const newSort = changeCategorySort(itemCount, column)
+        setItemCount(newSort)
+    }
+
     useEffect(() => {
 
         // if the api call has been completed successfully and the view is set to all
@@ -125,7 +145,8 @@ const Dashboard = () => {
                 startDate: `${new Date().getFullYear()}-01-01`,
                 endDate: `${new Date().getFullYear()}-12-31`,
                 inspect: false,
-                discard: true
+                discard: true,
+                sort: "eol"
             })
 
         // if the api call has succeeded and one location has been selected
@@ -150,20 +171,18 @@ const Dashboard = () => {
             setTotalValue(location.totalValue)
             setItemCount(location.itemCount)
             setFilters({
-                startDate: `${new Date().getFullYear()}-01-01`,
-                endDate: `${new Date().getFullYear()}-12-31`,
+                startDate: `${ new Date().getFullYear() }-01-01`,
+                endDate: `${ new Date().getFullYear() }-12-31`,
                 inspect: false,
-                discard: true
+                discard: true,
+                sort: "eol"
             })
         }
-
     // do this whole process when the api call completes and when the view changes
     }, [ response, view ])
 
     // table rows for the upper table: list of categories and number of items in each
-    const displayCategories = itemCount.sort((a, b) => {
-        return a.count < b.count
-    }).map(item => {
+    const displayCategories = itemCount.map(item => {
         return (
             <tr key={ item.id } >
                 <td className="col-icon">
@@ -184,10 +203,11 @@ const Dashboard = () => {
         startDate: `${new Date().getFullYear()}-01-01`,
         endDate: `${new Date().getFullYear()}-12-31`,
         inspect: false,
-        discard: true
+        discard: true,
+        sort: "eol"
     })
 
-    // handlers for filter checkboxes
+    // handlers for filtering
     const inspectHandler = () => {
         const newFilters = {...filters}
         newFilters.inspect = filters.inspect ? false : true
@@ -197,6 +217,33 @@ const Dashboard = () => {
         const newFilters = {...filters}
         newFilters.discard = filters.discard ? false : true
         setFilters(newFilters)
+    }
+    const itemSortHandler = (column) => {
+        const newFilters = {...filters}
+        newFilters.sort = column
+        setFilters(newFilters)
+    }
+
+    // function that sorts items; does not change state by itself
+    const sortItemList = (list, column) => {
+        const newItems = [...list]
+        if (items.length > 0) {
+            switch (column) {
+                case "eol":
+                    newItems.sort((a, b) => new Date(a.eol).getTime() - new Date(b.eol).getTime())
+                    break
+                case "discard":
+                    newItems.sort((a, b) => +(a.status === "discard") - +(b.status === "discard"))
+                    break
+                case "label":
+                    newItems.sort((a, b) => a.name.localeCompare(b.name))
+                    break
+                case "category":
+                    newItems.sort((a, b) => a.template.name.localeCompare(b.template.name))
+                    break
+            }
+        }
+        return newItems
     }
 
     // when filters are updated, update the items listed
@@ -208,12 +255,9 @@ const Dashboard = () => {
                 (filters.discard ? item.status === "discard" : true) &&
                 (filters.inspect ? item.status === "inspect" || item.status === "discard" : true)
             )
-        }).sort((a, b) => {
-            return new Date(a.eol).getTime() > new Date(b.eol).getTime()
-        }).sort((a, b) => {
-            return +(a.status === "discard") < +(b.status === "discard")
         })
-        setFilteredItems(newFilters)
+        const sorted = sortItemList(newFilters, filters.sort)
+        setFilteredItems(sorted)
     }, [ items, filters ])
 
     // render the filtered items as table rows for the lower table
@@ -411,8 +455,8 @@ const Dashboard = () => {
                             <thead>
                                 <tr>
                                     <th scope="col">Icon</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Count</th>
+                                    <th scope="col"><div className="sortable"><p>Name</p> <Button text="▼" linkTo={ () => handleCategorySort("name") } type="sort" id="cat-name-sort" /></div></th>
+                                    <th scope="col"><div className="sortable"><p>Count</p> <Button text="▼" linkTo={ () => handleCategorySort("count") } type="sort" id="cat-count-sort" /></div></th>
                                     <th scope="col">Details</th>
                                 </tr>
                             </thead>
@@ -481,10 +525,10 @@ const Dashboard = () => {
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
-                            <th scope="col">Label</th>
-                            <th scope="col">Category</th>
+                            <th scope="col"><div className="sortable"><p>Label</p> <Button text="▼" linkTo={ () => itemSortHandler("label") } type="sort" id="list-label-sort" /></div></th>
+                            <th scope="col"><div className="sortable"><p>Category</p> <Button text="▼" linkTo={ () => itemSortHandler("category") } type="sort" id="list-cat-sort" /></div></th>
                             <th scope="col">Details</th>
-                            <th scope="col">End of Life</th>
+                            <th scope="col"><div className="sortable"><p>End of Life</p> <Button text="▼" linkTo={ () => itemSortHandler("eol") } type="sort" id="list-eol-sort" /></div></th>
                         </tr>
                     </thead>
                     <tbody>

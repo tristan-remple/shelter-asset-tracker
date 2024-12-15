@@ -79,7 +79,7 @@ const CategoryRecovery = () => {
 
     return err ? <Error err={ err } /> : (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Deleted Categories</h2>
                 </div>

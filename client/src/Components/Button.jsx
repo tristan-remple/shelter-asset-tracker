@@ -36,6 +36,9 @@ const Button = ({ text, linkTo, type, id }) => {
         case "report": 
             buttonClass += "btn-small btn-secondary btn-report"
             break
+        case "sort":
+            buttonClass += "btn-sort btn-secondary"
+            break
         default:
             buttonClass += "btn-secondary"
             break

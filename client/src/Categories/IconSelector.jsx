@@ -42,12 +42,14 @@ const IconSelector = ({ changes, setChanges, toggle }) => {
 
     // when an icon is selected, set it to the category and close the selector modal
     const pickIcon = (event) => {
-        const target = parseInt(event.target.id)
-        const selectedIcon = iconList.filter(icon => icon.id === target)[0]
-        const newChanges = {...changes}
-        newChanges.icon = selectedIcon
-        setChanges(newChanges)
-        toggle()
+        if (!changes.index) {
+            const target = parseInt(event.target.id)
+            const selectedIcon = iconList.filter(icon => icon.id === target)[0]
+            const newChanges = {...changes}
+            newChanges.icon = selectedIcon
+            setChanges(newChanges)
+            toggle()
+        }
     }
 
     // keyboard handler
