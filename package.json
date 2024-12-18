@@ -7,6 +7,7 @@
     "launch": "concurrently --kill-others \"npm start\" \"cd client && npm run start\""
   },
   "dependencies": {
+    "@sequelize/postgres": "^7.0.0-alpha.43",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "concurrently": "^8.2.2",

@@ -2,6 +2,7 @@
     Configuration for connecting to the database using Sequelize.
  */
 const Sequelize = require('sequelize');
+const PostgresDialect = require('@sequelize/postgres');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -12,7 +13,7 @@ const dbConfig = new Sequelize(
     {   
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
-        dialect: 'postgres',
+        dialect: PostgresDialect,
         define: {
             paranoid: true,     // Enables soft deletion for all models
             timestamps: true,   // Adds createdAt and updatedAt fields for all models
