@@ -1,5 +1,6 @@
 const { models, Sequelize } = require('../data');
 
+// Returnes all item templates
 exports.getAllTemplates = async (req, res, next) => {
     try {
         const templates = await models.Template.findAll({
@@ -23,17 +24,17 @@ exports.getAllTemplates = async (req, res, next) => {
 
         if (!templates) {
             return res.status(404).json({ error: 'Templates not found' });
-        }
+        };
 
         res.status(200).json(templates);
 
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    }
+    };
 };
 
-
+// Retrieves template specified by ID
 exports.getTemplateById = async (req, res, next) => {
     try {
         const templateId = req.params.id;
@@ -66,7 +67,7 @@ exports.getTemplateById = async (req, res, next) => {
 
         if (template.id === null) {
             return res.status(404).json({ error: 'Template not found.' });
-        }
+        };
 
         return res.status(200).json(template);
 
@@ -76,18 +77,19 @@ exports.getTemplateById = async (req, res, next) => {
     }
 };
 
+// Creates new template
 exports.createNewTemplate = async (req, res, next) => {
     try {
         const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
 
         if (!name || !defaultValue || !defaultUsefulLife || !icon) {
             return res.status(400).json({ error: 'Bad request.' });
-        }
+        };
 
         const existingTemplate = await models.Template.findOne({ where: { name } });
         if (existingTemplate) {
             return res.status(400).json({ error: 'Template already exists.' });
-        }
+        };
 
         const newTemplate = await models.Template.create({
             name: name,
@@ -113,10 +115,10 @@ exports.createNewTemplate = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    }
+    };
 };
 
-
+// Updates specified template
 exports.updateTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
@@ -126,7 +128,7 @@ exports.updateTemplate = async (req, res, next) => {
 
         if (!template) {
             return res.status(404).json({ error: 'Template not found.' });
-        }
+        };
 
         template.set({
             name: name,
@@ -134,7 +136,7 @@ exports.updateTemplate = async (req, res, next) => {
             defaultUsefulLife: defaultUsefulLife,
             icon: icon,
             singleResident: singleResident ? true : false
-        })
+        });
 
         const updateResponse = {
             name: template.name,
@@ -143,7 +145,7 @@ exports.updateTemplate = async (req, res, next) => {
             icon: template.icon,
             singleResident: template.singleResident,
             success: true
-        }
+        };
 
         await template.save();
 
@@ -152,9 +154,10 @@ exports.updateTemplate = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Deletes specified template
 exports.deleteTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
@@ -163,7 +166,7 @@ exports.deleteTemplate = async (req, res, next) => {
 
         if (!template) {
             return res.status(404).json({ error: 'Template not found.' });
-        }
+        };
 
         const deletedTemplate = await template.destroy();
 
@@ -182,6 +185,7 @@ exports.deleteTemplate = async (req, res, next) => {
     }
 };
 
+// Retrieves previously deleted templates
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedTemplates = await models.Template.findAll({
@@ -193,9 +197,10 @@ exports.getDeleted = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Restores specified deleted template
 exports.restoreDeleted = async (req, res, next) => {
     try {
         const templateId = req.params.id;
@@ -207,7 +212,7 @@ exports.restoreDeleted = async (req, res, next) => {
 
         if (!deletedTemplate) {
             return res.status(404).json({ error: 'Deleted template not found.' });
-        }
+        };
 
         await deletedTemplate.restore();
 
@@ -221,5 +226,5 @@ exports.restoreDeleted = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };

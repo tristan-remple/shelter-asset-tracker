@@ -1,5 +1,6 @@
 const { models, Sequelize } = require('../data');
 
+// Retrieves unit specified by ID
 exports.getUnitById = async (req, res, next) => {
     try {
         const unitId = req.params.id;
@@ -43,7 +44,7 @@ exports.getUnitById = async (req, res, next) => {
 
         if (!unit) {
             return res.status(404).json({ message: 'Unit not found.' });
-        }
+        };
 
         const currentDate = new Date();
 
@@ -53,7 +54,7 @@ exports.getUnitById = async (req, res, next) => {
                     await models.Item.update({ status: 'inspect' }, { where: { id: item.id } });
                 }
             });
-        }
+        };
 
         req.data = unit;
         req.facility = unit.Facility.id;
@@ -62,15 +63,16 @@ exports.getUnitById = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Sends specified unit data
 exports.sendUnit = async (req, res, next) => {
     const unit = req.data;
 
     if (!unit) {
         return res.status(404).send({ message: "Unit not found." });
-    }
+    };
 
     const unitListItems = {
         id: unit.id,
@@ -96,6 +98,7 @@ exports.sendUnit = async (req, res, next) => {
     return res.status(200).json(unitListItems);
 }
 
+// Creates new unit
 exports.createNewUnit = async (req, res, next) => {
     try {
         const { facilityId, name, type } = req.body;
@@ -119,9 +122,10 @@ exports.createNewUnit = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Updates specified unit
 exports.updateUnit = async (req, res, next) => {
     try {
         const unitId = req.params.id;
@@ -131,20 +135,20 @@ exports.updateUnit = async (req, res, next) => {
 
         if (!unit) {
             return res.status(404).json({ error: 'Unit not found.' });
-        }
+        };
 
         unit.set({
             facilityId: facilityId,
             name: name,
             type: type
-        })
+        });
 
         const updateResponse = {
             facilityId: facilityId,
             name: unit.name,
             type: unit.type,
             success: true
-        }
+        };
 
         await unit.save();
 
@@ -156,6 +160,7 @@ exports.updateUnit = async (req, res, next) => {
     }
 };
 
+// Deletes specified unit
 exports.deleteUnit = async (req, res, next) => {
     try {
         const unitId = req.params.id;
@@ -164,7 +169,7 @@ exports.deleteUnit = async (req, res, next) => {
 
         if (!unit) {
             return res.status(404).json({ error: 'Unit not found.' });
-        }
+        };
 
         const deletedUnit = await unit.destroy();
 
@@ -180,9 +185,10 @@ exports.deleteUnit = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Retrieves previously deleted units
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedUnits = await models.Unit.findAll({
@@ -203,6 +209,7 @@ exports.getDeleted = async (req, res, next) => {
     }
 };
 
+// Restores specified previously deleted unit
 exports.restoreDeleted = async (req, res, next) => {
     try {
         const unitId = req.params.id;
@@ -218,7 +225,7 @@ exports.restoreDeleted = async (req, res, next) => {
 
         if (!deletedUnit) {
             return res.status(404).json({ error: 'Deleted unit not found.' });
-        }
+        };
 
         await deletedUnit.restore();
 
@@ -232,9 +239,10 @@ exports.restoreDeleted = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Sets the status of all items in unit to 'inspect' or 'discard'
 exports.flipUnit = async (req, res, next) => {
     try {
         const unit = req.data;

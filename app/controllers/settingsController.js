@@ -1,5 +1,6 @@
 const { models, Sequelize } = require('../data');
 
+// Retrieves current app settings
 exports.getSettings = async (req, res, next) => {
     try {
         const settings = await models.Setting.findAll();
@@ -19,16 +20,17 @@ exports.getSettings = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Updates app settings
 exports.updateSettings = async (req, res, next) => {
     try {
         const { depreciationRate, unitTypes, name, url, logoSrc } = req.body;
 
         if (!depreciationRate || !unitTypes || !name || !url || !logoSrc) {
             return res.status(400).json({ error: 'Missing expected settings.' })
-        }
+        };
 
         const settingsToUpdate = {
             depreciationRate,
@@ -44,8 +46,8 @@ exports.updateSettings = async (req, res, next) => {
                     { where: { name: setting.name } }
                 );
                 setting.value = settingsToUpdate[setting.name];
-            }
-        }
+            };
+        };
 
         const currentUnitTypes = req.data.unitTypes.map(type => type.name);
 
@@ -55,7 +57,7 @@ exports.updateSettings = async (req, res, next) => {
         for (const unitType of addedUnitTypes) {
             await models.UnitType.create({ name: unitType });
             currentUnitTypes.push(unitType);
-        }
+        };
 
         for (const unitType of removedUnitTypes) {
             await models.UnitType.destroy({ where: { name: unitType } });
@@ -63,7 +65,7 @@ exports.updateSettings = async (req, res, next) => {
             if (index > -1) {
                 currentUnitTypes.splice(index, 1);
             }
-        }
+        };
 
         req.data.unitTypes = currentUnitTypes;
 
@@ -89,7 +91,7 @@ exports.sendSettings = async (req, res, next) => {
     const settingsResponse = {
         settings: settings,
         unitTypes: unitTypes
-    }
+    };
 
     return res.status(200).json(settingsResponse);
 }

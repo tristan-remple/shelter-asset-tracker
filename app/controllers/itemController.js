@@ -1,16 +1,19 @@
 const { models, Sequelize } = require('../data');
 const { calculateCurrentValue, getEoL } = require('../util/calc');
 
+// Retrieves all items
 exports.getAllItems = async (req, res, next) => {
     try {
         const items = await models.Item.findAll();
         return res.json(items);
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    }
+    };
 };
 
+// Retrieves a specific item by its ID
 exports.getItemById = async (req, res, next) => {
     try {
         const itemId = req.params.id;
@@ -72,11 +75,11 @@ exports.getItemById = async (req, res, next) => {
                 order: [['createdAt', 'DESC']]
             }
             ]
-        })
+        });
 
         if (!item) {
             return res.status(404).json({ message: 'Item not found.' });
-        }
+        };
 
         req.data = item;
         req.facility = item.Unit.Facility.id;
@@ -88,6 +91,7 @@ exports.getItemById = async (req, res, next) => {
     }
 };
 
+// Sends a single item's data in a detailed format
 exports.sendItem = async (req, res, next) => {
     const item = req.data;
     const depreciationRate = await models.Setting.findOne({
@@ -144,8 +148,52 @@ exports.sendItem = async (req, res, next) => {
     };
 
     return res.status(200).json(itemProfile);
-}
+};
 
+// Creates a new item
+exports.createNewItem = async (req, res, next) => {
+    try {
+        const { name, invoice, vendor, unitId, templateId, donated, initialValue, usefulLifeOffset, addedBy } = req.body;
+        if (!name || !invoice || !vendor || !unitId || !templateId || donated === undefined || !initialValue || !usefulLifeOffset || !addedBy) {
+            return res.status(400).json({ error: 'Bad request.' });
+        };
+
+        const newItem = await models.Item.create({
+            name: name,
+            invoice: invoice,
+            vendor: vendor,
+            unitId: unitId,
+            templateId: templateId,
+            donated: donated,
+            initialValue: initialValue,
+            eol: getEoL(usefulLifeOffset),
+            addedBy: addedBy,
+            status: 'ok'
+        });
+
+        const createResponse = {
+            itemId: newItem.id,
+            name: newItem.name,
+            invoice: newItem.invoice,
+            vendor: newItem.vendor,
+            unit: newItem.unitId,
+            templateId: newItem.templateId,
+            donated: newItem.donated,
+            initialValue: newItem.initialValue,
+            addedBy: newItem.addedBy,
+            eol: newItem.eol,
+            success: true
+        };
+
+        return res.status(201).json(createResponse);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
+// Updates an item's details, including comments and EOL calculation
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
@@ -184,7 +232,7 @@ exports.updateItem = async (req, res, next) => {
             status: item.status,
             currentValue: calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate),
             success: true
-        }
+        };
 
         await item.save();
 
@@ -196,8 +244,8 @@ exports.updateItem = async (req, res, next) => {
     }
 };
 
+// Verifies the facility associated with a unit
 exports.checkFacility = async (req, res, next) => {
-    console.log(req.body.unitId);
     const facility = await models.Unit.findOne({
         where: { id: req.body.unitId },
         include: {
@@ -207,52 +255,10 @@ exports.checkFacility = async (req, res, next) => {
     });
 
     req.facility = facility.Facility.id;
-    console.log(req.facility)
     next();
-}
-
-exports.createNewItem = async (req, res, next) => {
-    try {
-        const { name, invoice, vendor, unitId, templateId, donated, initialValue, usefulLifeOffset, addedBy } = req.body;
-        if (!name || !invoice || !vendor || !unitId || !templateId || donated === undefined || !initialValue || !usefulLifeOffset || !addedBy) {
-            return res.status(400).json({ error: 'Bad request.' });
-        }
-
-        const newItem = await models.Item.create({
-            name: name,
-            invoice: invoice,
-            vendor: vendor,
-            unitId: unitId,
-            templateId: templateId,
-            donated: donated,
-            initialValue: initialValue,
-            eol: getEoL(usefulLifeOffset),
-            addedBy: addedBy,
-            status: 'ok'
-        });
-
-        const createResponse = {
-            itemId: newItem.id,
-            name: newItem.name,
-            invoice: newItem.invoice,
-            vendor: newItem.vendor,
-            unit: newItem.unitId,
-            templateId: newItem.templateId,
-            donated: newItem.donated,
-            initialValue: newItem.initialValue,
-            addedBy: newItem.addedBy,
-            eol: newItem.eol,
-            success: true
-        };
-
-        return res.status(201).json(createResponse);
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Server error.' });
-    }
 };
 
+// Deletes an item
 exports.deleteItem = async (req, res, next) => {
     try {
         const item = req.data;
@@ -263,16 +269,17 @@ exports.deleteItem = async (req, res, next) => {
             name: deletedItem.name,
             deleted: deletedItem.deletedAt,
             success: true
-        }
+        };
 
         return res.status(200).json(deleteResponse);
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Retrieves deleted items
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedItems = await models.Item.findAll({
@@ -289,12 +296,14 @@ exports.getDeleted = async (req, res, next) => {
         });
 
         return res.status(200).json(deletedItems);
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Restores a previously deleted item
 exports.restoreDeleted = async (req, res, next) => {
     try {
         const itemId = req.params.id;
@@ -318,7 +327,7 @@ exports.restoreDeleted = async (req, res, next) => {
 
         if (!deletedItem || !deletedItem.deletedAt) {
             return res.status(404).json({ error: 'Deleted item not found.' });
-        }
+        };
 
         await deletedItem.restore();
 
@@ -332,5 +341,5 @@ exports.restoreDeleted = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };

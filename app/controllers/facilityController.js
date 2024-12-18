@@ -1,6 +1,6 @@
 const { models, Sequelize } = require('../data');
 
-// Admin only function enforced by admin middleware
+// Retrieves a list of all facilities with the count of associated units
 exports.getAllFacilities = async (req, res, next) => {
     try {
         const facilities = await models.Facility.findAll({
@@ -32,6 +32,7 @@ exports.getAllFacilities = async (req, res, next) => {
     }
 };
 
+// Retrieves details of a specific facility by its ID, including associated users and units
 exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
@@ -97,10 +98,12 @@ exports.getFacilityById = async (req, res, next) => {
     }
 };
 
+// Sends the facility data stored in the request object
 exports.sendFacility = async (req, res, next) => {
     return res.status(200).json(req.data);
-}
+};
 
+// Creates a new facility and assigns a manager to it
 exports.createNewFacility = async (req, res, next) => {
     try {
         const { locationName, managerId } = req.body;
@@ -108,7 +111,7 @@ exports.createNewFacility = async (req, res, next) => {
         const authUser = await models.User.findOne({ where: { id: managerId } });
         if (!authUser) {
             return res.status(404).json({ error: "Manager not found." });
-        }
+        };
 
         const newFacility = await models.Facility.create({
             name: locationName,
@@ -118,7 +121,7 @@ exports.createNewFacility = async (req, res, next) => {
         await models.FacilityAuth.create({
             userId: managerId,
             facilityId: newFacility.id
-        })
+        });
 
         const createResponse = {
             facilityId: newFacility.id,
@@ -135,6 +138,7 @@ exports.createNewFacility = async (req, res, next) => {
     }
 };
 
+// Updates an existing facility's details
 exports.updateFacility = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
@@ -144,7 +148,7 @@ exports.updateFacility = async (req, res, next) => {
 
         if (!facility) {
             return res.status(404).json({ error: 'Facility not found.' });
-        }
+        };
 
         facility.set({
             name: name,
@@ -156,7 +160,7 @@ exports.updateFacility = async (req, res, next) => {
             name: facility.name,
             managerId: facility.managerId,
             success: true
-        }
+        };
 
         await facility.save();
         return res.status(200).json(updateResponse);
@@ -167,6 +171,7 @@ exports.updateFacility = async (req, res, next) => {
     }
 };
 
+// Deletes a facility and associated authorizations
 exports.deleteFacility = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
@@ -175,7 +180,7 @@ exports.deleteFacility = async (req, res, next) => {
 
         if (!facility) {
             return res.status(404).json({ error: 'Facility not found.' });
-        }
+        };
 
         await models.FacilityAuth.destroy({
             where: { facilityId }
@@ -191,12 +196,14 @@ exports.deleteFacility = async (req, res, next) => {
         };
 
         return res.status(200).json(deleteResponse);
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
     }
 };
 
+// Retrieves all deleted facilities (soft deleted)
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedFacilities = await models.Facility.findAll({
@@ -211,6 +218,7 @@ exports.getDeleted = async (req, res, next) => {
     }
 };
 
+// Restores a soft-deleted facility
 exports.restoreDeleted = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
@@ -222,7 +230,7 @@ exports.restoreDeleted = async (req, res, next) => {
 
         if (!deletedFacility) {
             return res.status(404).json({ error: 'Deleted facility not found.' });
-        }
+        };
 
         await deletedFacility.restore();
 
