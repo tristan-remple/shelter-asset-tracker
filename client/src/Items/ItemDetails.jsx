@@ -49,7 +49,7 @@ const ItemDetails = () => {
     if (item) {
 
     // destructure the item object
-    const { unit, name, template, status: itemStatus, value, createdAt, eol, inspectionRecord, invoice, vendor } = item
+    const { unit, name, template, status: itemStatus, value, createdAt, eol, commentRecord, invoice, vendor } = item
 
     // if it has been deleted, throw an error
     // if (item.discardDate) {
@@ -74,7 +74,7 @@ const ItemDetails = () => {
                     <Button  text="Inspect" linkTo={ `/item/${id}/inspect` } type="action" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button  text="Edit" linkTo={ `/item/${id}/edit` } type="action" />
+                    <Button  text="Edit or Move" linkTo={ `/item/${id}/edit` } type="action" />
                 </div>
             </div>
             <div className="page-content">
@@ -128,7 +128,7 @@ const ItemDetails = () => {
                         
                     </div>
                     <div className="col-8 col-content">
-                        <CommentBox comments={ inspectionRecord } />
+                        <CommentBox comments={ commentRecord } />
                     </div>
                 </div>
                 <div className="row row-info">

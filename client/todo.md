@@ -92,7 +92,7 @@ const postData = {
 
 ## Passwords
 - ✅ how are passwords set and reset?
-- password error messages
+- ✅ password error messages
 - ✅ if forgot password -> prompt to request reset email
 - if reset requested but email fails -> prompt to update email or contact supervisor
 - ✅ do not null password on request
@@ -151,9 +151,9 @@ const formControls = {
 
 ### Error Handling
 - ✅ "snooze end of life" changed to "update end of life"
-  - text: you can set more specific end of life from the edit screen
-  - updated end of life does not register as a changed field: it should
-- when changing an item from flagged to ok, if the item is past its eol, throw an error asking user to change eol
+  - ✅ text: you can set more specific end of life from the edit screen
+  - ✅ updated end of life does not register as a changed field: it should
+- ✅ when changing an item from flagged to ok, if the item is past its eol, throw an error asking user to change eol
 - ✅ remove comments display from item edit
 - ✅ no strings over 255 characters allowed
 - ✅ category create form: better error handling when form is incomplete
@@ -161,24 +161,24 @@ const formControls = {
   - ✅ 0, negative, or NaN months should display not valid instead of equivalent in years
 - ✅ "items to discard soon" -> "items overview"
 - ✅ disallow gifs
-- icon upload failure: allow to try again
+- ✅ icon upload failure: allow to try again
 
 ### Updated Functionality
 - allow status flag changes from unit page
   - confirm dialogue needs to display
-- "inspect" column changes to "action"
-  - "inspect" button on items is confusing: change wording. "log inspection" "submit inspection" "record inspection"
-  - "discard" button appears instead of inspect when item has been flagged for discard
-- unit edit button -> edit or move
-  - unit field on edit item screen becomes a dropdown
+- ✅ "inspect" column changes to "action"
+  - ✅ "inspect" button on items is confusing: change wording. "log inspection" "submit inspection" "record inspection"
+  - ✅ "discard" button appears instead of inspect when item has been flagged for discard
+- ✅ unit edit button -> edit or move
+  - ✅ unit field on edit item screen becomes a dropdown
 - add edit button to comments/inspections
   - display edited at time if comment has been edited
-- add "manage icons" button to category list screen
-- add sort buttons to columns on dashboard tables
+- ✅ add "manage icons" button to category list screen
+- ✅ add sort buttons to columns on dashboard tables
 
 ### Styling
 - ✅ header highlight color
-- inconsistent margin after header: unit pages need more margin at top
+- ✅ inconsistent margin after header: check additional classes on title-row
 - ✅ fields lighter than buttons
-- change 100vw to 100vrw ? to adjust for scroll
+- ✅ fix scrollbar width styling error
 

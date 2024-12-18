@@ -109,6 +109,7 @@ main {
     top: 100%;
     max-height: 40vh;
     overflow: auto;
+    scrollbar-gutter: stable both-edges;
 }
 
 .dropdown-toggle, .dropdown {
@@ -131,6 +132,19 @@ main {
 td, th {
     @include border;
     padding: 0.125rem 0.75rem !important;
+    span, div {
+        height: 2.125rem;
+    }
+}
+
+.sortable {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    p {
+        margin: 0;
+    }
 }
 
 /* Header Styles */
@@ -142,7 +156,8 @@ td, th {
 
 header, footer {
     background-color: $ltgreen !important;
-    width: 100vw;
+    width: 100%;
+    scrollbar-gutter: stable both-edges;
 }
 
 #app-title {
@@ -210,6 +225,7 @@ header, footer {
     justify-content: space-around;
     max-height: 85%;
     overflow: auto;
+    scrollbar-gutter: stable both-edges;
     border-radius: 0.5rem;
     @include border;
     margin: 0.25rem;
@@ -331,6 +347,23 @@ header, footer {
     color: $olivegreen;
     border-color: $brightgreen;
     width: 150px;
+    &:hover, &:focus {
+        background-color: $brightgreen;
+        color: $white;
+    }
+}
+
+.btn-sort {
+    margin: 0.1rem;
+    padding: 0.1rem;
+    background-color: $ltgreen;
+    color: $olivegreen;
+    border-color: $brightgreen;
+    width: 2rem !important;
+    height: 2rem;
+    float: right;
+    position: relative;
+    right: -0.5rem;
     &:hover, &:focus {
         background-color: $brightgreen;
         color: $white;
@@ -569,6 +602,7 @@ textarea {
     .page-content {
         width: 100%;
         overflow-x: visible;
+        scrollbar-gutter: stable both-edges;
     }
 
     .col-icon {

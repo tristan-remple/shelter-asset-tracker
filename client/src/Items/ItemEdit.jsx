@@ -50,6 +50,7 @@ const ItemEdit = () => {
     }
 
     const [ item, setItem ] = useState()
+    const [ unit, setUnit ] = useState()
     useEffect(() => {
         (async() => {
             await apiService.singleItem(id, (data) => {
@@ -57,11 +58,37 @@ const ItemEdit = () => {
                     setErr(data.error)
                 } else {
                     setItem(data)
+                    setUnit(data.unit.name)
                     setErr(null)
                 }
             })
         })()
     }, [])
+
+    const [ simpleUnits, setSimpleUnits ] = useState([])
+    const [ unitList, setUnitList ] = useState([])
+
+    useEffect(() => {
+        (async() => {
+            const locationId = item?.unit.facility.id
+            if (typeof locationId === "number") {
+                await apiService.singleLocation(locationId, (loc) => {
+                    if (loc.error) {
+                        setStatus("We could not find the list of units. Therefore, this item cannot be moved right now.")
+                    } else {
+                        setUnitList(loc.units)
+                        const unitNames = loc.units.map(room => room.name)
+                        setSimpleUnits(unitNames)
+                    }
+                })
+            }
+        })()
+    }, [ item ])
+
+    const handleUnitChange = (unit) => {
+        setUnit(unit)
+        setUnsaved(true)
+    }
 
     // set up some page functionality
     // unsaved toggles the ChangePanel
@@ -130,18 +157,18 @@ const ItemEdit = () => {
     const saveChanges = async() => {
         const newItem = {...changes}
         newItem.id = item.id
-        newItem.unitId = item.unit.id
+        newItem.unitId = unitList.filter(room => room.name === unit)[0].unitId
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
                 setErr(response.error)
             } else {
                 setStatus({
-                    message: `You have successfully saved your changes to item ${response.name}.`,
+                    message: `You have successfully saved your changes to item ${ response.name }.`,
                     error: false
                 })
                 setUnsaved(false)
-                navigate(`/item/${response.id}`)
+                navigate(`/item/${ response.id }`)
             }
         })
     }
@@ -221,7 +248,11 @@ const ItemEdit = () => {
                             Unit
                         </div>
                         <div className="col-content">
-                            { item.unit.name }
+                            <Dropdown
+                                list={ simpleUnits }
+                                current={ unit }
+                                setCurrent={ handleUnitChange }
+                            />
                         </div>
                     </div>
                     <div className="col col-info">

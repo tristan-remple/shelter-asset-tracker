@@ -243,7 +243,7 @@ const UserEdit = () => {
     if (err) { return <Error err={ err } /> }
     return (
         <main className="container">
-            <div className="row title-row">
+            <div className="row title-row mt-3 mb-2">
                 <div className="col">
                     <h2>Editing User { originalData.name }</h2>
                 </div>

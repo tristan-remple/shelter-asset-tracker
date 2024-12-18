@@ -202,6 +202,7 @@ class apiService {
 
     // Called by: LocationDetails, LocationEdit, LocationDelete
     singleLocation= async(id, callback) => {
+        console.log(id)
         await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`, {
             withCredentials: true
         })
