@@ -1,16 +1,17 @@
 const { models } = require('../data');
 
+// Creates new user
 exports.createNewUser = async (req, res, next) => {
     try {
         const { email, name, isAdmin, auths, authorizedBy } = req.body;
         if (!email || !name || isAdmin === undefined) {
             return res.status(400).json({ error: 'Bad request' });
-        }
+        };
 
         const existingUser = await models.User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
-        }
+        };
 
         const newUser = await models.User.create({
             email: email,
@@ -41,9 +42,10 @@ exports.createNewUser = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    }
+    };
 };
 
+// Retrieves all user data
 exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await models.User.findAll({
@@ -67,7 +69,7 @@ exports.getAllUsers = async (req, res, next) => {
 
         if (!users) {
             return res.status(404).json({ error: 'Users not found' });
-        }
+        };
 
         const usersInfo = users.map(user => ({
             userId: user.id,
@@ -85,9 +87,10 @@ exports.getAllUsers = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error' });
-    }
+    };
 };
 
+// Retrieve specified user by ID
 exports.getUserById = async (req, res, next) => {
     try {
         const userId = +req.params.id;
@@ -117,7 +120,7 @@ exports.getUserById = async (req, res, next) => {
 
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
-        }
+        };
 
         req.data = user;
         next();
@@ -125,9 +128,10 @@ exports.getUserById = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Update specified user
 exports.updateUser = async (req, res, next) => {
     try {
         const { name, email } = req.body;
@@ -145,23 +149,24 @@ exports.updateUser = async (req, res, next) => {
             name: user.name,
             email: user.email,
             success: true
-        }
+        };
 
         return res.status(200).json(updateResponse);
 
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
 
+// Update admin status of specified user
 exports.setAdmin = async (req, res, next) => {
     try {
         const user = req.data;
         const { isAdmin } = req.body;
         if (user.id === 1) {
             return res.status(403).send({ message: "Forbidden" });
-        }
+        };
 
         user.set({
             isAdmin: isAdmin
@@ -175,7 +180,7 @@ exports.setAdmin = async (req, res, next) => {
             email: user.email,
             isAdmin: user.isAdmin,
             success: true
-        }
+        };
 
         return res.status(200).json(setAdminResponse);
 
@@ -185,12 +190,13 @@ exports.setAdmin = async (req, res, next) => {
     }
 };
 
+// Send user data
 exports.sendUser = async (req, res, next) => {
     try {
         let user = req.data;
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
-        }
+        };
 
         const userDetails = {
             id: user.id,
@@ -213,6 +219,7 @@ exports.sendUser = async (req, res, next) => {
     }
 }
 
+// Delete specified user
 exports.deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
@@ -221,7 +228,7 @@ exports.deleteUser = async (req, res, next) => {
 
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
-        }
+        };
 
         const deletedUser = await user.destroy({
             force: true
@@ -238,5 +245,5 @@ exports.deleteUser = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };

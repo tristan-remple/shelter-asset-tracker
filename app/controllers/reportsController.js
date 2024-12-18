@@ -1,225 +1,244 @@
 const { models } = require('../data');
 const { calculateCurrentValue } = require('../util/calc');
 
+// Retrieves data for financial report
 const getFinancial = async (facility) => {
+    try {
 
-    const depreciationRate = await models.Setting.findOne({
-        attributes: ['value'],
-        where: { name: 'depreciationRate' }
-    });
+        const depreciationRate = await models.Setting.findOne({
+            attributes: ['value'],
+            where: { name: 'depreciationRate' }
+        });
 
-    const queryOptions = {
-        attributes: [
-            'id',
-            'name',
-            'vendor',
-            'invoice',
-            'donated',
-            'initialValue',
-            'eol',
-            'createdAt',
-            'updatedAt'
-        ],
-        include: [
-            {
-                model: models.Unit,
-                attributes: ['id', 'name'],
-                include: {
-                    model: models.Facility,
-                    attributes: ['id', 'name']
-                }
-            },
-            {
-                model: models.Template,
-                attributes: ['name']
-            }
-        ]
-    };
-
-    if (facility) {
-        queryOptions.include[0].where = { id: facility }
-    };
-
-    const items = await models.Item.findAll(queryOptions);
-
-    const report = items.map(item => {
-        const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
-
-        return {
-            id: item.id,
-            name: item.name,
-            facilityId: item.Unit.Facility.id,
-            facilityName: item.Unit.Facility.name,
-            unitId: item.Unit.id,
-            unitName: item.Unit.name,
-            templateName: item.Template.name,
-            vendor: item.vendor,
-            invoice: item.invoice,
-            donated: item.donated,
-            currentValue: currentValue,
-            eol: item.eol,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt
-        };
-    });
-
-    return report;
-}
-
-const getInventory = async (facility) => {
-
-    const depreciationRate = await models.Setting.findOne({
-        attributes: ['value'],
-        where: { name: 'depreciationRate' }
-    });
-
-    const queryOptions = {
-        attributes: [
-            'id',
-            'name',
-            'vendor',
-            'invoice',
-            'status',
-            'donated',
-            'initialValue',
-            'eol',
-            'createdAt',
-            'updatedAt'
-        ],
-        include: [
-            {
-                model: models.Unit,
-                attributes: ['id', 'name'],
-                include: {
-                    model: models.Facility,
-                    attributes: ['id', 'name']
-                }
-            },
-            {
-                model: models.User,
-                as: 'addedByUser',
-                attributes: ['name']
-            },
-            {
-                model: models.Comment,
-                attributes: [
-                    'userId',
-                    'createdAt',
-                    'comment'
-                ],
-                include: {
-                    model: models.User,
-                    attributes: ['name']
+        const queryOptions = {
+            attributes: [
+                'id',
+                'name',
+                'vendor',
+                'invoice',
+                'donated',
+                'initialValue',
+                'eol',
+                'createdAt',
+                'updatedAt'
+            ],
+            include: [
+                {
+                    model: models.Unit,
+                    attributes: ['id', 'name'],
+                    include: {
+                        model: models.Facility,
+                        attributes: ['id', 'name']
+                    }
                 },
-                required: false,
-                order: [['createdAt', 'DESC']],
-                limit: 1
-            }
-        ]
-    };
-
-    if (facility) {
-        queryOptions.include[0].where = { id: facility };
-    }
-
-    const items = await models.Item.findAll(queryOptions);
-
-    const report = items.map(item => {
-        const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
-        const lastComment = item.Comments[0] || {};
-
-        return {
-            id: item.id,
-            name: item.name,
-            facilityId: item.Unit.Facility.id,
-            facilityName: item.Unit.Facility.name,
-            unitId: item.Unit.id,
-            unitName: item.Unit.name,
-            vendor: item.vendor,
-            invoice: item.invoice,
-            addedBy: item.addedByUser.name,
-            status: item.status,
-            inspectedBy: lastComment.User ? lastComment.User.name : null,
-            lastComment: lastComment.createdAt ? lastComment.createdAt : null,
-            comment: lastComment.comment ? lastComment.comment : null,
-            eol: item.eol,
-            currentValue: currentValue,
-            donated: item.donated,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt
-
+                {
+                    model: models.Template,
+                    attributes: ['name']
+                }
+            ]
         };
-    });
 
-    return report;
+        if (facility) {
+            queryOptions.include[0].where = { id: facility }
+        };
 
+        const items = await models.Item.findAll(queryOptions);
+
+        const report = items.map(item => {
+            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+
+            return {
+                id: item.id,
+                name: item.name,
+                facilityId: item.Unit.Facility.id,
+                facilityName: item.Unit.Facility.name,
+                unitId: item.Unit.id,
+                unitName: item.Unit.name,
+                templateName: item.Template.name,
+                vendor: item.vendor,
+                invoice: item.invoice,
+                donated: item.donated,
+                currentValue: currentValue,
+                eol: item.eol,
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
+            };
+        });
+
+        return report;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' })
+    };
 };
 
-const getEol = async (facility, startDate, endDate) => {
+// Retrieves data for inventory report
+const getInventory = async (facility) => {
+    try {
 
-    const depreciationRate = await models.Setting.findOne({
-        attributes: ['value'],
-        where: { name: 'depreciationRate' }
-    });
+        const depreciationRate = await models.Setting.findOne({
+            attributes: ['value'],
+            where: { name: 'depreciationRate' }
+        });
 
-    const queryOptions = {
-        attributes: [
-            'id',
-            'name',
-            'vendor',
-            'invoice',
-            'initialValue',
-            'eol',
-            'status',
-            'createdAt',
-            'updatedAt'
-        ],
-        include: [
-            {
-                model: models.Unit,
-                attributes: ['id', 'name'],
-                include: {
-                    model: models.Facility,
-                    attributes: ['id', 'name']
+        const queryOptions = {
+            attributes: [
+                'id',
+                'name',
+                'vendor',
+                'invoice',
+                'status',
+                'donated',
+                'initialValue',
+                'eol',
+                'createdAt',
+                'updatedAt'
+            ],
+            include: [
+                {
+                    model: models.Unit,
+                    attributes: ['id', 'name'],
+                    include: {
+                        model: models.Facility,
+                        attributes: ['id', 'name']
+                    }
+                },
+                {
+                    model: models.User,
+                    as: 'addedByUser',
+                    attributes: ['name']
+                },
+                {
+                    model: models.Comment,
+                    attributes: [
+                        'userId',
+                        'createdAt',
+                        'comment'
+                    ],
+                    include: {
+                        model: models.User,
+                        attributes: ['name']
+                    },
+                    required: false,
+                    order: [['createdAt', 'DESC']],
+                    limit: 1
                 }
-            }
-        ]
+            ]
+        };
+
+        if (facility) {
+            queryOptions.include[0].where = { id: facility };
+        };
+
+        const items = await models.Item.findAll(queryOptions);
+
+        const report = items.map(item => {
+            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+            const lastComment = item.Comments[0] || {};
+
+            return {
+                id: item.id,
+                name: item.name,
+                facilityId: item.Unit.Facility.id,
+                facilityName: item.Unit.Facility.name,
+                unitId: item.Unit.id,
+                unitName: item.Unit.name,
+                vendor: item.vendor,
+                invoice: item.invoice,
+                addedBy: item.addedByUser.name,
+                status: item.status,
+                inspectedBy: lastComment.User ? lastComment.User.name : null,
+                lastComment: lastComment.createdAt ? lastComment.createdAt : null,
+                comment: lastComment.comment ? lastComment.comment : null,
+                eol: item.eol,
+                currentValue: currentValue,
+                donated: item.donated,
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
+
+            };
+        });
+
+        return report;
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
     };
+};
 
-    if (facility) {
-        queryOptions.include[0].where = { id: facility };
-    }
+// Retrieves data for EoL report
+const getEol = async (facility, startDate, endDate) => {
+    try {
+        const depreciationRate = await models.Setting.findOne({
+            attributes: ['value'],
+            where: { name: 'depreciationRate' }
+        });
 
-    const items = await models.Item.findAll(queryOptions);
+        const queryOptions = {
+            attributes: [
+                'id',
+                'name',
+                'vendor',
+                'invoice',
+                'initialValue',
+                'eol',
+                'status',
+                'createdAt',
+                'updatedAt'
+            ],
+            include: [
+                {
+                    model: models.Unit,
+                    attributes: ['id', 'name'],
+                    include: {
+                        model: models.Facility,
+                        attributes: ['id', 'name']
+                    }
+                }
+            ]
+        };
 
-    const eolItems = items.filter(item => {
-        const itemEol = new Date(item.eol);
-        return itemEol >= startDate && itemEol <= endDate;
-    });
+        if (facility) {
+            queryOptions.include[0].where = { id: facility };
+        };
 
-    const report = eolItems.map(item => {
-        const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
-        return {
-            id: item.id,
-            name: item.name,
-            facilityId: item.Unit.Facility.id,
-            facilityName: item.Unit.Facility.name,
-            unitId: item.Unit.id,
-            unitName: item.Unit.name,
-            vendor: item.vendor,
-            invoice: item.invoice,
-            initalValue: item.initialValue,
-            currentValue: currentValue,
-            eol: item.eol,
-            status: item.status,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt
-        }
-    });
+        const items = await models.Item.findAll(queryOptions);
 
-    return report;
-}
+        const eolItems = items.filter(item => {
+            const itemEol = new Date(item.eol);
+            return itemEol >= startDate && itemEol <= endDate;
+        });
 
+        const report = eolItems.map(item => {
+            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+            return {
+                id: item.id,
+                name: item.name,
+                facilityId: item.Unit.Facility.id,
+                facilityName: item.Unit.Facility.name,
+                unitId: item.Unit.id,
+                unitName: item.Unit.name,
+                vendor: item.vendor,
+                invoice: item.invoice,
+                initalValue: item.initialValue,
+                currentValue: currentValue,
+                eol: item.eol,
+                status: item.status,
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
+            };
+        });
+
+        return report;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    };
+};
+
+// Retrieves data for dashboard summary
 exports.getSummary = async (req, res, next) => {
     try {
         const data = await models.Facility.findAll({
@@ -304,7 +323,7 @@ exports.getSummary = async (req, res, next) => {
                         };
                     } else {
                         itemCount[item.templateId].count++;
-                    }
+                    };
                 });
             });
 
@@ -357,14 +376,14 @@ exports.getSummary = async (req, res, next) => {
                 totalValue: totalValue,
                 itemCount: Object.values(itemCount),
                 units: units
-            }
+            };
         });
 
         return res.status(200).json(overview);
 
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Server error.' })
+        return res.status(500).json({ error: 'Server error.' });
     }
 };
 
@@ -425,7 +444,7 @@ exports.exportInventory = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Error generating report' });
-    }
+    };
 
 };
 
@@ -443,7 +462,7 @@ exports.exportEOL = async (req, res, next) => {
 
         if (isNaN(eolStart.getTime()) || isNaN(eolEnd.getTime())) {
             return res.status(400).json({ error: 'Invalid date.' });
-        }
+        };
 
         const eolReport = await getEol(facility, eolStart, eolEnd);
 

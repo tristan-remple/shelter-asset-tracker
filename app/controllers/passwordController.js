@@ -2,7 +2,7 @@ const { models }  = require('../data');
 const { hashPassword, createReset, comparePasswords, checkPassword } = require('../util/password');
 const { sendEmail } = require('../util/mail');
 
-// set password reset request fields on the current user
+// Initiates a password reset request by setting the necessary fields on the specified user
 exports.createRequest = async (req, res, next) => {
     try {
         const user = req.data;
@@ -17,7 +17,7 @@ exports.createRequest = async (req, res, next) => {
         const { name, email, requestHash, requestExpiry } = user;
         if (!name || !email || !requestHash || !requestExpiry) {
             return res.status(400).json({ error: 'Bad request.' });
-        }
+        };
 
         const emailResponse = await sendEmail(name, email, requestHash, requestExpiry);
         await user.save();
@@ -37,16 +37,17 @@ exports.createRequest = async (req, res, next) => {
                 emailSent: emailResponse
             };
             return res.status(201).json(response);
-        }
+        };
 
         return res.status(200).json(response);
 
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
-}
+    };
+};
 
+// Resends the password reset email if the user has a pending request
 exports.resendRequest = async (req, res, next) => {
     const { email } = req.body;
 
@@ -62,12 +63,12 @@ exports.resendRequest = async (req, res, next) => {
 
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
-        }
+        };
 
         const { name, requestHash, requestExpiry } = user;
         if (!requestHash || !requestExpiry){
             return res.status(404).json({ error: 'Request not found.' });
-        }
+        };
     
         const emailResponse = await sendEmail(name, email, requestHash, requestExpiry);
     
@@ -79,12 +80,12 @@ exports.resendRequest = async (req, res, next) => {
         return res.status(200).json(response);
 
     } catch (err) {
-        console.error(err)
+        console.error(err);
         return res.status(500).json({ error: 'Server error.' })
-    }
-}
+    };
+};
 
-// set a new password for a user with a valid password request hash
+// Sets a new password for a user who has a valid password request hash
 exports.updatePassword = async (req, res, next) => {
 
     const hash = req.params.hash;
@@ -124,7 +125,7 @@ exports.updatePassword = async (req, res, next) => {
     
             user.save();
             
-            return res.status(401).json({ error: 'Expired request.' })
+            return res.status(401).json({ error: 'Expired request.' });
         };
 
         if (user.password){
@@ -132,7 +133,7 @@ exports.updatePassword = async (req, res, next) => {
 
             if (duplicatePassword){
                 return res.status(400).json({ error: 'Bad request' });
-            }
+            };
         };
 
         const hashedPassword = await hashPassword(password); 
@@ -156,5 +157,5 @@ exports.updatePassword = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
-}
+    };
+};

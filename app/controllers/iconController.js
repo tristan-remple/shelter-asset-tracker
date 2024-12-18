@@ -2,6 +2,7 @@ const { models, Sequelize } = require('../data');
 const fs = require("fs");
 const { upload, extractFields } = require('../util/upload');
 
+// Retrieves all icons
 exports.getAllIcons = async (req, res, next) => {
     try {
         const icons = await models.Icon.findAll({
@@ -25,7 +26,7 @@ exports.getAllIcons = async (req, res, next) => {
     }
 };
 
-
+// Retrieves a specific icon by its ID
 exports.getIconById = async (req, res, next) => {
     try {
         const iconId = req.params.id;
@@ -55,10 +56,12 @@ exports.getIconById = async (req, res, next) => {
     }
 };
 
+// Sends the icon data stored in the request object
 exports.sendIcon = async (req, res, next) => {
     return res.status(200).json(req.data);
 };
 
+// Creates a new icon
 exports.createNewIcon = async (req, res, next) => {
     try {
 
@@ -84,6 +87,7 @@ exports.createNewIcon = async (req, res, next) => {
     }
 };
 
+// Deletes multiple icons based on their IDs
 exports.deleteIcons = async (req, res, next) => {
     try {
         const iconIds = req.body;
@@ -123,5 +127,5 @@ exports.deleteIcons = async (req, res, next) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });
-    }
+    };
 };
