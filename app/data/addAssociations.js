@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
 
     // User to Comment
     user.hasMany(comment, { foreignKey: 'userid', onDelete: 'SET NULL' });
-    comment.belongsTo(u, { foreignKey: 'userid', onDelete: 'SET NULL' });
+    comment.belongsTo(user, { foreignKey: 'userid', onDelete: 'SET NULL' });
 
     // Item to Comment
     item.hasMany(comment, { foreignKey: 'itemid', onDelete: 'CASCADE' });
