@@ -2,49 +2,49 @@
     Define associations between Sequelize models.
  */
 module.exports = (sequelize) => {
-    const { Facility, FacilityAuth, Icon, Comment, Item, Template, Unit, UnitType, User } = sequelize.models;
+    const { facility, facilityauth, icon, comment, item, template, unit, unittype, user } = sequelize.models;
 
     // User to Facility
-    User.hasMany(Facility, { foreignKey: 'managerId', onDelete: 'RESTRICT' });
-    Facility.belongsTo(User, { foreignKey: 'managerId', onDelete: 'SET NULL' });
+    user.hasMany(facility, { foreignKey: 'managerid', onDelete: 'RESTRICT' });
+    facility.belongsTo(user, { foreignKey: 'managerid', onDelete: 'SET NULL' });
 
     // User to FacilityAuth
-    User.hasMany(FacilityAuth, { foreignKey: 'userId', onDelete: 'CASCADE' });
-    FacilityAuth.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+    user.hasMany(facilityauth, { foreignKey: 'userid', onDelete: 'CASCADE' });
+    facilityauth.belongsTo(user, { foreignKey: 'userid', onDelete: 'CASCADE' });
 
     // Facility to FacilityAuth
-    Facility.hasMany(FacilityAuth, { foreignKey: 'facilityId', onDelete: 'CASCADE' });
-    FacilityAuth.belongsTo(Facility, { foreignKey: 'facilityId', onDelete: 'CASCADE' });
+    facility.hasMany(facilityauth, { foreignKey: 'facilityid', onDelete: 'CASCADE' });
+    facilityauth.belongsTo(facility, { foreignKey: 'facilityid', onDelete: 'CASCADE' });
 
     // Facility to Unit
-    Facility.hasMany(Unit, { foreignKey: 'facilityId', onDelete: 'RESTRICT' });
-    Unit.belongsTo(Facility, { foreignKey: 'facilityId', onDelete: 'CASCADE' });
+    facility.hasMany(unit, { foreignKey: 'facilityid', onDelete: 'RESTRICT' });
+    unit.belongsTo(facility, { foreignKey: 'facilityid', onDelete: 'CASCADE' });
 
     // Unit to Item
-    Unit.hasMany(Item, { foreignKey: 'unitId', onDelete: 'RESTRICT' });
-    Item.belongsTo(Unit, { foreignKey: 'unitId', onDelete: 'CASCADE' });
+    unit.hasMany(item, { foreignKey: 'unitid', onDelete: 'RESTRICT' });
+    item.belongsTo(unit, { foreignKey: 'unitid', onDelete: 'CASCADE' });
 
     // Template to Item
-    Template.hasMany(Item, { foreignKey: 'templateId', onDelete: 'RESTRICT' });
-    Item.belongsTo(Template, { foreignKey: 'templateId', onDelete: 'SET NULL' });
+    template.hasMany(item, { foreignKey: 'templateid', onDelete: 'RESTRICT' });
+    item.belongsTo(template, { foreignKey: 'templateid', onDelete: 'SET NULL' });
 
     // User to Item (addedBy)
-    User.hasMany(Item, { foreignKey: 'addedBy', as: 'addedByUser', onDelete: 'SET NULL' });
-    Item.belongsTo(User, { foreignKey: 'addedBy', as: 'addedByUser', onDelete: 'SET NULL' });
+    user.hasMany(item, { foreignKey: 'addedby', as: 'addedbyuser', onDelete: 'SET NULL' });
+    item.belongsTo(user, { foreignKey: 'addedby', as: 'addedbyuser', onDelete: 'SET NULL' });
 
     // User to Comment
-    User.hasMany(Comment, { foreignKey: 'userId', onDelete: 'SET NULL' });
-    Comment.belongsTo(User, { foreignKey: 'userId', onDelete: 'SET NULL' });
+    user.hasMany(comment, { foreignKey: 'userid', onDelete: 'SET NULL' });
+    comment.belongsTo(u, { foreignKey: 'userid', onDelete: 'SET NULL' });
 
     // Item to Comment
-    Item.hasMany(Comment, { foreignKey: 'itemId', onDelete: 'CASCADE' });
-    Comment.belongsTo(Item, { foreignKey: 'itemId', onDelete: 'CASCADE' });
+    item.hasMany(comment, { foreignKey: 'itemid', onDelete: 'CASCADE' });
+    comment.belongsTo(item, { foreignKey: 'itemid', onDelete: 'CASCADE' });
 
     // Icon to Template
-    Icon.hasMany(Template, { foreignKey: 'icon', onDelete: 'SET NULL' });
-    Template.belongsTo(Icon, { foreignKey: 'icon', onDelete: 'SET NULL' });
+    icon.hasMany(template, { foreignKey: 'icon', onDelete: 'SET NULL' });
+    template.belongsTo(icon, { foreignKey: 'icon', onDelete: 'SET NULL' });
 
     //UnitType to Unit
-    UnitType.hasMany(Unit, { foreignKey: 'type', onDelete: 'SET NULL' });
-    Unit.belongsTo(UnitType, { foreignKey: 'type', onDelete: 'SET NULL' });
+    unittype.hasMany(unit, { foreignKey: 'type', onDelete: 'SET NULL' });
+    unit.belongsTo(unittype, { foreignKey: 'type', onDelete: 'SET NULL' });
 };

@@ -1,5 +1,5 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('FacilityAuth', {
+    db.define('facilityauth', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -18,7 +18,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: true,
         }
     }, {
-        tableName: 'FacilityAuths',
+        tableName: 'facilityauths',
         updatedAt: false
     });
 };

@@ -1,5 +1,5 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('User', {
+    db.define('user', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -31,6 +31,6 @@ module.exports = (db, { DataTypes }) => {
             allowNull: true
         }
     }, {
-        tableName: 'Users'
+        tableName: 'users'
     });
 };
