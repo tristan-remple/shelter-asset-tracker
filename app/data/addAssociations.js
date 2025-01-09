@@ -41,8 +41,8 @@ module.exports = (sequelize) => {
     comment.belongsTo(item, { foreignKey: 'itemid', onDelete: 'CASCADE' });
 
     // Icon to Template
-    icon.hasMany(template, { foreignKey: 'icon', onDelete: 'SET NULL' });
-    template.belongsTo(icon, { foreignKey: 'icon', onDelete: 'SET NULL' });
+    icon.hasMany(template, { foreignKey: 'iconid', onDelete: 'SET NULL' });
+    template.belongsTo(icon, { foreignKey: 'iconid', onDelete: 'SET NULL' });
 
     //UnitType to Unit
     unittype.hasMany(unit, { foreignKey: 'type', onDelete: 'SET NULL' });
