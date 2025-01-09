@@ -1,11 +1,11 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('Unit', {
+    db.define('unit', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        facilityId: {
+        facilityid: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -18,6 +18,6 @@ module.exports = (db, { DataTypes }) => {
             allowNull: true
         }
     }, {
-        tableName: 'Units'
+        tableName: 'units'
     });
 };

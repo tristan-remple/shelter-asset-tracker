@@ -5,15 +5,15 @@ module.exports = (db, { DataTypes }) => {
             primaryKey: true,
             autoIncrement: true
         },
-        userId: {
+        userid: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        facilityId: {
+        facilityid: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        authorizedBy: {
+        authorizedby: {
             type: DataTypes.INTEGER,
             allowNull: true,
         }

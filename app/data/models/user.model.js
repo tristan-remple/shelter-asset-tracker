@@ -18,15 +18,15 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        isAdmin: {
+        isadmin: {
             type: DataTypes.BOOLEAN,
             allowNull: false
         },
-        requestHash: {
+        requesthash: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        requestExpiry: {
+        requestexpiry: {
             type: DataTypes.DATE,
             allowNull: true
         }

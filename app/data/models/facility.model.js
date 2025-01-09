@@ -10,7 +10,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false,
             unique: true
         },
-        managerId: {
+        managerid: {
             type: DataTypes.INTEGER,
             allowNull: true
         }
