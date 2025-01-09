@@ -1,7 +1,5 @@
 /*
     Configuration for connecting to the database using Sequelize.
- *//*
-    Configuration for connecting to the database using Sequelize.
  */
 const Sequelize = require('sequelize');
 const dotenv = require('dotenv');
@@ -9,6 +7,8 @@ dotenv.config();
 
 // Determine the environment: default to development
 const isProduction = process.env.NODE_ENV === 'production';
+console.log(isProduction);
+console.log(process.env.DB_URL);
 
 const dbConfig = isProduction
     ? new Sequelize(process.env.DB_URL, {
