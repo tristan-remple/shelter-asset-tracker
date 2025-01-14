@@ -31,8 +31,8 @@ exports.createRequest = async (req, res, next) => {
             response = {
                 userId: user.id,
                 name: user.name,
-                isAdmin: user.isAdmin,
-                created: user.createdAt,
+                isAdmin: user.isadmin,
+                created: user.createdat,
                 success: true,
                 emailSent: emailResponse
             };
@@ -52,11 +52,11 @@ exports.resendRequest = async (req, res, next) => {
     const { email } = req.body;
 
     try {
-        const user = await models.User.findOne({
+        const user = await models.user.findOne({
             attributes: [
                 'name',
-                'requestHash',
-                'requestExpiry',
+                'requesthash',
+                'requestexpiry',
             ],
             where: { email: email }
         });
@@ -97,19 +97,19 @@ exports.updatePassword = async (req, res, next) => {
     };
 
     try {
-        const user = await models.User.findOne({
+        const user = await models.user.findOne({
             attributes: [
                 'id',
                 'email',
                 'name',
                 'password',
-                'isAdmin',
-                'requestHash',
-                'requestExpiry',
-                'createdAt',
-                'updatedAt'
+                'isadmin',
+                'requesthash',
+                'requestexpiry',
+                'createdat',
+                'updatedat'
             ],
-            where: { requestHash: hash, email: email }
+            where: { requesthash: hash, email: email }
         });
 
         if (!user) {
@@ -117,10 +117,10 @@ exports.updatePassword = async (req, res, next) => {
         };
 
         // if the link is expired, wipe the reset request
-        if (new Date().getTime() > user.requestExpiry) {
+        if (new Date().getTime() > user.requestexpiry) {
             user.set({
-                requestHash: null,
-                requestExpiry: null
+                requesthash: null,
+                requestexpiry: null
             });
     
             user.save();
@@ -139,8 +139,8 @@ exports.updatePassword = async (req, res, next) => {
         const hashedPassword = await hashPassword(password); 
         user.set({
             password: hashedPassword,
-            requestHash: null,
-            requestExpiry: null
+            requesthash: null,
+            requesthxpiry: null
         });
 
         user.save();

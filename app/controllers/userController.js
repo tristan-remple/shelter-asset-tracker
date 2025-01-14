@@ -169,7 +169,7 @@ exports.setAdmin = async (req, res, next) => {
         };
 
         user.set({
-            isAdmin: isAdmin
+            isadmin: isAdmin
         });
 
         await user.save();
@@ -202,12 +202,12 @@ exports.sendUser = async (req, res, next) => {
             id: user.id,
             email: user.email,
             name: user.name,
-            isAdmin: user.isAdmin,
-            created: user.createdAt,
-            updated: user.updatedAt,
-            facilities: user.FacilityAuths.map(facilityAuth => ({
-                facilityId: facilityAuth.Facility.id,
-                name: facilityAuth.Facility.name
+            isAdmin: user.isadmin,
+            created: user.createdat,
+            updated: user.updatedat,
+            facilities: user.facilityauths.map(facilityAuth => ({
+                facilityId: facilityAuth.facility.id,
+                name: facilityAuth.facility.name
             }))
         };
 

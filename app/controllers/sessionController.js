@@ -11,7 +11,7 @@ exports.login = async (req, res, next) => {
     };
 
     try {
-        const user = await models.User.findOne({ where: { email } });
+        const user = await models.user.findOne({ where: { email } });
 
         if (!user.password) {
             return res.status(401).json({ error: 'Invalid login.'});
@@ -23,9 +23,9 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid login.' });
         };
 
-        const facilityAuths = await models.FacilityAuth.findAll({
+        const facilityAuths = await models.facilityauth.findAll({
             where: { userId: user.id },
-            attributes: ['facilityId']
+            attributes: ['facilityid']
         });
 
         const facilityIds = facilityAuths.map(auth => auth.facilityId);

@@ -9,20 +9,20 @@ exports.updateIsAdmin = async (req, res, next) => {
     };
 
     try {
-        const user = await models.User.findOne({ where: { id: userId } });
+        const user = await models.user.findOne({ where: { id: userId } });
         if (!user) {
             return res.status(404).json({ message: 'User not found.' })
         };
 
-        user.set({ isAdmin: isAdmin });
+        user.set({ isadmin: isAdmin });
 
         const response = {
             userId: user.id,
-            isAdmin: user.isAdmin,
+            isAdmin: user.isadmin,
             success: true
         };
 
-        await user.save({ isAdmin: isAdmin });
+        await user.save({ isadmin: isAdmin });
         return res.status(200).json(response);
 
     } catch (err) {
@@ -40,28 +40,28 @@ exports.updateAuthorization = async (req, res, next) => {
     };
 
     try {
-        const facilities = await models.FacilityAuth.findAll({
+        const facilities = await models.facilityauth.findAll({
             attributes: ['userId', 'facilityId'],
             where: { userId: userId }
         });
 
-        const currentAuths = facilities.map(facility => facility.facilityId);
+        const currentAuths = facilities.map(facility => facility.facilityid);
         const addedAuths = facilityAuths.filter(facilityId => !currentAuths.includes(facilityId));
         const removedAuths = currentAuths.filter(facilityId => !facilityAuths.includes(facilityId));
 
         for (const facilityId of addedAuths) {
-            await models.FacilityAuth.create({
-                userId: userId,
-                facilityId: facilityId,
-                authorizedBy: 1
+            await models.facilityauth.create({
+                userid: userId,
+                facilityid: facilityId,
+                authorizedby: 1
             });
         };
 
         for (const facilityId of removedAuths) {
-            await models.FacilityAuth.destroy({
+            await models.facilityauth.destroy({
                 where: {
-                    userId: userId,
-                    facilityId: facilityId
+                    userid: userId,
+                    facilityid: facilityId
                 }
             });
         };

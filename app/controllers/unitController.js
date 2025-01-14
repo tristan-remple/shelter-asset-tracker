@@ -5,16 +5,16 @@ exports.getUnitById = async (req, res, next) => {
     try {
         const unitId = req.params.id;
 
-        const unit = await models.Unit.findOne({
+        const unit = await models.unit.findOne({
             attributes: [
                 'id',
                 'name',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: unitId },
             include: [{
-                model: models.Item,
+                model: models.item,
                 attributes: [
                     'id',
                     'name',
@@ -22,20 +22,20 @@ exports.getUnitById = async (req, res, next) => {
                     'eol'
                 ],
                 include: {
-                    model: models.Template,
+                    model: models.template,
                     attributes: [
                         'id',
                         'name',
-                        'singleResident'
+                        'singleresident'
                     ],
                     paranoid: false
                 },
                 required: false
             }, {
-                model: models.Facility,
+                model: models.facility,
                 attributes: ['id', 'name']
             }, {
-                model: models.UnitType,
+                model: models.unittype,
                 attributes: ['name'],
                 paranoid: false
             }],
@@ -48,16 +48,16 @@ exports.getUnitById = async (req, res, next) => {
 
         const currentDate = new Date();
 
-        if (unit.Items) {
-            unit.Items.forEach(async (item) => {
+        if (unit.items) {
+            unit.items.forEach(async (item) => {
                 if (item.status === 'ok' && item.eol && currentDate > new Date(item.eol)) {
-                    await models.Item.update({ status: 'inspect' }, { where: { id: item.id } });
+                    await models.item.update({ status: 'inspect' }, { where: { id: item.id } });
                 }
             });
         };
 
         req.data = unit;
-        req.facility = unit.Facility.id;
+        req.facility = unit.facility.id;
         next();
 
     } catch (err) {
@@ -77,22 +77,22 @@ exports.sendUnit = async (req, res, next) => {
     const unitListItems = {
         id: unit.id,
         name: unit.name,
-        type: unit.UnitType.name,
+        type: unit.unittype.name,
         facility: {
-            id: unit.Facility.id,
-            name: unit.Facility.name
+            id: unit.facility.id,
+            name: unit.facility.name
         },
-        items: unit.Items.map(item => ({
+        items: unit.items.map(item => ({
             itemId: item.id,
             itemName: item.name,
             template: {
-                id: item.Template.id,
-                name: item.Template.name
+                id: item.template.id,
+                name: item.template.name
             },
             status: item.status
         })),
-        createdAt: unit.createdAt,
-        updatedAt: unit.updatedAt
+        createdAt: unit.createdat,
+        updatedAt: unit.updatedat
     };
 
     return res.status(200).json(unitListItems);
@@ -103,17 +103,17 @@ exports.createNewUnit = async (req, res, next) => {
     try {
         const { facilityId, name, type } = req.body;
 
-        const newUnit = await models.Unit.create({
+        const newUnit = await models.unit.create({
             name: name,
-            facilityId: facilityId,
+            facilityid: facilityId,
             type: type
         });
 
         const createResponse = {
             unitId: newUnit.id,
-            facility: newUnit.facilityId,
+            facility: newUnit.facilityid,
             type: newUnit.type,
-            createdAt: newUnit.createdAt,
+            createdAt: newUnit.createdat,
             success: true
         };
 
@@ -131,14 +131,14 @@ exports.updateUnit = async (req, res, next) => {
         const unitId = req.params.id;
         const { facilityId, name, type } = req.body;
 
-        const unit = await models.Unit.findByPk(unitId);
+        const unit = await models.unit.findByPk(unitId);
 
         if (!unit) {
             return res.status(404).json({ error: 'Unit not found.' });
         };
 
         unit.set({
-            facilityId: facilityId,
+            facilityid: facilityId,
             name: name,
             type: type
         });
@@ -165,7 +165,7 @@ exports.deleteUnit = async (req, res, next) => {
     try {
         const unitId = req.params.id;
 
-        const unit = await models.Unit.findByPk(unitId);
+        const unit = await models.unit.findByPk(unitId);
 
         if (!unit) {
             return res.status(404).json({ error: 'Unit not found.' });
@@ -176,8 +176,8 @@ exports.deleteUnit = async (req, res, next) => {
         const deleteResponse = {
             unitId: deletedUnit.id,
             name: deletedUnit.name,
-            facilityId: deletedUnit.facilityId,
-            deletedAt: deletedUnit.deletedAt,
+            facilityId: deletedUnit.facilityid,
+            deletedAt: deletedUnit.deletedat,
             success: true
         };
 
@@ -191,10 +191,10 @@ exports.deleteUnit = async (req, res, next) => {
 // Retrieves previously deleted units
 exports.getDeleted = async (req, res, next) => {
     try {
-        const deletedUnits = await models.Unit.findAll({
+        const deletedUnits = await models.unit.findAll({
             where: Sequelize.where(Sequelize.col('Unit.deletedAt'), 'IS NOT', null),
             include: {
-                model: models.Facility,
+                model: models.facility,
                 attributes: ['name'],
                 as: 'facility'
             },
@@ -214,10 +214,10 @@ exports.restoreDeleted = async (req, res, next) => {
     try {
         const unitId = req.params.id;
 
-        const deletedUnit = await models.Unit.findOne({
+        const deletedUnit = await models.unit.findOne({
             where: { id: unitId },
             include: {
-                model: models.Facility,
+                model: models.facility,
                 attributes: ['name']
             },
             paranoid: false
@@ -250,14 +250,14 @@ exports.flipUnit = async (req, res, next) => {
         const inspectItems = [];
         const discardItems = [];
 
-        if (unit.Items) {
-            unit.Items.forEach(async (item) => {
-                if (item.Template.singleResident === true) {
+        if (unit.items) {
+            unit.items.forEach(async (item) => {
+                if (item.template.singleresident === true) {
                     discardItems.push(item.id);
-                    await models.Item.update({ status: 'discard' }, { where: { id: item.id } });
+                    await models.item.update({ status: 'discard' }, { where: { id: item.id } });
                 } else if (item.status === 'ok') {
                     inspectItems.push(item.id);
-                    await models.Item.update({ status: 'inspect' }, { where: { id: item.id } });
+                    await models.item.update({ status: 'inspect' }, { where: { id: item.id } });
                 }
             });
         };

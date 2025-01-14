@@ -5,7 +5,7 @@ const { calculateCurrentValue } = require('../util/calc');
 const getFinancial = async (facility) => {
     try {
 
-        const depreciationRate = await models.Setting.findOne({
+        const depreciationRate = await models.setting.findOne({
             attributes: ['value'],
             where: { name: 'depreciationRate' }
         });
@@ -17,22 +17,22 @@ const getFinancial = async (facility) => {
                 'vendor',
                 'invoice',
                 'donated',
-                'initialValue',
+                'initialvalue',
                 'eol',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             include: [
                 {
-                    model: models.Unit,
+                    model: models.unit,
                     attributes: ['id', 'name'],
                     include: {
-                        model: models.Facility,
+                        model: models.facility,
                         attributes: ['id', 'name']
                     }
                 },
                 {
-                    model: models.Template,
+                    model: models.template,
                     attributes: ['name']
                 }
             ]
@@ -42,26 +42,26 @@ const getFinancial = async (facility) => {
             queryOptions.include[0].where = { id: facility }
         };
 
-        const items = await models.Item.findAll(queryOptions);
+        const items = await models.item.findAll(queryOptions);
 
         const report = items.map(item => {
-            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
 
             return {
                 id: item.id,
                 name: item.name,
-                facilityId: item.Unit.Facility.id,
-                facilityName: item.Unit.Facility.name,
-                unitId: item.Unit.id,
-                unitName: item.Unit.name,
-                templateName: item.Template.name,
+                facilityId: item.unit.facility.id,
+                facilityName: item.unit.facility.name,
+                unitId: item.unit.id,
+                unitName: item.unit.name,
+                templateName: item.template.name,
                 vendor: item.vendor,
                 invoice: item.invoice,
                 donated: item.donated,
                 currentValue: currentValue,
                 eol: item.eol,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                createdAt: item.createdat,
+                updatedAt: item.updatedat
             };
         });
 
@@ -77,7 +77,7 @@ const getFinancial = async (facility) => {
 const getInventory = async (facility) => {
     try {
 
-        const depreciationRate = await models.Setting.findOne({
+        const depreciationRate = await models.setting.findOne({
             attributes: ['value'],
             where: { name: 'depreciationRate' }
         });
@@ -90,38 +90,38 @@ const getInventory = async (facility) => {
                 'invoice',
                 'status',
                 'donated',
-                'initialValue',
+                'initialvalue',
                 'eol',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             include: [
                 {
-                    model: models.Unit,
+                    model: models.unit,
                     attributes: ['id', 'name'],
                     include: {
-                        model: models.Facility,
+                        model: models.facility,
                         attributes: ['id', 'name']
                     }
                 },
                 {
-                    model: models.User,
+                    model: models.user,
                     as: 'addedByUser',
                     attributes: ['name']
                 },
                 {
-                    model: models.Comment,
+                    model: models.comment,
                     attributes: [
                         'userId',
-                        'createdAt',
+                        'createdat',
                         'comment'
                     ],
                     include: {
-                        model: models.User,
+                        model: models.user,
                         attributes: ['name']
                     },
                     required: false,
-                    order: [['createdAt', 'DESC']],
+                    order: [['createdat', 'DESC']],
                     limit: 1
                 }
             ]
@@ -131,31 +131,31 @@ const getInventory = async (facility) => {
             queryOptions.include[0].where = { id: facility };
         };
 
-        const items = await models.Item.findAll(queryOptions);
+        const items = await models.item.findAll(queryOptions);
 
         const report = items.map(item => {
-            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
-            const lastComment = item.Comments[0] || {};
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+            const lastComment = item.comments[0] || {};
 
             return {
                 id: item.id,
                 name: item.name,
-                facilityId: item.Unit.Facility.id,
-                facilityName: item.Unit.Facility.name,
-                unitId: item.Unit.id,
-                unitName: item.Unit.name,
+                facilityId: item.unit.facility.id,
+                facilityName: item.unit.facility.name,
+                unitId: item.unit.id,
+                unitName: item.unit.name,
                 vendor: item.vendor,
                 invoice: item.invoice,
                 addedBy: item.addedByUser.name,
                 status: item.status,
-                inspectedBy: lastComment.User ? lastComment.User.name : null,
-                lastComment: lastComment.createdAt ? lastComment.createdAt : null,
+                inspectedBy: lastComment.user ? lastComment.user.name : null,
+                lastComment: lastComment.createdat ? lastComment.createdat : null,
                 comment: lastComment.comment ? lastComment.comment : null,
                 eol: item.eol,
                 currentValue: currentValue,
                 donated: item.donated,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                createdAt: item.createdat,
+                updatedAt: item.updatedat
 
             };
         });
@@ -170,7 +170,7 @@ const getInventory = async (facility) => {
 // Retrieves data for EoL report
 const getEol = async (facility, startDate, endDate) => {
     try {
-        const depreciationRate = await models.Setting.findOne({
+        const depreciationRate = await models.setting.findOne({
             attributes: ['value'],
             where: { name: 'depreciationRate' }
         });
@@ -181,18 +181,18 @@ const getEol = async (facility, startDate, endDate) => {
                 'name',
                 'vendor',
                 'invoice',
-                'initialValue',
+                'initialvalue',
                 'eol',
                 'status',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             include: [
                 {
-                    model: models.Unit,
+                    model: models.unit,
                     attributes: ['id', 'name'],
                     include: {
-                        model: models.Facility,
+                        model: models.facility,
                         attributes: ['id', 'name']
                     }
                 }
@@ -203,7 +203,7 @@ const getEol = async (facility, startDate, endDate) => {
             queryOptions.include[0].where = { id: facility };
         };
 
-        const items = await models.Item.findAll(queryOptions);
+        const items = await models.item.findAll(queryOptions);
 
         const eolItems = items.filter(item => {
             const itemEol = new Date(item.eol);
@@ -211,22 +211,22 @@ const getEol = async (facility, startDate, endDate) => {
         });
 
         const report = eolItems.map(item => {
-            const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
             return {
                 id: item.id,
                 name: item.name,
-                facilityId: item.Unit.Facility.id,
-                facilityName: item.Unit.Facility.name,
-                unitId: item.Unit.id,
-                unitName: item.Unit.name,
+                facilityId: item.unit.facility.id,
+                facilityName: item.unit.facility.name,
+                unitId: item.unit.id,
+                unitName: item.unit.name,
                 vendor: item.vendor,
                 invoice: item.invoice,
-                initalValue: item.initialValue,
+                initalValue: item.initialvalue,
                 currentValue: currentValue,
                 eol: item.eol,
                 status: item.status,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                createdAt: item.createdat,
+                updatedAt: item.updatedat
             };
         });
 
@@ -241,31 +241,31 @@ const getEol = async (facility, startDate, endDate) => {
 // Retrieves data for dashboard summary
 exports.getSummary = async (req, res, next) => {
     try {
-        const data = await models.Facility.findAll({
+        const data = await models.facility.findAll({
             attributes: ['id', 'name'],
             include: [
                 {
-                    model: models.Unit,
+                    model: models.unit,
                     attributes: ['id', 'name'],
                     include: {
-                        model: models.Item,
+                        model: models.item,
                         attributes: [
                             'id',
                             'name',
-                            'templateId',
-                            'initialValue',
+                            'templateid',
+                            'initialvalue',
                             'donated',
                             'vendor',
                             'eol',
                             'status',
-                            'createdAt',
-                            'updatedAt'
+                            'createdat',
+                            'updatedat'
                         ],
                         include: [{
-                            model: models.Template,
+                            model: models.template,
                             attributes: ['id', 'name'],
                             include: {
-                                model: models.Icon,
+                                model: models.icon,
                                 attributes: [
                                     'id',
                                     'src',
@@ -274,19 +274,19 @@ exports.getSummary = async (req, res, next) => {
                                 ]
                             }
                         }, {
-                            model: models.User,
+                            model: models.user,
                             attributes: ['id', 'name'],
                             as: 'addedByUser',
                             paranoid: false
                         }, {
-                            model: models.Comment,
+                            model: models.comment,
                             attributes: [
                                 'id',
                                 'comment',
-                                'createdAt'
+                                'createdat'
                             ],
                             include: {
-                                model: models.User,
+                                model: models.user,
                                 attributes: ['id', 'name'],
                                 paranoid: false
                             }
@@ -296,7 +296,7 @@ exports.getSummary = async (req, res, next) => {
             ]
         });
 
-        const depreciationRate = await models.Setting.findOne({
+        const depreciationRate = await models.setting.findOne({
             attributes: ['value'],
             where: { name: 'depreciationRate' }
         });
@@ -305,44 +305,44 @@ exports.getSummary = async (req, res, next) => {
             let totalValue = 0;
             const itemCount = {};
 
-            facility.Units.forEach(unit => {
-                unit.Items.forEach(item => {
-                    totalValue += +calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+            facility.units.forEach(unit => {
+                unit.items.forEach(item => {
+                    totalValue += +calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
 
-                    if (!itemCount[item.templateId]) {
-                        itemCount[item.templateId] = {
-                            id: item.templateId,
-                            name: item.Template.name,
+                    if (!itemCount[item.templateid]) {
+                        itemCount[item.templateid] = {
+                            id: item.templateid,
+                            name: item.template.name,
                             icon: {
-                                id: item.Template.Icon.id,
-                                src: item.Template.Icon.src,
-                                name: item.Template.Icon.name,
-                                alt: item.Template.Icon.alt
+                                id: item.template.icon.id,
+                                src: item.template.icon.src,
+                                name: item.template.icon.name,
+                                alt: item.template.icon.alt
                             },
                             count: 1
                         };
                     } else {
-                        itemCount[item.templateId].count++;
+                        itemCount[item.templateid].count++;
                     };
                 });
             });
 
-            const units = facility.Units.map(unit => ({
+            const units = facility.units.map(unit => ({
                 id: unit.id,
                 name: unit.name,
-                items: unit.Items.map(item => ({
+                items: unit.items.map(item => ({
                     id: item.id,
                     name: item.name,
                     invoice: item.invoice,
                     vendor: item.vendor,
                     template: {
-                        id: item.Template.id,
-                        name: item.Template.name,
+                        id: item.template.id,
+                        name: item.template.name,
                         icon: {
-                            id: item.Template.Icon.id,
-                            src: item.Template.Icon.src,
-                            name: item.Template.Icon.name,
-                            alt: item.Template.Icon.alt
+                            id: item.template.icon.id,
+                            src: item.template.icon.src,
+                            name: item.template.icon.name,
+                            alt: item.template.icon.alt
                         }
                     },
                     eol: item.eol,
@@ -351,22 +351,22 @@ exports.getSummary = async (req, res, next) => {
                         id: item.addedByUser.id,
                         name: item.addedByUser.name
                     },
-                    commentRecord: item.Comments ? item.Comments.map(comment => ({
+                    commentRecord: item.comments ? item.comments.map(comment => ({
                         id: comment.id,
                         inspectedBy: {
-                            id: comment.User.id,
-                            name: comment.User.name
+                            id: comment.user.id,
+                            name: comment.user.name
                         },
                         comment: comment.comment,
-                        createdAt: comment.createdAt
+                        createdAt: comment.createdat
                     })) : [],
                     value: {
-                        initialValue: item.initialValue,
+                        initialValue: item.initialvalue,
                         donated: item.donated,
-                        currentValue: calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate),
+                        currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
                     },
-                    createdAt: item.createdAt,
-                    updatedAt: item.updatedAt
+                    createdAt: item.createdat,
+                    updatedAt: item.updatedat
                 }))
             }));
 

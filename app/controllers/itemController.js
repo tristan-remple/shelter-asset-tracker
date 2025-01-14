@@ -246,15 +246,15 @@ exports.updateItem = async (req, res, next) => {
 
 // Verifies the facility associated with a unit
 exports.checkFacility = async (req, res, next) => {
-    const facility = await models.Unit.findOne({
+    const facility = await models.unit.findOne({
         where: { id: req.body.unitId },
         include: {
-            model: models.Facility,
+            model: models.facility,
             attributes: ['id']
         }
     });
 
-    req.facility = facility.Facility.id;
+    req.facility = facility.facility.id;
     next();
 };
 
@@ -265,9 +265,9 @@ exports.deleteItem = async (req, res, next) => {
         const deletedItem = await item.destroy();
 
         const deleteResponse = {
-            itemId: deletedItem.id,
+            itemid: deletedItem.id,
             name: deletedItem.name,
-            deleted: deletedItem.deletedAt,
+            deleted: deletedItem.deletedat,
             success: true
         };
 
@@ -282,13 +282,13 @@ exports.deleteItem = async (req, res, next) => {
 // Retrieves deleted items
 exports.getDeleted = async (req, res, next) => {
     try {
-        const deletedItems = await models.Item.findAll({
+        const deletedItems = await models.item.findAll({
             where: Sequelize.where(Sequelize.col('Item.deletedAt'), 'IS NOT', null),
             include: {
-                model: models.Unit,
+                model: models.unit,
                 attributes: ['name'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['name']
                 }
             },
@@ -308,17 +308,17 @@ exports.restoreDeleted = async (req, res, next) => {
     try {
         const itemId = req.params.id;
 
-        const deletedItem = await models.Item.findOne({
+        const deletedItem = await models.item.findOne({
             where: { id: itemId },
             include: [{
-                model: models.Unit,
+                model: models.unit,
                 attributes: ['name'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['name']
                 }
             }, {
-                model: models.Template,
+                model: models.template,
                 attributes: ['name'],
                 paranoid: false
             }],
