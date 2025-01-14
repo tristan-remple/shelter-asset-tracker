@@ -6,10 +6,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const dbConfig = new Sequelize(
-    process.env.DATABASE_URL,
+    process.env.DB_URL,
     {   
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
         dialect: 'postgres',
         dialectOptions: {
             ssl: {
@@ -21,11 +19,11 @@ const dbConfig = new Sequelize(
             timestamps: true,   // Adds createdAt and updatedAt fields for all models
         },
         pool: {
-            max: 5,
+            max: 20,
             min: 0,
             acquire: 30000,
             idle: 10000
-        }
+        },
     }
 );
 
