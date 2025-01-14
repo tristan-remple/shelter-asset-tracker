@@ -28,12 +28,12 @@ exports.login = async (req, res, next) => {
             attributes: ['facilityid']
         });
 
-        const facilityIds = facilityAuths.map(auth => auth.facilityId);
+        const facilityIds = facilityAuths.map(auth => auth.facilityid);
 
-        const token = await createToken(user.id, user.isAdmin, facilityIds);
+        const token = await createToken(user.id, user.isadmin, facilityIds);
         const userInfo = {
             userId: user.id,
-            isAdmin: user.isAdmin,
+            isAdmin: user.isadmin,
             facilityAuths: facilityIds
         };
 
