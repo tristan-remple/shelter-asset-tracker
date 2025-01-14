@@ -41,8 +41,8 @@ exports.getFacilityById = async (req, res, next) => {
             attributes: [
                 'id',
                 'name',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             where: { id: facilityId },
             include: [{
@@ -84,8 +84,8 @@ exports.getFacilityById = async (req, res, next) => {
                 inspectCount: unit.items.filter(item => item.status === 'inspect').length,
                 discardCount: unit.items.filter(item => item.status === 'discard').length
             })),
-            created: facility.createdat,
-            updated: facility.updatedat,
+            created: facility.createdAt,
+            updated: facility.updatedAt,
         };
 
         req.data = facilityDetails;
@@ -126,7 +126,7 @@ exports.createNewFacility = async (req, res, next) => {
         const createResponse = {
             facilityId: newFacility.id,
             name: newFacility.name,
-            createdAt: newFacility.createdat,
+            createdAt: newFacility.createdAt,
             success: true
         };
 
@@ -191,7 +191,7 @@ exports.deleteFacility = async (req, res, next) => {
         const deleteResponse = {
             facilityId: deletedFacility.id,
             name: deletedFacility.name,
-            deleted: deletedFacility.deletedat,
+            deleted: deletedFacility.deletedAt,
             success: true
         };
 

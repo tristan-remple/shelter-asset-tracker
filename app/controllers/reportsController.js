@@ -19,8 +19,8 @@ const getFinancial = async (facility) => {
                 'donated',
                 'initialvalue',
                 'eol',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             include: [
                 {
@@ -45,7 +45,7 @@ const getFinancial = async (facility) => {
         const items = await models.item.findAll(queryOptions);
 
         const report = items.map(item => {
-            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
 
             return {
                 id: item.id,
@@ -60,8 +60,8 @@ const getFinancial = async (facility) => {
                 donated: item.donated,
                 currentValue: currentValue,
                 eol: item.eol,
-                createdAt: item.createdat,
-                updatedAt: item.updatedat
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
             };
         });
 
@@ -92,8 +92,8 @@ const getInventory = async (facility) => {
                 'donated',
                 'initialvalue',
                 'eol',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             include: [
                 {
@@ -113,7 +113,7 @@ const getInventory = async (facility) => {
                     model: models.comment,
                     attributes: [
                         'userId',
-                        'createdat',
+                        'createdAt',
                         'comment'
                     ],
                     include: {
@@ -121,7 +121,7 @@ const getInventory = async (facility) => {
                         attributes: ['name']
                     },
                     required: false,
-                    order: [['createdat', 'DESC']],
+                    order: [['createdAt', 'DESC']],
                     limit: 1
                 }
             ]
@@ -134,7 +134,7 @@ const getInventory = async (facility) => {
         const items = await models.item.findAll(queryOptions);
 
         const report = items.map(item => {
-            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
             const lastComment = item.comments[0] || {};
 
             return {
@@ -149,13 +149,13 @@ const getInventory = async (facility) => {
                 addedBy: item.addedByUser.name,
                 status: item.status,
                 inspectedBy: lastComment.user ? lastComment.user.name : null,
-                lastComment: lastComment.createdat ? lastComment.createdat : null,
+                lastComment: lastComment.createdAt ? lastComment.createdAt : null,
                 comment: lastComment.comment ? lastComment.comment : null,
                 eol: item.eol,
                 currentValue: currentValue,
                 donated: item.donated,
-                createdAt: item.createdat,
-                updatedAt: item.updatedat
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
 
             };
         });
@@ -184,8 +184,8 @@ const getEol = async (facility, startDate, endDate) => {
                 'initialvalue',
                 'eol',
                 'status',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             include: [
                 {
@@ -211,7 +211,7 @@ const getEol = async (facility, startDate, endDate) => {
         });
 
         const report = eolItems.map(item => {
-            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
             return {
                 id: item.id,
                 name: item.name,
@@ -225,8 +225,8 @@ const getEol = async (facility, startDate, endDate) => {
                 currentValue: currentValue,
                 eol: item.eol,
                 status: item.status,
-                createdAt: item.createdat,
-                updatedAt: item.updatedat
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
             };
         });
 
@@ -258,8 +258,8 @@ exports.getSummary = async (req, res, next) => {
                             'vendor',
                             'eol',
                             'status',
-                            'createdat',
-                            'updatedat'
+                            'createdAt',
+                            'updatedAt'
                         ],
                         include: [{
                             model: models.template,
@@ -283,7 +283,7 @@ exports.getSummary = async (req, res, next) => {
                             attributes: [
                                 'id',
                                 'comment',
-                                'createdat'
+                                'createdAt'
                             ],
                             include: {
                                 model: models.user,
@@ -307,7 +307,7 @@ exports.getSummary = async (req, res, next) => {
 
             facility.units.forEach(unit => {
                 unit.items.forEach(item => {
-                    totalValue += +calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+                    totalValue += +calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
 
                     if (!itemCount[item.templateid]) {
                         itemCount[item.templateid] = {
@@ -358,15 +358,15 @@ exports.getSummary = async (req, res, next) => {
                             name: comment.user.name
                         },
                         comment: comment.comment,
-                        createdAt: comment.createdat
+                        createdAt: comment.createdAt
                     })) : [],
                     value: {
                         initialValue: item.initialvalue,
                         donated: item.donated,
-                        currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
+                        currentValue: calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate),
                     },
-                    createdAt: item.createdat,
-                    updatedAt: item.updatedat
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt
                 }))
             }));
 

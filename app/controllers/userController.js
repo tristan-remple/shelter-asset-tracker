@@ -53,7 +53,7 @@ exports.getAllUsers = async (req, res, next) => {
                 'id',
                 'email',
                 'name',
-                'createdat'
+                'createdAt'
             ],
             include: {
                 model: models.facilityauth,
@@ -64,7 +64,7 @@ exports.getAllUsers = async (req, res, next) => {
                 },
                 required: false
             },
-            order: [['createdat', 'ASC']]
+            order: [['createdAt', 'ASC']]
         });
 
         if (!users) {
@@ -79,7 +79,7 @@ exports.getAllUsers = async (req, res, next) => {
                 facilityId: facilityAuth.facility.id,
                 name: facilityAuth.facility.name
             })),
-            createdAt: user.createdat
+            createdAt: user.createdAt
         }));
 
         res.status(200).json(usersInfo);
@@ -103,8 +103,8 @@ exports.getUserById = async (req, res, next) => {
                 'isadmin',
                 'requesthash',
                 'requestexpiry',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             where: { id: userId },
             include: {
@@ -203,8 +203,8 @@ exports.sendUser = async (req, res, next) => {
             email: user.email,
             name: user.name,
             isAdmin: user.isadmin,
-            created: user.createdat,
-            updated: user.updatedat,
+            created: user.createdAt,
+            updated: user.updatedAt,
             facilities: user.facilityauths.map(facilityAuth => ({
                 facilityId: facilityAuth.facility.id,
                 name: facilityAuth.facility.name

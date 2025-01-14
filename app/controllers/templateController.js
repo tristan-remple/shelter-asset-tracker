@@ -46,8 +46,8 @@ exports.getTemplateById = async (req, res, next) => {
                 'defaultvalue',
                 'defaultUsefullife',
                 'singleresident',
-                'createdat',
-                'updatedat',
+                'createdAt',
+                'updatedAt',
                 [Sequelize.fn('COUNT', Sequelize.col('Items.id')), 'itemCount']],
             where: { id: templateId },
             include: [{
@@ -106,7 +106,7 @@ exports.createNewTemplate = async (req, res, next) => {
             defaultUsefulLife: newTemplate.defaultusefullife,
             icon: newTemplate.icon,
             singleResident: newTemplate.singleresident,
-            createdAt: newTemplate.createdat,
+            createdAt: newTemplate.createdAt,
             success: true
         };
 

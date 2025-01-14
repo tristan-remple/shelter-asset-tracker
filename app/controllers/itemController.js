@@ -267,7 +267,7 @@ exports.deleteItem = async (req, res, next) => {
         const deleteResponse = {
             itemid: deletedItem.id,
             name: deletedItem.name,
-            deleted: deletedItem.deletedat,
+            deleted: deletedItem.deletedAt,
             success: true
         };
 

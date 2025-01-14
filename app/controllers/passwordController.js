@@ -32,7 +32,7 @@ exports.createRequest = async (req, res, next) => {
                 userId: user.id,
                 name: user.name,
                 isAdmin: user.isadmin,
-                created: user.createdat,
+                created: user.createdAt,
                 success: true,
                 emailSent: emailResponse
             };
@@ -106,8 +106,8 @@ exports.updatePassword = async (req, res, next) => {
                 'isadmin',
                 'requesthash',
                 'requestexpiry',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             where: { requesthash: hash, email: email }
         });

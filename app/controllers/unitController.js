@@ -9,8 +9,8 @@ exports.getUnitById = async (req, res, next) => {
             attributes: [
                 'id',
                 'name',
-                'createdat',
-                'updatedat'
+                'createdAt',
+                'updatedAt'
             ],
             where: { id: unitId },
             include: [{
@@ -91,8 +91,8 @@ exports.sendUnit = async (req, res, next) => {
             },
             status: item.status
         })),
-        createdAt: unit.createdat,
-        updatedAt: unit.updatedat
+        createdAt: unit.createdAt,
+        updatedAt: unit.updatedAt
     };
 
     return res.status(200).json(unitListItems);
@@ -113,7 +113,7 @@ exports.createNewUnit = async (req, res, next) => {
             unitId: newUnit.id,
             facility: newUnit.facilityid,
             type: newUnit.type,
-            createdAt: newUnit.createdat,
+            createdAt: newUnit.createdAt,
             success: true
         };
 
