@@ -6,9 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const dbConfig = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
+    process.env.DATABASE_URL,
     {   
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
@@ -16,7 +14,6 @@ const dbConfig = new Sequelize(
         dialectOptions: {
             ssl: {
                 require: true, // Render requires SSL
-                rejectUnauthorized: false, // Allow self-signed certificates
             },
         },
         define: {
