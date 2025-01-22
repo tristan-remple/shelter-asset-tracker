@@ -310,9 +310,9 @@ exports.getSummary = async (req, res, next) => {
                 unit.items.forEach(item => {
                     totalValue += +calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
 
-                    if (!itemCount[item.templateid]) {
-                        itemCount[item.templateid] = {
-                            id: item.templateid,
+                    if (!itemCount[item.template.id]) {
+                        itemCount[item.template.id] = {
+                            id: item.template.id,
                             name: item.template.name,
                             icon: {
                                 id: item.template.iconAssociation.id,
@@ -323,7 +323,7 @@ exports.getSummary = async (req, res, next) => {
                             count: 1
                         };
                     } else {
-                        itemCount[item.templateid].count++;
+                        itemCount[item.template.id].count++;
                     };
                 });
             });
