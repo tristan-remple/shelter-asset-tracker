@@ -7,9 +7,12 @@ exports.getAllFacilities = async (req, res, next) => {
             attributes: [
                 'id',
                 'name',
-                [Sequelize.fn('COUNT', Sequelize.col('units.id')),
-                    'units'
-                ]],
+                [Sequelize.literal(`(
+                    SELECT COUNT(*)
+                    FROM units
+                    WHERE units.facilityId = facility.id
+                )`), 'units']
+            ],
             include: [
                 {
                     model: models.unit,
