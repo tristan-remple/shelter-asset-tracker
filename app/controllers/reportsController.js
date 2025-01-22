@@ -252,7 +252,7 @@ exports.getSummary = async (req, res, next) => {
                         attributes: [
                             'id',
                             'name',
-                            'templateid',
+                            'template',
                             'initialvalue',
                             'donated',
                             'vendor',
