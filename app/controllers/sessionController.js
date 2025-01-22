@@ -11,7 +11,7 @@ exports.login = async (req, res, next) => {
     };
 
     try {
-        const user = await models.User.findOne({ where: { email } });
+        const user = await models.user.findOne({ where: { email } });
 
         if (!user.password) {
             return res.status(401).json({ error: 'Invalid login.'});
@@ -23,17 +23,17 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid login.' });
         };
 
-        const facilityAuths = await models.FacilityAuth.findAll({
-            where: { userId: user.id },
-            attributes: ['facilityId']
+        const facilityAuths = await models.facilityauth.findAll({
+            where: { userid: user.id },
+            attributes: ['facilityid']
         });
 
-        const facilityIds = facilityAuths.map(auth => auth.facilityId);
+        const facilityIds = facilityAuths.map(auth => auth.facilityid);
 
-        const token = await createToken(user.id, user.isAdmin, facilityIds);
+        const token = await createToken(user.id, user.isadmin, facilityIds);
         const userInfo = {
             userId: user.id,
-            isAdmin: user.isAdmin,
+            isAdmin: user.isadmin,
             facilityAuths: facilityIds
         };
 

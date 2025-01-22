@@ -4,7 +4,7 @@ const { calculateCurrentValue, getEoL } = require('../util/calc');
 // Retrieves all items
 exports.getAllItems = async (req, res, next) => {
     try {
-        const items = await models.Item.findAll();
+        const items = await models.item.findAll();
         return res.json(items);
 
     } catch (err) {
@@ -17,62 +17,63 @@ exports.getAllItems = async (req, res, next) => {
 exports.getItemById = async (req, res, next) => {
     try {
         const itemId = req.params.id;
-        const item = await models.Item.findOne({
+        const item = await models.item.findOne({
             attributes: [
                 'id',
                 'name',
                 'invoice',
                 'vendor',
                 'donated',
-                'initialValue',
+                'initialvalue',
                 'eol',
                 'status',
-                'addedBy',
-                'createdAt',
-                'updatedAt'
+                'addedby',
+                'createdat',
+                'updatedat'
             ],
             where: { id: itemId },
             include: [{
-                model: models.Unit,
+                model: models.unit,
                 attributes: ['id', 'name'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['id', 'name']
                 }
             },
             {
-                model: models.User,
+                model: models.user,
                 attributes: ['id', 'name'],
-                as: 'addedByUser',
+                as: 'addedbyuser',
                 paranoid: false
             },
             {
-                model: models.Template,
+                model: models.template,
                 attributes: ['id', 'name'],
                 include: {
-                    model: models.Icon,
+                    model: models.icon,
                     attributes: [
                         'id',
                         'src',
                         'name',
                         'alt'
-                    ]
+                    ],
+                    as: 'iconAssociation'
                 },
                 paranoid: false
             },
             {
-                model: models.Comment,
+                model: models.comment,
                 attributes: [
                     'id',
                     'comment',
-                    'createdAt'
+                    'createdat'
                 ],
                 include: {
-                    model: models.User,
+                    model: models.user,
                     attributes: ['id', 'name'],
                     paranoid: false,
                 },
-                order: [['createdAt', 'DESC']]
+                order: [['createdat', 'DESC']]
             }
             ]
         });
@@ -82,7 +83,7 @@ exports.getItemById = async (req, res, next) => {
         };
 
         req.data = item;
-        req.facility = item.Unit.Facility.id;
+        req.facility = item.unit.facility.id;
         next();
 
     } catch (err) {
@@ -94,11 +95,11 @@ exports.getItemById = async (req, res, next) => {
 // Sends a single item's data in a detailed format
 exports.sendItem = async (req, res, next) => {
     const item = req.data;
-    const depreciationRate = await models.Setting.findOne({
+    const depreciationRate = await models.setting.findOne({
         attributes: ['value'],
         where: { name: 'depreciationRate' }
     });
-    const currentValue = calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate);
+    const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
 
     const itemProfile = {
         id: item.id,
@@ -106,45 +107,45 @@ exports.sendItem = async (req, res, next) => {
         invoice: item.invoice,
         vendor: item.vendor,
         unit: {
-            id: item.Unit.id,
-            name: item.Unit.name,
+            id: item.unit.id,
+            name: item.unit.name,
             facility: {
-                id: item.Unit.Facility.id,
-                name: item.Unit.Facility.name
+                id: item.unit.facility.id,
+                name: item.unit.facility.name
             }
         },
         template: {
-            id: item.Template.id,
-            name: item.Template.name,
-            icon: item.Template.Icon ? {
-                id: item.Template.Icon.id,
-                src: item.Template.Icon.src,
-                name: item.Template.Icon.name,
-                alt: item.Template.Icon.alt,
+            id: item.template.id,
+            name: item.template.name,
+            icon: item.template.iconAssociaton ? {
+                id: item.template.iconAssociation.id,
+                src: item.template.iconAssociation.src,
+                name: item.template.iconAssociation.name,
+                alt: item.template.iconAssociation.alt,
             } : null
         },
         addedBy: {
-            id: item.addedByUser.id,
-            name: item.addedByUser.name,
+            id: item.addedbyuser.id,
+            name: item.addedbyuser.name,
         },
         commentRecord: item.comments ? item.comments.map(comment => ({
             id: comment,
             inspectedBy: {
-                id: comment.User.id,
-                name: comment.User.name
+                id: comment.user.id,
+                name: comment.user.name
             },
             comment: comment.comment,
-            createdAt: comment.createdAt
+            createdAt: comment.createdat
         })) : [],
         value: {
-            initialValue: item.initialValue,
+            initialValue: item.initialvalue,
             donated: item.donated,
             currentValue: currentValue,
         },
         eol: item.eol,
         status: item.status,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt
+        createdAt: item.createdat,
+        updatedAt: item.updatedat
     };
 
     return res.status(200).json(itemProfile);
@@ -158,16 +159,16 @@ exports.createNewItem = async (req, res, next) => {
             return res.status(400).json({ error: 'Bad request.' });
         };
 
-        const newItem = await models.Item.create({
+        const newItem = await models.item.create({
             name: name,
             invoice: invoice,
             vendor: vendor,
-            unitId: unitId,
-            templateId: templateId,
+            unitid: unitId,
+            templateid: templateId,
             donated: donated,
-            initialValue: initialValue,
+            initialvalue: initialValue,
             eol: getEoL(usefulLifeOffset),
-            addedBy: addedBy,
+            addedby: addedBy,
             status: 'ok'
         });
 
@@ -176,11 +177,11 @@ exports.createNewItem = async (req, res, next) => {
             name: newItem.name,
             invoice: newItem.invoice,
             vendor: newItem.vendor,
-            unit: newItem.unitId,
-            templateId: newItem.templateId,
+            unit: newItem.unitid,
+            templateId: newItem.templateid,
             donated: newItem.donated,
-            initialValue: newItem.initialValue,
-            addedBy: newItem.addedBy,
+            initialValue: newItem.initialvalue,
+            addedBy: newItem.addedby,
             eol: newItem.eol,
             success: true
         };
@@ -202,8 +203,8 @@ exports.updateItem = async (req, res, next) => {
         if (comment !== '') {
             await models.comment.create({
                 comment: comment,
-                itemId: item.id,
-                userId: req.userId
+                itemid: item.id,
+                userid: req.userId
             });
         };
 
@@ -211,12 +212,12 @@ exports.updateItem = async (req, res, next) => {
             name: name,
             invoice: invoice,
             vendor: vendor,
-            initialValue: initialValue,
+            initialvalue: initialValue,
             eol: usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol,
             status: status
         });
 
-        const depreciationRate = await models.Setting.findOne({
+        const depreciationRate = await models.setting.findOne({
             attributes: ['value'],
             where: { name: 'depreciationRate' }
         });
@@ -227,10 +228,10 @@ exports.updateItem = async (req, res, next) => {
             invoice: item.invoice,
             vendor: item.vendor,
             donates: item.donated,
-            initialValue: item.initialValue,
+            initialValue: item.initialvalue,
             eol: item.eol,
             status: item.status,
-            currentValue: calculateCurrentValue(item.initialValue, item.createdAt, depreciationRate),
+            currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
             success: true
         };
 
@@ -246,15 +247,15 @@ exports.updateItem = async (req, res, next) => {
 
 // Verifies the facility associated with a unit
 exports.checkFacility = async (req, res, next) => {
-    const facility = await models.Unit.findOne({
+    const facility = await models.unit.findOne({
         where: { id: req.body.unitId },
         include: {
-            model: models.Facility,
+            model: models.facility,
             attributes: ['id']
         }
     });
 
-    req.facility = facility.Facility.id;
+    req.facility = facility.facility.id;
     next();
 };
 
@@ -265,9 +266,9 @@ exports.deleteItem = async (req, res, next) => {
         const deletedItem = await item.destroy();
 
         const deleteResponse = {
-            itemId: deletedItem.id,
+            itemid: deletedItem.id,
             name: deletedItem.name,
-            deleted: deletedItem.deletedAt,
+            deleted: deletedItem.deletedat,
             success: true
         };
 
@@ -282,13 +283,13 @@ exports.deleteItem = async (req, res, next) => {
 // Retrieves deleted items
 exports.getDeleted = async (req, res, next) => {
     try {
-        const deletedItems = await models.Item.findAll({
-            where: Sequelize.where(Sequelize.col('Item.deletedAt'), 'IS NOT', null),
+        const deletedItems = await models.item.findAll({
+            where: Sequelize.where(Sequelize.col('item.deletedat'), 'IS NOT', null),
             include: {
-                model: models.Unit,
+                model: models.unit,
                 attributes: ['name'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['name']
                 }
             },
@@ -308,24 +309,24 @@ exports.restoreDeleted = async (req, res, next) => {
     try {
         const itemId = req.params.id;
 
-        const deletedItem = await models.Item.findOne({
+        const deletedItem = await models.item.findOne({
             where: { id: itemId },
             include: [{
-                model: models.Unit,
+                model: models.unit,
                 attributes: ['name'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['name']
                 }
             }, {
-                model: models.Template,
+                model: models.template,
                 attributes: ['name'],
                 paranoid: false
             }],
             paranoid: false
         });
 
-        if (!deletedItem || !deletedItem.deletedAt) {
+        if (!deletedItem || !deletedItem.deletedat) {
             return res.status(404).json({ error: 'Deleted item not found.' });
         };
 

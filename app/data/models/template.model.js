@@ -1,5 +1,5 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('Template', {
+    db.define('template', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -14,19 +14,19 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false,
             unique: true
         },
-        defaultValue: {
+        defaultvalue: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        defaultUsefulLife: {
+        defaultusefullife: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        singleResident: {
+        singleresident: {
             type: DataTypes.BOOLEAN,
             allowNull: false
         }
     }, {
-        tableName: 'Templates'
+        tableName: 'templates'
     });
 };

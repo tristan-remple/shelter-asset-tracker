@@ -6,19 +6,19 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const dbConfig = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
+    process.env.DB_URL,
     {   
-        host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'postgres',
         define: {
-            paranoid: true,     // Enables soft deletion for all models
-            timestamps: true,   // Adds createdAt and updatedAt fields for all models
+            paranoid: true,         // Enables soft deletion for all models
+            timestamps: true,       // Adds createdAt and updatedAt fields for all models
+            createdAt: 'createdat', // Renames createdAt field to 'createdat' 
+            updatedAt: 'updatedat', // Renames updatedAt field to 'updatedat'
+            deletedAt: 'deletedat'  // Renames deletedAt field ro 'deletedat'
         },
         pool: {
-            max: 5,
+            max: 10,
             min: 0,
             acquire: 30000,
             idle: 10000

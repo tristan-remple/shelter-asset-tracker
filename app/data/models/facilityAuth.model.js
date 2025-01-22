@@ -1,24 +1,24 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('FacilityAuth', {
+    db.define('facilityauth', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        userId: {
+        userid: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        facilityId: {
+        facilityid: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        authorizedBy: {
+        authorizedby: {
             type: DataTypes.INTEGER,
             allowNull: true,
         }
     }, {
-        tableName: 'FacilityAuths',
+        tableName: 'facilityauths',
         updatedAt: false
     });
 };

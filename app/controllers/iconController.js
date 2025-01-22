@@ -5,7 +5,7 @@ const { upload, extractFields } = require('../util/upload');
 // Retrieves all icons
 exports.getAllIcons = async (req, res, next) => {
     try {
-        const icons = await models.Icon.findAll({
+        const icons = await models.icon.findAll({
             attributes: [
                 'id',
                 'src',
@@ -31,14 +31,14 @@ exports.getIconById = async (req, res, next) => {
     try {
         const iconId = req.params.id;
 
-        const icon = await models.Icon.findOne({
+        const icon = await models.icon.findOne({
             attributes: [
                 'id',
                 'src',
                 'name',
                 'alt',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: iconId }
         });
@@ -66,7 +66,7 @@ exports.createNewIcon = async (req, res, next) => {
     try {
 
         const { name, date, ext } = req.body;
-        const newIcon = await models.Icon.create({
+        const newIcon = await models.icon.create({
             name: name,
             alt: `${name} icon`,
             src: `${date}-${name}.${ext}`
@@ -97,7 +97,7 @@ exports.deleteIcons = async (req, res, next) => {
             success: true
         };
 
-        const iconsToDelete = await models.Icon.findAll({
+        const iconsToDelete = await models.icon.findAll({
             where: {
                 id: iconIds
             }
@@ -119,7 +119,7 @@ exports.deleteIcons = async (req, res, next) => {
                     id: icon.id,
                     error: err.name === 'SequelizeForeignKeyConstraintError' ? 'Dependency Error.' : err.name
                 });
-            }
+            };
         };
 
         return res.status(200).json(deleteResponse);

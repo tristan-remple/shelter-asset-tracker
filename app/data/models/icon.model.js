@@ -1,5 +1,5 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('Icon', {
+    db.define('icon', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -18,7 +18,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false
         }
     }, {
-        tableName: 'Icons',
+        tableName: 'icons',
         updatedAt: false,
         deletedAt: false,
         paranoid: false

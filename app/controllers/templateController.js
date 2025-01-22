@@ -3,22 +3,23 @@ const { models, Sequelize } = require('../data');
 // Returnes all item templates
 exports.getAllTemplates = async (req, res, next) => {
     try {
-        const templates = await models.Template.findAll({
+        const templates = await models.template.findAll({
             attributes: [
                 'id',
                 'name',
-                'defaultValue',
-                'defaultUsefulLife',
-                'singleResident'
+                'defaultvalue',
+                'defaultusefullife',
+                'singleresident'
             ],
             include: {
-                model: models.Icon,
+                model: models.icon,
                 attributes: [
                     'id',
                     'src',
                     'name',
                     'alt'
-                ]
+                ],
+                as: 'iconAssociation'
             }
         });
 
@@ -39,29 +40,30 @@ exports.getTemplateById = async (req, res, next) => {
     try {
         const templateId = req.params.id;
 
-        const template = await models.Template.findOne({
+        const template = await models.template.findOne({
             attributes: [
                 'id',
                 'name',
-                'defaultValue',
-                'defaultUsefulLife',
-                'singleResident',
-                'createdAt',
-                'updatedAt',
-                [Sequelize.fn('COUNT', Sequelize.col('Items.id')), 'itemCount']],
+                'defaultvalue',
+                'defaultusefullife',
+                'singleresident',
+                'createdat',
+                'updatedat',
+                [Sequelize.fn('COUNT', Sequelize.col('items.id')), 'itemCount']],
             where: { id: templateId },
             include: [{
-                model: models.Item,
+                model: models.item,
                 attributes: [],
                 required: false
             }, {
-                model: models.Icon,
+                model: models.icon,
                 attributes: [
                     'id',
                     'src',
                     'name',
                     'alt'
-                ]
+                ],
+                as: 'iconAssociation'
             }]
         });
 
@@ -86,27 +88,27 @@ exports.createNewTemplate = async (req, res, next) => {
             return res.status(400).json({ error: 'Bad request.' });
         };
 
-        const existingTemplate = await models.Template.findOne({ where: { name } });
+        const existingTemplate = await models.template.findOne({ where: { name } });
         if (existingTemplate) {
             return res.status(400).json({ error: 'Template already exists.' });
         };
 
-        const newTemplate = await models.Template.create({
+        const newTemplate = await models.template.create({
             name: name,
-            defaultValue: defaultValue,
-            defaultUsefulLife: defaultUsefulLife,
+            defaultvalue: defaultValue,
+            defaultusefullife: defaultUsefulLife,
             icon: icon,
-            singleResident: singleResident ? true : false
+            singleresident: singleResident ? true : false
         });
 
         const createResponse = {
             id: newTemplate.id,
             name: newTemplate.name,
-            defaultValue: newTemplate.defaultValue,
-            defaultUsefulLife: newTemplate.defaultUsefulLife,
+            defaultValue: newTemplate.defaultvalue,
+            defaultUsefulLife: newTemplate.defaultusefullife,
             icon: newTemplate.icon,
-            singleResident: newTemplate.singleResident,
-            createdAt: newTemplate.createdAt,
+            singleResident: newTemplate.singleresident,
+            createdAt: newTemplate.createdat,
             success: true
         };
 
@@ -124,7 +126,7 @@ exports.updateTemplate = async (req, res, next) => {
         const templateId = req.params.id;
         const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
 
-        const template = await models.Template.findByPk(templateId);
+        const template = await models.template.findByPk(templateId);
 
         if (!template) {
             return res.status(404).json({ error: 'Template not found.' });
@@ -132,18 +134,18 @@ exports.updateTemplate = async (req, res, next) => {
 
         template.set({
             name: name,
-            defaultValue: defaultValue,
-            defaultUsefulLife: defaultUsefulLife,
+            defaultvalue: defaultValue,
+            defaultusefullife: defaultUsefulLife,
             icon: icon,
-            singleResident: singleResident ? true : false
+            singleresident: singleResident ? true : false
         });
 
         const updateResponse = {
             name: template.name,
-            defaultValue: template.defaultValue,
-            defaultUsefulLife: template.defaultUsefulLife,
+            defaultValue: template.defaultvalue,
+            defaultUsefulLife: template.defaultusefullife,
             icon: template.icon,
-            singleResident: template.singleResident,
+            singleResident: template.singleresident,
             success: true
         };
 
@@ -162,7 +164,7 @@ exports.deleteTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
 
-        const template = await models.Template.findByPk(templateId);
+        const template = await models.template.findByPk(templateId);
 
         if (!template) {
             return res.status(404).json({ error: 'Template not found.' });
@@ -173,7 +175,7 @@ exports.deleteTemplate = async (req, res, next) => {
         const deleteResponse = {
             templateId: deletedTemplate.id,
             name: deletedTemplate.name,
-            deletedAt: deletedTemplate.deletedAt,
+            deletedAt: deletedTemplate.deletedat,
             success: true
         };
 
@@ -188,8 +190,8 @@ exports.deleteTemplate = async (req, res, next) => {
 // Retrieves previously deleted templates
 exports.getDeleted = async (req, res, next) => {
     try {
-        const deletedTemplates = await models.Template.findAll({
-            where: Sequelize.where(Sequelize.col('Template.deletedAt'), 'IS NOT', null),
+        const deletedTemplates = await models.template.findAll({
+            where: Sequelize.where(Sequelize.col('template.deletedat'), 'IS NOT', null),
             paranoid: false
         });
 
@@ -205,7 +207,7 @@ exports.restoreDeleted = async (req, res, next) => {
     try {
         const templateId = req.params.id;
 
-        const deletedTemplate = await models.Template.findOne({
+        const deletedTemplate = await models.template.findOne({
             where: { id: templateId },
             paranoid: false
         });

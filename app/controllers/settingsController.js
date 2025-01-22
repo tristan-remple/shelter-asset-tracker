@@ -3,8 +3,8 @@ const { models, Sequelize } = require('../data');
 // Retrieves current app settings
 exports.getSettings = async (req, res, next) => {
     try {
-        const settings = await models.Setting.findAll();
-        const unitTypes = await models.UnitType.findAll();
+        const settings = await models.setting.findAll();
+        const unitTypes = await models.unittype.findAll();
 
         if (!settings || !unitTypes) {
             return res.status(404).json({ message: 'Settings not found.' });
@@ -32,16 +32,18 @@ exports.updateSettings = async (req, res, next) => {
             return res.status(400).json({ error: 'Missing expected settings.' })
         };
 
+        const depreciationrate = depreciationRate;
+        const logosrc = logoSrc;
         const settingsToUpdate = {
-            depreciationRate,
+            depreciationrate,
             name,
             url,
-            logoSrc,
+            logosrc,
         };
 
         for (const setting of req.data.settings) {
             if (settingsToUpdate.hasOwnProperty(setting.name)) {
-                const updated = await models.Setting.update(
+                const updated = await models.setting.update(
                     { value: settingsToUpdate[setting.name] },
                     { where: { name: setting.name } }
                 );
@@ -55,12 +57,12 @@ exports.updateSettings = async (req, res, next) => {
         const removedUnitTypes = currentUnitTypes.filter(unitType => !unitTypes.includes(unitType));
 
         for (const unitType of addedUnitTypes) {
-            await models.UnitType.create({ name: unitType });
+            await models.unittype.create({ name: unitType });
             currentUnitTypes.push(unitType);
         };
 
         for (const unitType of removedUnitTypes) {
-            await models.UnitType.destroy({ where: { name: unitType } });
+            await models.unittype.destroy({ where: { name: unitType } });
             const index = currentUnitTypes.indexOf(unitType);
             if (index > -1) {
                 currentUnitTypes.splice(index, 1);
@@ -94,4 +96,4 @@ exports.sendSettings = async (req, res, next) => {
     };
 
     return res.status(200).json(settingsResponse);
-}
+};

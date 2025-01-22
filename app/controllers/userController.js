@@ -8,31 +8,31 @@ exports.createNewUser = async (req, res, next) => {
             return res.status(400).json({ error: 'Bad request' });
         };
 
-        const existingUser = await models.User.findOne({ where: { email } });
+        const existingUser = await models.user.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
         };
 
-        const newUser = await models.User.create({
+        const newUser = await models.user.create({
             email: email,
             password: null,
             name: name,
-            isAdmin: isAdmin
+            isadmin: isAdmin
         });
 
         if (Array.isArray(auths)) {
             const facilityAuths = auths.map(async facilityId => {
-                await models.FacilityAuth.create({
-                    userId: newUser.id,
-                    facilityId: facilityId,
-                    authorizedBy: authorizedBy
+                await models.facilityauth.create({
+                    userid: newUser.id,
+                    facilityid: facilityId,
+                    authorizedby: authorizedBy
                 });
             });
 
             await Promise.all(facilityAuths);
         };
 
-        const user = await models.User.findOne({ where: { email } });
+        const user = await models.user.findOne({ where: { email } });
         
         req.data = user;
         req.isNewUser = true;
@@ -48,23 +48,23 @@ exports.createNewUser = async (req, res, next) => {
 // Retrieves all user data
 exports.getAllUsers = async (req, res, next) => {
     try {
-        const users = await models.User.findAll({
+        const users = await models.user.findAll({
             attributes: [
                 'id',
                 'email',
                 'name',
-                'createdAt'
+                'createdat'
             ],
             include: {
-                model: models.FacilityAuth,
-                attributes: ['userId', 'facilityId'],
+                model: models.facilityauth,
+                attributes: ['userid', 'facilityid'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['id', 'name']
                 },
                 required: false
             },
-            order: [['createdAt', 'ASC']]
+            order: [['createdat', 'ASC']]
         });
 
         if (!users) {
@@ -75,11 +75,11 @@ exports.getAllUsers = async (req, res, next) => {
             userId: user.id,
             email: user.email,
             name: user.name,
-            facilities: user.FacilityAuths.map(facilityAuth => ({
-                facilityId: facilityAuth.Facility.id,
-                name: facilityAuth.Facility.name
+            facilities: user.facilityauths.map(facilityAuth => ({
+                facilityId: facilityAuth.facility.id,
+                name: facilityAuth.facility.name
             })),
-            createdAt: user.createdAt
+            createdAt: user.createdat
         }));
 
         res.status(200).json(usersInfo);
@@ -95,23 +95,23 @@ exports.getUserById = async (req, res, next) => {
     try {
         const userId = +req.params.id;
 
-        const user = await models.User.findOne({
+        const user = await models.user.findOne({
             attributes: [
                 'id',
                 'email',
                 'name',
-                'isAdmin',
-                'requestHash',
-                'requestExpiry',
-                'createdAt',
-                'updatedAt'
+                'isadmin',
+                'requesthash',
+                'requestexpiry',
+                'createdat',
+                'updatedat'
             ],
             where: { id: userId },
             include: {
-                model: models.FacilityAuth,
-                attributes: ['userId', 'facilityId'],
+                model: models.facilityauth,
+                attributes: ['userid', 'facilityid'],
                 include: {
-                    model: models.Facility,
+                    model: models.facility,
                     attributes: ['id', 'name']
                 },
                 required: false
@@ -169,7 +169,7 @@ exports.setAdmin = async (req, res, next) => {
         };
 
         user.set({
-            isAdmin: isAdmin
+            isadmin: isAdmin
         });
 
         await user.save();
@@ -178,7 +178,7 @@ exports.setAdmin = async (req, res, next) => {
             userId: user.id,
             name: user.name,
             email: user.email,
-            isAdmin: user.isAdmin,
+            isAdmin: user.isadmin,
             success: true
         };
 
@@ -202,12 +202,12 @@ exports.sendUser = async (req, res, next) => {
             id: user.id,
             email: user.email,
             name: user.name,
-            isAdmin: user.isAdmin,
-            created: user.createdAt,
-            updated: user.updatedAt,
-            facilities: user.FacilityAuths.map(facilityAuth => ({
-                facilityId: facilityAuth.Facility.id,
-                name: facilityAuth.Facility.name
+            isAdmin: user.isadmin,
+            created: user.createdat,
+            updated: user.updatedat,
+            facilities: user.facilityauths.map(facilityAuth => ({
+                facilityId: facilityAuth.facility.id,
+                name: facilityAuth.facility.name
             }))
         };
 
@@ -224,7 +224,7 @@ exports.deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
 
-        const user = await models.User.findByPk(userId);
+        const user = await models.user.findByPk(userId);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
@@ -237,11 +237,12 @@ exports.deleteUser = async (req, res, next) => {
         const deleteResponse = {
             userId: deletedUser.id,
             name: deletedUser.name,
-            deleted: deletedUser.deletedAt,
+            deleted: deletedUser.deletedat,
             success: true
         };
 
         return res.status(200).json(deleteResponse);
+        
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Server error.' });

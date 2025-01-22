@@ -1,15 +1,15 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('Item', {
+    db.define('item', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        unitId: {
+        unitid: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        templateId: {
+        templateid: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -30,7 +30,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: true,
             unique: true
         },
-        initialValue: {
+        initialvalue: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: true
         },
@@ -47,12 +47,12 @@ module.exports = (db, { DataTypes }) => {
                 ]
             })
         },
-        addedBy: {
+        addedby: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            field: 'addedBy'
+            field: 'addedby'
         }
     }, {
-        tableName: 'Items'
+        tableName: 'items'
     });
 };

@@ -1,15 +1,15 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('Comment', {
+    db.define('comment', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        userId: {
+        userid: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        itemId: {
+        itemid: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -18,7 +18,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: true
         }
     }, {
-        tableName: 'Comments',
+        tableName: 'comments',
         updatedAt: false
     });
 };

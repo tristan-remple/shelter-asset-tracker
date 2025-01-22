@@ -1,5 +1,5 @@
 module.exports = (db, { DataTypes }) => {
-    db.define('Setting', {
+    db.define('setting', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -15,7 +15,7 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false,
         }
     }, {
-        tableName: 'Settings',
+        tableName: 'settings',
         createdAt: false,
         updatedAt: false,
         paranoid: false

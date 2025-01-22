@@ -3,21 +3,24 @@ const { models, Sequelize } = require('../data');
 // Retrieves a list of all facilities with the count of associated units
 exports.getAllFacilities = async (req, res, next) => {
     try {
-        const facilities = await models.Facility.findAll({
+        const facilities = await models.facility.findAll({
             attributes: [
                 'id',
                 'name',
-                [Sequelize.fn('COUNT', Sequelize.col('Units.id')),
-                    'units'
-                ]],
+                [Sequelize.literal(`(
+                    SELECT COUNT(*)
+                    FROM units
+                    WHERE units.facilityId = facility.id
+                )`), 'units']
+            ],
             include: [
                 {
-                    model: models.Unit,
+                    model: models.unit,
                     attributes: [],
                     required: false
                 }
             ],
-            group: ['Facility.id', 'Facility.name']
+            group: ['facility.id', 'facility.name']
         });
 
         if (!facilities) {
@@ -37,29 +40,29 @@ exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
 
-        const facility = await models.Facility.findOne({
+        const facility = await models.facility.findOne({
             attributes: [
                 'id',
                 'name',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: facilityId },
             include: [{
-                model: models.User,
+                model: models.user,
                 attributes: ['id', 'name'],
                 required: false
             }, {
-                model: models.Unit,
+                model: models.unit,
                 attributes: [
                     'id',
                     'name'
                 ],
                 include: [{
-                    model: models.Item,
+                    model: models.item,
                     attributes: ['id', 'status']
                 }, {
-                    model: models.UnitType,
+                    model: models.unittype,
                     attributes: ['name'],
                     paranoid: false
                 }]
@@ -73,19 +76,19 @@ exports.getFacilityById = async (req, res, next) => {
         const facilityDetails = {
             facilityId: facility.id,
             name: facility.name,
-            manager: facility.User ? {
-                id: facility.User.id,
-                name: facility.User.name
+            manager: facility.user ? {
+                id: facility.user.id,
+                name: facility.user.name
             } : null,
-            units: facility.Units.map(unit => ({
+            units: facility.units.map(unit => ({
                 unitId: unit.id,
                 name: unit.name,
-                type: unit.UnitType.name,
-                inspectCount: unit.Items.filter(item => item.status === 'inspect').length,
-                discardCount: unit.Items.filter(item => item.status === 'discard').length
+                type: unit.unittype.name,
+                inspectCount: unit.items.filter(item => item.status === 'inspect').length,
+                discardCount: unit.items.filter(item => item.status === 'discard').length
             })),
-            created: facility.createdAt,
-            updated: facility.updatedAt,
+            created: facility.createdat,
+            updated: facility.updatedat,
         };
 
         req.data = facilityDetails;
@@ -108,25 +111,25 @@ exports.createNewFacility = async (req, res, next) => {
     try {
         const { locationName, managerId } = req.body;
 
-        const authUser = await models.User.findOne({ where: { id: managerId } });
+        const authUser = await models.user.findOne({ where: { id: managerId } });
         if (!authUser) {
             return res.status(404).json({ error: "Manager not found." });
         };
 
-        const newFacility = await models.Facility.create({
+        const newFacility = await models.facility.create({
             name: locationName,
-            managerId: managerId
+            managerid: managerId
         });
 
-        await models.FacilityAuth.create({
-            userId: managerId,
-            facilityId: newFacility.id
+        await models.facilityauth.create({
+            userid: managerId,
+            facilityid: newFacility.id
         });
 
         const createResponse = {
             facilityId: newFacility.id,
             name: newFacility.name,
-            createdAt: newFacility.createdAt,
+            createdAt: newFacility.createdat,
             success: true
         };
 
@@ -144,7 +147,7 @@ exports.updateFacility = async (req, res, next) => {
         const facilityId = req.params.id;
         const { name, managerId } = req.body;
 
-        const facility = await models.Facility.findByPk(facilityId);
+        const facility = await models.facility.findByPk(facilityId);
 
         if (!facility) {
             return res.status(404).json({ error: 'Facility not found.' });
@@ -152,13 +155,13 @@ exports.updateFacility = async (req, res, next) => {
 
         facility.set({
             name: name,
-            managerId: managerId
+            managerid: managerId
         });
 
         const updateResponse = {
             id: facility.id,
             name: facility.name,
-            managerId: facility.managerId,
+            managerId: facility.managerid,
             success: true
         };
 
@@ -176,13 +179,13 @@ exports.deleteFacility = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
 
-        const facility = await models.Facility.findByPk(facilityId);
+        const facility = await models.facility.findByPk(facilityId);
 
         if (!facility) {
             return res.status(404).json({ error: 'Facility not found.' });
         };
 
-        await models.FacilityAuth.destroy({
+        await models.facilityauth.destroy({
             where: { facilityId }
         });
 
@@ -191,7 +194,7 @@ exports.deleteFacility = async (req, res, next) => {
         const deleteResponse = {
             facilityId: deletedFacility.id,
             name: deletedFacility.name,
-            deleted: deletedFacility.deletedAt,
+            deleted: deletedFacility.deletedat,
             success: true
         };
 
@@ -206,8 +209,8 @@ exports.deleteFacility = async (req, res, next) => {
 // Retrieves all deleted facilities (soft deleted)
 exports.getDeleted = async (req, res, next) => {
     try {
-        const deletedFacilities = await models.Facility.findAll({
-            where: Sequelize.where(Sequelize.col('deletedAt'), 'IS NOT', null),
+        const deletedFacilities = await models.facility.findAll({
+            where: Sequelize.where(Sequelize.col('deletedat'), 'IS NOT', null),
             paranoid: false
         });
 
@@ -223,7 +226,7 @@ exports.restoreDeleted = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
 
-        const deletedFacility = await models.Facility.findOne({
+        const deletedFacility = await models.facility.findOne({
             where: { id: facilityId },
             paranoid: false
         });
