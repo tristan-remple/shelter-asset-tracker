@@ -24,7 +24,7 @@ exports.login = async (req, res, next) => {
         };
 
         const facilityAuths = await models.facilityauth.findAll({
-            where: { userId: user.id },
+            where: { userid: user.id },
             attributes: ['facilityid']
         });
 
