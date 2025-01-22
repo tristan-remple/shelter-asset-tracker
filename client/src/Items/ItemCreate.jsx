@@ -70,7 +70,7 @@ const ItemCreate = () => {
             id: 0,
             name: "",
             defaultValue: 0,
-            Icon: {},
+            iconAssociation: {},
             singleUse: false
         },
         added: {
@@ -130,9 +130,10 @@ const ItemCreate = () => {
     const handleCategoryChange = (newCatName) => {
         const newCatIndex = categoryList.map(cat => cat.name).indexOf(newCatName)
         if (newCatIndex !== -1) {
+            console.log(categoryList[newCatIndex])
             const newItemAdditions = {...newItem}
             newItemAdditions.template = categoryList[newCatIndex]
-            newItemAdditions.initialValue = parseFloat(categoryList[newCatIndex].defaultValue)
+            newItemAdditions.initialValue = parseFloat(categoryList[newCatIndex].defaultvalue)
             const errorIndex = newItemAdditions.errorFields.indexOf("category")
             if (errorIndex !== -1) { newItemAdditions.errorFields.splice(errorIndex, 1) }
             setNewItem(newItemAdditions)
@@ -234,7 +235,7 @@ const ItemCreate = () => {
                         </div>
                     </div>
                     <div className="col-2 col-content col-icon">
-                        { newItem.template.Icon.src ? <img className="img-fluid icon" src={ `/img/${ newItem.template.Icon.src }` } alt={ newItem.template.Icon.name + " icon" } /> : "Select category to view icon." }
+                        { newItem.template.iconAssociation.src ? <img className="img-fluid icon" src={ `/img/${ newItem.template.iconAssociation.src }` } alt={ newItem.template.iconAssociation.name + " icon" } /> : "Select category to view icon." }
                     </div>
                 </div>
                 <div className="row row-info">

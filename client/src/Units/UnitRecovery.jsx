@@ -23,7 +23,7 @@ const UnitRecovery = () => {
     const [ err, setErr ] = useState("loading")
 
     // fetch data from the api
-    const [ units, setUnits ] = useState({})
+    const [ units, setUnits ] = useState([])
     const [ filteredUnits, setFilteredUnits ] = useState([])
     useEffect(() => {
         (async()=>{
@@ -37,10 +37,7 @@ const UnitRecovery = () => {
                 }
             })
         })()
-    }, [])
-
-    if (err) { return <Error err={ err } /> }
-    if (units) {
+    }, [ status ])    
 
     // order the items by most recently deleted first
     units?.sort((a, b) => {
@@ -52,29 +49,34 @@ const UnitRecovery = () => {
 
     // send an api call to restore the item
     const restoreUnit = async(unitId) => {
-        await apiService.restoreItem(unitId, (response) => {
+        await apiService.restoreUnit(unitId, (response) => {
             if (response.error) {
                 setErr(response.error)
             } else {
+                console.log(response)
                 setStatus({
-                    message: `You have successfully restored unit ${response.name}.`,
+                    message: `You have successfully restored unit ${response.unit.name}.`,
                     error: false
                 })
             }
         })
     } 
 
+    const [ displayItems, setDisplayItems ] = useState([])
     // map the item objects into table rows
-    const displayItems = filteredUnits?.map(unit => {
-        return (
-            <tr key={ unit.id } >
-                <td>{ unit.name }</td>
-                <td>{ unit.facility }</td>
-                <td>{ adminDate(unit.deletedAt) }</td>
-                <td><Button text="Restore" linkTo={ () => restoreUnit(unit.id) } type="small" /></td>
-            </tr>
-        )
-    })
+    useEffect(() => {
+        const newDisplayItems = filteredUnits?.map(unit => {
+            return (
+                <tr key={ unit.id } >
+                    <td>{ unit.name }</td>
+                    <td>{ unit.facility.name }</td>
+                    <td>{ adminDate(unit.deletedat) }</td>
+                    <td><Button text="Restore" linkTo={ () => restoreUnit(unit.id) } type="small" /></td>
+                </tr>
+            )
+        })
+        setDisplayItems(newDisplayItems)
+    }, [ status, units, filteredUnits ])
 
     return err ? <Error err={ err } /> : (
         <main className="container">
@@ -99,13 +101,12 @@ const UnitRecovery = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
+                        { displayItems.length > 0 ? displayItems : <tr><td colSpan={ 4 }>No units yet.</td></tr> }
                     </tbody>
                 </table>
             </div>
         </main>
     )
-}
 }
 
 export default UnitRecovery

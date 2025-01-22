@@ -63,6 +63,7 @@ const LocationDelete = () => {
     // send delete api call
     const confirmDelete = async() => {
         await apiService.deleteLocation(location, (response) => {
+            console.log(response)
             if (response.error) {
                 setErr(response.error)
             } else {
