@@ -177,7 +177,7 @@ exports.deleteUnit = async (req, res, next) => {
             unitId: deletedUnit.id,
             name: deletedUnit.name,
             facilityId: deletedUnit.facilityid,
-            deletedAt: deletedUnit.deletedat,
+            deletedAt: deletedUnit.deletedAt,
             success: true
         };
 

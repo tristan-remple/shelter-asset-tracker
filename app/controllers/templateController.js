@@ -173,7 +173,7 @@ exports.deleteTemplate = async (req, res, next) => {
         const deleteResponse = {
             templateId: deletedTemplate.id,
             name: deletedTemplate.name,
-            deletedAt: deletedTemplate.deletedat,
+            deletedAt: deletedTemplate.deletedAt,
             success: true
         };
 

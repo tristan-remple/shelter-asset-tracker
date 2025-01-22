@@ -237,7 +237,7 @@ exports.deleteUser = async (req, res, next) => {
         const deleteResponse = {
             userId: deletedUser.id,
             name: deletedUser.name,
-            deleted: deletedUser.deletedat,
+            deleted: deletedUser.deletedAt,
             success: true
         };
 
