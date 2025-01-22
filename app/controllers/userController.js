@@ -53,7 +53,7 @@ exports.getAllUsers = async (req, res, next) => {
                 'id',
                 'email',
                 'name',
-                'createdAt'
+                'createdat'
             ],
             include: {
                 model: models.facilityauth,
@@ -64,7 +64,7 @@ exports.getAllUsers = async (req, res, next) => {
                 },
                 required: false
             },
-            order: [['createdAt', 'ASC']]
+            order: [['createdat', 'ASC']]
         });
 
         if (!users) {
@@ -79,7 +79,7 @@ exports.getAllUsers = async (req, res, next) => {
                 facilityId: facilityAuth.facility.id,
                 name: facilityAuth.facility.name
             })),
-            createdAt: user.createdAt
+            createdAt: user.createdat
         }));
 
         res.status(200).json(usersInfo);
@@ -103,8 +103,8 @@ exports.getUserById = async (req, res, next) => {
                 'isadmin',
                 'requesthash',
                 'requestexpiry',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: userId },
             include: {
@@ -203,8 +203,8 @@ exports.sendUser = async (req, res, next) => {
             email: user.email,
             name: user.name,
             isAdmin: user.isadmin,
-            created: user.createdAt,
-            updated: user.updatedAt,
+            created: user.createdat,
+            updated: user.updatedat,
             facilities: user.facilityauths.map(facilityAuth => ({
                 facilityId: facilityAuth.facility.id,
                 name: facilityAuth.facility.name
@@ -237,7 +237,7 @@ exports.deleteUser = async (req, res, next) => {
         const deleteResponse = {
             userId: deletedUser.id,
             name: deletedUser.name,
-            deleted: deletedUser.deletedAt,
+            deleted: deletedUser.deletedat,
             success: true
         };
 

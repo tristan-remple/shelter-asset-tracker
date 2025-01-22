@@ -9,8 +9,8 @@ exports.getUnitById = async (req, res, next) => {
             attributes: [
                 'id',
                 'name',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: unitId },
             include: [{
@@ -91,8 +91,8 @@ exports.sendUnit = async (req, res, next) => {
             },
             status: item.status
         })),
-        createdAt: unit.createdAt,
-        updatedAt: unit.updatedAt
+        createdAt: unit.createdat,
+        updatedAt: unit.updatedat
     };
 
     return res.status(200).json(unitListItems);
@@ -113,7 +113,7 @@ exports.createNewUnit = async (req, res, next) => {
             unitId: newUnit.id,
             facility: newUnit.facilityid,
             type: newUnit.type,
-            createdAt: newUnit.createdAt,
+            createdAt: newUnit.createdat,
             success: true
         };
 
@@ -177,7 +177,7 @@ exports.deleteUnit = async (req, res, next) => {
             unitId: deletedUnit.id,
             name: deletedUnit.name,
             facilityId: deletedUnit.facilityid,
-            deletedAt: deletedUnit.deletedAt,
+            deletedAt: deletedUnit.deletedat,
             success: true
         };
 
@@ -192,7 +192,7 @@ exports.deleteUnit = async (req, res, next) => {
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedUnits = await models.unit.findAll({
-            where: Sequelize.where(Sequelize.col('Unit.deletedAt'), 'IS NOT', null),
+            where: Sequelize.where(Sequelize.col('unit.deletedat'), 'IS NOT', null),
             include: {
                 model: models.facility,
                 attributes: ['name'],

@@ -37,8 +37,8 @@ exports.getIconById = async (req, res, next) => {
                 'src',
                 'name',
                 'alt',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: iconId }
         });

@@ -27,9 +27,9 @@ exports.getItemById = async (req, res, next) => {
                 'initialvalue',
                 'eol',
                 'status',
-                'addedBy',
-                'createdAt',
-                'updatedAt'
+                'addedby',
+                'createdat',
+                'updatedat'
             ],
             where: { id: itemId },
             include: [{
@@ -66,14 +66,14 @@ exports.getItemById = async (req, res, next) => {
                 attributes: [
                     'id',
                     'comment',
-                    'createdAt'
+                    'createdat'
                 ],
                 include: {
                     model: models.user,
                     attributes: ['id', 'name'],
                     paranoid: false,
                 },
-                order: [['createdAt', 'DESC']]
+                order: [['createdat', 'DESC']]
             }
             ]
         });
@@ -135,7 +135,7 @@ exports.sendItem = async (req, res, next) => {
                 name: comment.user.name
             },
             comment: comment.comment,
-            createdAt: comment.createdAt
+            createdAt: comment.createdat
         })) : [],
         value: {
             initialValue: item.initialvalue,
@@ -144,8 +144,8 @@ exports.sendItem = async (req, res, next) => {
         },
         eol: item.eol,
         status: item.status,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt
+        createdAt: item.createdat,
+        updatedAt: item.updatedat
     };
 
     return res.status(200).json(itemProfile);
@@ -231,7 +231,7 @@ exports.updateItem = async (req, res, next) => {
             initialValue: item.initialvalue,
             eol: item.eol,
             status: item.status,
-            currentValue: calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate),
+            currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
             success: true
         };
 
@@ -268,7 +268,7 @@ exports.deleteItem = async (req, res, next) => {
         const deleteResponse = {
             itemid: deletedItem.id,
             name: deletedItem.name,
-            deleted: deletedItem.deletedAt,
+            deleted: deletedItem.deletedat,
             success: true
         };
 
@@ -284,7 +284,7 @@ exports.deleteItem = async (req, res, next) => {
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedItems = await models.item.findAll({
-            where: Sequelize.where(Sequelize.col('Item.deletedAt'), 'IS NOT', null),
+            where: Sequelize.where(Sequelize.col('item.deletedat'), 'IS NOT', null),
             include: {
                 model: models.unit,
                 attributes: ['name'],
@@ -326,7 +326,7 @@ exports.restoreDeleted = async (req, res, next) => {
             paranoid: false
         });
 
-        if (!deletedItem || !deletedItem.deletedAt) {
+        if (!deletedItem || !deletedItem.deletedat) {
             return res.status(404).json({ error: 'Deleted item not found.' });
         };
 

@@ -19,8 +19,8 @@ const getFinancial = async (facility) => {
                 'donated',
                 'initialvalue',
                 'eol',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             include: [
                 {
@@ -60,8 +60,8 @@ const getFinancial = async (facility) => {
                 donated: item.donated,
                 currentValue: currentValue,
                 eol: item.eol,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                createdAt: item.createdat,
+                updatedAt: item.updatedat
             };
         });
 
@@ -92,8 +92,8 @@ const getInventory = async (facility) => {
                 'donated',
                 'initialvalue',
                 'eol',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             include: [
                 {
@@ -112,8 +112,8 @@ const getInventory = async (facility) => {
                 {
                     model: models.comment,
                     attributes: [
-                        'userId',
-                        'createdAt',
+                        'userid',
+                        'createdat',
                         'comment'
                     ],
                     include: {
@@ -121,7 +121,7 @@ const getInventory = async (facility) => {
                         attributes: ['name']
                     },
                     required: false,
-                    order: [['createdAt', 'DESC']],
+                    order: [['createdat', 'DESC']],
                     limit: 1
                 }
             ]
@@ -134,7 +134,7 @@ const getInventory = async (facility) => {
         const items = await models.item.findAll(queryOptions);
 
         const report = items.map(item => {
-            const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
             const lastComment = item.comments[0] || {};
 
             return {
@@ -149,13 +149,13 @@ const getInventory = async (facility) => {
                 addedBy: item.addedbyuser.name,
                 status: item.status,
                 inspectedBy: lastComment.user ? lastComment.user.name : null,
-                lastComment: lastComment.createdAt ? lastComment.createdAt : null,
+                lastComment: lastComment.createdat ? lastComment.createdat : null,
                 comment: lastComment.comment ? lastComment.comment : null,
                 eol: item.eol,
                 currentValue: currentValue,
                 donated: item.donated,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                createdAt: item.createdat,
+                updatedAt: item.updatedat
 
             };
         });
@@ -184,8 +184,8 @@ const getEol = async (facility, startDate, endDate) => {
                 'initialvalue',
                 'eol',
                 'status',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             include: [
                 {
@@ -211,7 +211,7 @@ const getEol = async (facility, startDate, endDate) => {
         });
 
         const report = eolItems.map(item => {
-            const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
+            const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
             return {
                 id: item.id,
                 name: item.name,
@@ -225,8 +225,8 @@ const getEol = async (facility, startDate, endDate) => {
                 currentValue: currentValue,
                 eol: item.eol,
                 status: item.status,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt
+                createdAt: item.createdat,
+                updatedAt: item.updatedat
             };
         });
 

@@ -46,9 +46,9 @@ exports.getTemplateById = async (req, res, next) => {
                 'defaultvalue',
                 'defaultUsefullife',
                 'singleresident',
-                'createdAt',
-                'updatedAt',
-                [Sequelize.fn('COUNT', Sequelize.col('Items.id')), 'itemCount']],
+                'createdat',
+                'updatedat',
+                [Sequelize.fn('COUNT', Sequelize.col('items.id')), 'itemCount']],
             where: { id: templateId },
             include: [{
                 model: models.item,
@@ -106,7 +106,7 @@ exports.createNewTemplate = async (req, res, next) => {
             defaultUsefulLife: newTemplate.defaultusefullife,
             icon: newTemplate.icon,
             singleResident: newTemplate.singleresident,
-            createdAt: newTemplate.createdAt,
+            createdAt: newTemplate.createdat,
             success: true
         };
 
@@ -173,7 +173,7 @@ exports.deleteTemplate = async (req, res, next) => {
         const deleteResponse = {
             templateId: deletedTemplate.id,
             name: deletedTemplate.name,
-            deletedAt: deletedTemplate.deletedAt,
+            deletedAt: deletedTemplate.deletedat,
             success: true
         };
 
@@ -189,7 +189,7 @@ exports.deleteTemplate = async (req, res, next) => {
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedTemplates = await models.template.findAll({
-            where: Sequelize.where(Sequelize.col('Template.deletedAt'), 'IS NOT', null),
+            where: Sequelize.where(Sequelize.col('template.deletedat'), 'IS NOT', null),
             paranoid: false
         });
 

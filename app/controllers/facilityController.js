@@ -41,8 +41,8 @@ exports.getFacilityById = async (req, res, next) => {
             attributes: [
                 'id',
                 'name',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { id: facilityId },
             include: [{
@@ -84,8 +84,8 @@ exports.getFacilityById = async (req, res, next) => {
                 inspectCount: unit.items.filter(item => item.status === 'inspect').length,
                 discardCount: unit.items.filter(item => item.status === 'discard').length
             })),
-            created: facility.createdAt,
-            updated: facility.updatedAt,
+            created: facility.createdat,
+            updated: facility.updatedat,
         };
 
         req.data = facilityDetails;
@@ -126,7 +126,7 @@ exports.createNewFacility = async (req, res, next) => {
         const createResponse = {
             facilityId: newFacility.id,
             name: newFacility.name,
-            createdAt: newFacility.createdAt,
+            createdAt: newFacility.createdat,
             success: true
         };
 
@@ -191,7 +191,7 @@ exports.deleteFacility = async (req, res, next) => {
         const deleteResponse = {
             facilityId: deletedFacility.id,
             name: deletedFacility.name,
-            deleted: deletedFacility.deletedAt,
+            deleted: deletedFacility.deletedat,
             success: true
         };
 
@@ -207,7 +207,7 @@ exports.deleteFacility = async (req, res, next) => {
 exports.getDeleted = async (req, res, next) => {
     try {
         const deletedFacilities = await models.facility.findAll({
-            where: Sequelize.where(Sequelize.col('deletedAt'), 'IS NOT', null),
+            where: Sequelize.where(Sequelize.col('deletedat'), 'IS NOT', null),
             paranoid: false
         });
 

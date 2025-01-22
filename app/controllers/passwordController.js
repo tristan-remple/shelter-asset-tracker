@@ -9,8 +9,8 @@ exports.createRequest = async (req, res, next) => {
         const resetRequest = await createReset();
 
         user.set({
-            requestHash: resetRequest.requestHash,
-            requestExpiry: resetRequest.requestExpiry
+            requesthash: resetRequest.requestHash,
+            requestexpiry: resetRequest.requestExpiry
         });
 
 
@@ -32,7 +32,7 @@ exports.createRequest = async (req, res, next) => {
                 userId: user.id,
                 name: user.name,
                 isAdmin: user.isadmin,
-                created: user.createdAt,
+                created: user.createdat,
                 success: true,
                 emailSent: emailResponse
             };
@@ -106,8 +106,8 @@ exports.updatePassword = async (req, res, next) => {
                 'isadmin',
                 'requesthash',
                 'requestexpiry',
-                'createdAt',
-                'updatedAt'
+                'createdat',
+                'updatedat'
             ],
             where: { requesthash: hash, email: email }
         });
