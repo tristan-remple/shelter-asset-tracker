@@ -14,7 +14,8 @@ const dbConfig = new Sequelize(
             paranoid: true,         // Enables soft deletion for all models
             timestamps: true,       // Adds createdAt and updatedAt fields for all models
             createdAt: 'createdat', // Renames createdAt field to 'createdat' 
-            updatedAt: 'updatedat'  // Renames updatedAt field to 'updatedat'
+            updatedAt: 'updatedat', // Renames updatedAt field to 'updatedat'
+            deletedAt: 'deletedat'
         },
         pool: {
             max: 10,
