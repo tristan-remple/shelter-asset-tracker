@@ -11,8 +11,10 @@ const dbConfig = new Sequelize(
         port: process.env.DB_PORT,
         dialect: 'postgres',
         define: {
-            paranoid: true,     // Enables soft deletion for all models
-            timestamps: true,   // Adds createdAt and updatedAt fields for all models
+            paranoid: true,         // Enables soft deletion for all models
+            timestamps: true,       // Adds createdAt and updatedAt fields for all models
+            createdAt: 'createdat', // Renames createdAt field to 'createdat' 
+            updatedAt: 'updatedat'  // Renames updatedAt field to 'updatedat'
         },
         pool: {
             max: 10,
