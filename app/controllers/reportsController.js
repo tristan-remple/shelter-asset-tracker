@@ -271,7 +271,8 @@ exports.getSummary = async (req, res, next) => {
                                     'src',
                                     'name',
                                     'alt'
-                                ]
+                                ],
+                                as: 'iconAssociation'
                             }
                         }, {
                             model: models.user,
@@ -314,10 +315,10 @@ exports.getSummary = async (req, res, next) => {
                             id: item.templateid,
                             name: item.template.name,
                             icon: {
-                                id: item.template.icon.id,
-                                src: item.template.icon.src,
-                                name: item.template.icon.name,
-                                alt: item.template.icon.alt
+                                id: item.template.iconAssociation.id,
+                                src: item.template.iconAssociation.src,
+                                name: item.template.iconAssociation.name,
+                                alt: item.template.iconAssociation.alt
                             },
                             count: 1
                         };
@@ -339,10 +340,10 @@ exports.getSummary = async (req, res, next) => {
                         id: item.template.id,
                         name: item.template.name,
                         icon: {
-                            id: item.template.icon.id,
-                            src: item.template.icon.src,
-                            name: item.template.icon.name,
-                            alt: item.template.icon.alt
+                            id: item.template.iconAssociation.id,
+                            src: item.template.iconAssociation.src,
+                            name: item.template.iconAssociation.name,
+                            alt: item.template.iconAssociation.alt
                         }
                     },
                     eol: item.eol,
