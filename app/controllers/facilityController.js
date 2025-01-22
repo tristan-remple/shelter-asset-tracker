@@ -37,7 +37,7 @@ exports.getFacilityById = async (req, res, next) => {
     try {
         const facilityId = req.params.id;
 
-        const facility = await models.Facility.findOne({
+        const facility = await models.facility.findOne({
             attributes: [
                 'id',
                 'name',
