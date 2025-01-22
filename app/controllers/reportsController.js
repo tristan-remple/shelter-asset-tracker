@@ -106,7 +106,7 @@ const getInventory = async (facility) => {
                 },
                 {
                     model: models.user,
-                    as: 'addedByUser',
+                    as: 'addedbyuser',
                     attributes: ['name']
                 },
                 {
@@ -146,7 +146,7 @@ const getInventory = async (facility) => {
                 unitName: item.unit.name,
                 vendor: item.vendor,
                 invoice: item.invoice,
-                addedBy: item.addedByUser.name,
+                addedBy: item.addedbyuser.name,
                 status: item.status,
                 inspectedBy: lastComment.user ? lastComment.user.name : null,
                 lastComment: lastComment.createdAt ? lastComment.createdAt : null,
@@ -277,7 +277,7 @@ exports.getSummary = async (req, res, next) => {
                         }, {
                             model: models.user,
                             attributes: ['id', 'name'],
-                            as: 'addedByUser',
+                            as: 'addedbyuser',
                             paranoid: false
                         }, {
                             model: models.comment,
@@ -349,8 +349,8 @@ exports.getSummary = async (req, res, next) => {
                     eol: item.eol,
                     status: item.status,
                     addedBy: {
-                        id: item.addedByUser.id,
-                        name: item.addedByUser.name
+                        id: item.addedbyuser.id,
+                        name: item.addedbyuser.name
                     },
                     commentRecord: item.comments ? item.comments.map(comment => ({
                         id: comment.id,

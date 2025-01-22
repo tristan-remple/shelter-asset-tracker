@@ -43,7 +43,7 @@ exports.getItemById = async (req, res, next) => {
             {
                 model: models.user,
                 attributes: ['id', 'name'],
-                as: 'addedByUser',
+                as: 'addedbyuser',
                 paranoid: false
             },
             {
@@ -125,8 +125,8 @@ exports.sendItem = async (req, res, next) => {
             } : null
         },
         addedBy: {
-            id: item.addedByUser.id,
-            name: item.addedByUser.name,
+            id: item.addedbyuser.id,
+            name: item.addedbyuser.name,
         },
         commentRecord: item.comments ? item.comments.map(comment => ({
             id: comment,
