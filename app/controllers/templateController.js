@@ -8,7 +8,7 @@ exports.getAllTemplates = async (req, res, next) => {
                 'id',
                 'name',
                 'defaultvalue',
-                'defaultUsefullife',
+                'defaultusefullife',
                 'singleresident'
             ],
             include: {
