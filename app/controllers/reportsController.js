@@ -257,8 +257,8 @@ exports.getSummary = async (req, res, next) => {
                             'vendor',
                             'eol',
                             'status',
-                            'createdAt',
-                            'updatedAt'
+                            'createdat',
+                            'updatedat'
                         ],
                         include: [{
                             model: models.template,
@@ -283,7 +283,7 @@ exports.getSummary = async (req, res, next) => {
                             attributes: [
                                 'id',
                                 'comment',
-                                'createdAt'
+                                'createdat'
                             ],
                             include: {
                                 model: models.user,
@@ -307,7 +307,7 @@ exports.getSummary = async (req, res, next) => {
 
             facility.units.forEach(unit => {
                 unit.items.forEach(item => {
-                    totalValue += +calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
+                    totalValue += +calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
 
                     if (!itemCount[item.template.id]) {
                         itemCount[item.template.id] = {
@@ -358,15 +358,15 @@ exports.getSummary = async (req, res, next) => {
                             name: comment.user.name
                         },
                         comment: comment.comment,
-                        createdAt: comment.createdAt
+                        createdAt: comment.createdat
                     })) : [],
                     value: {
                         initialValue: item.initialvalue,
                         donated: item.donated,
-                        currentValue: calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate),
+                        currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
                     },
-                    createdAt: item.createdAt,
-                    updatedAt: item.updatedAt
+                    createdAt: item.createdat,
+                    updatedAt: item.updatedat
                 }))
             }));
 
