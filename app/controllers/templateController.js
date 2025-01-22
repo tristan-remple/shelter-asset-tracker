@@ -18,7 +18,8 @@ exports.getAllTemplates = async (req, res, next) => {
                     'src',
                     'name',
                     'alt'
-                ]
+                ],
+                as: 'iconAssociation'
             }
         });
 
@@ -44,7 +45,7 @@ exports.getTemplateById = async (req, res, next) => {
                 'id',
                 'name',
                 'defaultvalue',
-                'defaultUsefullife',
+                'defaultusefullife',
                 'singleresident',
                 'createdat',
                 'updatedat',
@@ -61,7 +62,8 @@ exports.getTemplateById = async (req, res, next) => {
                     'src',
                     'name',
                     'alt'
-                ]
+                ],
+                as: 'iconAssociation'
             }]
         });
 
