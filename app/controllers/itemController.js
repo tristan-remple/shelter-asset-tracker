@@ -117,12 +117,7 @@ exports.sendItem = async (req, res, next) => {
         template: {
             id: item.template.id,
             name: item.template.name,
-            icon: item.template.iconAssociaton ? {
-                id: item.template.iconAssociation.id,
-                src: item.template.iconAssociation.src,
-                name: item.template.iconAssociation.name,
-                alt: item.template.iconAssociation.alt,
-            } : null
+            iconAssociation: item.template.itemAssociation ?? null
         },
         addedBy: {
             id: item.addedbyuser.id,
@@ -167,7 +162,7 @@ exports.createNewItem = async (req, res, next) => {
             templateid: templateId,
             donated: donated,
             initialvalue: initialValue,
-            eol: getEoL(usefulLifeOffset),
+            eol: getEoL(usefulLifeOffset, null),
             addedby: addedBy,
             status: 'ok'
         });
@@ -285,14 +280,16 @@ exports.getDeleted = async (req, res, next) => {
     try {
         const deletedItems = await models.item.findAll({
             where: Sequelize.where(Sequelize.col('item.deletedat'), 'IS NOT', null),
-            include: {
+            include: [{
                 model: models.unit,
                 attributes: ['name'],
                 include: {
                     model: models.facility,
                     attributes: ['name']
-                }
-            },
+                }}, {
+                    model: models.template,
+                    attributes: ['name']
+            }],
             paranoid: false
         });
 
