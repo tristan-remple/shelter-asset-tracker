@@ -67,7 +67,7 @@ const CategoryEdit = () => {
                         defaultValue: parseFloat(data.defaultValue),
                         depreciationRate: parseFloat(data.depreciationRate) * 100,
                         defaultUsefulLife: parseInt(data.defaultUsefulLife),
-                        icon: data.Icon,
+                        icon: data.iconAssociation,
                         singleResident: data.singleResident,
                         errorFields: []
                     })
