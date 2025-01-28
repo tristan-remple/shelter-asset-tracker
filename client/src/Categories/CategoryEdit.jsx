@@ -186,7 +186,7 @@ const CategoryEdit = () => {
                             { response.itemCount }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Updated
                         </div>
@@ -201,7 +201,7 @@ const CategoryEdit = () => {
                         <div className="col-content">
                             { friendlyDate(response.createdAt) }
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">

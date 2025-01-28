@@ -84,7 +84,7 @@ const CategoryDetails = () => {
                             { response.itemCount }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Updated
                         </div>
@@ -99,7 +99,7 @@ const CategoryDetails = () => {
                         <div className="col-content">
                             { friendlyDate(response.createdAt) }
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">
@@ -107,8 +107,8 @@ const CategoryDetails = () => {
                             Default Useful Life
                         </div>
                         <div className="col-content">
-                            { response.defaultUsefulLife } months<br />
-                            Equivalent to { (response.defaultUsefulLife / 12).toFixed(1) } years
+                            { response.defaultusefullife } months<br />
+                            Equivalent to { (response.defaultusefullife / 12).toFixed(1) } years
                         </div>
                     </div>
                     <div className="col col-info">
@@ -116,7 +116,7 @@ const CategoryDetails = () => {
                             Default Value
                         </div>
                         <div className="col-content">
-                            { `$${ parseFloat(response.defaultValue).toFixed(2) }` }
+                            { `$${ response.defaultvalue }` }
                         </div>
                     </div>
                     <div className="col col-info">
