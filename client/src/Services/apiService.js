@@ -134,7 +134,6 @@ class apiService {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
-                console.log(err)
                 callback({ error: errorCodes[err.response.status] })
             }
         })
@@ -202,7 +201,6 @@ class apiService {
 
     // Called by: LocationDetails, LocationEdit, LocationDelete
     singleLocation= async(id, callback) => {
-        console.log(id)
         await axios.get(`${ import.meta.env.VITE_API_URL }/facilities/${ id }`, {
             withCredentials: true
         })
@@ -528,14 +526,12 @@ class apiService {
             withCredentials: true
         })
         .then(res => {
-            console.log(res)
             callback(res.data)
         })
         .catch(err => {
             if (err.code === "ERR_NETWORK") {
                 callback({ error: errorCodes[500] })
             } else {
-                console.log(err)
                 callback({ error: errorCodes[err.response.status] })
             }
         })

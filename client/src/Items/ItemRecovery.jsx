@@ -64,14 +64,16 @@ const ItemRecovery = () => {
                     <tr key={ item.id } >
                         <td>{ item.name }</td>
                         <td>{ capitalize(item.template) }</td>
-                        <td>{ item.Unit?.name }</td>
-                        <td>{ item.Unit?.Facility.name }</td>
-                        <td>{ adminDate(item.deletedAt) }</td>
+                        <td>{ item.unit?.name }</td>
+                        <td>{ item.unit?.facility.name }</td>
+                        <td>{ adminDate(item.deletedat) }</td>
                         <td><Button text="Restore" linkTo={ () => restoreItem(item.id) } type="small" /></td>
                     </tr>
                 )
             })
             setDisplayItems(display)
+        } else {
+            setDisplayItems([])
         }
     }, [ items, filteredItems, status ])
 

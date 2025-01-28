@@ -124,7 +124,7 @@ const ItemDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        { template.icon ? <img className="img-fluid icon" src={ `/img/${ template.icon.src }` } alt={ template.icon.name + " icon" } /> : "No Icon" }
+                        { template.iconAssociation ? <img className="img-fluid icon" src={ `/img/${ template.iconAssociation.src }` } alt={ template.iconAssociation.name + " icon" } /> : "No Icon" }
                         
                     </div>
                     <div className="col-8 col-content">
