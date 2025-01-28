@@ -43,7 +43,7 @@ exports.updateAuthorization = async (req, res, next) => {
     try {
         const facilities = await models.facilityauth.findAll({
             attributes: ['userid', 'facilityid'],
-            where: { userId: userId }
+            where: { userid: userId }
         });
 
         const currentAuths = facilities.map(facility => facility.facilityid);
