@@ -195,6 +195,8 @@ exports.updateItem = async (req, res, next) => {
         const item = req.data;
         const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
 
+        const eol = usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol;
+
         if (comment !== '') {
             await models.comment.create({
                 comment: comment,
@@ -208,7 +210,7 @@ exports.updateItem = async (req, res, next) => {
             invoice: invoice,
             vendor: vendor,
             initialvalue: initialValue,
-            eol: usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol,
+            eol: eol,
             status: status
         });
 

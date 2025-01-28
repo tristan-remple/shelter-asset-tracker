@@ -35,6 +35,7 @@ exports.updateIsAdmin = async (req, res, next) => {
 exports.updateAuthorization = async (req, res, next) => {
     const { facilityAuths } = req.body;
     const userId = +req.params.id;
+
     if (!userId || !facilityAuths) {
         return res.status(400).json({ message: 'Bad request.' });
     };
@@ -42,12 +43,12 @@ exports.updateAuthorization = async (req, res, next) => {
     try {
         const facilities = await models.facilityauth.findAll({
             attributes: ['userid', 'facilityid'],
-            where: { userId: userId }
+            where: { userid: userId }
         });
 
         const currentAuths = facilities.map(facility => facility.facilityid);
-        const addedAuths = facilityAuths.filter(facilityId => !currentAuths.includes(facilityId));
-        const removedAuths = currentAuths.filter(facilityId => !facilityAuths.includes(facilityId));
+        const addedAuths = facilityAuths.filter(facilityId => !currentAuths.includes(parseInt(facilityId)));
+        const removedAuths = currentAuths.filter(facilityId => !facilityAuths.includes(parseInt(facilityId)));
 
         for (const facilityId of addedAuths) {
             await models.facilityauth.create({

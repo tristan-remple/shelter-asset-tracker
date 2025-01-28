@@ -20,7 +20,7 @@ router.use('/icons', iconsRouter);
 router.use('/items', itemsRouter);
 router.use('/templates', templateRouter);
 router.use('/units', unitsRouter);
-router.use('/users/authorize', authorizeRouter);
+router.use('/authorize', authorizeRouter);
 router.use('/users', usersRouter);
 
 /*SAT Session Routes*/

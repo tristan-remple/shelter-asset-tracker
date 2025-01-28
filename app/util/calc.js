@@ -31,12 +31,13 @@ exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
   }
 };
 
-exports.getEoL = (months, startDate) => {
+exports.getEoL = async (months, startDate) => {
 
   const offset = parseInt(months, 10);
+
   if (!startDate) {
     startDate = new Date();
-  } else if (!offset || isNaN(offset) || isNaN(startDate.getTime())) {
+  } else if (!offset || isNaN(offset)) {
     throw new Error("Invalid input.");
   };
 
