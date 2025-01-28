@@ -445,7 +445,7 @@ class apiService {
     // Called by: UserEdit
     postUserAuths = async(user, callback) => {
         const id = user.id
-        await axios.post(`${ import.meta.env.VITE_API_URL }/users/authorize/${ id }`, user, {
+        await axios.post(`${ import.meta.env.VITE_API_URL }/authorize/${ id }`, user, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"

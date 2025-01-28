@@ -48,10 +48,10 @@ const CategoryList = () => {
         return (
             <tr key={ item.id } >
                 <td className="col-icon">
-                    <img className="small-icon" src={ `/img/${ item.iconAssociation.src }` } alt={ `${ item.iconAssociation.name } icon` } />
+                    <img className="small-icon" src={ `/img/${ item.iconAssociation?.src }` } alt={ `${ item.iconAssociation?.name } icon` } />
                 </td>
                 <td>{ item.name }</td>
-                <td className="col-right">${ item.defaultValue }</td>
+                <td className="col-right">${ item.defaultvalue }</td>
                 <td>{ item.singleResident ? "Yes" : "No" }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
             </tr>
