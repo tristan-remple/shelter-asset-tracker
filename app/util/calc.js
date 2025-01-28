@@ -32,14 +32,15 @@ exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
 };
 
 exports.getEoL = (months, startDate) => {
-  // Check if passed valid startDate
-  // If not, generate new date
-  if (!startDate || !(startDate instanceof Date) || isNaN(startDate.getTime())) {
-    startDate = new Date();
-  }
 
-  // Add specified months
+  const offset = parseInt(months, 10);
+  if (!startDate) {
+    startDate = new Date();
+  } else if (!offset || isNaN(offset) || isNaN(startDate.getTime())) {
+    throw new Error("Invalid input.");
+  };
+
   startDate.setMonth(startDate.getMonth() + months);
 
   return startDate.getTime();
-}
+};

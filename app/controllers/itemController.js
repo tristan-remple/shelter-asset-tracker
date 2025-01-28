@@ -99,7 +99,7 @@ exports.sendItem = async (req, res, next) => {
         attributes: ['value'],
         where: { name: 'depreciationRate' }
     });
-    const currentValue = calculateCurrentValue(item.initialvalue, item.createdAt, depreciationRate);
+    const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
 
     const itemProfile = {
         id: item.id,
@@ -162,7 +162,7 @@ exports.createNewItem = async (req, res, next) => {
             templateid: templateId,
             donated: donated,
             initialvalue: initialValue,
-            eol: getEoL(usefulLifeOffset, null),
+            eol: getEoL(usefulLifeOffset),
             addedby: addedBy,
             status: 'ok'
         });
