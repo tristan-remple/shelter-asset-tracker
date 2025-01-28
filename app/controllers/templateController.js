@@ -64,7 +64,11 @@ exports.getTemplateById = async (req, res, next) => {
                     'alt'
                 ],
                 as: 'iconAssociation'
-            }]
+            }],
+            group: [
+                'template.id',
+                'iconAssociation.id'
+            ]
         });
 
         if (template.id === null) {

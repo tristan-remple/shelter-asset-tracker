@@ -1,8 +1,8 @@
 exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
   try {
-    // Ensure the inputs are valid
-    if (!initialValue || !createdAt || !depreciationRate) {
-      throw new Error("Invalid input");
+    initialValue = parseFloat(initialValue);
+    if (!initialValue || !createdAt || !depreciationRate || isNaN(initialValue)) {
+      throw new Error("Invalid input.");
     }
 
     const now = new Date();

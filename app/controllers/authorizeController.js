@@ -41,7 +41,7 @@ exports.updateAuthorization = async (req, res, next) => {
 
     try {
         const facilities = await models.facilityauth.findAll({
-            attributes: ['userId', 'facilityId'],
+            attributes: ['userid', 'facilityid'],
             where: { userId: userId }
         });
 
