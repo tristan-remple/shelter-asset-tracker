@@ -31,7 +31,7 @@ exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
   }
 };
 
-exports.getEoL = async (months, startDate) => {
+exports.getEoL = (months, startDate) => {
 
   const offset = parseInt(months, 10);
 
@@ -41,7 +41,7 @@ exports.getEoL = async (months, startDate) => {
     throw new Error("Invalid input.");
   };
 
-  await startDate.setMonth(startDate.getMonth() + months);
+  startDate.setMonth(startDate.getMonth() + months);
 
   return startDate;
 };
