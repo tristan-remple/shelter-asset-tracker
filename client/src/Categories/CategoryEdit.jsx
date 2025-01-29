@@ -67,7 +67,7 @@ const CategoryEdit = () => {
                         defaultValue: parseFloat(data.defaultValue),
                         depreciationRate: parseFloat(data.depreciationRate) * 100,
                         defaultUsefulLife: parseInt(data.defaultUsefulLife),
-                        icon: data.Icon,
+                        icon: data.iconAssociation,
                         singleResident: data.singleResident,
                         errorFields: []
                     })
@@ -186,7 +186,7 @@ const CategoryEdit = () => {
                             { response.itemCount }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    {/* <div className="col col-info">
                         <div className="col-head">
                             Updated
                         </div>
@@ -201,7 +201,7 @@ const CategoryEdit = () => {
                         <div className="col-content">
                             { friendlyDate(response.createdAt) }
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="row row-info">
                     <div className="col col-info">

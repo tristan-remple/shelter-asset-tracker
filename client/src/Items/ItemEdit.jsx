@@ -153,11 +153,23 @@ const ItemEdit = () => {
         setUnsaved(true)
     }
 
+    // https://stackoverflow.com/questions/2536379/difference-in-months-between-two-dates-in-javascript
+    function monthDiff(d1, d2) {
+        d1 = new Date(d1)
+        d2 = new Date(d2)
+        var months;
+        months = (d2.getFullYear() - d1.getFullYear()) * 12
+        months -= d1.getMonth()
+        months += d2.getMonth()
+        return months
+    }
+
     // sends the item object to the apiService
     const saveChanges = async() => {
         const newItem = {...changes}
         newItem.id = item.id
         newItem.unitId = unitList.filter(room => room.name === unit)[0].unitId
+        newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {

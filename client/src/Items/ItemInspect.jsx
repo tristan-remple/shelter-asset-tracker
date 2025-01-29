@@ -139,10 +139,23 @@ const ItemInspect = () => {
         const eolTime = new Date(changes.eol).getTime()
         if (eolTime <= now && changes.flag !== "discard") {
             setEolError(true)
+        } else {
+            setEolError(false)
         }
     }, [ changes ])
 
     const [ confirm, setConfirm ] = useState(false)
+    
+    // https://stackoverflow.com/questions/2536379/difference-in-months-between-two-dates-in-javascript
+    function monthDiff(d1, d2) {
+        d1 = new Date(d1)
+        d2 = new Date(d2)
+        var months;
+        months = (d2.getFullYear() - d1.getFullYear()) * 12
+        months -= d1.getMonth()
+        months += d2.getMonth()
+        return months
+    }
 
     // sends the item object to the apiService
     const saveChanges = async() => {
@@ -152,6 +165,7 @@ const ItemInspect = () => {
         newItem.status = changes.status
         newItem.comment = changes.comment
         newItem.eol = changes.eol
+        newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
 
         if (newItem.status === item.status && !confirm) {
             if (newItem.comment === "" && newItem.eol === item.eol) {

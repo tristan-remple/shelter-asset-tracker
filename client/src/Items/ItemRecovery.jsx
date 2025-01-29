@@ -63,7 +63,7 @@ const ItemRecovery = () => {
                 return (
                     <tr key={ item.id } >
                         <td>{ item.name }</td>
-                        <td>{ capitalize(item.template) }</td>
+                        <td>{ capitalize(item.template.name) }</td>
                         <td>{ item.unit?.name }</td>
                         <td>{ item.unit?.facility.name }</td>
                         <td>{ adminDate(item.deletedat) }</td>
