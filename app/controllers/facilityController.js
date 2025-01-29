@@ -11,7 +11,7 @@ exports.getAllFacilities = async (req, res, next) => {
                     SELECT COUNT(*)
                     FROM units
                     WHERE units.facilityId = facility.id
-                )`), 'units']
+                )`), 'unitCount']
             ],
             include: [
                 {
@@ -20,7 +20,7 @@ exports.getAllFacilities = async (req, res, next) => {
                     required: false
                 }
             ],
-            group: ['facility.id', 'facility.name']
+            group: ['facility.id']
         });
 
         if (!facilities) {
