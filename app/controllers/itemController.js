@@ -204,8 +204,10 @@ exports.updateItem = async (req, res, next) => {
             where: { id: +newUnit }
         });
 
-        if (!req.facilities.includes(newFacility)){
-            return res.status(403).json({ message: 'Forbidden.'});
+        if (!req.isAdmin){
+            if (!req.facilities.includes(newFacility)){
+                return res.status(403).json({ message: 'Forbidden.'});
+            };
         };
 
         const eol = usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol;
