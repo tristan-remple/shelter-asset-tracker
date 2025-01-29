@@ -36,6 +36,10 @@ exports.getEoL = (months, date) => {
   const offset = parseInt(months, 10);
   const startDate = date ? new Date(date) : new Date();
 
+  if (offset === 0) {
+    return startDate;
+  }
+
   if (!offset || isNaN(offset)) {
     throw new Error("Invalid input.");
   };
