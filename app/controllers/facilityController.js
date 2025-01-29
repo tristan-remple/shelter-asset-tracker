@@ -10,8 +10,8 @@ exports.getAllFacilities = async (req, res, next) => {
                 [Sequelize.literal(`(
                     SELECT COUNT(*)
                     FROM units
-                    WHERE units.facilityId = facility.id
-                )`), 'unitCount']
+                    WHERE units.facilityid = facility.id
+                )`), 'units']
             ],
             include: [
                 {
