@@ -25,9 +25,9 @@ exports.getAllFacilities = async (req, res, next) => {
             return res.status(404).json({ error: 'Facilities not found.' })
         }; 
         
-        const filteredFacilities = req.isAdmin ? facilities : facilities.filter( facility => facility.facilityauths );
+        const filteredFacilities = facilities.filter( facility => facility.facilityauths );
 
-        return res.status(200).json(filteredFacilities);
+        return res.status(200).json(req.isAdmin ? facilities : filteredFacilities);
 
     } catch (err) {
         console.error(err);
