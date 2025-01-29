@@ -43,5 +43,5 @@ exports.getEoL = async (months, startDate) => {
 
   startDate.setMonth(startDate.getMonth() + months);
 
-  return startDate;
+  return startDate.getTime();
 };
