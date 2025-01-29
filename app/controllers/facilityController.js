@@ -11,8 +11,7 @@ exports.getAllFacilities = async (req, res, next) => {
             include: [
                 {
                     model: models.unit,
-                    attributes: [],
-                    required: false
+                    attributes: ['id']
                 }
             ]
         });
