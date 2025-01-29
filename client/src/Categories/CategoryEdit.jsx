@@ -47,7 +47,7 @@ const CategoryEdit = () => {
         depreciationRate: null,
         defaultusefullife: null,
         icon: null,
-        singleResident: null,
+        singleresident: null,
         errorFields: []
     })
 
@@ -81,7 +81,7 @@ const CategoryEdit = () => {
     // handles single resident checkbox
     const checkHandler = () => {
         const newChanges = { ...changes }
-        newChanges.singleResident = changes.singleResident ? false : true
+        newChanges.singleresident = changes.singleresident ? false : true
         setChanges(newChanges)
         setUnsaved(true)
     }
@@ -104,7 +104,10 @@ const CategoryEdit = () => {
 
         const editedCategory = {...changes}
         editedCategory.icon = changes.icon.id
-        editedCategory.depreciationRate = changes.depreciationRate / 100
+        editedCategory.defaultUsefulLife = editedCategory.defaultusefullife
+        editedCategory.defaultValue = editedCategory.defaultvalue
+        editedCategory.singleResident = editedCategory.singleresident
+
         await apiService.postCategoryEdit(editedCategory, (res) => {
             if (res.success) {
                 setStatus({

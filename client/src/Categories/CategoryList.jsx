@@ -52,7 +52,7 @@ const CategoryList = () => {
                 </td>
                 <td>{ item.name }</td>
                 <td className="col-right">${ item.defaultvalue }</td>
-                <td>{ item.singleResident ? "Yes" : "No" }</td>
+                <td>{ item.singleresident ? "Yes" : "No" }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
             </tr>
         )
