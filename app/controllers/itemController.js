@@ -195,21 +195,6 @@ exports.updateItem = async (req, res, next) => {
         const item = req.data;
         const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit } = req.body;
 
-        const newFacility = await models.unit.findOne({
-            attributes: [],
-            include: {
-                model: models.facility,
-                attributes: ['id']
-            },
-            where: { id: +newUnit }
-        });
-
-        if (!req.isAdmin){
-            if (!req.facilities.includes(newFacility)){
-                return res.status(403).json({ message: 'Forbidden.'});
-            };
-        };
-
         if (comment !== '') {
             await models.comment.create({
                 comment: comment,
