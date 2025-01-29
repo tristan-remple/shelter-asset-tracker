@@ -210,8 +210,6 @@ exports.updateItem = async (req, res, next) => {
             };
         };
 
-        const eol = usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol;
-
         if (comment !== '') {
             await models.comment.create({
                 comment: comment,
@@ -220,12 +218,12 @@ exports.updateItem = async (req, res, next) => {
             });
         };
 
-        await item.set({
+        item.set({
             name: name,
             invoice: invoice,
             vendor: vendor,
             initialvalue: initialValue,
-            eol: eol,
+            eol: getEoL(usefulLifeOffset, item.eol),
             status: status,
             unit: newUnit
         });
