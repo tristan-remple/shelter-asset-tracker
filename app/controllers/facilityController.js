@@ -6,12 +6,7 @@ exports.getAllFacilities = async (req, res, next) => {
         const facilities = await models.facility.findAll({
             attributes: [
                 'id',
-                'name',
-                [Sequelize.literal(`(
-                    SELECT COUNT(*)
-                    FROM units
-                    WHERE units.facilityid = facility.id
-                )`), 'units']
+                'name'
             ],
             include: [
                 {
@@ -19,8 +14,7 @@ exports.getAllFacilities = async (req, res, next) => {
                     attributes: [],
                     required: false
                 }
-            ],
-            group: ['facility.id']
+            ]
         });
 
         if (!facilities) {
