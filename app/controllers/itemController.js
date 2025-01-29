@@ -193,7 +193,20 @@ exports.createNewItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment } = req.body;
+        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit } = req.body;
+
+        const newFacility = await models.unit.findOne({
+            attributes: [],
+            include: {
+                model: models.facility,
+                attributes: ['id']
+            },
+            where: { id: +newUnit }
+        });
+
+        if (!req.facilities.includes(newFacility)){
+            return res.status(403).json({ message: 'Forbidden.'});
+        };
 
         const eol = usefulLifeOffset ? getEoL(usefulLifeOffset, item.eol) : item.eol;
 
@@ -211,7 +224,8 @@ exports.updateItem = async (req, res, next) => {
             vendor: vendor,
             initialvalue: initialValue,
             eol: eol,
-            status: status
+            status: status,
+            unit: newUnit
         });
 
         const depreciationRate = await models.setting.findOne({
