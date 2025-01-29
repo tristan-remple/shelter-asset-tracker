@@ -162,14 +162,12 @@ const ItemCreate = () => {
             return
         }
 
-        console.log(changes.template)
-
         const changes = {...newItem}
 
-        changes.templateId = changes.template.id
+        changes.templateId = newItem.template.id
         changes.addedBy = userDetails.userId
         changes.donated = newItem.donated ? 1 : 0
-        changes.usefulLifeOffset = changes.template.defaultUsefulLife
+        changes.usefulLifeOffset = newItem.template.defaultusefullife
 
         // send api request and process api response
         await apiService.postNewItem(changes, (response => {
