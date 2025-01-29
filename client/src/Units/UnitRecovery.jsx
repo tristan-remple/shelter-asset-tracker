@@ -33,6 +33,7 @@ const UnitRecovery = () => {
                 } else {
                     setUnits(data)
                     setFilteredUnits(data)
+                    console.log(data)
                     setErr(null)
                 }
             })
@@ -69,7 +70,7 @@ const UnitRecovery = () => {
             return (
                 <tr key={ unit.id } >
                     <td>{ unit.name }</td>
-                    <td>{ unit.facility.name }</td>
+                    {/* <td>{ unit.facility?.name }</td> */}
                     <td>{ adminDate(unit.deletedat) }</td>
                     <td><Button text="Restore" linkTo={ () => restoreUnit(unit.id) } type="small" /></td>
                 </tr>
@@ -95,7 +96,7 @@ const UnitRecovery = () => {
                     <thead>
                         <tr>
                             <th scope="col">Label</th>
-                            <th scope="col">Location</th>
+                            {/* <th scope="col">Location</th> */}
                             <th scope="col">Deleted Date</th>
                             <th scope="col">Restore</th>
                         </tr>

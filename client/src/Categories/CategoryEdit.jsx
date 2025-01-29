@@ -43,9 +43,9 @@ const CategoryEdit = () => {
     const [ changes, setChanges ] = useState({
         id: null,
         name: null,
-        defaultValue: null,
+        defaultvalue: null,
         depreciationRate: null,
-        defaultUsefulLife: null,
+        defaultusefullife: null,
         icon: null,
         singleResident: null,
         errorFields: []
@@ -61,16 +61,11 @@ const CategoryEdit = () => {
                 } else {
                     setResponse(data)
                     setErr(null)
-                    setChanges({
-                        id: id,
-                        name: data.name,
-                        defaultValue: parseFloat(data.defaultValue),
-                        depreciationRate: parseFloat(data.depreciationRate) * 100,
-                        defaultUsefulLife: parseInt(data.defaultUsefulLife),
-                        icon: data.iconAssociation,
-                        singleResident: data.singleResident,
-                        errorFields: []
-                    })
+
+                    data.icon = data.iconAssociation
+                    data.errorFields = []
+                    console.log(data)
+                    setChanges(data)
                 }
             })
         })()
@@ -94,7 +89,7 @@ const CategoryEdit = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
 
-        if (changes.name === "" || changes.defaultUsefulLife == "" || changes.defaultValue == "" || changes.icon === "" || changes.errorFields.length > 0) {
+        if (changes.name === "" || changes.defaultusefullife == "" || changes.defaultvalue == "" || changes.icon === "" || changes.errorFields.length > 0) {
             setForceValidation(forceValidation + 1)
             setStatus({
                 message: "Please check that all category fields are filled in correctly.",
@@ -173,7 +168,7 @@ const CategoryEdit = () => {
                             <Checkbox 
                                 id="singleResident"
                                 name="Single Resident"
-                                checked={ changes.singleResident }
+                                checked={ changes.singleresident }
                                 changeHandler={ checkHandler }
                             />
                         </div>
@@ -211,13 +206,13 @@ const CategoryEdit = () => {
                         <div className="col-content">
                             <RegularField 
                                 type="number"
-                                name="defaultUsefulLife"
+                                name="defaultusefullife"
                                 formControls={ formControls }
                                 required={ true }
                                 tabIndex={ selector ? -1 : 0 }
                             />
                             <br />
-                            { changes.errorFields.indexOf("defaultUsefulLife") === -1 && `Equivalent to ${ (changes.defaultUsefulLife / 12).toFixed(1) } years` }
+                            { changes.errorFields.indexOf("defaultusefullife") === -1 && `Equivalent to ${ (changes.defaultusefullife / 12).toFixed(1) } years` }
                         </div>
                     </div>
                     <div className="col col-info">
@@ -227,7 +222,7 @@ const CategoryEdit = () => {
                         <div className="col-content mt-2">
                             <RegularField 
                                 type="number"
-                                name="defaultValue"
+                                name="defaultvalue"
                                 step=".01"
                                 formControls={ formControls }
                                 required={ true }
