@@ -117,7 +117,7 @@ exports.sendItem = async (req, res, next) => {
         template: {
             id: item.template.id,
             name: item.template.name,
-            iconAssociation: item.template.itemAssociation ?? null
+            iconAssociation: item.template.itemAssociation
         },
         addedBy: {
             id: item.addedbyuser.id,
