@@ -161,11 +161,12 @@ const ItemInspect = () => {
     const saveChanges = async() => {
 
         const newItem = {...item}
-        newItem.unitId = item.unit.id
+        newItem.newUnit = item.unit.id
         newItem.status = changes.status
         newItem.comment = changes.comment
         newItem.eol = changes.eol
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
+        console.log(newItem)
 
         if (newItem.status === item.status && !confirm) {
             if (newItem.comment === "" && newItem.eol === item.eol) {
