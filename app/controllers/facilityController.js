@@ -186,7 +186,7 @@ exports.deleteFacility = async (req, res, next) => {
         };
 
         await models.facilityauth.destroy({
-            where: { facilityId }
+            where: { facilityid: facilityId }
         });
 
         const deletedFacility = await facility.destroy();
