@@ -225,7 +225,7 @@ exports.updateItem = async (req, res, next) => {
             invoice: invoice,
             vendor: vendor,
             initialvalue: initialValue,
-            eol: eol,
+            eol: new Date(eol),
             status: status,
             unit: newUnit
         });
