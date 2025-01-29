@@ -9,7 +9,7 @@ const facilityController = require('../../controllers/facilityController');
 
 // Define routes for handling facility operations
 router.route('/')
-    .get(admin, facilityController.getAllFacilities)
+    .get(auth, facilityController.getAllFacilities)
     .post(admin, facilityController.createNewFacility);
 
 router.route('/deleted')

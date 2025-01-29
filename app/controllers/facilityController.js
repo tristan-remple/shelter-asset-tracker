@@ -12,15 +12,21 @@ exports.getAllFacilities = async (req, res, next) => {
                 {
                     model: models.unit,
                     attributes: ['id']
+                },
+                {
+                    model: models.facilityauth,
+                    attributes: ['userid']
                 }
             ]
         });
+
+        const filteredFacilities = req.isAdmin ? facilities : facilities.filter(facility => facility.facilityauths.includes(req.userId));
 
         if (!facilities) {
             return res.status(404).json({ error: 'Facilities not found.' })
         };
 
-        return res.status(200).json(facilities);
+        return res.status(200).json(filteredFacilities);
 
     } catch (err) {
         console.error(err);
