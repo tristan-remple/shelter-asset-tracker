@@ -64,8 +64,8 @@ const ItemRecovery = () => {
                     <tr key={ item.id } >
                         <td>{ item.name }</td>
                         <td>{ capitalize(item.template.name) }</td>
-                        <td>{ item.unit?.name }</td>
-                        <td>{ item.unit?.facility.name }</td>
+                        {/* <td>{ item.unit?.name }</td>
+                        <td>{ item.unit?.facility.name }</td> */}
                         <td>{ adminDate(item.deletedat) }</td>
                         <td><Button text="Restore" linkTo={ () => restoreItem(item.id) } type="small" /></td>
                     </tr>
@@ -107,8 +107,8 @@ const ItemRecovery = () => {
                         <tr>
                             <th scope="col">Label</th>
                             <th scope="col">Category</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col">Location</th>
+                            {/* <th scope="col">Unit</th>
+                            <th scope="col">Location</th> */}
                             <th scope="col">Deleted Date</th>
                             <th scope="col">Restore</th>
                         </tr>

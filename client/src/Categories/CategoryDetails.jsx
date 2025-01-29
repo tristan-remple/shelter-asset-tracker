@@ -73,7 +73,7 @@ const CategoryDetails = () => {
                             Single Resident
                         </div>
                         <div className="col-content">
-                            { response.singleResident ? "Yes" : "No" }
+                            { response.singleresident ? "Yes" : "No" }
                         </div>
                     </div>
                     <div className="col col-info">

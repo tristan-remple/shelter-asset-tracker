@@ -63,7 +63,7 @@ const LocationRecovery = () => {
         return (
             <tr key={ loc.id } >
                 <td>{ loc.name }</td>
-                <td>{ adminDate(loc.deletedAt) }</td>
+                <td>{ adminDate(loc.deletedat) }</td>
                 <td><Button text="Restore" linkTo={ () => restoreLocation(loc.id) } type="small" /></td>
             </tr>
         )
