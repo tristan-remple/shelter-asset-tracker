@@ -168,7 +168,7 @@ const ItemEdit = () => {
     const saveChanges = async() => {
         const newItem = {...changes}
         newItem.id = item.id
-        newItem.unitId = unitList.filter(room => room.name === unit)[0].unitId
+        newItem.newUnit = unitList.filter(room => room.name === unit)[0].unitId
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
 
         await apiService.postItemEdit(newItem, (response) => {

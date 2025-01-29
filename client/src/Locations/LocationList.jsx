@@ -37,6 +37,7 @@ const LocationList = () => {
                     setErr(data.error)
                 } else {
                     setResponse(data)
+                    console.log(data)
                     setErr(null)
                 }
             })
@@ -68,7 +69,7 @@ const LocationList = () => {
         return (
             <tr key={ item.id } >
                 <td>{ item.name }</td>
-                <td>{ item.units }</td>
+                <td>{ item.units.length }</td>
                 <td><Button text="Details" linkTo={ `/location/${ item.id }` } type="small" /></td>
             </tr>
         )

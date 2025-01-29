@@ -161,7 +161,7 @@ const ItemInspect = () => {
     const saveChanges = async() => {
 
         const newItem = {...item}
-        newItem.unitId = item.unit.id
+        newItem.newUnit = item.unit.id
         newItem.status = changes.status
         newItem.comment = changes.comment
         newItem.eol = changes.eol
