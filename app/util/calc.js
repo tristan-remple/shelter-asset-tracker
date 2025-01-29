@@ -41,7 +41,7 @@ exports.getEoL = async (months, startDate) => {
     throw new Error("Invalid input.");
   };
 
-  startDate.setMonth(startDate.getMonth() + months);
+  await startDate.setMonth(startDate.getMonth() + months);
 
   return startDate;
 };
