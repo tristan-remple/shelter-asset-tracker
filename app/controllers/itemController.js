@@ -220,7 +220,7 @@ exports.updateItem = async (req, res, next) => {
             });
         };
 
-        item.set({
+        await item.set({
             name: name,
             invoice: invoice,
             vendor: vendor,
