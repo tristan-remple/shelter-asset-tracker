@@ -10,7 +10,7 @@ import Comment from './Comment'
 // It takes an array of comment objects.
 // Imported by: ItemDetails
 
-const CommentBox = ({ comments }) => {
+const CommentBox = ({ comments, setPreview }) => {
 
     if (!comments || comments.length == 0) {
         return (
@@ -26,11 +26,11 @@ const CommentBox = ({ comments }) => {
 
     // grab the most recent comment and format it for display
     const latestComment = comments[0]
-    const displayComment = <Comment key={ latestComment.commentId } comment={ latestComment } />
+    const displayComment = <Comment key={ latestComment.commentId } comment={ latestComment } setPreview={ setPreview } />
 
     // format all the comments for display
     const displayOlderComments = comments.map(cmt => {
-        return <Comment key={ cmt.id } comment={ cmt } />
+        return <Comment key={ cmt.id } comment={ cmt } setPreview={ setPreview } />
     })
 
     // remove the most recent from the second array
@@ -46,6 +46,12 @@ const CommentBox = ({ comments }) => {
         setOlderComments(newDisplay)
     }
 
+    const [ showAttachments, setShowAttachments ] = useState(false)
+    const toggleAttachments = () => {
+        const newAttachments = showAttachments ? false : true
+        setShowAttachments(newAttachments)
+    }
+
     const keyboardHandler = (event) => {
         if (event.code === "Enter" || event.code === "Space") {
             toggleOlderComments()
@@ -59,6 +65,9 @@ const CommentBox = ({ comments }) => {
             { olderComments && displayOlderComments }
             { readMore && <div className="btn btn-small btn-secondary" onClick={ toggleOlderComments } onKeyUp={ keyboardHandler }>
                 { olderComments ? "Hide" : "Show" } older comments
+            </div> }
+            { readMore && <div className="btn btn-small btn-secondary" onClick={ toggleAttachments } onKeyUp={ keyboardHandler }>
+                { showAttachments ? "Hide" : "Show" } all attachments
             </div> }
         </div>
     )

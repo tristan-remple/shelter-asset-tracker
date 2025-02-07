@@ -46,6 +46,8 @@ const ItemDetails = () => {
         })()
     }, [])
 
+    const [ preview, setPreview ] = useState("/graphics/icons8-room-100.png")
+
     if (err) { return <Error err={ err } /> }
     if (item) {
 
@@ -125,11 +127,10 @@ const ItemDetails = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        { template.iconAssociation ? <img className="img-fluid icon" src={ `/img/${ template.iconAssociation.src }` } alt={ template.iconAssociation.name + " icon" } /> : "No Icon" }
-                        
+                        <img className="img-fluid icon" src={ preview } />
                     </div>
                     <div className="col-8 col-content">
-                        <CommentBox comments={ commentRecord } />
+                        <CommentBox comments={ commentRecord } setPreview={ setPreview } />
                     </div>
                 </div>
                 <div className="row row-info">

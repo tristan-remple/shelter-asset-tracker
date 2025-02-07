@@ -8,7 +8,7 @@ import { statusContext } from '../Services/Context';
 // This module renders a button for navigation or actions.
 // When clicked, a button rendered using this module will wipe the status message.
 
-const Button = ({ text, linkTo, type, id }) => {
+const Button = ({ text, linkTo, type, id, download }) => {
 
     let buttonClass = "btn ";
     switch (type) {
@@ -71,6 +71,8 @@ const Button = ({ text, linkTo, type, id }) => {
         return <div className={ buttonClass } id={ id }>{ text }</div>
     } else if (linkTo.includes("#")) {
         return <HashLink to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 } onClick={ clearStatus }>{ text }</HashLink>
+    } else if (download) {
+        return <Link to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 } target="_blank" download>{ text }</Link>
     } else {
         return <Link to={ linkTo } className={ buttonClass } id={ id } tabIndex={ 0 } onClick={ clearStatus }>{ text }</Link>
     }
