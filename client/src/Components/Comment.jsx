@@ -38,7 +38,7 @@ const Comment = ({ comment: cmt, setPreview }) => {
                         <img src={ `/graphics/${ ext }.png` } className="attachment-icon" />
                         <span>{ filename }</span>
                     </div>
-                    <Button text="Download" linkTo={ `/attachments/${ attach }` } type="small" id="atch-img" download={ true} />
+                    <Button text="Download" linkTo={ `/attachments/${ attach }` } type="small" id="atch-img" download={ true } />
                 </div>
             )
         } else {
@@ -48,7 +48,7 @@ const Comment = ({ comment: cmt, setPreview }) => {
                         <img src={ `/graphics/${ ext }.png` } className="attachment-icon" />
                         <span>{ filename }</span>
                     </div>
-                    <Button text="Download" linkTo={ `/attachments/${ attach }` } type="small" id="atch-img" download={ true} />
+                    <Button text="Download" linkTo={ `/attachments/${ attach }` } type="small" id="atch-img" download={ true } />
                 </div>
             )
         }
