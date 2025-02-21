@@ -24,17 +24,13 @@ var newPath = `dist/img/${req.body.date}-${req.body.name}.${req.body.ext}`
 };
 
 // Import item controller
-const iconController = require('../../controllers/iconController');
+const attachmentController = require('../../controllers/attachmentController');
 
 // Define routes for handling item operations
 router.route('/')
-    .get(iconController.getAllIcons)
-    .post(admin, upload.any(), rename, iconController.createNewIcon);
+    .post(admin, upload.any(), rename, attachmentController.createNewIcon);
 
 router.route('/delete')
-    .post(admin, iconController.deleteIcons);
-
-router.route('/:id')
-    .get(iconController.getIconById, iconController.sendIcon);
+    .post(admin, attachmentController.deleteAttachments);
 
 module.exports = router;

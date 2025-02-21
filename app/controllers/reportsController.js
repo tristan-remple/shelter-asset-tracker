@@ -262,17 +262,7 @@ exports.getSummary = async (req, res, next) => {
                         ],
                         include: [{
                             model: models.template,
-                            attributes: ['id', 'name'],
-                            include: {
-                                model: models.icon,
-                                attributes: [
-                                    'id',
-                                    'src',
-                                    'name',
-                                    'alt'
-                                ],
-                                as: 'iconAssociation'
-                            }
+                            attributes: ['id', 'name']
                         }, {
                             model: models.user,
                             attributes: ['id', 'name'],
@@ -313,12 +303,6 @@ exports.getSummary = async (req, res, next) => {
                         itemCount[item.template.id] = {
                             id: item.template.id,
                             name: item.template.name,
-                            icon: {
-                                id: item.template.iconAssociation.id,
-                                src: item.template.iconAssociation.src,
-                                name: item.template.iconAssociation.name,
-                                alt: item.template.iconAssociation.alt
-                            },
                             count: 1
                         };
                     } else {
@@ -338,12 +322,6 @@ exports.getSummary = async (req, res, next) => {
                     template: {
                         id: item.template.id,
                         name: item.template.name,
-                        icon: {
-                            id: item.template.iconAssociation.id,
-                            src: item.template.iconAssociation.src,
-                            name: item.template.iconAssociation.name,
-                            alt: item.template.iconAssociation.alt
-                        }
                     },
                     eol: item.eol,
                     status: item.status,

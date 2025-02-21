@@ -5,10 +5,6 @@ module.exports = (db, { DataTypes }) => {
             primaryKey: true,
             autoIncrement: true
         },
-        icon: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
         name: {
             type: DataTypes.STRING,
             allowNull: false,

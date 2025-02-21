@@ -10,9 +10,9 @@ dotenv.config();
 
 // List of all models to be loaded
 const models = [
+    require('./models/attachment.model'),
     require('./models/facility.model'),
     require('./models/facilityAuth.model'),
-    require('./models/icon.model'),
     require('./models/comment.model'),
     require('./models/item.model'),
     require('./models/setting.model'),

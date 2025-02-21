@@ -2,7 +2,7 @@
     Define associations between Sequelize models.
  */
 module.exports = (sequelize) => {
-    const { facility, facilityauth, icon, comment, item, template, unit, unittype, user } = sequelize.models;
+    const { facility, facilityauth, attachment, comment, item, template, unit, unittype, user } = sequelize.models;
 
     // User to Facility
     user.hasMany(facility, { foreignKey: 'managerid', onDelete: 'RESTRICT' });
@@ -40,9 +40,9 @@ module.exports = (sequelize) => {
     item.hasMany(comment, { foreignKey: 'itemid', onDelete: 'CASCADE' });
     comment.belongsTo(item, { foreignKey: 'itemid', onDelete: 'CASCADE' });
 
-    // Icon to Template
-    icon.hasMany(template, { foreignKey: 'icon', onDelete: 'SET NULL' });
-    template.belongsTo(icon, { foreignKey: 'icon', as: 'iconAssociation', onDelete: 'SET NULL' });
+    // Comment to Attachment
+    comment.hasMany(attachment, { foreignKey: 'commentid', onDelete: 'SET NULL' });
+    attachment.belongsTo(comment, { foreignKey: 'commentid', onDelete: 'SET NULL' });
 
     //UnitType to Unit
     unittype.hasMany(unit, { foreignKey: 'type', onDelete: 'SET NULL' });
