@@ -49,16 +49,6 @@ exports.getItemById = async (req, res, next) => {
             {
                 model: models.template,
                 attributes: ['id', 'name'],
-                include: {
-                    model: models.icon,
-                    attributes: [
-                        'id',
-                        'src',
-                        'name',
-                        'alt'
-                    ],
-                    as: 'iconAssociation'
-                },
                 paranoid: false
             },
             {
@@ -68,11 +58,20 @@ exports.getItemById = async (req, res, next) => {
                     'comment',
                     'createdat'
                 ],
-                include: {
+                include: [{
                     model: models.user,
                     attributes: ['id', 'name'],
                     paranoid: false,
                 },
+                {
+                    model: models.attachment,
+                    attributes: [
+                        'id', 
+                        'src', 
+                        'createdat'
+                    ]
+                }
+            ],
                 order: [['createdat', 'DESC']]
             }
             ]
@@ -116,8 +115,7 @@ exports.sendItem = async (req, res, next) => {
         },
         template: {
             id: item.template.id,
-            name: item.template.name,
-            iconAssociation: item.template.itemAssociation
+            name: item.template.name
         },
         addedBy: {
             id: item.addedbyuser.id,
@@ -130,7 +128,8 @@ exports.sendItem = async (req, res, next) => {
                 name: comment.user.name
             },
             comment: comment.comment,
-            createdAt: comment.createdat
+            createdAt: comment.createdat,
+            attachments: comment.attachments
         })) : [],
         value: {
             initialValue: item.initialvalue,

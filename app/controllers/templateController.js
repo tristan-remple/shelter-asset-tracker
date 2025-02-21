@@ -10,17 +10,7 @@ exports.getAllTemplates = async (req, res, next) => {
                 'defaultvalue',
                 'defaultusefullife',
                 'singleresident'
-            ],
-            include: {
-                model: models.icon,
-                attributes: [
-                    'id',
-                    'src',
-                    'name',
-                    'alt'
-                ],
-                as: 'iconAssociation'
-            }
+            ]
         });
 
         if (!templates) {
@@ -51,20 +41,11 @@ exports.getTemplateById = async (req, res, next) => {
                 'updatedat',
                 [Sequelize.fn('COUNT', Sequelize.col('items.id')), 'itemCount']],
             where: { id: templateId },
-            include: [{
+            include: {
                 model: models.item,
                 attributes: [],
                 required: false
-            }, {
-                model: models.icon,
-                attributes: [
-                    'id',
-                    'src',
-                    'name',
-                    'alt'
-                ],
-                as: 'iconAssociation'
-            }],
+            },
             group: [
                 'template.id',
                 'iconAssociation.id'
@@ -86,9 +67,9 @@ exports.getTemplateById = async (req, res, next) => {
 // Creates new template
 exports.createNewTemplate = async (req, res, next) => {
     try {
-        const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
+        const { name, defaultValue, defaultUsefulLife, singleResident } = req.body;
 
-        if (!name || !defaultValue || !defaultUsefulLife || !icon) {
+        if (!name || !defaultValue || !defaultUsefulLife ) {
             return res.status(400).json({ error: 'Bad request.' });
         };
 
@@ -101,7 +82,6 @@ exports.createNewTemplate = async (req, res, next) => {
             name: name,
             defaultvalue: defaultValue,
             defaultusefullife: defaultUsefulLife,
-            icon: icon,
             singleresident: singleResident ? true : false
         });
 
@@ -110,7 +90,6 @@ exports.createNewTemplate = async (req, res, next) => {
             name: newTemplate.name,
             defaultValue: newTemplate.defaultvalue,
             defaultUsefulLife: newTemplate.defaultusefullife,
-            icon: newTemplate.icon,
             singleResident: newTemplate.singleresident,
             createdAt: newTemplate.createdat,
             success: true
@@ -128,7 +107,7 @@ exports.createNewTemplate = async (req, res, next) => {
 exports.updateTemplate = async (req, res, next) => {
     try {
         const templateId = req.params.id;
-        const { name, defaultValue, defaultUsefulLife, icon, singleResident } = req.body;
+        const { name, defaultValue, defaultUsefulLife, singleResident } = req.body;
 
         const template = await models.template.findByPk(templateId);
 
@@ -140,7 +119,6 @@ exports.updateTemplate = async (req, res, next) => {
             name: name,
             defaultvalue: defaultValue,
             defaultusefullife: defaultUsefulLife,
-            icon: icon,
             singleresident: singleResident ? true : false
         });
 
@@ -148,7 +126,6 @@ exports.updateTemplate = async (req, res, next) => {
             name: template.name,
             defaultValue: template.defaultvalue,
             defaultUsefulLife: template.defaultusefullife,
-            icon: template.icon,
             singleResident: template.singleresident,
             success: true
         };

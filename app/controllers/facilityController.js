@@ -4,10 +4,7 @@ const { models, Sequelize } = require('../data');
 exports.getAllFacilities = async (req, res, next) => {
     try {
         const facilities = await models.facility.findAll({
-            attributes: [
-                'id',
-                'name'
-            ],
+            attributes: [ 'id', 'name' ],
             include: [
                 {
                     model: models.unit,
