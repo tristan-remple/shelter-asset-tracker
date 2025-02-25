@@ -75,7 +75,7 @@ const LocationRecovery = () => {
                 <div className="col">
                     <h2>Deleted Locations</h2>
                 </div>
-                <div className="col-1 d-flex justify-content-end">
+                <div className="col d-flex justify-content-end">
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>
