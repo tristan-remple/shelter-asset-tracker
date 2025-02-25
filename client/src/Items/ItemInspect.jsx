@@ -191,6 +191,9 @@ const ItemInspect = () => {
         newItem.comment = changes.comment
         newItem.eol = changes.eol
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
+        if (attachmentData) {
+            newItem.attachments = attachmentData
+        }
 
         if (newItem.status === item.status && !confirm) {
             if (newItem.comment === "" && newItem.eol === item.eol) {
@@ -226,7 +229,7 @@ const ItemInspect = () => {
                     error: false
                 })
                 setUnsaved(false)
-                navigate(`/item/${response.id}`)
+                // navigate(`/item/${response.id}`)
             }
         })
 

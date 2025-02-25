@@ -10,13 +10,7 @@ import Button from "./Button"
 
 const Comment = ({ comment: cmt, setPreview }) => {
 
-    const { createdAt, inspectedBy, comment } = cmt
-
-    const attachments = [
-        "insurance_policy_compass_house_stove_20240504.pdf",
-        "stove-damages-1.png",
-        "stove-damages-2.png"
-    ]
+    const { createdAt, inspectedBy, comment, attachments } = cmt
 
     const clickToPreview = (filename) => {
         setPreview(filename)
