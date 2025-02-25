@@ -17,8 +17,8 @@ const Comment = ({ comment: cmt, setPreview }) => {
     }
 
     const displayAttachments = attachments?.map(attach => {
-        let filename = attach
-        const ext = attach.split(".").pop()
+        let filename = attach.src
+        const ext = filename.split(".").pop()
 
         if (filename.length > 35) {
             filename = `${ filename.substring(0, 32) }...${ ext }`

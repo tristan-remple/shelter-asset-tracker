@@ -198,11 +198,8 @@ const ItemInspect = () => {
         if (attachmentData.length > 0) {
             const attachment = attachmentData.map(file => {
                 const ext = file.type?.split("/")[1]
-                let filename = file.name.toLowerCase().join(".")
-                filename.pop()
-                filename = filename.join(".")
                 return {
-                    name: filename,
+                    name: file.name,
                     file,
                     date,
                     ext
@@ -243,8 +240,6 @@ const ItemInspect = () => {
             })
             return
         }
-
-        console.log(newItem)
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
