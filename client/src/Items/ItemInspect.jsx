@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 
 // internal dependencies
@@ -144,10 +144,35 @@ const ItemInspect = () => {
         }
     }, [ changes ])
 
+    const filesRef = useRef(null)
+    const [ filesChange, setFilesChange ] = useState(0)
+    const [ attachmentData, setAttachmentData ] = useState([])
+    const [ filesError, setFilesError ] = useState([])
+
+    useEffect(() => {
+        if (filesRef.current?.files) {
+            console.log(filesRef.current.files)
+            const attachments = []
+            const newFileErrors = []
+            for (let i = 0; i < filesRef.current.files.length; i++) {
+                attachments.push(filesRef.current.files[i])
+                if (filesRef.current.files[i].type !== "image/jpeg" && filesRef.current.files[i].type !== "image/png" && filesRef.current.files[i].type !== "pdf") {
+                    newFileErrors.push(`Files must be images or PDFs. Please check the filetype of ${ filesRef.current.files[i].name }`)
+                }
+                if (filesRef.current.files[i].size > 5242880) {
+                    newFileErrors.push(`Files cannot be larger than 5mb. Please check the size of file ${ filesRef.current.files[i].name }`)
+                }
+            }
+            setAttachmentData(attachments)
+            setFilesError(newFileErrors)
+            setUnsaved(true)
+        }
+    }, [ filesChange ])
+
     const [ confirm, setConfirm ] = useState(false)
     
     // https://stackoverflow.com/questions/2536379/difference-in-months-between-two-dates-in-javascript
-    function monthDiff(d1, d2) {
+    const monthDiff = (d1, d2) => {
         d1 = new Date(d1)
         d2 = new Date(d2)
         var months;
@@ -263,6 +288,33 @@ const ItemInspect = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             className="comment-area" 
                         />
+                    </div>
+                </div>
+                <div className="row row-info">
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Attachments (optional):
+                        </div>
+                        <div className="col col-content">
+                            <input 
+                                type="file"
+                                name="attachments"
+                                multiple={ true }
+                                ref={ filesRef }
+                                onChange={() => { setFilesChange(filesChange + 1) }}
+                            />
+                            { filesError.length > 0 && <div className="row row-info error error-message" style={{ width: "100%" }}>
+                                <ul className="m-2">
+                                    { filesError.map(error => <li>{ error }</li>) }
+                                </ul>
+                            </div> }
+                        </div>
+                        { attachmentData.length > 0 && <div className="col col-content">
+                            <p>Attachments to be uploaded:</p>
+                            <ul>
+                                { attachmentData.map(file => <li>{ file.name }</li>) }
+                            </ul>
+                        </div> }
                     </div>
                 </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${ item?.id }` } /> }

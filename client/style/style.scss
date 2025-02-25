@@ -430,6 +430,12 @@ header, footer {
     }
 }
 
+.btn.no-hover:hover {
+    background-color: $palegreen;
+    color: $olivegreen;
+    border-color: $brightgreen;
+}
+
 /* Dropdown */
 .dropdown-toggle {
     color: $accentGreen;
@@ -548,6 +554,27 @@ textarea {
     padding: 0;
     width: 100% !important;
     white-space: pre-wrap;
+}
+
+.attachments {
+    display: flex;
+    flex-flow: column nowrap;
+    margin-bottom: 0.5rem;
+}
+
+.attachment {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.btn-attachment {
+    width: calc(100% - 160px);
+    text-align: left;
+}
+
+.attachment-icon {
+    height: 1.5rem;
+    margin-right: 0.5rem;
 }
 
 // Tablet
