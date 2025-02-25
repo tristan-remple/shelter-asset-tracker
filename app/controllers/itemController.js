@@ -224,6 +224,7 @@ exports.updateItem = async (req, res, next) => {
             where: { name: 'depreciationRate' }
         });
 
+        await item.save();
         const updateResponse = {
             id: item.id,
             name: item.name,
@@ -236,8 +237,6 @@ exports.updateItem = async (req, res, next) => {
             currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
             success: true
         };
-
-        await item.save();
 
         return res.status(200).json(updateResponse);
 
