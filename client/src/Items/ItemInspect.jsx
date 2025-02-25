@@ -156,7 +156,7 @@ const ItemInspect = () => {
             const newFileErrors = []
             for (let i = 0; i < filesRef.current.files.length; i++) {
                 attachments.push(filesRef.current.files[i])
-                if (filesRef.current.files[i].type !== "image/jpeg" && filesRef.current.files[i].type !== "image/png" && filesRef.current.files[i].type !== "pdf") {
+                if (filesRef.current.files[i].type !== "image/jpeg" && filesRef.current.files[i].type !== "image/png" && filesRef.current.files[i].type !== "application/pdf") {
                     newFileErrors.push(`Files must be images or PDFs. Please check the filetype of ${ filesRef.current.files[i].name }`)
                 }
                 if (filesRef.current.files[i].size > 5242880) {
@@ -185,18 +185,34 @@ const ItemInspect = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
 
+        // get the file extension and date
+        
+        const date = new Date().getTime()
+
         const newItem = {...item}
         newItem.newUnit = item.unit.id
         newItem.status = changes.status
         newItem.comment = changes.comment
         newItem.eol = changes.eol
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
-        if (attachmentData) {
-            newItem.attachments = attachmentData
+        if (attachmentData.length > 0) {
+            const attachments = attachmentData.map(file => {
+                const ext = file.type.split("/")[1]
+                let filename = file.name.toLowerCase().split(".")
+                filename.pop()
+                filename = filename.join(".")
+                return {
+                    name: filename,
+                    file,
+                    date,
+                    ext
+                }
+            })
+            newItem.attachments = attachments
         }
 
         if (newItem.status === item.status && !confirm) {
-            if (newItem.comment === "" && newItem.eol === item.eol) {
+            if (newItem.comment === "" && newItem.eol === item.eol && attachmentData.length == 0) {
                 setStatus({
                     message: "You have not entered or changed anything.",
                     error: true
@@ -211,6 +227,14 @@ const ItemInspect = () => {
             return
         }
 
+        if (newItem.comment === "" && attachmentData.length > 0) {
+            setStatus({
+                message: "Attachments must have a comment.",
+                error: true
+            })
+            return
+        }
+
         const eolTime = new Date(changes.eol).getTime()
         if (eolTime <= now && changes.flag.text !== "Discard") {
             setStatus({
@@ -219,6 +243,8 @@ const ItemInspect = () => {
             })
             return
         }
+
+        console.log(newItem)
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
@@ -229,7 +255,7 @@ const ItemInspect = () => {
                     error: false
                 })
                 setUnsaved(false)
-                // navigate(`/item/${response.id}`)
+                navigate(`/item/${response.id}`)
             }
         })
 
@@ -315,7 +341,7 @@ const ItemInspect = () => {
                         { attachmentData.length > 0 && <div className="col col-content">
                             <p>Attachments to be uploaded:</p>
                             <ul>
-                                { attachmentData.map(file => <li>{ file.name }</li>) }
+                                { attachmentData.map(file => <li key={ file.name }>{ file.name }</li>) }
                             </ul>
                         </div> }
                     </div>
