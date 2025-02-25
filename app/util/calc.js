@@ -1,18 +1,17 @@
 exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
   try {
     initialValue = parseFloat(initialValue);
-    if (!initialValue || !createdAt || !depreciationRate || isNaN(initialValue)) {
+
+    console.log(initialValue, createdAt, depreciationRate)
+    if (!initialValue || !createdAt || !depreciationRate) {
       throw new Error("Invalid input.");
-    }
+    };
 
     const now = new Date();
     const created = new Date(createdAt);
 
     // Calculate the age of the asset in years
     const age = (now - created) / (1000 * 60 * 60 * 24 * 365);
-
-    // Ensure depreciationRate is a float
-    depreciationRate = parseFloat(depreciationRate.value);
 
     // Double the straight-line depreciation rate
     const doubleDepreciationRate = depreciationRate * 2;
