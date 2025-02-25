@@ -70,7 +70,6 @@ const ItemCreate = () => {
             id: 0,
             name: "",
             defaultValue: 0,
-            iconAssociation: {},
             singleUse: false
         },
         added: {
@@ -233,9 +232,6 @@ const ItemCreate = () => {
                                 error={ categoryError }
                             />
                         </div>
-                    </div>
-                    <div className="col-2 col-content col-icon">
-                        { newItem.template.iconAssociation.src ? <img className="img-fluid icon" src={ `/img/${ newItem.template.iconAssociation.src }` } alt={ newItem.template.iconAssociation.name + " icon" } /> : "Select category to view icon." }
                     </div>
                 </div>
                 <div className="row row-info">

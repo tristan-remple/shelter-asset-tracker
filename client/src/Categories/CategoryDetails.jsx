@@ -119,15 +119,6 @@ const CategoryDetails = () => {
                             { `$${ response.defaultvalue }` }
                         </div>
                     </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Icon
-                        </div>
-                        <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ response.iconAssociation.src }` } alt={ response.iconAssociation.name + " icon" } />
-                            <Button text="Change Icon" linkTo={ `/category/${ response.id }/edit` } type="admin" />
-                        </div>
-                    </div>
                 </div>
             </div>
         </main>
