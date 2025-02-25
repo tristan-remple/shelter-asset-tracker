@@ -3,7 +3,7 @@ const router = express.Router();
 const { login, logout, reset } = require('../../controllers/sessionController');
 
 /*SAT Main Routes*/
-const attachmentsRouter = require('./attachment');
+const attachmentsRouter = require('./attachments');
 const authorizeRouter = require('./authorize');
 const facilitiesRouter = require('./facilities');
 const itemsRouter = require('./items');
