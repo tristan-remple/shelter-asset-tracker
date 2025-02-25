@@ -27,8 +27,7 @@ exports.getUnitById = async (req, res, next) => {
                         'id',
                         'name',
                         'singleresident'
-                    ],
-                    paranoid: false
+                    ]
                 },
                 required: false
             }, {
@@ -86,7 +85,7 @@ exports.sendUnit = async (req, res, next) => {
             itemId: item.id,
             itemName: item.name,
             template: {
-                id: item.template.id,
+                id: item.templateid,
                 name: item.template.name
             },
             status: item.status

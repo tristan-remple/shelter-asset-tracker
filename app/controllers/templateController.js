@@ -47,8 +47,7 @@ exports.getTemplateById = async (req, res, next) => {
                 required: false
             },
             group: [
-                'template.id',
-                'iconAssociation.id'
+                'template.id'
             ]
         });
 
