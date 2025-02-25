@@ -192,14 +192,21 @@ exports.createNewItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit } = req.body;
+        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, attachment } = req.body;
 
         if (comment !== '') {
-            await models.comment.create({
+            const newComment = await models.comment.create({
                 comment: comment,
                 itemid: item.id,
                 userid: req.userId
             });
+
+            if (attachment) {
+                await models.attachment.create({
+                        src: attachment.src,
+                        commentid: newComment.id
+                });
+            };
         };
 
         item.set({
