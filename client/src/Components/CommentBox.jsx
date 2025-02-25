@@ -39,7 +39,13 @@ const CommentBox = ({ comments, setPreview }) => {
     // if there are no comments older than the most recent one, don't display the toggle
     const readMore = displayOlderComments.length > 0
 
-    // create toggle functionality for older comments
+    const attachmentComments = comments.filter(cmt => cmt.attachments.length > 0)
+
+    const displayCommentsWithAttachments = attachmentComments.map(cmt => {
+        return <Comment key={ cmt.id } comment={ cmt } setPreview={ setPreview } />
+    })
+
+    // create toggle functionality
     const [ olderComments, setOlderComments ] = useState(false)
     const toggleOlderComments = () => {
         const newDisplay = olderComments ? false : true
@@ -49,6 +55,9 @@ const CommentBox = ({ comments, setPreview }) => {
     const [ showAttachments, setShowAttachments ] = useState(false)
     const toggleAttachments = () => {
         const newAttachments = showAttachments ? false : true
+        if (newAttachments === true) {
+            setOlderComments(false)
+        }
         setShowAttachments(newAttachments)
     }
 
@@ -58,15 +67,21 @@ const CommentBox = ({ comments, setPreview }) => {
         }
     }
 
+    const keyboardAttachments = (event) => {
+        if (event.code === "Enter" || event.code === "Space") {
+            toggleAttachments()
+        }
+    }
+
     return (
         <div className="comment-box">
             <strong>Comments:</strong><br />
             { displayComment }
-            { olderComments && displayOlderComments }
+            { showAttachments ? displayCommentsWithAttachments : olderComments ? displayOlderComments : "" }
             { readMore && <div className="btn btn-small btn-secondary" onClick={ toggleOlderComments } onKeyUp={ keyboardHandler }>
                 { olderComments ? "Hide" : "Show" } older comments
             </div> }
-            { readMore && <div className="btn btn-small btn-secondary" onClick={ toggleAttachments } onKeyUp={ keyboardHandler }>
+            { attachmentComments.length > 0 && <div className="btn btn-small btn-secondary" onClick={ toggleAttachments } onKeyUp={ keyboardAttachments }>
                 { showAttachments ? "Hide" : "Show" } all attachments
             </div> }
         </div>

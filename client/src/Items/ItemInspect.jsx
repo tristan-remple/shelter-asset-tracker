@@ -197,8 +197,8 @@ const ItemInspect = () => {
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
         if (attachmentData.length > 0) {
             const attachment = attachmentData.map(file => {
-                const ext = file.type.split("/")[1]
-                let filename = file.name.toLowerCase().split(".")
+                const ext = file.type?.split("/")[1]
+                let filename = file.name.toLowerCase().join(".")
                 filename.pop()
                 filename = filename.join(".")
                 return {
