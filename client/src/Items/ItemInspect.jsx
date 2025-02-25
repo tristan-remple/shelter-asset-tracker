@@ -196,7 +196,7 @@ const ItemInspect = () => {
         newItem.eol = changes.eol
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
         if (attachmentData.length > 0) {
-            const attachments = attachmentData.map(file => {
+            const attachment = attachmentData.map(file => {
                 const ext = file.type.split("/")[1]
                 let filename = file.name.toLowerCase().split(".")
                 filename.pop()
@@ -207,8 +207,8 @@ const ItemInspect = () => {
                     date,
                     ext
                 }
-            })
-            newItem.attachments = attachments
+            })[0]
+            newItem.attachment = attachment
         }
 
         if (newItem.status === item.status && !confirm) {
@@ -322,13 +322,12 @@ const ItemInspect = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Attachments (optional):
+                            Attachment (optional):
                         </div>
-                        <div className="col col-content">
+                        <div className="col-content">
                             <input 
                                 type="file"
                                 name="attachments"
-                                multiple={ true }
                                 ref={ filesRef }
                                 onChange={() => { setFilesChange(filesChange + 1) }}
                             />
@@ -338,12 +337,6 @@ const ItemInspect = () => {
                                 </ul>
                             </div> }
                         </div>
-                        { attachmentData.length > 0 && <div className="col col-content">
-                            <p>Attachments to be uploaded:</p>
-                            <ul>
-                                { attachmentData.map(file => <li key={ file.name }>{ file.name }</li>) }
-                            </ul>
-                        </div> }
                     </div>
                 </div>
                 { unsaved && <ChangePanel save={ saveChanges } linkOut={ `/item/${ item?.id }` } /> }
