@@ -12,7 +12,6 @@ import { friendlyDate } from '../Services/dateHelper'
 // components
 import Button from "../Components/Button"
 import Error from '../Components/Error'
-import IconSelector from './IconSelector'
 import ChangePanel from '../Components/ChangePanel'
 import Checkbox from '../Components/Checkbox'
 import Statusbar from '../Components/Statusbar'
@@ -46,7 +45,6 @@ const CategoryEdit = () => {
         defaultvalue: null,
         depreciationRate: null,
         defaultusefullife: null,
-        icon: null,
         singleresident: null,
         errorFields: []
     })
@@ -62,7 +60,6 @@ const CategoryEdit = () => {
                     setResponse(data)
                     setErr(null)
 
-                    data.icon = data.iconAssociation
                     data.errorFields = []
                     console.log(data)
                     setChanges(data)
@@ -70,13 +67,6 @@ const CategoryEdit = () => {
             })
         })()
     }, [])
-
-    // open or close the icon selector menu
-    const [ selector, setSelector ] = useState(false)
-    const toggleSelector = () => {
-        const newSelector = selector ? false : true
-        setSelector(newSelector)
-    }
 
     // handles single resident checkbox
     const checkHandler = () => {
@@ -89,21 +79,16 @@ const CategoryEdit = () => {
     // sends the item object to the apiService
     const saveChanges = async() => {
 
-        if (changes.name === "" || changes.defaultusefullife == "" || changes.defaultvalue == "" || changes.icon === "" || changes.errorFields.length > 0) {
+        if (changes.name === "" || changes.defaultusefullife == "" || changes.defaultvalue == "" || changes.errorFields.length > 0) {
             setForceValidation(forceValidation + 1)
             setStatus({
                 message: "Please check that all category fields are filled in correctly.",
                 error: true
             })
-            if (changes.icon === "" && changes.errorFields.indexOf("icon") === -1) {
-                const newChanges = {...changes}
-                newChanges.errorFields.push("icon")
-            }
             return
         }
 
         const editedCategory = {...changes}
-        editedCategory.icon = changes.icon.id
         editedCategory.defaultUsefulLife = editedCategory.defaultusefullife
         editedCategory.defaultValue = editedCategory.defaultvalue
         editedCategory.singleResident = editedCategory.singleresident
@@ -137,13 +122,13 @@ const CategoryEdit = () => {
                     <h2>Edit { capitalize(response.name) } Category</h2>
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Return" linkTo={ `/category/${ id }` } type="nav" tabIndex={ selector ? -1 : 0 } />
+                    <Button text="Return" linkTo={ `/category/${ id }` } type="nav" tabIndex={ 0 } />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Save" linkTo={ saveChanges } type="admin" tabIndex={ selector ? -1 : 0 } />
+                    <Button text="Save" linkTo={ saveChanges } type="admin" tabIndex={ 0 } />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Delete" linkTo={ `/category/${ id }/delete` } type="danger" tabIndex={ selector ? -1 : 0 } />
+                    <Button text="Delete" linkTo={ `/category/${ id }/delete` } type="danger" tabIndex={ 0 } />
                 </div>
             </div>
             <div className="page-content">
@@ -159,7 +144,7 @@ const CategoryEdit = () => {
                                 name="name"
                                 formControls={ formControls }
                                 required={ true }
-                                tabIndex={ selector ? -1 : 0 }
+                                tabIndex={ 0 }
                             />
                         </div>
                     </div>
@@ -212,7 +197,7 @@ const CategoryEdit = () => {
                                 name="defaultusefullife"
                                 formControls={ formControls }
                                 required={ true }
-                                tabIndex={ selector ? -1 : 0 }
+                                tabIndex={ 0 }
                             />
                             <br />
                             { changes.errorFields.indexOf("defaultusefullife") === -1 && `Equivalent to ${ (changes.defaultusefullife / 12).toFixed(1) } years` }
@@ -229,19 +214,8 @@ const CategoryEdit = () => {
                                 step=".01"
                                 formControls={ formControls }
                                 required={ true }
-                                tabIndex={ selector ? -1 : 0 }
+                                tabIndex={ 0 }
                             />
-                        </div>
-                    </div>
-                    <div className="col col-info">
-                        <div className="col-head">
-                            Icon *
-                        </div>
-                        <div className="col-icon col-content">
-                            <img className="img-fluid small-icon" src={ `/img/${ changes.icon.src }` } alt={ changes.icon.name + " icon" } />
-                            <Button text="Change Icon" linkTo={ toggleSelector } type="admin" />
-                            { changes.errorFields.indexOf("icon") > -1 && <div className="row row-info error error-message"><p className="my-2">A category requires an icon.</p></div> }
-                            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>
                 </div>

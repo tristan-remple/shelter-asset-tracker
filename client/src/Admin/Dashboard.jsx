@@ -185,9 +185,6 @@ const Dashboard = () => {
     const displayCategories = itemCount.map(item => {
         return (
             <tr key={ item.id } >
-                <td className="col-icon">
-                    <img className="small-icon" src={ `/img/${ item.icon.src }` } alt={ `${ item.icon.name } icon` } />
-                </td>
                 <td>{ item.name }</td>
                 <td className="col-right">{ item.count }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
@@ -454,7 +451,6 @@ const Dashboard = () => {
                         <table className="c-table-info align-middle">
                             <thead>
                                 <tr>
-                                    <th scope="col">Icon</th>
                                     <th scope="col"><div className="sortable"><p>Name</p> <Button text="▼" linkTo={ () => handleCategorySort("name") } type="sort" id="cat-name-sort" /></div></th>
                                     <th scope="col"><div className="sortable"><p>Count</p> <Button text="▼" linkTo={ () => handleCategorySort("count") } type="sort" id="cat-count-sort" /></div></th>
                                     <th scope="col">Details</th>

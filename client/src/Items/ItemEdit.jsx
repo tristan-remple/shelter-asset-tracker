@@ -285,7 +285,7 @@ const ItemEdit = () => {
                 </div>
                 <div className="row row-info">
                     <div className="col-2 col-content col-icon">
-                        { item.template.icon ? <img className="img-fluid icon" src={ `/img/${ item.template.icon.src }` } alt={ item.template.icon.name + " icon" } /> : "No Icon" }
+                        <img className="img-fluid icon" src="/graphics/icons8-room-100.png" alt="blank icon" />
                     </div>
                     <div className="col-8 col-content">
                         <strong>New Comment: </strong><br />

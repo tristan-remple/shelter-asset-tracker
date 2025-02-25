@@ -47,27 +47,12 @@ const CategoryList = () => {
 
         return (
             <tr key={ item.id } >
-                <td className="col-icon">
-                    <img className="small-icon" src={ `/img/${ item.iconAssociation?.src }` } alt={ `${ item.iconAssociation?.name } icon` } />
-                </td>
                 <td>{ item.name }</td>
                 <td className="col-right">${ item.defaultvalue }</td>
                 <td>{ item.singleresident ? "Yes" : "No" }</td>
                 <td><Button text="Details" linkTo={ `/category/${ item.id }` } type="small" /></td>
             </tr>
         )
-    })
-
-    // open or close the icon selector menu
-    const [ selector, setSelector ] = useState(false)
-    const toggleSelector = () => {
-        const newSelector = selector ? false : true
-        setSelector(newSelector)
-    }
-
-    const [ changes, setChanges ] = useState({
-        icon: null,
-        index: true
     })
 
     return err ? <Error err={ err } /> : (
@@ -80,20 +65,15 @@ const CategoryList = () => {
                     <Button text="Return" linkTo="/admin" type="nav" />
                 </div>
                 <div className="col-2 d-flex justify-content-end">
-                    <Button text="Manage Icons" linkTo={ toggleSelector } type="admin" />
-                </div>
-                <div className="col-2 d-flex justify-content-end">
                     <Button text="Add Category" linkTo="/categories/add" type="admin" />
                 </div>
             </div>
-            { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
             <div className="page-content">
                 <Statusbar />
                 <Search data={ categories } setData={ setFilteredCategories } />
                 <table className="c-table-info align-middle">
                     <thead>
                         <tr>
-                            <th scope="col">Icon</th>
                             <th scope="col">Name</th>
                             <th scope="col">Default Value</th>
                             <th scope="col">Single Resident</th>
