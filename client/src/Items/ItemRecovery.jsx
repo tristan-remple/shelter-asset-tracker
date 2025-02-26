@@ -89,9 +89,21 @@ const ItemRecovery = () => {
         return new Date(b.deletedAt) - new Date(a.deletedAt)
     })
 
-    const hardDelete = () => {
+    const hardDelete = async() => {
         if (confirm("Once you empty deleted items, you will not be able to recover the items or their attachments. Are you sure?")) {
-            console.log("deleted")
+            await apiService.emptyDeletedItems((data) => {
+                if (data.error) {
+                    setStatus({
+                        message: "We were not able to empty the deleted items.",
+                        error: false
+                    })
+                } else {
+                    setStatus({
+                        message: "All deleted items have been purged from the system.",
+                        error: false
+                    })
+                }
+            })
         }
     }
 
@@ -114,8 +126,6 @@ const ItemRecovery = () => {
                         <tr>
                             <th scope="col">Label</th>
                             <th scope="col">Category</th>
-                            {/* <th scope="col">Unit</th>
-                            <th scope="col">Location</th> */}
                             <th scope="col">Deleted Date</th>
                             <th scope="col">Restore</th>
                         </tr>
