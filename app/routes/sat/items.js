@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'client/public/attachments');
     }
-})
+});
 const upload = multer({ storage: storage });
 
 const rename = function (req, res, next) {
@@ -18,7 +18,7 @@ const rename = function (req, res, next) {
     if (files) {
         //Move file to the deployment folder.
         var _fs = require("fs");
-        var newPath = `dist/attachments/${req.body.date}-${req.body.name}.${req.body.ext}`;
+        var newPath = `/var/storage/${req.body.date}-${req.body.name}.${req.body.ext}`;
         _fs.renameSync(files[0].path, newPath);
     };
 
