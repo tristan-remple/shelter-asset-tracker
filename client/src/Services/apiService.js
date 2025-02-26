@@ -571,6 +571,22 @@ class apiService {
         })
     }
 
+    emptyDeletedItems = async(callback) => {
+        await axios.delete(`${ import.meta.env.VITE_API_URL }/items/deleted`, {
+            withCredentials: true
+        })
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            if (err.code === "ERR_NETWORK") {
+                callback({ error: errorCodes[500] })
+            } else {
+                callback({ error: errorCodes[err.response.status] })
+            }
+        })
+    }
+
     // Called by: UnitRecovery
     deletedUnits = async(callback) => {
         await axios.get(`${ import.meta.env.VITE_API_URL }/units/deleted`, {

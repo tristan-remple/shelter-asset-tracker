@@ -86,22 +86,30 @@ const LocationDetails = () => {
     })
 
     // map the unit objects into table rows
-    const displayItems = filteredUnits?.map(item => {
+    const displayItems = filteredUnits?.map(unit => {
 
         // flag options are defined in the flag module
         let flag = flagOptions[0]
-        if ( item.discardCount > 0 ) {
+        if ( unit.discardCount > 0 ) {
             flag = flagOptions[2]
-        } else if ( item.inspectCount > 0 ) {
+        } else if ( unit.inspectCount > 0 ) {
             flag = flagOptions [1]
         }
 
         return (
-            <tr key={ item.unitId } >
-                <td>{ item.name }</td>
-                <td>{ capitalize(item.type) }</td>
-                <td><Button text="Details" linkTo={ `/unit/${ item.unitId }` } type="small" /></td>
+            <tr key={ unit.unitId } >
+                <td>{ unit.name }</td>
+                <td>{ capitalize(unit.type) }</td>
+                <td><Button text="Details" linkTo={ `/unit/${ unit.unitId }` } type="small" /></td>
                 <td><Flag color={ flag.color } /> { flag.text }</td>
+            </tr>
+        )
+    })
+
+    const mobileDisplay = filteredUnits?.map(unit => {
+        return (
+            <tr>
+                <td><Button text={ `${ unit.name } (${ unit.type })` } linkTo={ `/unit/${ unit.unitId }` } type="small" /></td>
             </tr>
         )
     })
@@ -134,7 +142,7 @@ const LocationDetails = () => {
                             { types.length > 0 ? capitalize( types.join(", ") ) : "No units yet" }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    <div className="col col-info mobile-no">
                         <div className="col-head">
                             Added
                         </div>
@@ -144,7 +152,7 @@ const LocationDetails = () => {
                     </div>
                 </div>
                 <Search data={ units } setData={ setFilteredUnits } />
-                <table className="c-table-info align-middle">
+                <table className="c-table-info align-middle mobile-no">
                     <thead>
                         <tr>
                             <th scope="col">Unit</th>
@@ -157,6 +165,16 @@ const LocationDetails = () => {
                         { displayItems.length > 0 ? displayItems : <tr>
                             <td colSpan={ 4 }>No units yet</td>
                         </tr> }
+                    </tbody>
+                </table>
+                <table className="c-table-info align-middle mobile-yes">
+                    <thead>
+                        <tr>
+                            <th scope="col">Units: Tap to View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { mobileDisplay.length > 0 ? mobileDisplay : <tr>No units yet.</tr> }
                     </tbody>
                 </table>
             </div>

@@ -135,6 +135,14 @@ const UnitDetails = () => {
         )
     })
 
+    const mobileDisplay = filteredItems?.map(item => {
+        return (
+            <tr key={ item.itemId }>
+                <td><Button text={ `${ item.itemName } (${ item.template.name })` } linkTo={ `/item/${ item.itemId }/inspect` } type="small" /></td>
+            </tr>
+        )
+    })
+
     const flipUnit = async() => {
         if (!confirm("Flipping a unit will flag all of its items as needing inspection. Are you sure?")) {
             return
@@ -204,7 +212,7 @@ const UnitDetails = () => {
                             { inspected.userName }
                         </div>
                     </div> */}
-                    <div className="col col-info">
+                    <div className="col col-info mobile-no">
                         <div className="col-head">
                             Updated At
                         </div>
@@ -212,7 +220,7 @@ const UnitDetails = () => {
                             { friendlyDate(updatedAt) }
                         </div>
                     </div>
-                    <div className="col col-info">
+                    <div className="col col-info mobile-no">
                         <div className="col-head">
                             Added
                         </div>
@@ -222,7 +230,7 @@ const UnitDetails = () => {
                     </div>
                 </div>
                 <Search data={ items } setData={ setFilteredItems } />
-                <table className="c-table-info align-middle">
+                <table className="c-table-info align-middle mobile-no">
                     <thead>
                         <tr>
                             <th scope="col">Label</th>
@@ -233,7 +241,17 @@ const UnitDetails = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        { displayItems ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
+                        { displayItems.length > 0 ? displayItems : <td colSpan={ 4 }>No items yet.</td> }
+                    </tbody>
+                </table>
+                <table className="c-table-info align-middle mobile-yes">
+                    <thead>
+                        <tr>
+                            <th scope="col">Items: Tap to Record Inspection</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { mobileDisplay.length > 0 ? mobileDisplay : <td colSpan={ 4 }>No items yet.</td> }
                     </tbody>
                 </table>
             </div>

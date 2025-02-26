@@ -577,6 +577,10 @@ textarea {
     margin-right: 0.5rem;
 }
 
+.mobile-yes {
+    display: none;
+}
+
 // Tablet
 @media screen and (max-width: 992px) {
 
@@ -646,6 +650,20 @@ textarea {
 }
 
 @media screen and (max-width: 768px) {
+
+    .mobile-no {
+        display: none;
+    }
+
+    .mobile-yes {
+        display: inherit;
+    }
+
+    thead, tbody {
+        display: table;
+        width: 100%;
+    }
+
     .title-row .col, .title-row .col-2, .title-row .col-3, .btn, .title-row .dropdown, input[type=file] {
         width: 100% !important;
     }
