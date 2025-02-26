@@ -36,7 +36,7 @@ router.route('/:id/restore')
 
 router.route('/:id')
     .get(itemController.getItemById, auth, facility, itemController.sendItem)
-    .put(itemController.getItemById, auth, facility, upload.any(), rename, itemController.updateItem)
+    .put(itemController.getItemById, auth, facility, upload.any(), itemController.updateItem)
     .delete(itemController.getItemById, auth, facility, itemController.deleteItem);
 
 module.exports = router;
