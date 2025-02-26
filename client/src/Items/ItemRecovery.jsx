@@ -89,6 +89,12 @@ const ItemRecovery = () => {
         return new Date(b.deletedAt) - new Date(a.deletedAt)
     })
 
+    const hardDelete = () => {
+        if (confirm("Once you empty deleted items, you will not be able to recover the items or their attachments. Are you sure?")) {
+            console.log("deleted")
+        }
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -96,6 +102,7 @@ const ItemRecovery = () => {
                     <h2>Deleted Items</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
+                    <Button text="Empty Deleted Items" linkTo={ hardDelete } type="admin" />
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>

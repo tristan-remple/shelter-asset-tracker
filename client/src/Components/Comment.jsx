@@ -28,11 +28,11 @@ const Comment = ({ comment: cmt, setPreview }) => {
         {
             return (
                 <div className="attachment" key={ attach } >
-                    <div className="btn btn-small btn-secondary btn-attachment" onClick={ () => clickToPreview(`${ import.meta.env.VITE_STORAGE }/${ attach }`) } tabIndex={ 0 }>
+                    <div className="btn btn-small btn-secondary btn-attachment" onClick={ () => clickToPreview(`${ import.meta.env.VITE_STORAGE }/${ attach.src }`) } tabIndex={ 0 }>
                         <img src={ `/graphics/${ ext }.png` } className="attachment-icon" />
                         <span>{ filename }</span>
                     </div>
-                    <Button text="Download" linkTo={ `${ import.meta.env.VITE_STORAGE }/${ attach }` } type="small" id="atch-img" download={ true } />
+                    <Button text="Download" linkTo={ `${ import.meta.env.VITE_STORAGE }/${ attach.src }` } type="small" id="atch-img" download={ true } />
                 </div>
             )
         } else {
@@ -42,7 +42,7 @@ const Comment = ({ comment: cmt, setPreview }) => {
                         <img src={ `/graphics/${ ext }.png` } className="attachment-icon" />
                         <span>{ filename }</span>
                     </div>
-                    <Button text="Download" linkTo={ `${ import.meta.env.VITE_STORAGE }/${ attach }` } type="small" id="atch-img" download={ true } />
+                    <Button text="Download" linkTo={ `${ import.meta.env.VITE_STORAGE }/${ attach.src }` } type="small" id="atch-img" download={ true } />
                 </div>
             )
         }
