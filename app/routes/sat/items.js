@@ -16,7 +16,7 @@ const upload = multer({ storage: storage });
 const rename = function (req, res, next) {
     var files = req.files;
     console.log(req.body.attachment);
-    console.log(req.body.attachment.files);
+    console.log(req.body.attachment.file);
     if (files) {
         //Move file to the deployment folder.
         var _fs = require("fs");
