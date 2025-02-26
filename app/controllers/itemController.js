@@ -78,8 +78,11 @@ exports.getItemById = async (req, res, next) => {
         });
 
         if (!item) {
+            console.log("item could not be found")
             return res.status(404).json({ message: 'Item not found.' });
-        };
+        } else {
+            console.log("found the item, and yet,")
+        }
 
         req.data = item;
         req.facility = item.unit.facility.id;

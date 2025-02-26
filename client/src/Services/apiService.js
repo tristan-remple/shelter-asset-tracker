@@ -31,13 +31,39 @@ class apiService {
 
     // Called by: ItemEdit
     postItemEdit = async(item, callback) => {
-        const id = item.id
-        await axios.put(`${ import.meta.env.VITE_API_URL }/items/${ id }`, item, {
+
+        const formData = new FormData()
+        const { id, invoice, name, newUnit, status, template, usefulLifeOffset, value, vendor, attachment } = item
+
+        if (attachment) {
+            formData.append('file', item.attachment.file)
+            formData.append('filename', item.attachment.name)
+            formData.append('ext', item.attachment.ext)
+            formData.append('date', item.attachment.date)
+        }
+
+        formData.append('invoice', invoice)
+        formData.append('name', name)
+        formData.append('newUnit', newUnit)
+        formData.append('status', status)
+        formData.append('templateId', template.id)
+        formData.append('usefulLifeOffset', usefulLifeOffset)
+        formData.append('initialValue', value.initialValue)
+        formData.append('vendor', vendor)
+
+        await axios.put(`${ import.meta.env.VITE_API_URL }/items/${ id }`, formData, {
             withCredentials: true,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "multipart/form-data"
             }
         })
+
+        // await axios.put(`${ import.meta.env.VITE_API_URL }/items/${ id }`, item, {
+        //     withCredentials: true,
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // })
         .then(res => {
             callback(res.data)
         })
