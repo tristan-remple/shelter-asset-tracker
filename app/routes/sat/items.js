@@ -8,21 +8,17 @@ var _fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/var/storage');
+        cb(null, '/var/storage'); // Save directly to the persistent disk
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${req.body.date}-${req.body.name}.${req.body.ext}`);
+        console.log('Saving file to:', `/var/storage/${req.body.date}-${req.body.name}.${req.body.ext}`);
+
     }
 });
-const upload = multer({ storage: storage });
 
-const rename = function (req, res, next) {
-    var files = req.files;
-    if (files) {
-        var _fs = require("fs");
-        var newPath = `/var/storage/${req.body.date}-${req.body.name}.${req.body.ext}`;
-        _fs.renameSync(files[0].path, newPath);
-    };
+const upload =  multer({ storage: storage });
 
-    next();
-};
 
 // Import item controller
 const itemController = require('../../controllers/itemController');
