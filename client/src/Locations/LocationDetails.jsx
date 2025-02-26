@@ -108,7 +108,7 @@ const LocationDetails = () => {
 
     const mobileDisplay = filteredUnits?.map(unit => {
         return (
-            <tr>
+            <tr key={ unit.unitId }>
                 <td><Button text={ `${ unit.name } (${ unit.type })` } linkTo={ `/unit/${ unit.unitId }` } type="small" /></td>
             </tr>
         )
