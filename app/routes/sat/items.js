@@ -20,7 +20,7 @@ const rename = function (req, res, next) {
     if (files.length > 0) {
         //Move file to the deployment folder.
         var _fs = require("fs");
-        var newPath = `dist/attachments/${req.body.date}-${req.body.filename}`;
+        var newPath = `/var/storage/${req.body.date}-${req.body.filename}`;
         _fs.renameSync(files[0].path, newPath);
     };
 
