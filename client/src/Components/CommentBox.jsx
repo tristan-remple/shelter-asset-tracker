@@ -5,7 +5,7 @@ import { useState } from 'react'
 import Comment from './Comment'
 
 //------ MODULE INFO
-// This module displays comments about any given item, unit, or location.
+// This module displays comments about any given item.
 // It always displays the most recent comment, and allows the user to toggle visibility of the older comments.
 // It takes an array of comment objects.
 // Imported by: ItemDetails
@@ -76,13 +76,13 @@ const CommentBox = ({ comments, setPreview }) => {
     return (
         <div className="comment-box">
             <strong>Comments:</strong><br />
-            { displayComment }
+            { !showAttachments && displayComment }
             { showAttachments ? displayCommentsWithAttachments : olderComments ? displayOlderComments : "" }
             { readMore && <div className="btn btn-small btn-secondary" onClick={ toggleOlderComments } onKeyUp={ keyboardHandler }>
                 { olderComments ? "Hide" : "Show" } older comments
             </div> }
             { attachmentComments.length > 0 && <div className="btn btn-small btn-secondary" onClick={ toggleAttachments } onKeyUp={ keyboardAttachments }>
-                { showAttachments ? "Hide" : "Show" } all attachments
+                { showAttachments ? "Hide" : "Show all" } attachments
             </div> }
         </div>
     )

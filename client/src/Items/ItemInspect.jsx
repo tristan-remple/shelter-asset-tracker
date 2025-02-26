@@ -18,7 +18,6 @@ import ChangePanel from '../Components/ChangePanel'
 import Statusbar from '../Components/Statusbar'
 
 //------ MODULE INFO
-// ** Available for SCSS **
 // This module allows a user to edit the details about a single item in the collection.
 // This module does NOT currently record which user is editing.
 // User information will need to be taken either here or in the apiService module.
