@@ -203,7 +203,7 @@ exports.updateItem = async (req, res, next) => {
 
             if (attachment) {
                 await models.attachment.create({
-                        src: attachment.name,
+                        src: `${attachment.date}-${attachment.name}.${attachment.ext}`,
                         commentid: newComment.id
                 });
             };
