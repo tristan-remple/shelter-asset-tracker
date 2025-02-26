@@ -98,8 +98,8 @@ exports.sendItem = async (req, res, next) => {
         attributes: ['value'],
         where: { name: 'depreciationRate' }
     });
-    const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
-
+    //const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+    const currentValue= 0;
     const itemProfile = {
         id: item.id,
         name: item.name,
