@@ -8,7 +8,7 @@ var _fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'client/public/attachments');
+        cb(null, '/var/storage');
     }
 });
 const upload = multer({ storage: storage });
