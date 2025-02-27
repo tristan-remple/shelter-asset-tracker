@@ -2,21 +2,16 @@ const multer = require('multer');
 const fs = require("fs");
 const path = require("path");
 
-// Ensure storage directory exists
-const storagePath = "/var/storage";
-if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath, { recursive: true });
-}
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, storagePath);
+        cb(null, "/var/storage");
     },
     filename: function (req, file, cb) {
         const { date, filename, ext } = req.body; 
+        console.log(req.body)
         if (!date || !filename || !ext) {
             return cb(new Error("Missing required upload fields."));
-        }
+        };
         
         const safeFilename = `${date}-${filename}.${ext}`;
         console.log(safeFilename);
