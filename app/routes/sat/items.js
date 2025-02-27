@@ -15,7 +15,7 @@ router.route('/')
 
 router.route('/deleted')
     .get(admin, itemController.getDeleted)
-    .delete(itemController.emptyDeleted);
+    .delete(admin, itemController.emptyDeleted);
 
 router.route('/:id/restore')
     .get(admin, itemController.restoreDeleted);
