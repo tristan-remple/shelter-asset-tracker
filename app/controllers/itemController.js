@@ -310,6 +310,31 @@ exports.getDeleted = async (req, res, next) => {
     };
 };
 
+exports.emptyDeleted = async (req, res, next) => {
+    try {
+        const deletedItems = await models.item.findAll({
+            where: Sequelize.where(Sequelize.col('item.deletedat'), 'IS NOT', null),
+            paranoid: false
+        });
+
+        if (deletedItems.length === 0) {
+            return res.status(404).json({ message: 'No deleted items found.' });
+        }
+
+        await models.item.destroy({
+            where: {
+                id: deletedItems.map(item => item.id)
+            }
+        });
+
+        return res.status(200).json({ success: true });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error.' });
+    }
+};
+
 // Restores a previously deleted item
 exports.restoreDeleted = async (req, res, next) => {
     try {
