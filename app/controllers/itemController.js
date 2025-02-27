@@ -195,7 +195,7 @@ exports.createNewItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, file, filename, ext, date } = req.body;
+        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, filename, date } = req.body;
 
         if (comment !== '') {
             const newComment = await models.comment.create({
