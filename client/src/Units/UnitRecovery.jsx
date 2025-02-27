@@ -79,6 +79,24 @@ const UnitRecovery = () => {
         setDisplayItems(newDisplayItems)
     }, [ status, units, filteredUnits ])
 
+    const hardDelete = async() => {
+        if (confirm("Once you empty deleted units, you will not be able to recover them. Are you sure?")) {
+            await apiService.emptyDeletedUnits((data) => {
+                if (data.error) {
+                    setStatus({
+                        message: "We were not able to empty the deleted units.",
+                        error: false
+                    })
+                } else {
+                    setStatus({
+                        message: "All deleted units have been purged from the system.",
+                        error: false
+                    })
+                }
+            })
+        }
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -86,6 +104,7 @@ const UnitRecovery = () => {
                     <h2>Deleted Units</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
+                    <Button text="Empty Deleted Units" linkTo={ hardDelete } type="admin" />
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>

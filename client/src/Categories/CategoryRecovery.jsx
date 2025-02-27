@@ -77,6 +77,24 @@ const CategoryRecovery = () => {
         )
     })
 
+    const hardDelete = async() => {
+        if (confirm("Once you empty deleted categories, you will not be able to recover them. Are you sure?")) {
+            await apiService.emptyDeletedCetagories((data) => {
+                if (data.error) {
+                    setStatus({
+                        message: "We were not able to empty the deleted categories.",
+                        error: false
+                    })
+                } else {
+                    setStatus({
+                        message: "All deleted categories have been purged from the system.",
+                        error: false
+                    })
+                }
+            })
+        }
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -84,6 +102,7 @@ const CategoryRecovery = () => {
                     <h2>Deleted Categories</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
+                    <Button text="Empty Deleted Categories" linkTo={ hardDelete } type="admin" />
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>

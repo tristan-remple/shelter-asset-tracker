@@ -69,6 +69,24 @@ const LocationRecovery = () => {
         )
     })
 
+    const hardDelete = async() => {
+        if (confirm("Once you empty deleted locations, you will not be able to recover them. Are you sure?")) {
+            await apiService.emptyDeletedLocations((data) => {
+                if (data.error) {
+                    setStatus({
+                        message: "We were not able to empty the deleted locations.",
+                        error: false
+                    })
+                } else {
+                    setStatus({
+                        message: "All deleted locations have been purged from the system.",
+                        error: false
+                    })
+                }
+            })
+        }
+    }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -76,6 +94,7 @@ const LocationRecovery = () => {
                     <h2>Deleted Locations</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
+                    <Button text="Empty Deleted Locations" linkTo={ hardDelete } type="admin" />
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>
