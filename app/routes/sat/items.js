@@ -3,6 +3,7 @@ const router = express.Router();
 const admin = require('../../middleware/admin');
 const auth = require('../../middleware/auth');
 const facility = require('../../middleware/facility');
+const upload = require('../../middleware/upload');
 
 // Import item controller
 const itemController = require('../../controllers/itemController');
