@@ -8,24 +8,15 @@ var _fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'client/public/attachments');
+        cb(null, '/var/storage');
+    },
+    filename: function (req, file, cb) {
+        console.log( `${req.body.date}-${req.body.filename}.${req.body.ext}`);
+        cb(null, `${req.body.date}-${req.body.filename}.${req.body.ext}`);
     }
-})
+});
+
 const upload = multer({ storage: storage });
-
-const rename = function (req, res, next) {
-    var files = req.files;
-    console.log(req.files)
-    console.log(req.body)
-    if (files.length > 0) {
-        //Move file to the deployment folder.
-        var _fs = require("fs");
-        var newPath = `/var/storage/${req.body.date}-${req.body.filename}`;
-        _fs.renameSync(files[0].path, newPath);
-    };
-
-    next();
-};
 
 
 // Import item controller
@@ -44,7 +35,7 @@ router.route('/:id/restore')
 
 router.route('/:id')
     .get(itemController.getItemById, auth, facility, itemController.sendItem)
-    .put(itemController.getItemById, auth, facility, upload.any(), rename, itemController.updateItem)
+    .put(itemController.getItemById, auth, facility, upload.any(), itemController.updateItem)
     .delete(itemController.getItemById, auth, facility, itemController.deleteItem);
 
 module.exports = router;
