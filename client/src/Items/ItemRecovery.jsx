@@ -114,7 +114,7 @@ const ItemRecovery = () => {
                     <h2>Deleted Items</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
-                    <Button text="Empty Deleted Items" linkTo={ hardDelete } type="admin" />
+                    {/* <Button text="Empty Deleted Items" linkTo={ hardDelete } type="admin" /> */}
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>

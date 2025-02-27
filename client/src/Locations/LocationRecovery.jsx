@@ -94,7 +94,7 @@ const LocationRecovery = () => {
                     <h2>Deleted Locations</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
-                    <Button text="Empty Deleted Locations" linkTo={ hardDelete } type="admin" />
+                    {/* <Button text="Empty Deleted Locations" linkTo={ hardDelete } type="admin" /> */}
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>

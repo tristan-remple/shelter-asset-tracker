@@ -104,7 +104,7 @@ const UnitRecovery = () => {
                     <h2>Deleted Units</h2>
                 </div>
                 <div className="col d-flex justify-content-end">
-                    <Button text="Empty Deleted Units" linkTo={ hardDelete } type="admin" />
+                    {/* <Button text="Empty Deleted Units" linkTo={ hardDelete } type="admin" /> */}
                     <Button text="Return" linkTo={ `/admin` } type="nav" />
                 </div>
             </div>
