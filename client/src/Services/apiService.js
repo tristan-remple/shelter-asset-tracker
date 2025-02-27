@@ -37,13 +37,6 @@ class apiService {
         const formData = new FormData()
         const { id, invoice, name, newUnit, status, usefulLifeOffset, value, vendor, attachment, comment } = item
 
-        if (attachment) {
-            formData.append('file', item.attachment.file)
-            formData.append('filename', item.attachment.name)
-            formData.append('ext', item.attachment.ext)
-            formData.append('date', item.attachment.date)
-        }
-
         formData.append('invoice', invoice)
         formData.append('name', name)
         formData.append('newUnit', newUnit)
@@ -52,6 +45,13 @@ class apiService {
         formData.append('initialValue', value.initialValue)
         formData.append('vendor', vendor)
         formData.append('comment', comment)
+
+        if (attachment) {
+            formData.append('filename', item.attachment.name)
+            formData.append('ext', item.attachment.ext)
+            formData.append('date', item.attachment.date)
+            formData.append('file', item.attachment.file)
+        }
 
         await axios.put(`${ import.meta.env.VITE_API_URL }/items/${ id }`, formData, {
             withCredentials: true,
