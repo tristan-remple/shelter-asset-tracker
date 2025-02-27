@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
             return cb(new Error("Missing required upload fields."));
         };
         
-        const safeFilename = `${date}-${filename}.${ext}`;
+        const safeFilename = `${date}-${filename}`;
         console.log(safeFilename);
         cb(null, safeFilename);
     }
