@@ -13,8 +13,8 @@ exports.createRequest = async (req, res, next) => {
             requestexpiry: resetRequest.requestExpiry
         });
 
-
-        const { name, email, requestHash, requestExpiry } = user;
+        const { name, email } = user;
+        const { requestHash, requestExpiry } = resetRequest;
         if (!name || !email || !requestHash || !requestExpiry) {
             return res.status(400).json({ error: 'Bad request.' });
         };

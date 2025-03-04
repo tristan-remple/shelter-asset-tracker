@@ -16,6 +16,12 @@ const Comment = ({ comment: cmt, setPreview }) => {
         setPreview(filename)
     }
 
+    const enterToPreview = (event, filename) => {
+        if (event.code == "Enter") {
+            setPreview(filename)
+        }
+    }
+
     const displayAttachments = attachments?.map(attach => {
         let filename = attach.src
         const ext = filename.split(".").pop()
@@ -28,7 +34,12 @@ const Comment = ({ comment: cmt, setPreview }) => {
         {
             return (
                 <div className="attachment" key={ attach } >
-                    <div className="btn btn-small btn-secondary btn-attachment" onClick={ () => clickToPreview(`${ import.meta.env.VITE_STORAGE }/${ attach.src }`) } tabIndex={ 0 }>
+                    <div 
+                        className="btn btn-small btn-secondary btn-attachment" 
+                        onClick={ () => clickToPreview(`${ import.meta.env.VITE_STORAGE }/${ attach.src }`) } 
+                        tabIndex={ 0 }
+                        onKeyDown={ (event) => enterToPreview(event, `${ import.meta.env.VITE_STORAGE }/${ attach.src }`) }
+                    >
                         <img src={ `/graphics/${ ext }.png` } className="attachment-icon" />
                         <span>{ filename }</span>
                     </div>
