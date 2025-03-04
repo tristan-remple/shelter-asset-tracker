@@ -36,7 +36,7 @@ const CategoryCreate = () => {
         defaultUsefulLife: 0,
         defaultValue: 0,
         depreciationRate: 0,
-        icon: "",
+        // icon: "",
         singleResident: false,
         errorFields: []
     })
@@ -60,22 +60,22 @@ const CategoryCreate = () => {
     const saveChanges = async() => {
 
         // validation
-        if (changes.name === "" || changes.defaultUsefulLife == "" || changes.defaultValue == "" || changes.icon === "" || changes.errorFields.length > 0) {
+        if (changes.name === "" || changes.defaultUsefulLife == "" || changes.defaultValue == "" || changes.errorFields.length > 0) {
             setForceValidation(forceValidation + 1)
             setStatus({
                 message: "Please check that all category fields are filled in correctly.",
                 error: true
             })
-            if (changes.icon === "" && changes.errorFields.indexOf("icon") === -1) {
-                const newChanges = {...changes}
-                newChanges.errorFields.push("icon")
-            }
+            // if (changes.icon === "" && changes.errorFields.indexOf("icon") === -1) {
+            //     const newChanges = {...changes}
+            //     newChanges.errorFields.push("icon")
+            // }
             return
         }
 
         // set the icon to the icon's id instead of the whole object
         const newChanges = {...changes}
-        newChanges.icon = changes.icon.id
+        // newChanges.icon = changes.icon.id
 
         // api call
         await apiService.postNewCategory(newChanges, (response) => {
@@ -177,7 +177,7 @@ const CategoryCreate = () => {
                         </div>
                     </div>
                 </div>
-                <div className="row row-info">
+                {/* <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
                             Icon *
@@ -189,7 +189,7 @@ const CategoryCreate = () => {
                             { selector && <IconSelector changes={ changes } setChanges={ setChanges } toggle={ toggleSelector } tabIndex={ selector ? -1 : 0 } /> }
                         </div>
                     </div>
-                </div>
+                </div> */}
                 { unsaved && <ChangePanel save={ saveChanges } linkOut="/categories" locationId="0" /> }
             </div>
         </main>

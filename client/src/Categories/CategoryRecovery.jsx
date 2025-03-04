@@ -71,7 +71,7 @@ const CategoryRecovery = () => {
         return (
             <tr key={ category.id } >
                 <td>{ category.name }</td>
-                <td>{ adminDate(category.deletedAt) }</td>
+                <td>{ adminDate(category.deletedat) }</td>
                 <td><Button text="Restore" linkTo={ () => restoreCategory(category.id) } type="small" /></td>
             </tr>
         )

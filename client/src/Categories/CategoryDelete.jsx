@@ -59,6 +59,7 @@ const CategoryDelete = () => {
             }
         })
     }
+
     return err ? <Error err={ err } /> : (
         <main className="container">
             <div className="row title-row mt-3 mb-2">
@@ -71,7 +72,7 @@ const CategoryDelete = () => {
             </div>
             <div className="page-content">
                 <Statusbar />
-                <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" />
+                { parseInt(category?.itemCount) == 0 ? <ChangePanel save={ confirmDelete } linkOut={ `/category/${ id }` } locationId="0" /> : <p>A category with Items cannot be deleted.</p> }
             </div>
         </main>
     )

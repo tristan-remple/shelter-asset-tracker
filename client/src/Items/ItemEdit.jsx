@@ -1,5 +1,5 @@
 // external dependencies
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 // internal dependencies
@@ -131,6 +131,31 @@ const ItemEdit = () => {
         }
     }, [ item ])
 
+    const filesRef = useRef(null)
+    const [ filesChange, setFilesChange ] = useState(0)
+    const [ attachmentData, setAttachmentData ] = useState([])
+    const [ filesError, setFilesError ] = useState([])
+
+    useEffect(() => {
+        if (filesRef.current?.files) {
+            console.log(filesRef.current.files)
+            const attachments = []
+            const newFileErrors = []
+            for (let i = 0; i < filesRef.current.files.length; i++) {
+                attachments.push(filesRef.current.files[i])
+                if (filesRef.current.files[i].type !== "image/jpeg" && filesRef.current.files[i].type !== "image/png" && filesRef.current.files[i].type !== "application/pdf") {
+                    newFileErrors.push(`Files must be images or PDFs. Please check the filetype of ${ filesRef.current.files[i].name }`)
+                }
+                if (filesRef.current.files[i].size > 5242880) {
+                    newFileErrors.push(`Files cannot be larger than 5mb. Please check the size of file ${ filesRef.current.files[i].name }`)
+                }
+            }
+            setAttachmentData(attachments)
+            setFilesError(newFileErrors)
+            setUnsaved(true)
+        }
+    }, [ filesChange ])
+
     if (err) { return <Error err={ err } /> }
     if (item) {
 
@@ -170,6 +195,19 @@ const ItemEdit = () => {
         newItem.id = item.id
         newItem.newUnit = unitList.filter(room => room.name === unit)[0].unitId
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
+        if (attachmentData.length > 0) {
+            const date = new Date().getTime()
+            const attachment = attachmentData.map(file => {
+                const ext = file.type?.split("/")[1]
+                return {
+                    name: file.name,
+                    file,
+                    date,
+                    ext
+                }
+            })[0]
+            newItem.attachment = attachment
+        }
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
@@ -241,7 +279,7 @@ const ItemEdit = () => {
                     </div>
                     <div className="col col-info">
                         <div className="col-head">
-                            Item Template
+                            Item Category
                         </div>
                         <div className="col-content">
                             { item.template.name }
@@ -295,6 +333,26 @@ const ItemEdit = () => {
                             onChange={ (event) => handleChanges.handleTextChange(event, changes, setChanges, setUnsaved) } 
                             className="comment-area" 
                         />
+                    </div>
+                </div>
+                <div className="row row-info">
+                    <div className="col col-info">
+                        <div className="col-head">
+                            Attachment (optional):
+                        </div>
+                        <div className="col-content">
+                            <input 
+                                type="file"
+                                name="attachments"
+                                ref={ filesRef }
+                                onChange={() => { setFilesChange(filesChange + 1) }}
+                            />
+                            { filesError.length > 0 && <div className="row row-info error error-message" style={{ width: "100%" }}>
+                                <ul className="m-2">
+                                    { filesError.map(error => <li>{ error }</li>) }
+                                </ul>
+                            </div> }
+                        </div>
                     </div>
                 </div>
                 <div className="row row-info">

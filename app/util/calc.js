@@ -1,6 +1,6 @@
 exports.calculateCurrentValue = (initialValue, createdAt, depreciationRateSetting) => {
   try {
-    const depreciationRate = parseFloat(depreciationRateSetting.dataValues.value);
+    const depreciationRate = typeof depreciationRateSetting == "string" ? parseFloat(depreciationRateSetting) : parseFloat(depreciationRateSetting.dataValues.value);
     if (!initialValue || !createdAt || !depreciationRate) {
       throw new Error("Invalid input.");
     };
