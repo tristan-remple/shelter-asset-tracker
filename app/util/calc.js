@@ -1,6 +1,6 @@
-exports.calculateCurrentValue = (initialValue, createdAt, depreciationRate) => {
+exports.calculateCurrentValue = (initialValue, createdAt, depreciationRateSetting) => {
   try {
-    console.log(initialValue, createdAt, depreciationRate)
+    const depreciationRate = parseFloat(depreciationRateSetting.dataValues.value);
     if (!initialValue || !createdAt || !depreciationRate) {
       throw new Error("Invalid input.");
     };

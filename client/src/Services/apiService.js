@@ -32,17 +32,15 @@ class apiService {
     // Called by: ItemEdit
     postItemEdit = async(item, callback) => {
 
-        console.log(item)
-
         const formData = new FormData()
-        const { id, invoice, name, newUnit, status, usefulLifeOffset, value, vendor, attachment, comment } = item
+        const { id, invoice, name, newUnit, status, usefulLifeOffset, initialValue, vendor, attachment, comment } = item
 
         formData.append('invoice', invoice)
         formData.append('name', name)
         formData.append('newUnit', newUnit)
         formData.append('status', status)
         formData.append('usefulLifeOffset', usefulLifeOffset)
-        formData.append('initialValue', value.initialValue)
+        formData.append('initialValue', initialValue)
         formData.append('vendor', vendor)
         formData.append('comment', comment)
 

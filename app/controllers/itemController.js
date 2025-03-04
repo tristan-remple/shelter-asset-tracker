@@ -78,10 +78,7 @@ exports.getItemById = async (req, res, next) => {
         });
 
         if (!item) {
-            console.log("item could not be found")
             return res.status(404).json({ message: 'Item not found.' });
-        } else {
-            console.log("found the item, and yet,")
         }
 
         req.data = item;
@@ -101,8 +98,7 @@ exports.sendItem = async (req, res, next) => {
         attributes: ['value'],
         where: { name: 'depreciationRate' }
     });
-    //const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
-    const currentValue= 0;
+    const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
     const itemProfile = {
         id: item.id,
         name: item.name,
