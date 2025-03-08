@@ -194,6 +194,7 @@ const ItemInspect = () => {
         newItem.comment = changes.comment
         newItem.eol = changes.eol
         newItem.usefulLifeOffset = monthDiff(item.eol, changes.eol)
+        newItem.initialValue = item.value.initialValue
         if (attachmentData.length > 0) {
             const attachment = attachmentData.map(file => {
                 const ext = file.type?.split("/")[1]

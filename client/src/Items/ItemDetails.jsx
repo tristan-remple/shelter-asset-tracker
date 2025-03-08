@@ -39,7 +39,6 @@ const ItemDetails = () => {
                     setErr(data.error)
                 } else {
                     setItem(data)
-                    console.log(data)
                     setErr(null)
                 }
             })

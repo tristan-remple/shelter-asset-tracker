@@ -49,6 +49,7 @@ main {
     display: flex;
     align-items: center;
     flex-direction: row wrap;
+    margin: auto;
 }
 
 .row-info {
@@ -575,6 +576,33 @@ textarea {
 .attachment-icon {
     height: 1.5rem;
     margin-right: 0.5rem;
+}
+
+.general, .admin {
+    padding: 1rem;
+    a {
+        color: $accentGreen;
+    }
+    h3, h4, h5, h6 {
+        padding-left: 2rem;
+    }
+    ul, ol {
+        padding-left: 2rem;
+    }
+    h3 {
+        background-color: $brightgreen;
+    }
+    h4 {
+        background-color: $ltgreen;
+    }
+    h5, b {
+        background-color: rgba($ltgreen, 0.5);
+    }
+}
+
+.guide-note {
+    padding-left: 3rem;
+    font-style: italic;
 }
 
 .mobile-yes {

@@ -37,7 +37,6 @@ const LocationList = () => {
                     setErr(data.error)
                 } else {
                     setResponse(data)
-                    console.log(data)
                     setErr(null)
                 }
             })

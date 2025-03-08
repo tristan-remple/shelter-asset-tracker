@@ -30,7 +30,7 @@ const CommentBox = ({ comments, setPreview }) => {
 
     // format all the comments for display
     const displayOlderComments = comments.map(cmt => {
-        return <Comment key={ cmt.id } comment={ cmt } setPreview={ setPreview } />
+        return <Comment key={ cmt.id.id } comment={ cmt } setPreview={ setPreview } />
     })
 
     // remove the most recent from the second array
@@ -42,7 +42,7 @@ const CommentBox = ({ comments, setPreview }) => {
     const attachmentComments = comments.filter(cmt => cmt.attachments.length > 0)
 
     const displayCommentsWithAttachments = attachmentComments.map(cmt => {
-        return <Comment key={ cmt.id } comment={ cmt } setPreview={ setPreview } />
+        return <Comment key={ cmt.id.id } comment={ cmt } setPreview={ setPreview } />
     })
 
     // create toggle functionality
