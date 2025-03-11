@@ -75,7 +75,7 @@ const FAQ = () => {
             <div className="page-content">
                 <div className="row row-info general" id="overview">
                     <h3>Overview</h3>
-                    <p>The Shelter Asset Tracker, or the SAT, is a tool to help you keep track of the furniture and appliances owned by your organization. No more surprise expenses: keeping track of item age and condition allows central office to predict and budget for needed replacements. Every time an item is bought, received, damaged, or discarded, you should update the SAT.</p>
+                    <p>The Shelter Asset Tracker, or the SAT, is a tool to help you keep track of the furniture and appliances owned by your organization. No more surprise expenses: keeping track of item age and condition allows Central Office to predict and budget for needed replacements. Every time an item is bought, received, damaged, or discarded, you should update the SAT.</p>
                     <h4>Where to Find the App</h4>
                     <p>The SAT can be reached directly by going to <a href="https://shelter-asset-tracker.onrender.com/">shelter-asset-tracker.onrender.com</a> <br />It can also be reached at the <a href="https://sat.shelternovascotia.com/">SAT subdomain</a> of your organization's website.</p>
                     <h4>Credits</h4>
@@ -89,7 +89,7 @@ const FAQ = () => {
                     <p><b>General Users</b> are usually people who work directly with the people your organization serves. Most General Users only have access to one Location. General Users only need to worry about making sure that the Items in the SAT accurately reflect the furniture and appliances in the Location at which you work. Locations, Units, and Categories are defined by the Admin Users.</p>
                     <p><b>Admin Users</b> are usually people who need access to data to make decisions. Admin Users have full access to the app. They have permission to do everything that General Users can do, at all Locations. Locations, Units, and Categories are defined by the Admin Users. Admin Users also have access to the powerful Reporting features in the Dashboard. To learn more about Admin User functionality, <HashLink to="#admin-heading">click here</HashLink> or scroll down to the Admin Users section.</p>
                 </div>
-                <h2 id="general-heading">General Users</h2>
+                <h2 id="general-heading">Guide for General Users</h2>
                 <div className="row row-info general" id="general-overview">
                     <h3>General Users</h3>
                     <p>General Users only need to worry about making sure that the Items in the SAT accurately reflect the furniture and appliances in the Location at which you work.</p>
@@ -119,7 +119,7 @@ const FAQ = () => {
                         <li>A <b>Status</b> flag which reflects the most severe flag of the Items in that Unit.</li>
                     </ul>
                     <p>Units with a Status flag of Discard or Inspect will be displayed at the top of the list. Status flags will be explained in more detail under <b>Item Details.</b></p>
-                    <p>Between the Location Details and the Units table, there is a search bar. You can enter the name or type of a unit and click Search to filter the table so that it only shows Units that match your search. To go back to displaying all Units, delete the search term that you typed and then click Search again.</p>
+                    <p>Between the Location Details and the Units table, there is a search bar. You can enter the name or type of a Unit and click Search to filter the table so that it only shows Units that match your search. To go back to displaying all Units, delete the search term that you typed and then click Search again.</p>
                     <h5>Differences on Mobile View</h5>
                     <p>If you are viewing the SAT on a small screen, such as a mobile phone, there is not enough room to display the table of Units. Instead, it will be formatted as a list, with one button for each Unit. Tapping on the mobile Unit buttons will take you to the Unit Details page.</p>
                 </div>
@@ -148,6 +148,8 @@ const FAQ = () => {
                         <li>If the Item's Status is <b>OK</b> or <b>Inspect</b>, the button will read <b>Record Inspection</b>. Clicking it will allow you to record updates about the current state of the Item.</li>
                         <li>If the Item's Status is <b>Discard</b>, the button will read <b>Mark Discarded</b>. Clicking it will delete the Item from the Unit, indicating that the physical appliance or piece of furniture has been disposed of and is no longer present in the Location.</li>
                     </ol>
+                    <h5>Flip Unit</h5>
+                    <p>To change the status of all Items in a Unit to Inspect, you can click the <b>Flip Unit</b> button. You may wish to do this when a tenant moves out, when you believe there has been water damage in the building, or at other times. By flagging all Items Inspect, you signal to yourself and other Users that the Items need to be checked over.</p>
                     <h5>Differences on Mobile View</h5>
                     <p>If you are viewing the SAT on a small screen, such as a mobile phone, there is not enough room to display the table of Items. Instead, it will be formatted as a list of buttons. Each button will be labeled with the Label of the Item, and its Category in parentheses. Tapping on an Item button will take you directly to the Record Inspection page.</p>
                 </div>
@@ -159,6 +161,9 @@ const FAQ = () => {
                     <p>The Item Details page displays information about one specific Item.</p>
                     <ul>
                         <li><b>Label</b>: A unique identifier for one specific item. You can think of this as a more human-readable barcode or ID tag. When there are multiple Items in the same Unit and Category, the Label is how you differentiate between them. We encourage using a physical label-maker to print labels onto the appliance and pieces of furniture listed in the SAT.</li>
+                    </ul>
+                    <p className="guide-note">Note: For the labels in our initial inventory, we used: a 2- or 3-letter prefix to represent the Unit, a single word to represent the Category, sometimes abbreviated, and then a 2-digit number. For example, one of the office chairs in the boardroom is BR-CHAIR-04.</p>
+                    <ul>
                         <li><b>Category</b>: The type of thing that the Item is. For example, an Item might be in the Category "Dining Chair" or "End Table" or "Twin Mattress".</li>
                         <li><b>Location</b>: the building or property where the Item is located</li>
                         <li><b>Unit</b>: the room or space within the Location where the Item is located</li>
@@ -170,7 +175,7 @@ const FAQ = () => {
                         <li><b>Vendor</b>: the vendor from which the Item was purchased</li>
                         <li><b>Invoice Number</b>: the invoice number from the purchase of the Item</li>
                         <li><b>Initial Value</b>: the amount of money that was paid for the Item when it was purchased. In cases where this value is unknown, it is filled in with the default value for Items of that Category.</li>
-                        <li><b>Current Value</b>: the amount of money that the Item is currently worth in the eyes of insurance.</li>
+                        <li><b>Current Value</b>: the amount of money that the Item is currently worth in the eyes of the insurance provider.</li>
                     </ul>
                     <h5>Item Status</h5>
                     <p>The Status flag of an Item indicates whether action is needed. It has three possible options: OK, Inspect, and Discard.</p>
@@ -183,7 +188,7 @@ const FAQ = () => {
                         <li>When a User flags the Item as needing inspection</li>
                     </ul>
                     <p>An Item flagged <b>Discard</b> is no longer in usable condition but is still present in the Location. The action required may be hauling it to the curb, calling a disposal service, and/or finding a replacement for the Item.</p>
-                    <p className="guide-note">Note: Keeping the Status of Items up to date helps the Admin Users keep track of what they need to know for their budgeting and planning. The better they know about your condition and needs, the easier it is for them to help!</p>
+                    <p className="guide-note">Note: Keeping the Status of Items up to date helps the Admin Users keep track of what they need to know for their budgeting and planning. The more they know about your condition and needs, the easier it is for them to help!</p>
 
                     <h4>Add Item</h4>
                     <p>When a new piece of furniture or appliance is purchased for your Location, it needs to be added as an Item in the SAT.</p>
@@ -194,12 +199,12 @@ const FAQ = () => {
                     <ol>
                         <li>You can select a category that is close enough.</li>
                         <li>The item may not need to be tracked. Refer to the note below about which items do not need to be entered.</li>
-                        <li>You can contact central office to have a new category added to the SAT.</li>
+                        <li>You can contact Central Office to have a new category added to the SAT.</li>
                     </ol>
                     <p className="guide-note">Note: There are some items that do not need to be in the SAT. Small appliances and non-furniture items should not be entered. For example, toasters and lamps are not tracked. Items that are leased instead of owned, such as photocopiers and washing machines, should not be entered. Lastly, items that are owned by residents or staff members, and not by the organization, should not be entered.</p>
                     <p className="guide-note">Note: The Category of an item cannot be changed after the item is created.</p>
                     <p>The <b>Initial Value</b> will also be filled in automatically when you select a Category. If you have the actual purchase price of the item, erase the automatic value and fill in the actual value.</p>
-                    <p>You should also fill in the <b>Vendor</b> and <b>Invoice Number</b> if you can find them. These should be provided by the store when you buy the item.</p>
+                    <p>You should also fill in the <b>Vendor</b> and <b>Invoice Number</b> if you can find them. These should be provided by the vendor or store when you buy the item.</p>
                     <p>When you make changes to any field, the <b>Changes Dialogue</b> will appear at the bottom of the page. You can save your changes by clicking Save in the Changes Dialogue or at the top of the page.</p>
                     <p>After saving your changes, you will be automatically returned to the Item Details page, where your changes will be visible immediately.</p>
                     <p className="guide-note">Note: If you don't fill in all fields, you may not be able to save the item.</p>
@@ -223,8 +228,9 @@ const FAQ = () => {
                     <p className="guide-note">Note: When an item is removed from the property, you can delete it by clicking Mark Discarded on that Item in the Unit Details page. You can also delete an Item by clicking the Delete Item button at the bottom of the Edit Item page.</p>
                     <h5>Update End of Life</h5>
                     <p>The <b>Update End of Life</b> field sets when the item will be flagged Inspect again. You can add years to it with the + button or subtract years from it with the - button. The new End of Life date will be displayed above the controls.</p>
-                    <h5>Comments and Attachments</h5>
+                    <h5>Comments</h5>
                     <p>The <b>Comment</b> field is for any extra details or observations about the item. For example, you might comment that a table is wobbly and unstable. Comments will appear with your name and the date on the Item Details page.</p>
+                    <h5>Attachments</h5>
                     <p>If you have an image or PDF file that provides additional information about an Item, you can attach it by selecting a file with the Browse… button under <b>Attachment</b>. Appropriate files include photos of damage to the Item, invoices, and specific insurance policies. You can only upload attachments in JPG, PNG, or PDF format.</p>
                     <p className="guide-note">Note: All submitted Attachments must be posted with a Comment that describes what the Attachment is and why it is important.</p>
 
@@ -246,7 +252,7 @@ const FAQ = () => {
                     <p>Alternatively, from Item Details, click Edit or Move at the top of the page. At the bottom of the Edit Item page, there is a <b>Delete Item</b> button.</p>
                     <p className="guide-note">Note: When you click Mark Discarded or Delete Item, the item will be deleted immediately.</p>
                     <p>After an item is deleted, you will be automatically returned to the Unit Details page. There will be a message at the top of the page informing you that the item has been deleted.</p>
-                    <p className="guide-note">Note: If you delete an item by mistake, it can be restored. Contact central office with as much detail about the Item in the SAT as you can remember.</p>
+                    <p className="guide-note">Note: If you delete an item by mistake, it can be restored. Contact Central Office with as much detail about the Item in the SAT as you can remember.</p>
                 </div>
                 <div className="row row-info general" id="general-profile">
                     <h3>Profile</h3>
@@ -260,12 +266,12 @@ const FAQ = () => {
                         <li><b>Locations</b> is a list of locations that you can view. At your locations, you can add, inspect, edit, and delete items.</li>
                     </ul>
                     <p>At the top of the page, you can find the Edit and Reset Password buttons.</p>
-                    <p><b>Edit</b> allows you to change your name and email address. If you would like to change the location(s) you're assigned to, contact central office.</p>
+                    <p><b>Edit</b> allows you to change your name and email address. If you would like to change the location(s) you're assigned to, contact Central Office.</p>
                     <p>When you click the <b>Reset Password</b> button, you'll be logged out. An email will be sent to you containing a new, temporary password and a link. When you click the link, you'll be asked to enter your email and the new password you'd like to use. Your new password must meet a certain complexity level. Once your new password is confirmed, you can log in again.</p>
-                    <p className="guide-note">Note: Users can only be registered, deleted, or promoted to admin by admin users. There is no self-registration.</p>
+                    <p className="guide-note">Note: Users can only be registered, deleted, or promoted to Admin by Admin users. There is no self-registration.</p>
                 </div>
                 { userDetails.isAdmin && <>
-                    <h2 id="admin-heading">Admin Users</h2>
+                    <h2 id="admin-heading">Guide for Admin Users</h2>
                     <div className="row row-info admin" id="admin-overview">
                         <h3>Admin Users</h3>
                         <p>Admin users can do everything that general users can. They have access to all locations in your organization's SAT. They also have a lot of extra features.</p>
@@ -276,7 +282,7 @@ const FAQ = () => {
                             <li><b>Settings</b> menu, for setting global information.</li>
                             <li><b>Restoring deleted</b> items, units, locations, and categories.</li>
                         </ul>
-                        <p>At least one user of your organization's SAT must be an admin user. Admin users are all equally powerful; it is possible for an admin user to promote other users and to demote other admins. Be careful who you grant this role to.</p>
+                        <p>At least one user of your organization's SAT must be an admin user. Admin users are all equally powerful; it is possible for an Admin User to promote other Users and to demote other Admin Users. Be careful who you grant this role to.</p>
                     </div>
                     <div className="row row-info admin" id="admin-dashboard">
                         <h3>Dashboard</h3>
@@ -285,9 +291,9 @@ const FAQ = () => {
                         <p>The Dashboard provides an overview of the items in the SAT, sorted by Location. When you first load into the Dashboard, stats will be shown as a sum of all Locations. The total current value of all items in the SAT is displayed on the left of the page, under Overview.</p>
                         <h4>Item Counts</h4>
                         <p>On the right is a list of all categories and the number of items using each category, sorted by the categories with the most items first. You can click the triangle button at the top of each column to sort the table by that column.</p>
-                        <h4>Items to Discard Soon</h4>
-                        <p>Farther down on the page is a list of Items to Discard Soon. By default, this displays the items that have been <b>flagged Discard</b> and have an End of Life date within the <b>current calendar year</b>.</p>
-                        <p>If you wish to see items that have been flagged Inspect or all items, you can check and uncheck the respective checkboxes. If you wish to view items within a different range of End of Life dates, you can set the Start Date and End Date. You can click the triangle button at the top of each column to sort the table by that column. Additionally, items can be filtered with the search bar.</p>
+                        <h4>Items Overview</h4>
+                        <p>Farther down on the page is the Items Overview. By default, this displays the Items that have been <b>flagged Discard</b> and have an End of Life date within the <b>current calendar year</b>.</p>
+                        <p>If you wish to see Items that have been flagged Inspect or all Items, you can check and uncheck the respective checkboxes. If you wish to view Items within a different range of End of Life dates, you can set the Start Date and End Date. You can click the triangle button at the top of each column to sort the table by that column. Additionally, Items can be filtered with the search bar.</p>
                         <h4>CSV Exports</h4>
                         <p>Below the total value, you'll see three Report buttons under the CSV Exports heading. Clicking on one of these buttons will automatically <b>download a CSV file</b> with the corresponding information. CSV files can be opened with Excel and similar programs.</p>
                         <p className="guide-note">Note: CSV Exports will contain information about the Location specified in the Location Dropdown above, or All Locations.</p>
@@ -377,7 +383,7 @@ const FAQ = () => {
 
                         <h4>Add User</h4>
                         <p>To add a new User, click <b>Add User</b> from the <b>Users List</b> page.</p>
-                        <p>Enter the new user's <b>Name</b> and <b>Email</b>. Check off the <b>Location(s)</b> that they work at. If you are certain the user should have Admin privileges, you can check off the <b>Admin checkbox</b>.</p>
+                        <p>Enter the new user's <b>Name</b> and <b>Email</b>. Check off the <b>Location(s)</b> where they work. If you are certain the user should have Admin privileges, you can check off the <b>Admin checkbox</b>.</p>
                         <p>When a User is created, an email will be sent to them asking them to set their password. The email may be directed to their spam folder. When the user receives the email, they will need to click on the link and enter their email address and the password they intend to use. The new password must meet a certain complexity level. Once the new password is set, the user will be able to log in.</p>
                         <p className="guide-note">Note: A general (non-admin) user who has no assigned Locations can't do anything useful with the SAT. All users should be assigned at least one Location.</p>
 
@@ -387,7 +393,7 @@ const FAQ = () => {
 
                         <h4>Delete User</h4>
                         <p>From the <b>Edit User</b> page, click the <b>Delete</b> button. The User will not be immediately deleted. You will be directed to a confirmation screen. Click Save to confirm that you want to delete the User.</p>
-                        <p className="guide-note">Note: Deleting a User does not delete their comments and contributions. Their name may continue to appear in the SAT on their old actions. If you wish not to have the name of a deleted User appear, you must change it before you delete them.</p>
+                        <p className="guide-note">Note: Deleting a User does not delete their comments and contributions. Their name may continue to appear in the SAT on their old actions. You may wish to change a former user's name before deleting them, for example, from Sam Jones to Staff1. The new name will appear in their comments and contributions.</p>
                         <p className="guide-note">Note: When Users are deleted, they are deleted permanently. If you wish to restore a deleted user, you must add them as if they are new.</p>
                     </div>
                     <div className="row row-info admin" id="admin-restore">
