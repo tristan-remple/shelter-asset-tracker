@@ -13,9 +13,7 @@ const dbConfig = new Sequelize(
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'postgres',
-        dialectoptions: {
-            ssl: true
-        },
+        ssl: true,
         define: {
             paranoid: true,         // Enables soft deletion for all models
             timestamps: true,       // Adds createdAt and updatedAt fields for all models
