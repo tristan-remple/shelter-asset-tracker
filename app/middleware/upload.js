@@ -1,10 +1,10 @@
 const multer = require('multer');
-const fs = require("fs");
-const path = require("path");
+const dotenv = require('dotenv');
+dotenv.config();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "/var/storage");
+        cb(null, process.env.STORAGE);
     },
     filename: function (req, file, cb) {
         const { date, filename, ext } = req.body; 
