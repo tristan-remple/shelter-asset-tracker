@@ -34,7 +34,10 @@ const Header = () => {
         (async()=> {
             await apiService.getSettings(data => {
                 if (data.error) {
-                    setErr(data.error)
+                    setStatus({
+                        message: "Internal server issues.",
+                        error: true
+                    })
                 } else {
                     const newBranding = {
                         name: data.settings.filter(sett => sett.name === "name")[0].value,
