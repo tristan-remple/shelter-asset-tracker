@@ -54,6 +54,10 @@ const UserDetails = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
+                    if (data.name === "Admin") {
+                        setErr("permission")
+                        return
+                    }
                     setUser(data)
                     setErr(null)
                 }

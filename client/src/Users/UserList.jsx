@@ -28,6 +28,8 @@ const UserList = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
+                    const adminIndex = data.findIndex(user => user.name === "Admin")
+                    data.splice(adminIndex, 1)
                     setResponse(data)
                     setFilteredUsers(data)
                     setErr(null)

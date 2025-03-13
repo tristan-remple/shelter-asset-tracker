@@ -102,6 +102,14 @@ const UserCreate = () => {
             return
         }
 
+        if (changes.name === "Admin") {
+            setStatus({
+                message: "Admin is a reserved user name, and cannot be used. Please enter a different name.",
+                error: true
+            })
+            return
+        }
+
         if (changes.isAdmin && !confirm) {
             setStatus({
                 message: "Granting a user admin privileges is a serious action. If you're sure you wish to proceed, click save again.",

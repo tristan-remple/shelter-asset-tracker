@@ -91,6 +91,10 @@ const UserEdit = () => {
                 if (data.error) {
                     setErr(data.error)
                 } else {
+                    if (data.name === "Admin") {
+                        setErr("permission")
+                        return
+                    }
                     setErr(null)
                     getLocations(data)
                 }
@@ -133,6 +137,14 @@ const UserEdit = () => {
         })) {
             setStatus({
                 message: "You have no changes to save.",
+                error: true
+            })
+            return
+        }
+
+        if (changes.name === "Admin") {
+            setStatus({
+                message: "Admin is a reserved user name, and cannot be used. Please enter a different name.",
                 error: true
             })
             return
