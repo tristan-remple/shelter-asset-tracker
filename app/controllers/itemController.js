@@ -191,7 +191,7 @@ exports.createNewItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, filename, date } = req.body;
+        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, filename, date, createdAt } = req.body;
 
         if (comment !== '') {
             const newComment = await models.comment.create({
@@ -215,7 +215,8 @@ exports.updateItem = async (req, res, next) => {
             initialvalue: initialValue,
             eol: getEoL(usefulLifeOffset, item.eol),
             status: status,
-            unitid: newUnit
+            unitid: newUnit,
+            createdat: createdAt
         });
 
         const depreciationRate = await models.setting.findOne({
