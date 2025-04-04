@@ -140,7 +140,6 @@ const ItemEdit = () => {
 
     useEffect(() => {
         if (filesRef.current?.files) {
-            console.log(filesRef.current.files)
             const attachments = []
             const newFileErrors = []
             for (let i = 0; i < filesRef.current.files.length; i++) {
@@ -210,7 +209,6 @@ const ItemEdit = () => {
             })[0]
             newItem.attachment = attachment
         }
-        newItem.createdAt = formattedDate(changes.createdAt);
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {

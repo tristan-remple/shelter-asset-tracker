@@ -33,7 +33,7 @@ class apiService {
     postItemEdit = async(item, callback) => {
 
         const formData = new FormData()
-        const { id, invoice, name, newUnit, status, usefulLifeOffset, initialValue, vendor, attachment, comment } = item
+        const { id, invoice, name, newUnit, status, usefulLifeOffset, initialValue, vendor, attachment, comment, createdAt } = item
 
         formData.append('invoice', invoice)
         formData.append('name', name)
@@ -43,6 +43,7 @@ class apiService {
         formData.append('initialValue', initialValue)
         formData.append('vendor', vendor)
         formData.append('comment', comment)
+        formData.append('createdAt', createdAt)
 
         if (attachment) {
             formData.append('filename', item.attachment.name)

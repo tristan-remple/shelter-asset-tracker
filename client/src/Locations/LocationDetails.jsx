@@ -100,6 +100,7 @@ const LocationDetails = () => {
             <tr key={ unit.unitId } >
                 <td>{ unit.name }</td>
                 <td>{ capitalize(unit.type) }</td>
+                <td>{ unit.itemCount }</td>
                 <td><Button text="Details" linkTo={ `/unit/${ unit.unitId }` } type="small" /></td>
                 <td><Flag color={ flag.color } /> { flag.text }</td>
             </tr>
@@ -157,13 +158,14 @@ const LocationDetails = () => {
                         <tr>
                             <th scope="col">Unit</th>
                             <th scope="col">Type</th>
+                            <th scope="col">Item Count</th>
                             <th scope="col">Details</th>
                             <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         { displayItems.length > 0 ? displayItems : <tr>
-                            <td colSpan={ 4 }>No units yet</td>
+                            <td colSpan={ 5 }>No units yet</td>
                         </tr> }
                     </tbody>
                 </table>
