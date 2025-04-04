@@ -7,7 +7,7 @@ import apiService from "../Services/apiService"
 import capitalize from '../Services/capitalize'
 import { statusContext } from '../Services/Context'
 import handleChanges from '../Services/handleChanges'
-import { friendlyDate } from '../Services/dateHelper'
+import { friendlyDate, formattedDate } from '../Services/dateHelper'
 
 // components
 import Button from "../Components/Button"
@@ -105,6 +105,7 @@ const ItemEdit = () => {
         eol: "",
         initialValue: 0,
         currentValue: 0,
+        createdAt: "",
         errorFields: []
     })
 
@@ -126,6 +127,7 @@ const ItemEdit = () => {
                 eol: item.eol,
                 initialValue: item.value.initialValue,
                 currentValue: item.value.currentValue,
+                createdAt: item.createdAt,
                 errorFields: []
             })
         }
@@ -208,6 +210,7 @@ const ItemEdit = () => {
             })[0]
             newItem.attachment = attachment
         }
+        newItem.createdAt = formattedDate(changes.createdAt);
 
         await apiService.postItemEdit(newItem, (response) => {
             if (response.error) {
@@ -358,10 +361,15 @@ const ItemEdit = () => {
                 <div className="row row-info">
                     <div className="col col-info">
                         <div className="col-head">
-                            Acquired Date
+                            Acquired Date *
                         </div>
                         <div className="col-content">
-                            { friendlyDate(item.createdAt) }
+                            <input 
+                                type="date"
+                                name="createdAt" 
+                                value={ changes.createdAt.split("T")[0] } 
+                                onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
+                            />
                         </div>
                     </div>
                     <div className="col col-info">
