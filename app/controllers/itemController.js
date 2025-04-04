@@ -216,7 +216,7 @@ exports.updateItem = async (req, res, next) => {
             eol: getEoL(usefulLifeOffset, item.eol),
             status: status,
             unitid: newUnit,
-            createdAt: createdAt
+            createdat: createdAt
         });
 
         const depreciationRate = await models.setting.findOne({
