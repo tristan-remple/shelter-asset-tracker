@@ -82,6 +82,7 @@ exports.getFacilityById = async (req, res, next) => {
                 unitId: unit.id,
                 name: unit.name,
                 type: unit.unittype.name,
+                itemCount: unit.items.length,
                 inspectCount: unit.items.filter(item => item.status === 'inspect').length,
                 discardCount: unit.items.filter(item => item.status === 'discard').length
             })),
