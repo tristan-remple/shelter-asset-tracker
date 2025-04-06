@@ -20,7 +20,7 @@ const Footer = () => {
         (async()=> {
             await apiService.getSettings(data => {
                 if (data.error) {
-                    setErr(data.error)
+                    console.log(data.error)
                 } else {
                     const newBranding = {
                         name: data.settings.filter(sett => sett.name === "name")[0].value,
