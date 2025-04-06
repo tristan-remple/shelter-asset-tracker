@@ -51,6 +51,9 @@ module.exports = (db, { DataTypes }) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             field: 'addedby'
+        },
+        createdat: {
+            type: DataTypes.DATE
         }
     }, {
         tableName: 'items'
