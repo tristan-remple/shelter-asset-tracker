@@ -52,8 +52,9 @@ module.exports = (db, { DataTypes }) => {
             allowNull: false,
             field: 'addedby'
         },
-        createdat: {
-            type: DataTypes.DATE
+        startdate: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
         tableName: 'items'

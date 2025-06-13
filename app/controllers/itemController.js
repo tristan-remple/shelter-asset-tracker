@@ -28,6 +28,7 @@ exports.getItemById = async (req, res, next) => {
                 'eol',
                 'status',
                 'addedby',
+                'startdate',
                 'createdat',
                 'updatedat'
             ],
@@ -98,7 +99,7 @@ exports.sendItem = async (req, res, next) => {
         attributes: ['value'],
         where: { name: 'depreciationRate' }
     });
-    const currentValue = calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate);
+    const currentValue = calculateCurrentValue(item.initialvalue, item.startdate, depreciationRate);
     const itemProfile = {
         id: item.id,
         name: item.name,
@@ -137,6 +138,7 @@ exports.sendItem = async (req, res, next) => {
         },
         eol: item.eol,
         status: item.status,
+        startDate: item.startdate,
         createdAt: item.createdat,
         updatedAt: item.updatedat
     };
@@ -165,6 +167,9 @@ exports.createNewItem = async (req, res, next) => {
             status: 'ok'
         });
 
+        await newItem.set({ startdate: newItem.createdat });
+        await newItem.save();
+
         const createResponse = {
             itemId: newItem.id,
             name: newItem.name,
@@ -191,7 +196,7 @@ exports.createNewItem = async (req, res, next) => {
 exports.updateItem = async (req, res, next) => {
     try {
         const item = req.data;
-        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, filename, date, createdAt } = req.body;
+        const { name, invoice, vendor, initialValue, usefulLifeOffset, status, comment, newUnit, filename, date, startDate, createdAt } = req.body;
 
         if (comment !== '') {
             const newComment = await models.comment.create({
@@ -208,7 +213,7 @@ exports.updateItem = async (req, res, next) => {
             };
         };
 
-        item.set({
+        await item.set({
             name: name,
             invoice: invoice,
             vendor: vendor,
@@ -216,6 +221,7 @@ exports.updateItem = async (req, res, next) => {
             eol: getEoL(usefulLifeOffset, item.eol),
             status: status,
             unitid: newUnit,
+            startdate: startDate,
             createdat: new Date(createdAt)
         });
 
@@ -234,7 +240,8 @@ exports.updateItem = async (req, res, next) => {
             initialValue: item.initialvalue,
             eol: item.eol,
             status: item.status,
-            currentValue: calculateCurrentValue(item.initialvalue, item.createdat, depreciationRate),
+            currentValue: calculateCurrentValue(item.initialvalue, item.startdate, depreciationRate),
+            startDate: item.startDate,
             success: true
         };
 
