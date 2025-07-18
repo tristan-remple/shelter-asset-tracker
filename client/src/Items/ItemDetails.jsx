@@ -51,7 +51,7 @@ const ItemDetails = () => {
     if (item) {
 
     // destructure the item object
-    const { unit, name, template, status: itemStatus, value, createdAt, eol, commentRecord, invoice, vendor } = item
+    const { unit, name, template, status: itemStatus, value, createdAt, eol, commentRecord, invoice, vendor, startDate } = item
 
     // if it has been deleted, throw an error
     // if (item.discardDate) {
@@ -138,7 +138,7 @@ const ItemDetails = () => {
                             Acquired Date
                         </div>
                         <div className="col-content">
-                            { friendlyDate(createdAt) }
+                            { friendlyDate(startDate) }
                         </div>
                     </div>
                     <div className="col col-info">
