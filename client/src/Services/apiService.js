@@ -33,7 +33,7 @@ class apiService {
     postItemEdit = async(item, callback) => {
 
         const formData = new FormData()
-        const { id, invoice, name, newUnit, status, usefulLifeOffset, initialValue, vendor, attachment, comment, createdAt } = item
+        const { id, invoice, name, newUnit, status, usefulLifeOffset, initialValue, vendor, attachment, comment, startDate } = item
 
         formData.append('invoice', invoice)
         formData.append('name', name)
@@ -43,7 +43,7 @@ class apiService {
         formData.append('initialValue', initialValue)
         formData.append('vendor', vendor)
         formData.append('comment', comment)
-        formData.append('createdAt', createdAt)
+        formData.append('startDate', startDate)
 
         if (attachment) {
             formData.append('filename', item.attachment.name)
@@ -51,6 +51,8 @@ class apiService {
             formData.append('date', item.attachment.date)
             formData.append('file', item.attachment.file)
         }
+
+        console.log(new Date(startDate).getTime())
 
         await axios.put(`${ import.meta.env.VITE_API_URL }/items/${ id }`, formData, {
             withCredentials: true,

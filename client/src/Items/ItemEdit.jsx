@@ -105,7 +105,7 @@ const ItemEdit = () => {
         eol: "",
         initialValue: 0,
         currentValue: 0,
-        createdAt: "",
+        startDate: "",
         errorFields: []
     })
 
@@ -127,7 +127,7 @@ const ItemEdit = () => {
                 eol: item.eol,
                 initialValue: item.value.initialValue,
                 currentValue: item.value.currentValue,
-                createdAt: item.createdAt,
+                startDate: item.startDate,
                 errorFields: []
             })
         }
@@ -364,8 +364,8 @@ const ItemEdit = () => {
                         <div className="col-content">
                             <input 
                                 type="date"
-                                name="createdAt" 
-                                value={ changes.createdAt.split("T")[0] } 
+                                name="startDate" 
+                                value={ changes.startDate.split("T")[0] } 
                                 onChange={ (event) => handleChanges.handleDateChange(event, changes, setChanges, setUnsaved) } 
                             />
                         </div>
